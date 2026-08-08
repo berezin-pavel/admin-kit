@@ -1,0 +1,1601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>avatar-live · admin theme</title>
+<style>
+  body { margin:0; padding:28px; background:#F7F8FB; color:#2B2B2C;
+         font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; }
+  body.modal-lock { overflow:hidden; }
+  .page { max-width:1180px; margin:0 auto; }
+  h2 { font-size:26px; font-weight:800; color:#253D60; margin:0 0 8px; letter-spacing:-.02em; }
+  .subtitle { font-size:14px; color:#5B6577; margin:0 0 16px; line-height:1.55; max-width:900px; }
+  .toc { display:flex; flex-wrap:wrap; gap:5px; margin:0 0 22px; padding:12px; background:#FFFFFF; border-radius:12px; }
+  .toc-group { display:flex; flex-wrap:wrap; align-items:center; gap:5px; padding:5px 10px; border-radius:8px; }
+  .toc-group b { font-size:9px; text-transform:uppercase; letter-spacing:.06em; color:#5B6577; margin-right:4px; }
+  .toc a { font-size:11px; color:#36795A; text-decoration:none; background:#EDEEF5; padding:3px 8px; border-radius:20px; }
+  .toc a:hover { background:#DFE3EC; }
+</style>
+</head>
+<body>
+<div class="page">
+<style>
+  .ts { --background:#EDEEF5; --foreground:#2B2B2C; --card:#FFFFFF; --muted:#E4E7F0; --muted-fg:#5B6577;
+        --primary:#36795A; --primary-fg:#F7FCF9; --primary-dark:#36795A; --primary-bright:#42916D;
+        --accent:#65B6B0; --accent-dark:#2F7D78; --navy:#253D60; --navy-soft:#DFE3EC; --secondary:#DFE3EC;
+        --destructive:#C0504A; --destructive-dark:#A53F3A; --warning:#B98A3C;
+        --border:rgba(37,61,96,.11); --input:#D7DCE7; --ring:#42916D;
+        background: var(--background); color: var(--foreground);
+        font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+        border-radius:14px; padding:20px; }
+  .ts h3.sec { font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:var(--muted-fg); margin:26px 0 10px; font-weight:700; border-bottom:1px solid var(--border); padding-bottom:6px; scroll-margin-top:16px; }
+  .ts h3.sec:first-of-type { margin-top:0; }
+  .ts h4.sub { font-size:12px; font-weight:700; color:var(--navy); margin:16px 0 8px; }
+  .ts p.note { font-size:11px; color:var(--muted-fg); margin:-4px 0 10px; line-height:1.5; max-width:640px; }
+  .ts .row { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-bottom:9px; }
+  .ts .col { display:flex; flex-direction:column; gap:8px; }
+  .ts .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .ts .grid3 { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+  .ts .grid4 { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
+  .ts .lbl { font-size:10px; color:var(--muted-fg); text-transform:uppercase; letter-spacing:.05em; margin-bottom:4px; display:block; }
+
+  .ts .tok { display:flex; align-items:center; gap:8px; background:var(--card); border:1px solid var(--border); border-radius:8px; padding:7px 9px; }
+  .ts .tok i { width:26px; height:26px; border-radius:6px; border:1px solid rgba(37,61,96,.12); flex:none; }
+  .ts .tok code { font-size:10px; color:var(--navy); font-family: ui-monospace, monospace; display:block; }
+  .ts .tok small { font-size:9px; color:var(--muted-fg); }
+
+  .ts .t-h1 { font-size:24px; font-weight:800; color:var(--navy); letter-spacing:-.02em; }
+  .ts .t-h2 { font-size:18px; font-weight:700; color:var(--navy); }
+  .ts .t-body { font-size:13px; line-height:1.55; }
+  .ts .t-mut { font-size:12px; color:var(--muted-fg); }
+  .ts .t-mono { font-family: ui-monospace, monospace; font-size:12px; background:var(--muted); padding:2px 5px; border-radius:4px; color:var(--navy); }
+
+  .ts .btn { font-size:12px; font-weight:600; padding:7px 13px; border-radius:7px; border:1px solid transparent; cursor:pointer; display:inline-flex; align-items:center; gap:6px; font-family:inherit; }
+  .ts .btn-default { background:var(--primary); color:var(--primary-fg); }
+  .ts .btn-secondary { background:var(--navy-soft); color:var(--navy); }
+  .ts .btn-outline { background:var(--card); color:var(--navy); border-color:var(--border); }
+  .ts .btn-ghost { background:transparent; color:var(--navy); }
+  .ts .btn-destructive { background:var(--destructive); color:#FFF3F1; }
+  .ts .btn-link { background:transparent; color:var(--primary-dark); text-decoration:underline; padding:7px 4px; }
+  .ts .btn-sm { font-size:11px; padding:5px 10px; }
+  .ts .btn-lg { font-size:13px; padding:10px 18px; }
+  .ts .btn-icon { padding:7px; width:32px; height:32px; justify-content:center; }
+  .ts .btn[disabled], .ts .btn.is-disabled { opacity:.45; cursor:not-allowed; }
+  .ts button.btn { font-family:inherit; }
+
+  .ts .badge { font-size:10px; font-weight:700; padding:3px 9px; border-radius:20px; display:inline-block; }
+  .ts .b-primary { background:var(--primary-dark); color:#FFFFFF; }
+  .ts .b-accent { background:var(--accent-dark); color:#FFFFFF; }
+  .ts .b-navy { background:var(--navy); color:#FFFFFF; }
+  .ts .b-destructive { background:var(--destructive-dark); color:#FFFFFF; }
+  .ts .b-outline { background:var(--card); color:var(--navy); border:1px solid var(--border); }
+  .ts .b-muted { background:var(--muted); color:var(--muted-fg); }
+
+  .ts .input { background:var(--card); border:1px solid var(--border); border-radius:7px; padding:7px 10px; font-size:12px; color:var(--foreground); min-width:150px; display:inline-block; }
+  .ts input.input, .ts textarea.input { border:1px solid var(--input); font-family:inherit; }
+  .ts input.input:focus, .ts textarea.input:focus { outline:none; border-color:var(--ring); box-shadow:0 0 0 3px rgba(66,145,109,.18); }
+  .ts .input.err { border-color:var(--destructive); }
+  .ts .input.ph { color:#9AA3B2; }
+  .ts textarea.input { min-width:260px; min-height:70px; resize:vertical; display:block; }
+
+  .ts .switch { width:38px; height:21px; border-radius:20px; background:#C3C9D6; position:relative; display:inline-block; cursor:pointer; flex:none; }
+  .ts .switch i { position:absolute; top:2.5px; left:2.5px; width:16px; height:16px; border-radius:50%; background:#fff; transition:left .13s ease; }
+  .ts .switch.on { background:var(--primary); }
+  .ts .switch.on i { left:19.5px; }
+  .ts .switch[data-disabled] { opacity:.45; cursor:not-allowed; }
+
+  .ts .check { width:17px; height:17px; border-radius:5px; background:var(--card); border:1px solid var(--input); color:#fff; font-size:11px; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; flex:none; }
+  .ts .check.on { background:var(--primary); border-color:var(--primary); }
+  .ts .check.ind { background:var(--primary); border-color:var(--primary); }
+  .ts .check[data-disabled] { opacity:.45; cursor:not-allowed; }
+  .ts .check span { display:none; }
+  .ts .check.on span.ck-on, .ts .check.ind span.ck-ind { display:block; }
+
+  .ts .radio { width:17px; height:17px; border-radius:50%; border:2px solid var(--input); display:inline-flex; align-items:center; justify-content:center; cursor:pointer; flex:none; }
+  .ts .radio.on { border-color:var(--primary); }
+  .ts .radio i { width:8px; height:8px; border-radius:50%; background:var(--primary); display:none; }
+  .ts .radio.on i { display:block; }
+
+  .ts .toggle-btn { font-size:12px; font-weight:600; padding:7px 12px; border-radius:7px; color:var(--navy); background:transparent; cursor:pointer; font-family:inherit; }
+  .ts .toggle-btn.on { background:var(--muted); }
+  .ts .toggle-group { display:inline-flex; background:var(--muted); border-radius:8px; padding:3px; gap:2px; }
+  .ts .toggle-group .toggle-btn { background:transparent; }
+  .ts .toggle-group .toggle-btn.on { background:var(--card); color:var(--navy); }
+
+  .ts .slider-wrap { width:190px; }
+  .ts .slider-track { height:5px; border-radius:4px; background:var(--muted); position:relative; width:100%; cursor:pointer; touch-action:none; }
+  .ts .slider-fill { position:absolute; left:0; top:0; bottom:0; width:58%; background:var(--primary); border-radius:4px; pointer-events:none; }
+  .ts .slider-knob { position:absolute; left:58%; top:50%; transform:translate(-50%,-50%); width:15px; height:15px; border-radius:50%; background:#fff; border:2px solid var(--primary); pointer-events:none; }
+
+  .ts .card { background:var(--card); border-radius:11px; padding:13px; }
+  .ts .card-title { font-size:13px; font-weight:700; color:var(--navy); margin-bottom:3px; }
+  .ts .card-desc { font-size:11px; color:var(--muted-fg); margin-bottom:10px; }
+  .ts .card-foot { margin-top:11px; padding-top:10px; border-top:1px solid var(--border); }
+  .ts .card.placeholder { border:1.5px dashed var(--border); display:flex; align-items:center; justify-content:center; min-height:96px; }
+  .ts .card.dim { opacity:.55; }
+
+  .ts .tabs { display:inline-flex; background:var(--muted); border-radius:8px; padding:3px; gap:2px; }
+  .ts .tab { font-size:11px; font-weight:600; padding:5px 11px; border-radius:6px; color:var(--muted-fg); cursor:pointer; background:transparent; font-family:inherit; }
+  .ts .tab.on { background:var(--card); color:var(--navy); }
+  .ts .tabpanel[hidden] { display:none; }
+  .ts .tabpanel { font-size:12px; color:var(--muted-fg); padding-top:10px; }
+
+  .ts table { width:100%; border-collapse:collapse; background:var(--card); border:1px solid var(--input); border-radius:10px; overflow:hidden; }
+  .ts th { text-align:left; font-size:10px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted-fg); padding:8px 10px; background:#F5F6FA; border-bottom:1px solid var(--border); }
+  .ts td { font-size:12px; padding:8px 10px; border-bottom:1px solid #EFF1F6; color:var(--foreground); vertical-align:middle; }
+  .ts tr:last-child td { border-bottom:none; }
+  .ts th[data-sort-key] { cursor:pointer; user-select:none; }
+  .ts th[data-sort-key] .arrow { margin-left:4px; opacity:.3; font-size:9px; display:inline-block; }
+  .ts th.sort-asc .arrow, .ts th.sort-desc .arrow { opacity:1; color:var(--primary-dark); }
+  .ts th.sort-desc .arrow { transform:rotate(180deg); }
+  .ts tr.row-sel td { background:rgba(66,145,109,.07); }
+  .ts .dt-toolbar { display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:9px; flex-wrap:wrap; }
+  .ts .dt-foot { display:flex; justify-content:space-between; align-items:center; margin-top:9px; font-size:11px; color:var(--muted-fg); flex-wrap:wrap; gap:8px; }
+  .ts .pg { display:inline-flex; gap:4px; }
+  .ts .pg button { width:26px; height:26px; border-radius:6px; font-size:11px; font-weight:600; color:var(--navy); background:transparent; cursor:pointer; font-family:inherit; }
+  .ts .pg button.on { background:var(--primary-dark); color:#fff; }
+  .ts .pg button:disabled { opacity:.35; cursor:not-allowed; }
+  .ts .pagination-standalone { display:flex; align-items:center; gap:10px; }
+
+  .ts .alert { border-radius:9px; padding:10px 12px; font-size:12px; border:1px solid; display:flex; gap:9px; align-items:flex-start; }
+  .ts .alert b { display:block; font-size:12px; margin-bottom:2px; }
+  .ts .a-info { background:rgba(101,182,176,.12); border-color:rgba(47,125,120,.35); color:#1F5C58; }
+  .ts .a-ok { background:rgba(66,145,109,.12); border-color:rgba(54,121,90,.35); color:#2A6047; }
+  .ts .a-warn { background:rgba(185,138,60,.13); border-color:rgba(185,138,60,.4); color:#7A5A20; }
+  .ts .a-err { background:rgba(192,80,74,.11); border-color:rgba(165,63,58,.35); color:#8E3833; }
+
+  .ts .pop-wrap { position:relative; display:inline-block; }
+  .ts .pop-panel { position:absolute; top:calc(100% + 6px); left:0; z-index:30; background:var(--card); border-radius:10px; padding:6px; min-width:200px; }
+  .ts .pop-panel.right { left:auto; right:0; }
+  .ts .pop-panel.wide { min-width:270px; padding:14px; }
+  .ts .pop-panel[hidden] { display:none; }
+  .ts .menu-item { font-size:12px; padding:7px 9px; border-radius:6px; color:var(--navy); cursor:pointer; display:flex; align-items:center; justify-content:space-between; gap:8px; }
+  .ts .menu-item:hover, .ts .menu-item.on { background:var(--muted); }
+  .ts .menu-item.danger { color:var(--destructive-dark); }
+  .ts .menu-sep { height:1px; background:var(--border); margin:4px 0; }
+  .ts .menu-item .ck { opacity:0; color:var(--primary-dark); font-weight:700; }
+  .ts .menu-item.sel .ck { opacity:1; }
+  .ts .combo-search-wrap { padding:2px 2px 6px; }
+  .ts .combo-search-wrap input { width:100%; border:1px solid var(--input); border-radius:6px; padding:6px 8px; font-size:12px; font-family:inherit; color:var(--foreground); }
+  .ts .combo-search-wrap input:focus { outline:none; border-color:var(--ring); }
+  .ts .opt-list { max-height:170px; overflow-y:auto; }
+
+  .ts .tt-wrap, .ts .hc-wrap { position:relative; display:inline-block; }
+  .ts .tt-bubble { position:absolute; bottom:calc(100% + 7px); left:50%; transform:translateX(-50%) translateY(4px); background:var(--navy); color:#EDEEF5; font-size:11px; padding:5px 9px; border-radius:6px; white-space:nowrap; opacity:0; pointer-events:none; transition:opacity .12s ease, transform .12s ease; }
+  .ts .tt-wrap:hover .tt-bubble, .ts .tt-wrap:focus-within .tt-bubble { opacity:1; transform:translateX(-50%) translateY(0); }
+  .ts .hc-panel { position:absolute; top:calc(100% + 8px); left:0; width:250px; background:var(--card); border-radius:11px; padding:13px; opacity:0; visibility:hidden; transform:translateY(4px); transition:opacity .14s ease, transform .14s ease; z-index:20; }
+  .ts .hc-wrap:hover .hc-panel, .ts .hc-wrap:focus-within .hc-panel { opacity:1; visibility:visible; transform:translateY(0); }
+
+  .ts .modal-backdrop { position:fixed; inset:0; background:rgba(37,61,96,.32); display:flex; align-items:center; justify-content:center; z-index:100; padding:20px; }
+  .ts .modal-backdrop[hidden] { display:none; }
+  .ts .modal-panel { background:var(--card); border-radius:14px; padding:18px; width:400px; max-width:100%; max-height:86vh; overflow-y:auto; }
+  .ts .modal-head { display:flex; align-items:flex-start; justify-content:space-between; gap:10px; margin-bottom:4px; }
+  .ts .modal-backdrop.side-right { justify-content:flex-end; padding:0; }
+  .ts .modal-backdrop.side-right .modal-panel { border-radius:0; height:100%; width:380px; max-height:none; }
+  .ts .modal-backdrop.side-bottom { align-items:flex-end; padding:0; }
+  .ts .modal-backdrop.side-bottom .modal-panel { border-radius:16px 16px 0 0; width:100%; max-height:75vh; }
+  .ts .modal-backdrop.cmdk { align-items:flex-start; padding-top:12vh; }
+  .ts .modal-backdrop.cmdk .modal-panel { width:480px; padding:0; }
+
+  .ts .cmd-search { width:100%; border:none; border-bottom:1px solid var(--border); padding:14px 16px; font-size:13px; font-family:inherit; color:var(--foreground); box-sizing:border-box; }
+  .ts .cmd-search:focus { outline:none; }
+  .ts .cmd-list { max-height:320px; overflow-y:auto; padding:8px; }
+  .ts .cmd-group-label { font-size:10px; text-transform:uppercase; letter-spacing:.05em; color:var(--muted-fg); padding:8px 8px 4px; }
+  .ts .cmd-item { font-size:12px; padding:8px 9px; border-radius:7px; color:var(--navy); cursor:pointer; display:flex; justify-content:space-between; }
+  .ts .cmd-item.active { background:var(--muted); }
+  .ts .cmd-item .k { color:var(--muted-fg); font-size:10px; font-family:ui-monospace,monospace; }
+
+  .ts .toast-stack { position:fixed; right:20px; bottom:20px; z-index:200; display:flex; flex-direction:column-reverse; gap:8px; width:300px; max-width:calc(100vw - 40px); }
+  .ts .toast-item { background:var(--navy); color:#EDEEF5; border-radius:9px; padding:10px 12px; font-size:12px; display:flex; gap:9px; align-items:flex-start; opacity:0; transform:translateY(6px); transition:opacity .16s ease, transform .16s ease; }
+  .ts .toast-item.show { opacity:1; transform:translateY(0); }
+  .ts .toast-item .bar { width:3px; align-self:stretch; border-radius:3px; flex:none; }
+  .ts .toast-item.t-ok .bar { background:var(--primary); }
+  .ts .toast-item.t-err .bar { background:var(--destructive); }
+  .ts .toast-item.t-warn .bar { background:var(--warning); }
+  .ts .toast-item.t-info .bar { background:var(--accent); }
+  .ts .toast-item b { display:block; font-size:12px; }
+  .ts .toast-item .desc { display:block; opacity:.75; font-size:11px; margin-top:1px; }
+  .ts .toast-item .x { margin-left:auto; opacity:.6; cursor:pointer; flex:none; font-size:13px; }
+
+  .ts .progress { height:7px; border-radius:5px; background:var(--muted); overflow:hidden; }
+  .ts .progress i { display:block; height:100%; width:62%; background:var(--accent); }
+  .ts .skel { height:11px; border-radius:5px; background:linear-gradient(90deg,#E4E7F0,#EFF1F7,#E4E7F0); }
+  .ts .spinner { width:17px; height:17px; border-radius:50%; border:2.5px solid var(--muted); border-top-color:var(--primary); animation:ts-spin .7s linear infinite; }
+  @keyframes ts-spin { to { transform:rotate(360deg); } }
+  .ts .sep { height:1px; background:var(--border); }
+  .ts .vsep { width:1px; align-self:stretch; background:var(--border); }
+
+  .ts .avatar { width:28px; height:28px; border-radius:50%; background:var(--navy-soft); color:var(--navy); font-size:10px; font-weight:700; display:inline-flex; align-items:center; justify-content:center; flex:none; overflow:hidden; }
+  .ts .avatar svg { width:100%; height:100%; }
+  .ts .avatar-group { display:flex; }
+  .ts .avatar-group .avatar { border:2px solid var(--card); margin-left:-9px; }
+  .ts .avatar-group .avatar:first-child { margin-left:0; }
+  .ts .avatar-group .avatar.more { background:var(--muted); color:var(--muted-fg); font-size:9px; }
+
+  .ts .ar-box { aspect-ratio:16/9; border-radius:11px; background:linear-gradient(135deg, var(--navy), var(--accent-dark)); display:flex; align-items:flex-end; color:#fff; font-size:11px; font-weight:600; position:relative; overflow:hidden; padding:10px; }
+  .ts .ar-play { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:44px; height:44px; border-radius:50%; background:rgba(255,255,255,.18); display:flex; align-items:center; justify-content:center; font-size:16px; }
+
+  .ts .bc { display:flex; align-items:center; gap:6px; font-size:12px; color:var(--muted-fg); flex-wrap:wrap; }
+  .ts .bc a { color:var(--primary-dark); cursor:pointer; text-decoration:none; }
+  .ts .bc .cur { color:var(--navy); font-weight:600; }
+  .ts .bc .sep { opacity:.5; }
+
+  .ts .disclosure-item { padding:2px 0; }
+  .ts .disclosure-trigger { display:flex; align-items:center; justify-content:space-between; width:100%; text-align:left; font-size:13px; font-weight:600; color:var(--navy); padding:11px 2px; cursor:pointer; background:transparent; border:none; font-family:inherit; }
+  .ts .disclosure-trigger .chev { transition:transform .15s ease; color:var(--muted-fg); font-size:10px; flex:none; }
+  .ts .disclosure-trigger.is-open .chev { transform:rotate(180deg); }
+  .ts .disclosure-panel { font-size:12px; color:var(--muted-fg); line-height:1.6; padding:0 2px 13px; }
+  .ts .disclosure-panel[hidden] { display:none; }
+
+  .ts .cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:3px; width:238px; }
+  .ts .cal-dow { font-size:9px; text-align:center; color:var(--muted-fg); text-transform:uppercase; padding-bottom:4px; }
+  .ts .cal-day { height:30px; border-radius:7px; font-size:12px; color:var(--foreground); background:transparent; cursor:pointer; font-family:inherit; }
+  .ts .cal-day:hover { background:var(--muted); }
+  .ts .cal-day.today { color:var(--primary-dark); font-weight:700; }
+  .ts .cal-day.sel { background:var(--primary-dark); color:#fff; font-weight:700; }
+  .ts .cal-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; font-size:12px; font-weight:700; color:var(--navy); }
+
+  .ts .car { width:100%; max-width:440px; }
+  .ts .car-viewport { overflow:hidden; border-radius:11px; }
+  .ts .car-track { display:flex; transition:transform .3s ease; }
+  .ts .car-slide { flex:0 0 100%; padding:28px 24px; background:var(--muted); display:flex; flex-direction:column; gap:4px; box-sizing:border-box; min-height:110px; justify-content:center; }
+  .ts .car-nav { display:flex; justify-content:space-between; align-items:center; margin-top:9px; }
+  .ts .car-dots { display:flex; gap:5px; }
+  .ts .car-dots span { width:6px; height:6px; border-radius:50%; background:var(--muted); display:inline-block; cursor:pointer; }
+  .ts .car-dots span.on { background:var(--primary-dark); width:16px; border-radius:4px; }
+
+  .ts .otp { display:flex; gap:6px; }
+  .ts .otp input { width:34px; height:38px; text-align:center; font-size:15px; font-weight:700; border:1px solid var(--input); border-radius:8px; background:var(--card); color:var(--navy); font-family:inherit; }
+  .ts .otp input:focus { outline:none; border-color:var(--ring); box-shadow:0 0 0 3px rgba(66,145,109,.18); }
+
+  .ts .rsz { display:flex; height:150px; border-radius:11px; overflow:hidden; background:var(--muted); }
+  .ts .rsz .pane { padding:12px; font-size:11px; color:var(--muted-fg); overflow:auto; line-height:1.6; }
+  .ts .rsz .pane-left { width:45%; background:var(--card); flex:none; }
+  .ts .rsz .pane-right { flex:1; }
+  .ts .rsz .divider { width:6px; cursor:col-resize; background:var(--secondary); flex:none; touch-action:none; }
+  .ts .rsz .divider:hover, .ts .rsz .divider.active { background:var(--primary); }
+
+  .ts .scroll-area { max-height:190px; overflow-y:auto; padding-right:6px; scrollbar-width:thin; scrollbar-color:var(--secondary) transparent; }
+  .ts .scroll-area::-webkit-scrollbar { width:7px; }
+  .ts .scroll-area::-webkit-scrollbar-thumb { background:var(--secondary); border-radius:6px; }
+  .ts .scroll-area::-webkit-scrollbar-track { background:transparent; }
+  .ts .scroll-row { display:flex; justify-content:space-between; align-items:center; padding:7px 4px; font-size:12px; }
+  .ts .scroll-row:not(:last-child) { border-bottom:1px solid #EFF1F6; }
+
+  .ts .menubar { display:inline-flex; background:var(--card); border-radius:9px; padding:3px; gap:2px; }
+  .ts .menubar [data-pop] { font-size:12px; font-weight:600; padding:6px 12px; border-radius:6px; color:var(--navy); cursor:pointer; background:transparent; border:none; font-family:inherit; }
+  .ts .menubar [data-pop][aria-expanded="true"], .ts .menubar [data-pop]:hover { background:var(--muted); }
+
+  .ts .navmenu { display:inline-flex; gap:4px; background:var(--card); border-radius:9px; padding:3px; }
+  .ts .navmenu [data-pop] { font-size:12px; font-weight:600; padding:8px 12px; border-radius:7px; color:var(--navy); cursor:pointer; background:transparent; border:none; font-family:inherit; }
+  .ts .navmenu [data-pop][aria-expanded="true"] { background:var(--muted); }
+  .ts .navmenu-panel { padding:12px; width:300px; }
+  .ts .nm-link { display:block; padding:8px 9px; border-radius:7px; font-size:12px; color:var(--navy); cursor:pointer; }
+  .ts .nm-link:hover { background:var(--muted); }
+  .ts .nm-desc { font-size:10px; color:var(--muted-fg); margin-top:1px; }
+
+  .ts .sidebar-demo { width:184px; background:var(--card); border-radius:11px; padding:12px; }
+  .ts .sidebar-demo .nav-item { display:block; width:100%; text-align:left; font-size:12px; font-weight:600; padding:8px 10px; border-radius:7px; color:rgba(37,61,96,.7); margin-bottom:2px; background:transparent; border:none; cursor:pointer; font-family:inherit; }
+  .ts .sidebar-demo .nav-item.on { background:var(--primary-dark); color:#fff; }
+  .ts .sidebar-demo .nav-item:not(.on):hover { background:var(--muted); color:var(--navy); }
+  .ts .sidebar-demo .soon { display:flex; justify-content:space-between; padding:8px 10px; font-size:12px; color:var(--muted-fg); opacity:.6; }
+  .ts .sidebar-demo .soon b { font-size:9px; text-transform:uppercase; font-weight:600; }
+
+  .ts .field { display:flex; flex-direction:column; gap:5px; max-width:280px; }
+  .ts .field label { font-size:12px; font-weight:600; color:var(--navy); }
+  .ts .field .hint { font-size:11px; color:var(--muted-fg); }
+  .ts .field .err-msg { font-size:11px; color:var(--destructive-dark); }
+
+  .ts .ex-stat { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
+  .ts .ex-num { font-size:20px; font-weight:700; line-height:1.1; }
+  .ts .ex-cap { font-size:9px; text-transform:uppercase; letter-spacing:.05em; color:var(--muted-fg); margin-top:2px; }
+  .ts .kv { display:flex; justify-content:space-between; font-size:11px; color:var(--muted-fg); margin-bottom:3px; }
+  .ts .kv b { color:var(--navy); }
+  .ts .delta-up { color:var(--primary-dark); font-weight:700; }
+  .ts .delta-down { color:var(--destructive-dark); font-weight:700; }
+  .ts .blocks-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+  .ts .blocks-grid > .card { min-width:0; }
+</style>
+
+<h2>Project theme: every shadcn component in your palette</h2>
+<p class="subtitle">A working design-system reference: the components actually click and show their real behavior, not just their looks. New functionality is assembled from these pieces, so there's no need to revisit the styling. Badges and other small filled elements use darkened color versions — plain teal and green don't give white text enough contrast.</p>
+
+<div class="toc">
+  <div class="toc-group"><b>Basics</b><a href="#c-tokens">Tokens</a><a href="#c-type">Typography</a><a href="#c-button">Button</a><a href="#c-badge">Badge</a></div>
+  <div class="toc-group"><b>Fields</b><a href="#c-input">Input</a><a href="#c-textarea">Textarea</a><a href="#c-checkbox">Checkbox</a><a href="#c-radio">Radio Group</a><a href="#c-switch">Switch</a><a href="#c-slider">Slider</a><a href="#c-toggle">Toggle</a><a href="#c-toggle-group">Toggle Group</a><a href="#c-select">Select</a><a href="#c-combobox">Combobox</a><a href="#c-form">Form</a></div>
+  <div class="toc-group"><b>Data</b><a href="#c-avatar">Avatar</a><a href="#c-aspect-ratio">Aspect Ratio</a><a href="#c-breadcrumb">Breadcrumb</a><a href="#c-card">Card</a><a href="#c-accordion">Accordion</a><a href="#c-collapsible">Collapsible</a><a href="#c-tabs">Tabs</a><a href="#c-table">Table</a><a href="#c-data-table">Data Table</a><a href="#c-pagination">Pagination</a></div>
+  <div class="toc-group"><b>Dates and media</b><a href="#c-calendar">Calendar</a><a href="#c-date-picker">Date Picker</a><a href="#c-carousel">Carousel</a><a href="#c-chart">Chart</a></div>
+  <div class="toc-group"><b>Overlays</b><a href="#c-alert">Alert</a><a href="#c-dialog">Dialog</a><a href="#c-alert-dialog">Alert Dialog</a><a href="#c-sheet">Sheet</a><a href="#c-drawer">Drawer</a><a href="#c-dropdown">Dropdown Menu</a><a href="#c-context">Context Menu</a><a href="#c-popover">Popover</a><a href="#c-hover-card">Hover Card</a><a href="#c-tooltip">Tooltip</a><a href="#c-command">Command</a><a href="#c-menubar">Menubar</a><a href="#c-navmenu">Navigation Menu</a></div>
+  <div class="toc-group"><b>Navigation</b><a href="#c-sidebar">Sidebar</a><a href="#c-scroll-area">Scroll Area</a><a href="#c-resizable">Resizable</a><a href="#c-otp">Input OTP</a></div>
+  <div class="toc-group"><b>Indicators</b><a href="#c-progress">Progress</a><a href="#c-sonner">Sonner</a></div>
+  <div class="toc-group"><b>Compositions</b><a href="#c-blocks">Blocks</a><a href="#c-states">States</a></div>
+</div>
+
+<div class="ts" id="ts-root">
+
+  <h3 class="sec" id="c-tokens">Theme tokens — shadcn variables</h3>
+  <div class="grid3">
+    <div class="tok"><i style="background:#EDEEF5"></i><span><code>--background</code><small>#EDEEF5</small></span></div>
+    <div class="tok"><i style="background:#FFFFFF"></i><span><code>--card / --popover</code><small>#FFFFFF</small></span></div>
+    <div class="tok"><i style="background:#2B2B2C"></i><span><code>--foreground</code><small>#2B2B2C</small></span></div>
+    <div class="tok"><i style="background:#36795A"></i><span><code>--primary</code><small>#36795A · anything filled under white text</small></span></div>
+    <div class="tok"><i style="background:#42916D"></i><span><code>--primary-bright</code><small>#42916D · decoration without text: progress, bars</small></span></div>
+    <div class="tok"><i style="background:#65B6B0"></i><span><code>--accent</code><small>#65B6B0</small></span></div>
+    <div class="tok"><i style="background:#2F7D78"></i><span><code>--accent-dark</code><small>#2F7D78 · white text</small></span></div>
+    <div class="tok"><i style="background:#253D60"></i><span><code>--navy</code><small>#253D60</small></span></div>
+    <div class="tok"><i style="background:#DFE3EC"></i><span><code>--secondary</code><small>#DFE3EC</small></span></div>
+    <div class="tok"><i style="background:#E4E7F0"></i><span><code>--muted</code><small>#E4E7F0</small></span></div>
+    <div class="tok"><i style="background:#5B6577"></i><span><code>--muted-foreground</code><small>#5B6577</small></span></div>
+    <div class="tok"><i style="background:rgba(37,61,96,.11)"></i><span><code>--border</code><small>rgba(37,61,96,.11) · internal dividers only</small></span></div>
+    <div class="tok"><i style="background:#D7DCE7"></i><span><code>--input</code><small>#D7DCE7 · form fields and tables</small></span></div>
+    <div class="tok"><i style="background:#C0504A"></i><span><code>--destructive</code><small>#C0504A</small></span></div>
+    <div class="tok"><i style="background:#B98A3C"></i><span><code>--warning</code><small>#B98A3C</small></span></div>
+    <div class="tok"><i style="background:#42916D;box-shadow:0 0 0 3px rgba(66,145,109,.3)"></i><span><code>--ring</code><small>focus</small></span></div>
+  </div>
+  <p class="note">Cards and blocks have no borders — a white surface against the <code class="t-mono" style="padding:1px 4px">--background</code> fill separates itself. A border only remains on form fields, tables, the dashed placeholder, and internal dividers (a card's footer, a menu separator).</p>
+
+  <h3 class="sec" id="c-type">Typography</h3>
+  <div class="col">
+    <div class="t-h1">Panel heading</div>
+    <div class="t-h2">Section heading</div>
+    <div class="t-body">The interface's main text — descriptions, field labels, explanations of what a button does.</div>
+    <div class="t-mut">Secondary text: hints, last-active timestamps, utility notes.</div>
+    <div><span class="t-mono">roomId=stream-01</span> — monospace for identifiers and protocol values</div>
+  </div>
+
+  <h3 class="sec" id="c-button">Buttons — button</h3>
+  <span class="lbl">Variants</span>
+  <div class="row">
+    <button class="btn btn-default">Send gift</button>
+    <button class="btn btn-secondary">Secondary</button>
+    <button class="btn btn-outline">Outline</button>
+    <button class="btn btn-ghost">Ghost</button>
+    <button class="btn btn-destructive">End round</button>
+    <button class="btn btn-link">Link</button>
+  </div>
+  <span class="lbl">Sizes and states</span>
+  <div class="row">
+    <button class="btn btn-default btn-sm">Small</button>
+    <button class="btn btn-default">Regular</button>
+    <button class="btn btn-default btn-lg">Large</button>
+    <button class="btn btn-default btn-icon">✦</button>
+    <button class="btn btn-outline is-disabled" disabled>Pause · coming soon</button>
+    <button class="btn btn-default"><span class="spinner" style="border-color:rgba(255,255,255,.35);border-top-color:#fff"></span> Sending</button>
+  </div>
+
+  <h3 class="sec" id="c-badge">Badges — badge</h3>
+  <div class="row">
+    <span class="badge b-primary">round in progress</span>
+    <span class="badge b-accent">results</span>
+    <span class="badge b-navy">connected</span>
+    <span class="badge b-destructive">disconnected</span>
+    <span class="badge b-muted">idle</span>
+    <span class="badge b-outline">draft</span>
+  </div>
+
+  <h3 class="sec" id="c-input">Fields — input, label, select</h3>
+  <div class="grid2">
+    <div class="col">
+      <div><span class="lbl">Regular</span><input class="input" type="text" value="stream-01"></div>
+      <div><span class="lbl">With an error</span><input class="input err" type="text" value="invalid token"></div>
+      <div><span class="lbl">Placeholder</span><input class="input" type="text" placeholder="Search by id…"></div>
+      <div><span class="lbl">Disabled</span><input class="input" type="text" value="stream-01" disabled style="opacity:.55"></div>
+    </div>
+    <div class="col">
+      <span class="lbl">Plain dropdown list (select)</span>
+      <select class="input" style="cursor:pointer">
+        <option>rose</option>
+        <option selected>lion</option>
+        <option>galaxy</option>
+        <option>heart</option>
+      </select>
+      <p class="note" style="margin-top:6px">The native <code class="t-mono" style="padding:1px 4px">&lt;select&gt;</code> — for short lists without search. For a custom open list with search, see the Select and Combobox sections below.</p>
+    </div>
+  </div>
+
+  <h3 class="sec" id="c-textarea">Multiline field — textarea</h3>
+  <textarea class="input" placeholder="Moderator's comment on why the viewer was banned…"></textarea>
+
+  <h3 class="sec" id="c-checkbox">Checkboxes — checkbox</h3>
+  <div class="row">
+    <span class="check" data-checkbox tabindex="0" role="checkbox" aria-checked="false"><span class="ck-on">✓</span></span><span class="t-body">Comments count</span>
+    <span class="check on" data-checkbox tabindex="0" role="checkbox" aria-checked="true"><span class="ck-on">✓</span></span><span class="t-body">Gifts count</span>
+    <span class="check ind" data-checkbox tabindex="0" role="checkbox" aria-checked="mixed"><span class="ck-ind">–</span></span><span class="t-body">Not all gift tiers are selected</span>
+    <span class="check" data-disabled aria-disabled="true"></span><span class="t-body" style="opacity:.55">Unavailable without a token</span>
+  </div>
+
+  <h3 class="sec" id="c-radio">Radio group — radio-group</h3>
+  <span class="lbl">Who gets the next gift</span>
+  <div class="row" data-radio-group>
+    <span class="radio on" data-radio-item tabindex="0" role="radio" aria-checked="true"><i></i></span><span class="t-body">Random viewer</span>
+    <span class="radio" data-radio-item tabindex="0" role="radio" aria-checked="false"><i></i></span><span class="t-body">Round-robin</span>
+    <span class="radio" data-radio-item tabindex="0" role="radio" aria-checked="false"><i></i></span><span class="t-body">Top scorer</span>
+  </div>
+
+  <h3 class="sec" id="c-switch">Switch — switch</h3>
+  <div class="row">
+    <span class="switch on" data-switch tabindex="0" role="switch" aria-checked="true"><i></i></span><span class="t-body">Generator on</span>
+    <span class="switch" data-switch tabindex="0" role="switch" aria-checked="false"><i></i></span><span class="t-body">Off</span>
+    <span class="switch" data-disabled aria-disabled="true"><i></i></span><span class="t-body" style="opacity:.55">No connection to the server</span>
+  </div>
+
+  <h3 class="sec" id="c-slider">Slider — slider</h3>
+  <span class="lbl">Stream rate — drag with the mouse</span>
+  <div class="row">
+    <div class="slider-wrap" data-slider data-value="58">
+      <div class="slider-track"><div class="slider-fill"></div><div class="slider-knob"></div></div>
+    </div>
+    <span class="t-mono" data-slider-out style="min-width:40px;text-align:center">58%</span>
+  </div>
+
+  <h3 class="sec" id="c-toggle">Toggle button — toggle</h3>
+  <div class="row">
+    <button type="button" class="toggle-btn on" data-toggle aria-pressed="true">📌 Pin stream</button>
+    <button type="button" class="toggle-btn" data-toggle aria-pressed="false">🔇 Mute in OBS</button>
+  </div>
+
+  <h3 class="sec" id="c-toggle-group">Toggle button group — toggle-group</h3>
+  <span class="lbl">Show in HUD (multiple allowed)</span>
+  <div class="toggle-group" data-toggle-group>
+    <button type="button" class="toggle-btn on" data-toggle-item aria-pressed="true">Avatars</button>
+    <button type="button" class="toggle-btn on" data-toggle-item aria-pressed="true">Nicknames</button>
+    <button type="button" class="toggle-btn" data-toggle-item aria-pressed="false">Scores</button>
+  </div>
+  <span class="lbl" style="margin-top:10px;display:block">Overview display mode (single choice)</span>
+  <div class="toggle-group" data-toggle-group data-single>
+    <button type="button" class="toggle-btn on" data-toggle-item aria-pressed="true">Grid</button>
+    <button type="button" class="toggle-btn" data-toggle-item aria-pressed="false">List</button>
+  </div>
+
+  <h3 class="sec" id="c-select">Open list — select</h3>
+  <span class="lbl">Gift tier</span>
+  <div class="pop-wrap" data-select>
+    <button type="button" class="btn btn-outline" data-pop="pop-select-1" aria-expanded="false" style="min-width:170px;justify-content:space-between">
+      <span data-select-value>rose · 1 coin</span><span>▾</span>
+    </button>
+    <div class="pop-panel" id="pop-select-1" hidden>
+      <div class="opt-list">
+        <div class="menu-item sel" data-select-item><span>rose · 1 coin</span><span class="ck">✓</span></div>
+        <div class="menu-item" data-select-item><span>lion · 29 coins</span><span class="ck">✓</span></div>
+        <div class="menu-item" data-select-item><span>galaxy · 1000 coins</span><span class="ck">✓</span></div>
+        <div class="menu-item" data-select-item><span>heart me · 5 coins</span><span class="ck">✓</span></div>
+        <div class="menu-item" data-select-item><span>tiktok universe · 34999 coins</span><span class="ck">✓</span></div>
+      </div>
+    </div>
+  </div>
+
+  <h3 class="sec" id="c-combobox">Searchable list — combobox</h3>
+  <p class="note">Not a separate registry item — assembled from command and popover. Type part of a room name.</p>
+  <div class="pop-wrap" data-select>
+    <button type="button" class="btn btn-outline" data-pop="pop-combo-1" aria-expanded="false" style="min-width:200px;justify-content:space-between">
+      <span data-select-value>stream-01</span><span>▾</span>
+    </button>
+    <div class="pop-panel" id="pop-combo-1" hidden>
+      <div class="combo-search-wrap"><input type="text" placeholder="Find a room…" data-combobox-search></div>
+      <div class="opt-list">
+        <div class="menu-item sel" data-select-item><span>stream-01</span><span class="ck">✓</span></div>
+        <div class="menu-item" data-select-item><span>stream-02</span><span class="ck">✓</span></div>
+        <div class="menu-item" data-select-item><span>stream-03-test</span><span class="ck">✓</span></div>
+        <div class="menu-item" data-select-item><span>backstage-debug</span><span class="ck">✓</span></div>
+      </div>
+    </div>
+  </div>
+
+  <h3 class="sec" id="c-form">Form field — form</h3>
+  <p class="note">Assembled from form + label + input/textarea; validation usually goes through react-hook-form and zod — only the visual states are shown here.</p>
+  <div class="grid3">
+    <div class="field">
+      <label for="f-room">Room identifier</label>
+      <input class="input" id="f-room" type="text" placeholder="stream-01">
+      <span class="hint">Latin letters, digits, and hyphens, up to 32 characters</span>
+    </div>
+    <div class="field">
+      <label for="f-token">Admin token</label>
+      <input class="input err" id="f-token" type="password" value="••••">
+      <span class="err-msg">Token doesn't match ADMIN_TOKEN on the server</span>
+    </div>
+    <div class="field">
+      <label for="f-coins">Round starting coins</label>
+      <input class="input" id="f-coins" type="number" value="2000">
+      <span class="hint">Affects the gift-tier balance</span>
+    </div>
+  </div>
+
+  <h3 class="sec" id="c-avatar">Avatar — avatar</h3>
+  <div class="row">
+    <div class="col" style="gap:4px"><span class="lbl">With an image</span><span class="avatar" style="width:40px;height:40px">
+      <svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="20" style="fill:var(--accent)"></circle><circle cx="20" cy="16" r="7" style="fill:var(--primary-fg)"></circle><path d="M6 36c2-8 8-12 14-12s12 4 14 12" style="fill:var(--primary-fg)"></path></svg>
+    </span></div>
+    <div class="col" style="gap:4px"><span class="lbl">Initials</span><span class="avatar" style="width:40px;height:40px;font-size:13px">ZF</span></div>
+    <div class="col" style="gap:4px"><span class="lbl">Overlapping group</span>
+      <div class="avatar-group">
+        <span class="avatar">ZF</span><span class="avatar">PB</span><span class="avatar">TG</span><span class="avatar more">+8</span>
+      </div>
+    </div>
+  </div>
+
+  <h3 class="sec" id="c-aspect-ratio">Block proportions — aspect-ratio</h3>
+  <div style="max-width:320px">
+    <div class="ar-box"><span class="ar-play">▶</span>Stream preview · stream-01</div>
+  </div>
+
+  <h3 class="sec" id="c-breadcrumb">Breadcrumbs — breadcrumb</h3>
+  <div class="bc">
+    <a>Admin</a><span class="sep">/</span><a>Stream overview</a><span class="sep">/</span><span class="cur">stream-01</span>
+  </div>
+
+  <h3 class="sec" id="c-card">Card — card</h3>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title">Send a gift</div>
+      <div class="card-desc">Goes to room stream-01 from a random viewer</div>
+      <div class="row"><input class="input" style="min-width:70px" type="text" value="100"><input class="input" style="min-width:90px" type="text" value="rose"></div>
+      <div class="card-foot"><button class="btn btn-default btn-sm">Send</button> <button class="btn btn-ghost btn-sm">Reset</button></div>
+    </div>
+    <div class="card placeholder">
+      <span class="t-mut">New blocks will show up here</span>
+    </div>
+  </div>
+
+  <h3 class="sec" id="c-accordion">Accordion — accordion</h3>
+  <div class="card" style="padding:4px 13px">
+    <div class="disclosure-item">
+      <button type="button" class="disclosure-trigger is-open" data-collapsible-trigger data-accordion-group="faq" aria-expanded="true" aria-controls="acc-1">How the queue on the field is scored<span class="chev">▾</span></button>
+      <div class="disclosure-panel" id="acc-1">Score = tickets × 10000 + seconds waited. A comment gives 1 ticket, a gift gives tickets and pendingCoins based on its tier.</div>
+    </div>
+    <div class="disclosure-item">
+      <button type="button" class="disclosure-trigger" data-collapsible-trigger data-accordion-group="faq" aria-expanded="false" aria-controls="acc-2">What happens when the overlay connection drops<span class="chev">▾</span></button>
+      <div class="disclosure-panel" id="acc-2" hidden>The overlay holds the last state it received and doesn't compute game logic itself. The server reconnects the socket automatically.</div>
+    </div>
+    <div class="disclosure-item">
+      <button type="button" class="disclosure-trigger" data-collapsible-trigger data-accordion-group="faq" aria-expanded="false" aria-controls="acc-3">Where the all-time player leaderboard comes from<span class="chev">▾</span></button>
+      <div class="disclosure-panel" id="acc-3" hidden>Day and month are a groupBy over a window from the round-participants table; "all-time" is read from the aggregate PlayerTotal table, with no on-the-fly recalculation.</div>
+    </div>
+    <div class="disclosure-item">
+      <button type="button" class="disclosure-trigger" data-collapsible-trigger data-accordion-group="faq" aria-expanded="false" aria-controls="acc-4">What the likes bank does<span class="chev">▾</span></button>
+      <div class="disclosure-panel" id="acc-4" hidden>Likes accumulate in the room's bank and, once a threshold is reached, trigger a global event — for example boost, which hands out pickups to everyone on the field.</div>
+    </div>
+  </div>
+
+  <h3 class="sec" id="c-collapsible">Collapsible block — collapsible</h3>
+  <button type="button" class="btn btn-outline btn-sm" data-collapsible-trigger aria-expanded="false" aria-controls="col-debug">Show raw room data ▾</button>
+  <div class="disclosure-panel" id="col-debug" hidden style="margin-top:8px">
+    <div class="t-mono" style="display:block;padding:9px 11px;white-space:pre">{"roomId":"stream-01","phase":"active","players":20,"queued":30}</div>
+  </div>
+
+  <h3 class="sec" id="c-tabs">Tabs — tabs</h3>
+  <div data-tabs>
+    <div class="tabs">
+      <button type="button" class="tab on" data-tab="overview">Overview</button>
+      <button type="button" class="tab" data-tab="core">Main</button>
+      <button type="button" class="tab" data-tab="stream">Stream</button>
+      <button type="button" class="tab" data-tab="debug">Debug</button>
+    </div>
+    <div class="tabpanel" data-tabpanel="overview">Tiles for every stream with live metrics: players, queue, time left in the round.</div>
+    <div class="tabpanel" data-tabpanel="core" hidden>Send gifts and comments on behalf of viewers in the selected room.</div>
+    <div class="tabpanel" data-tabpanel="stream" hidden>Stream generator — rate, jitter, share of comments and gifts.</div>
+    <div class="tabpanel" data-tabpanel="debug" hidden>Raw protocol messages and manual admin commands.</div>
+  </div>
+
+  <h3 class="sec" id="c-table">Table — table</h3>
+  <table>
+    <tr><th>#</th><th>Viewer</th><th>HP</th><th>Shield</th><th>Score</th><th>Status</th></tr>
+    <tr><td>1</td><td><span class="row" style="margin:0"><span class="avatar">ZF</span> zen.falcon</span></td><td>100</td><td>100</td><td><b>701</b></td><td><span class="badge b-primary">on the field</span></td></tr>
+    <tr><td>2</td><td><span class="row" style="margin:0"><span class="avatar">PB</span> pixel_bear</span></td><td>58</td><td>23</td><td><b>628</b></td><td><span class="badge b-primary">on the field</span></td></tr>
+    <tr><td>3</td><td><span class="row" style="margin:0"><span class="avatar">TG</span> tiger.tv</span></td><td>31</td><td>0</td><td><b>570</b></td><td><span class="badge b-muted">queued</span></td></tr>
+  </table>
+
+  <h3 class="sec" id="c-data-table">Data table — table + @tanstack/react-table</h3>
+  <p class="note">There's no ready-made "data-table" in the shadcn registry — it's table plus @tanstack/react-table on top of it. Below is a working example: clicking a header sorts, search filters, checkboxes select rows, pagination flips pages.</p>
+  <div class="card">
+    <div class="dt-toolbar">
+      <input class="input" id="dt-search" type="text" placeholder="Search by nickname…" style="min-width:220px">
+      <span class="t-mut" id="dt-selected-count"></span>
+    </div>
+    <table id="dt-table">
+      <thead>
+        <tr>
+          <th style="width:30px"><input type="checkbox" id="dt-select-all"></th>
+          <th data-sort-key="nick">Viewer<span class="arrow">▲</span></th>
+          <th data-sort-key="hp">HP<span class="arrow">▲</span></th>
+          <th data-sort-key="score">Score<span class="arrow">▲</span></th>
+          <th>Gifts</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="dt-body"></tbody>
+    </table>
+    <div class="dt-foot">
+      <span id="dt-page-info"></span>
+      <span class="pg" id="dt-pagination"></span>
+    </div>
+  </div>
+
+  <h3 class="sec" id="c-pagination">Pagination — pagination</h3>
+  <div class="pagination-standalone">
+    <div class="pg">
+      <button type="button" data-pg>‹</button>
+      <button type="button" class="on" data-pg>1</button>
+      <button type="button" data-pg>2</button>
+      <button type="button" data-pg>3</button>
+      <button type="button" data-pg>4</button>
+      <button type="button" data-pg>›</button>
+    </div>
+    <span class="t-mut">Page <span data-pg-out>1</span> of 4 · viewer queue</span>
+  </div>
+
+  <h3 class="sec" id="c-calendar">Calendar — calendar</h3>
+  <div class="card" style="width:fit-content">
+    <div id="cal-standalone"></div>
+    <p class="note" id="cal-standalone-out" style="margin:8px 0 0"></p>
+  </div>
+
+  <h3 class="sec" id="c-date-picker">Date picker — date-picker</h3>
+  <p class="note">Not a separate package — calendar inside a popover. Stream report date:</p>
+  <div class="pop-wrap" data-select>
+    <button type="button" class="btn btn-outline" data-pop="pop-datepicker" aria-expanded="false">
+      <span data-select-value id="dp-value">pick a date</span> 📅
+    </button>
+    <div class="pop-panel" id="pop-datepicker" hidden style="padding:12px">
+      <div id="cal-datepicker"></div>
+    </div>
+  </div>
+
+  <h3 class="sec" id="c-carousel">Carousel — carousel</h3>
+  <div class="car" data-carousel>
+    <div class="car-viewport"><div class="car-track">
+      <div class="car-slide"><b class="t-body" style="color:var(--navy)">Overview</b><span class="t-mut">Tiles for every stream with metrics and control buttons</span></div>
+      <div class="car-slide"><b class="t-body" style="color:var(--navy)">Main</b><span class="t-mut">Send gifts and comments on behalf of viewers</span></div>
+      <div class="car-slide"><b class="t-body" style="color:var(--navy)">Stream</b><span class="t-mut">Stream generator — rate, jitter, event mix</span></div>
+    </div></div>
+    <div class="car-nav">
+      <button type="button" class="btn btn-outline btn-icon btn-sm" data-car-prev>‹</button>
+      <div class="car-dots"><span class="on" data-car-dot></span><span data-car-dot></span><span data-car-dot></span></div>
+      <button type="button" class="btn btn-outline btn-icon btn-sm" data-car-next>›</button>
+    </div>
+  </div>
+
+  <h3 class="sec" id="c-chart">Charts — chart</h3>
+  <div class="grid3">
+    <div class="card">
+      <div class="card-title">Gifts by tier</div>
+      <svg viewBox="0 0 220 110" style="width:100%">
+        <rect x="10" y="60" width="24" height="40" rx="4" style="fill:var(--primary)"></rect>
+        <rect x="48" y="40" width="24" height="60" rx="4" style="fill:var(--primary)"></rect>
+        <rect x="86" y="15" width="24" height="85" rx="4" style="fill:var(--accent-dark)"></rect>
+        <rect x="124" y="55" width="24" height="45" rx="4" style="fill:var(--primary)"></rect>
+        <rect x="162" y="70" width="24" height="30" rx="4" style="fill:var(--primary)"></rect>
+        <line x1="6" y1="100.5" x2="214" y2="100.5" style="stroke:var(--border)"></line>
+      </svg>
+      <div class="row" style="justify-content:space-between;margin:2px 4px 0"><span class="t-mut" style="font-size:9px">rose</span><span class="t-mut" style="font-size:9px">lion</span><span class="t-mut" style="font-size:9px">galaxy</span><span class="t-mut" style="font-size:9px">heart</span><span class="t-mut" style="font-size:9px">tiktok</span></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Queued viewers · hourly</div>
+      <svg viewBox="0 0 220 110" style="width:100%">
+        <polyline points="10,80 46,60 82,68 118,35 154,45 190,20" style="fill:none;stroke:var(--primary-dark);stroke-width:2.5" stroke-linecap="round" stroke-linejoin="round"></polyline>
+        <circle cx="190" cy="20" r="3.5" style="fill:var(--primary-dark)"></circle>
+        <line x1="6" y1="100.5" x2="214" y2="100.5" style="stroke:var(--border)"></line>
+      </svg>
+    </div>
+    <div class="card">
+      <div class="card-title">Likes per minute</div>
+      <svg viewBox="0 0 220 110" style="width:100%">
+        <path d="M10,90 L46,55 L82,70 L118,30 L154,50 L190,25 L190,100 L10,100 Z" style="fill:var(--accent);opacity:.35"></path>
+        <polyline points="10,90 46,55 82,70 118,30 154,50 190,25" style="fill:none;stroke:var(--accent-dark);stroke-width:2.5" stroke-linecap="round" stroke-linejoin="round"></polyline>
+        <line x1="6" y1="100.5" x2="214" y2="100.5" style="stroke:var(--border)"></line>
+      </svg>
+    </div>
+  </div>
+
+  <h3 class="sec" id="c-alert">Alerts — alert</h3>
+  <div class="col">
+    <div class="alert a-ok"><span>✓</span><span><b>Round finished</b>Results show for 60 seconds, then the room resets.</span></div>
+    <div class="alert a-info"><span>i</span><span><b>Generator on</b>An artificial stream of 120 comments per minute is going into the room.</span></div>
+    <div class="alert a-warn"><span>!</span><span><b>Admin token not set</b>The server will ignore stream control commands.</span></div>
+    <div class="alert a-err"><span>×</span><span><b>No connection to the server</b>Reconnecting in 3 seconds.</span></div>
+  </div>
+
+  <h3 class="sec" id="c-dialog">Dialog — dialog</h3>
+  <button type="button" class="btn btn-destructive btn-sm" data-modal-open="dlg-confirm">End round…</button>
+  <div class="modal-backdrop" id="dlg-confirm" hidden>
+    <div class="modal-panel">
+      <div class="modal-head"><span class="card-title" style="margin:0">End the round?</span><button type="button" class="btn btn-ghost btn-icon" style="width:26px;height:26px" data-modal-close>×</button></div>
+      <div class="card-desc">Stream stream-01 will move to the results screen immediately.</div>
+      <div class="row" style="margin:0"><button class="btn btn-destructive btn-sm" data-modal-close>End</button><button class="btn btn-outline btn-sm" data-modal-close>Cancel</button></div>
+    </div>
+  </div>
+
+  <h3 class="sec" id="c-alert-dialog">Confirmation dialog — alert-dialog</h3>
+  <p class="note">For an irreversible action. By default the shadcn registry version doesn't close on a backdrop click — here, for showcase consistency, the backdrop and Escape close it too.</p>
+  <button type="button" class="btn btn-outline btn-sm" data-modal-open="dlg-alert">Reset room…</button>
+  <div class="modal-backdrop" id="dlg-alert" hidden>
+    <div class="modal-panel">
+      <div class="modal-head"><span class="card-title" style="margin:0">Reset room stream-01?</span><button type="button" class="btn btn-ghost btn-icon" style="width:26px;height:26px" data-modal-close>×</button></div>
+      <div class="card-desc">All players, the queue, and the current round will be deleted with no way to recover them. Stats in Postgres won't be affected.</div>
+      <div class="row" style="margin:0;justify-content:flex-end"><button class="btn btn-outline btn-sm" data-modal-close>Cancel</button><button class="btn btn-destructive btn-sm" data-modal-close>Reset permanently</button></div>
+    </div>
+  </div>
+
+  <h3 class="sec" id="c-sheet">Side panel — sheet</h3>
+  <button type="button" class="btn btn-outline btn-sm" data-modal-open="sheet-1">Stream settings</button>
+  <div class="modal-backdrop side-right" id="sheet-1" hidden>
+    <div class="modal-panel">
+      <div class="modal-head"><span class="card-title" style="margin:0">stream-01 settings</span><button type="button" class="btn btn-ghost btn-icon" style="width:26px;height:26px" data-modal-close>×</button></div>
+      <div class="col" style="margin-top:10px">
+        <div class="field"><label>Room name</label><input class="input" type="text" value="stream-01"></div>
+        <div class="field"><label>Round starting coins</label><input class="input" type="number" value="2000"></div>
+        <div class="row"><span class="switch on" data-switch><i></i></span><span class="t-body">Auto-start next round</span></div>
+      </div>
+      <div class="card-foot"><button class="btn btn-default btn-sm" data-modal-close>Save</button> <button class="btn btn-ghost btn-sm" data-modal-close>Cancel</button></div>
+    </div>
+  </div>
+
+  <h3 class="sec" id="c-drawer">Drawer — drawer</h3>
+  <button type="button" class="btn btn-outline btn-sm" data-modal-open="drawer-1">Quick actions</button>
+  <div class="modal-backdrop side-bottom" id="drawer-1" hidden>
+    <div class="modal-panel">
+      <div class="modal-head"><span class="card-title" style="margin:0">Quick actions · stream-01</span><button type="button" class="btn btn-ghost btn-icon" style="width:26px;height:26px" data-modal-close>×</button></div>
+      <div class="row">
+        <button class="btn btn-default btn-sm" data-modal-close>Boost</button>
+        <button class="btn btn-outline btn-sm" data-modal-close>Freeze queue</button>
+        <button class="btn btn-outline btn-sm" data-modal-close>Copy overlay link</button>
+        <button class="btn btn-destructive btn-sm" data-modal-close>End round</button>
+      </div>
+    </div>
+  </div>
+
+  <h3 class="sec" id="c-dropdown">Dropdown menu — dropdown-menu</h3>
+  <div class="pop-wrap">
+    <button type="button" class="btn btn-outline btn-icon" data-pop="pop-dropdown" aria-expanded="false">⋮</button>
+    <div class="pop-panel" id="pop-dropdown" hidden>
+      <div class="menu-item on">Open stream</div>
+      <div class="menu-item">Copy overlay link</div>
+      <div class="menu-item">Settings…</div>
+      <div class="menu-sep"></div>
+      <div class="menu-item danger">Reset room</div>
+    </div>
+  </div>
+
+  <h3 class="sec" id="c-context">Context menu — context-menu</h3>
+  <p class="note">Right-click a viewer row.</p>
+  <div class="row" style="background:var(--muted);border-radius:9px;padding:9px 12px;width:260px" data-context-target="pop-context-1">
+    <span class="avatar">ZF</span><span class="t-body">zen.falcon</span>
+  </div>
+  <div class="pop-panel" id="pop-context-1" hidden>
+    <div class="menu-item">Open profile</div>
+    <div class="menu-item">Copy nickname</div>
+    <div class="menu-sep"></div>
+    <div class="menu-item danger">Ban viewer</div>
+  </div>
+
+  <h3 class="sec" id="c-popover">Popover — popover</h3>
+  <div class="pop-wrap">
+    <button type="button" class="btn btn-outline btn-sm" data-pop="pop-popover" aria-expanded="false">Quick coin edit</button>
+    <div class="pop-panel wide" id="pop-popover" hidden>
+      <span class="lbl">Coins for room stream-01</span>
+      <div class="row"><input class="input" type="number" value="2340" style="min-width:120px"><button class="btn btn-default btn-sm">Apply</button></div>
+    </div>
+  </div>
+
+  <h3 class="sec" id="c-hover-card">Hover card — hover-card</h3>
+  <div class="hc-wrap" tabindex="0">
+    <span class="t-body" style="color:var(--primary-dark);font-weight:600;cursor:default;border-bottom:1px dashed var(--primary-dark)">@zen.falcon</span>
+    <div class="hc-panel">
+      <div class="row" style="margin-bottom:6px"><span class="avatar">ZF</span><b class="t-body">zen.falcon</b></div>
+      <div class="kv"><span>score</span><b>701</b></div>
+      <div class="kv"><span>gifts</span><b>4</b></div>
+      <div class="kv"><span>on the field since</span><b>02:14</b></div>
+    </div>
+  </div>
+
+  <h3 class="sec" id="c-tooltip">Tooltip — tooltip</h3>
+  <div class="tt-wrap" tabindex="0">
+    <button type="button" class="btn btn-outline btn-icon">⧉</button>
+    <span class="tt-bubble">Copy roomId</span>
+  </div>
+
+  <h3 class="sec" id="c-command">Command palette — command</h3>
+  <button type="button" class="btn btn-outline btn-sm" data-modal-open="cmdk">⌘K Open palette</button>
+  <div class="modal-backdrop cmdk" id="cmdk" hidden>
+    <div class="modal-panel">
+      <input type="text" class="cmd-search" placeholder="Type a command or stream id…" data-cmd-search>
+      <div class="cmd-list">
+        <div data-cmd-group>
+          <div class="cmd-group-label">Streams</div>
+          <div class="cmd-item active" data-cmd-item>stream-01<span class="k">open</span></div>
+          <div class="cmd-item" data-cmd-item>stream-02<span class="k">open</span></div>
+          <div class="cmd-item" data-cmd-item>stream-03-test<span class="k">open</span></div>
+        </div>
+        <div data-cmd-group>
+          <div class="cmd-group-label">Actions</div>
+          <div class="cmd-item" data-cmd-item>End round<span class="k">enter</span></div>
+          <div class="cmd-item" data-cmd-item>Boost<span class="k">enter</span></div>
+          <div class="cmd-item" data-cmd-item>Open debug<span class="k">enter</span></div>
+          <div class="cmd-item" data-cmd-item>Copy overlay link<span class="k">enter</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h3 class="sec" id="c-menubar">Menu bar — menubar</h3>
+  <div class="menubar">
+    <div class="pop-wrap">
+      <button type="button" data-pop="mb-1" aria-expanded="false">Stream</button>
+      <div class="pop-panel" id="mb-1" hidden>
+        <div class="menu-item">Open</div>
+        <div class="menu-item">Settings…</div>
+        <div class="menu-sep"></div>
+        <div class="menu-item danger">End round</div>
+      </div>
+    </div>
+    <div class="pop-wrap">
+      <button type="button" data-pop="mb-2" aria-expanded="false">View</button>
+      <div class="pop-panel" id="mb-2" hidden>
+        <div class="menu-item on">Grid</div>
+        <div class="menu-item">List</div>
+      </div>
+    </div>
+    <div class="pop-wrap">
+      <button type="button" data-pop="mb-3" aria-expanded="false">Help</button>
+      <div class="pop-panel" id="mb-3" hidden>
+        <div class="menu-item">Keyboard shortcuts</div>
+        <div class="menu-item">About the panel</div>
+      </div>
+    </div>
+  </div>
+
+  <h3 class="sec" id="c-navmenu">Navigation menu — navigation-menu</h3>
+  <div class="navmenu">
+    <div class="pop-wrap">
+      <button type="button" data-pop="nm-1" aria-expanded="false">Sections</button>
+      <div class="pop-panel navmenu-panel" id="nm-1" hidden>
+        <div class="nm-link">Overview<div class="nm-desc">Tiles for every stream with metrics</div></div>
+        <div class="nm-link">Main<div class="nm-desc">Gifts and comments</div></div>
+        <div class="nm-link">Stream<div class="nm-desc">Viewer stream generator</div></div>
+        <div class="nm-link">Debug<div class="nm-desc">Raw protocol messages</div></div>
+      </div>
+    </div>
+    <div class="pop-wrap">
+      <button type="button" data-pop="nm-2" aria-expanded="false">Streams</button>
+      <div class="pop-panel navmenu-panel" id="nm-2" hidden>
+        <div class="nm-link">stream-01<div class="nm-desc">Round #4 · 20 players</div></div>
+        <div class="nm-link">stream-02<div class="nm-desc">Results · 12 players</div></div>
+      </div>
+    </div>
+  </div>
+
+  <h3 class="sec" id="c-sidebar">Side navigation — sidebar</h3>
+  <div class="sidebar-demo">
+    <button type="button" class="nav-item on">Overview</button>
+    <button type="button" class="nav-item">Main</button>
+    <button type="button" class="nav-item">Stream</button>
+    <button type="button" class="nav-item">Debug</button>
+    <div class="sep" style="margin:8px 0"></div>
+    <div class="soon"><span>Moderation</span><b>coming soon</b></div>
+    <div class="soon"><span>Statistics</span><b>coming soon</b></div>
+    <div class="soon"><span>Balance</span><b>coming soon</b></div>
+  </div>
+
+  <h3 class="sec" id="c-scroll-area">Scroll area — scroll-area</h3>
+  <div class="card" style="width:280px">
+    <span class="lbl">Queue for the field</span>
+    <div class="scroll-area" id="scroll-demo"></div>
+  </div>
+
+  <h3 class="sec" id="c-resizable">Resizable panels — resizable</h3>
+  <div class="rsz" data-resizable>
+    <div class="pane pane-left">Viewer list<br>drag the divider</div>
+    <div class="divider" data-resizer></div>
+    <div class="pane pane-right">Selected viewer card: nickname, score, gift history</div>
+  </div>
+
+  <h3 class="sec" id="c-otp">One-time code — input-otp</h3>
+  <span class="lbl">Administrator confirmation code</span>
+  <div class="otp" data-otp>
+    <input type="text" inputmode="numeric" maxlength="1">
+    <input type="text" inputmode="numeric" maxlength="1">
+    <input type="text" inputmode="numeric" maxlength="1">
+    <input type="text" inputmode="numeric" maxlength="1">
+    <input type="text" inputmode="numeric" maxlength="1">
+    <input type="text" inputmode="numeric" maxlength="1">
+  </div>
+
+  <h3 class="sec" id="c-progress">Indicators — progress, skeleton, spinner, separator</h3>
+  <div class="grid2">
+    <div class="col">
+      <div><span class="lbl">Round progress</span><div class="progress"><i></i></div></div>
+      <div><span class="lbl">Loading</span><div class="row"><span class="spinner"></span><span class="t-mut">Requesting the stream list…</span></div></div>
+    </div>
+    <div class="col">
+      <div><span class="lbl">Skeleton</span><div class="col" style="gap:6px"><div class="skel" style="width:80%"></div><div class="skel" style="width:55%"></div></div></div>
+      <div><span class="lbl">Separator</span><div class="sep"></div></div>
+    </div>
+  </div>
+
+  <h3 class="sec" id="c-sonner">Stacked notifications — sonner</h3>
+  <div class="row">
+    <button type="button" class="btn btn-outline btn-sm" data-toast="ok" data-toast-title="Gift sent" data-toast-desc="rose · stream-01">Success</button>
+    <button type="button" class="btn btn-outline btn-sm" data-toast="err" data-toast-title="Failed to end the round" data-toast-desc="No connection to the server">Error</button>
+    <button type="button" class="btn btn-outline btn-sm" data-toast="warn" data-toast-title="Admin token not set" data-toast-desc="Command ignored by the server">Warning</button>
+    <button type="button" class="btn btn-outline btn-sm" data-toast="info" data-toast-title="Generator on" data-toast-desc="120 events per minute">Info</button>
+  </div>
+  <div class="toast-stack" id="toast-stack"></div>
+
+  <h3 class="sec" id="c-blocks">Blocks — composite pieces for the top zone and sections</h3>
+  <div class="blocks-grid">
+    <div class="card">
+      <span class="lbl">Overall stats</span>
+      <div class="ex-stat">
+        <div><div class="ex-num" style="color:var(--navy)">43</div><div class="ex-cap">players</div></div>
+        <div><div class="ex-num" style="color:var(--primary)">41</div><div class="ex-cap">queued</div></div>
+        <div><div class="ex-num" style="color:var(--accent-dark)">18.2k</div><div class="ex-cap">likes</div></div>
+        <div><div class="ex-num" style="color:var(--navy)">2,340</div><div class="ex-cap">coins</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <span class="lbl">Gifts this hour</span>
+      <div class="row" style="align-items:baseline;gap:10px">
+        <div class="ex-num" style="color:var(--navy);font-size:26px">128</div>
+        <span class="delta-up">▲ +12%</span>
+      </div>
+      <div class="t-mut">vs. the previous hour</div>
+    </div>
+    <div class="card">
+      <span class="lbl">Failed rounds</span>
+      <div class="row" style="align-items:baseline;gap:10px">
+        <div class="ex-num" style="color:var(--navy);font-size:26px">3</div>
+        <span class="delta-down">▼ −2</span>
+      </div>
+      <div class="t-mut">over the last 24 hours</div>
+    </div>
+    <div class="card">
+      <span class="lbl">Likes this hour</span>
+      <div class="row" style="align-items:flex-end;gap:10px">
+        <div class="ex-num" style="color:var(--navy);font-size:22px">6,480</div>
+        <svg viewBox="0 0 90 28" style="width:90px;height:28px">
+          <polyline points="2,20 16,14 30,18 44,8 58,12 72,4 88,9" style="fill:none;stroke:var(--accent-dark);stroke-width:2" stroke-linecap="round" stroke-linejoin="round"></polyline>
+        </svg>
+      </div>
+      <div class="t-mut">bank is close to the boost threshold</div>
+    </div>
+    <div class="card">
+      <span class="lbl">Top players · stream-01</span>
+      <div class="col" style="gap:8px;margin-top:2px">
+        <div class="row" style="justify-content:space-between;margin:0"><span class="row" style="margin:0"><span class="avatar">SF</span>solar.fox</span><b class="t-body">812</b></div>
+        <div class="row" style="justify-content:space-between;margin:0"><span class="row" style="margin:0"><span class="avatar">ZF</span>zen.falcon</span><b class="t-body">701</b></div>
+        <div class="row" style="justify-content:space-between;margin:0"><span class="row" style="margin:0"><span class="avatar">PB</span>pixel_bear</span><b class="t-body">628</b></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="row" style="justify-content:space-between;margin-bottom:8px"><span class="card-title" style="margin:0">stream-01</span><span class="badge b-primary">round #4</span></div>
+      <div class="kv"><span>players</span><b>20</b></div>
+      <div class="kv"><span>queue</span><b>30</b></div>
+      <div class="kv"><span>time left</span><b>00:37</b></div>
+      <div class="progress" style="margin-top:7px"><i></i></div>
+      <div class="card-foot">
+        <button class="btn btn-default btn-sm">End</button>
+        <button class="btn btn-outline btn-sm">Boost</button>
+        <button class="btn btn-outline btn-sm is-disabled" disabled>Pause · coming soon</button>
+      </div>
+    </div>
+    <div class="card placeholder"><span class="t-mut">New blocks will show up here</span></div>
+    <div class="card" style="grid-column:span 2">
+      <span class="lbl">Recent events</span>
+      <table style="margin-top:6px">
+        <tr><th>Time</th><th>Event</th><th>Room</th></tr>
+        <tr><td>21:41:02</td><td>Boost (likes bank)</td><td><span class="t-mono">stream-01</span></td></tr>
+        <tr><td>21:39:47</td><td>galaxy gift</td><td><span class="t-mono">stream-01</span></td></tr>
+        <tr><td>21:38:10</td><td>Round finished</td><td><span class="t-mono">stream-02</span></td></tr>
+      </table>
+    </div>
+  </div>
+
+  <h3 class="sec" id="c-states">States — what typical situations look like</h3>
+  <div class="grid3">
+    <div class="card">
+      <span class="lbl">Loading</span>
+      <div class="col" style="gap:7px;margin-top:4px">
+        <div class="skel" style="width:70%"></div>
+        <div class="skel" style="width:45%"></div>
+        <div class="skel" style="width:60%"></div>
+      </div>
+    </div>
+    <div class="card" style="text-align:center;padding-top:22px;padding-bottom:22px">
+      <div style="font-size:22px;margin-bottom:6px">🗂</div>
+      <div class="card-title" style="margin-bottom:2px">No streams yet</div>
+      <div class="t-mut">As soon as a viewer joins a room, it will show up here</div>
+    </div>
+    <div class="card">
+      <span class="lbl">Loading error</span>
+      <div class="alert a-err" style="margin-top:4px"><span>×</span><span><b>Failed to fetch the stream list</b>The server didn't respond within 5 seconds.</span></div>
+      <div class="card-foot"><button class="btn btn-outline btn-sm">Retry</button></div>
+    </div>
+    <div class="card">
+      <span class="lbl">No access · token not set</span>
+      <div class="alert a-warn" style="margin-top:4px"><span>!</span><span><b>Admin token not set</b>The server will ignore stream control commands.</span></div>
+      <div class="card-foot"><button class="btn btn-outline btn-sm" disabled title="Admin token not set">End round</button> <button class="btn btn-outline btn-sm" disabled title="Admin token not set">Boost</button></div>
+    </div>
+    <div class="card dim" style="grid-column:span 2">
+      <div class="row" style="justify-content:space-between;margin-bottom:8px"><span class="card-title" style="margin:0">stream-01</span><span class="badge b-destructive">disconnected</span></div>
+      <div class="kv"><span>players</span><b>20</b></div>
+      <div class="kv"><span>queue</span><b>30</b></div>
+      <div class="t-mut" style="margin-top:2px">last known state · reconnecting…</div>
+      <div class="card-foot">
+        <button class="btn btn-default btn-sm" disabled title="No connection to the server">End</button>
+        <button class="btn btn-outline btn-sm" disabled title="No connection to the server">Boost</button>
+        <span class="switch" data-disabled aria-disabled="true" style="margin-left:auto"><i></i></span>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+<script>
+(function () {
+  'use strict';
+
+  var popPanels = [];
+  var openModals = [];
+
+  function findTriggerForPop(id) {
+    return document.querySelector('[data-pop="' + id + '"]');
+  }
+
+  function openPop(panel) {
+    closeAllPops();
+    panel.hidden = false;
+    popPanels.push(panel);
+    var trigger = findTriggerForPop(panel.id);
+    if (trigger) trigger.setAttribute('aria-expanded', 'true');
+  }
+
+  function openPopAt(panel, x, y) {
+    closeAllPops();
+    panel.style.position = 'fixed';
+    panel.style.left = x + 'px';
+    panel.style.top = y + 'px';
+    panel.hidden = false;
+    popPanels.push(panel);
+  }
+
+  function closeAllPops() {
+    popPanels.forEach(function (p) {
+      p.hidden = true;
+      var trigger = findTriggerForPop(p.id);
+      if (trigger) trigger.setAttribute('aria-expanded', 'false');
+      var search = p.querySelector('[data-combobox-search]');
+      if (search) {
+        search.value = '';
+        p.querySelectorAll('[data-select-item]').forEach(function (i) { i.hidden = false; });
+      }
+    });
+    popPanels = [];
+  }
+
+  function openModal(id, trigger) {
+    var backdrop = document.getElementById(id);
+    if (!backdrop) return;
+    backdrop.hidden = false;
+    openModals.push({ backdrop: backdrop, trigger: trigger || null });
+    document.body.classList.add('modal-lock');
+    var panel = backdrop.querySelector('.modal-panel');
+    var focusable = panel.querySelector('input, button, [href], select, textarea, [tabindex]');
+    if (focusable) focusable.focus();
+  }
+
+  function closeModalEl(backdrop) {
+    var idx = -1;
+    openModals.forEach(function (m, i) { if (m.backdrop === backdrop) idx = i; });
+    if (idx === -1) return;
+    var entry = openModals[idx];
+    backdrop.hidden = true;
+    openModals.splice(idx, 1);
+    if (!openModals.length) document.body.classList.remove('modal-lock');
+    if (backdrop.id === 'cmdk') {
+      var s = backdrop.querySelector('[data-cmd-search]');
+      if (s) s.value = '';
+      backdrop.querySelectorAll('[data-cmd-item]').forEach(function (i) { i.hidden = false; });
+      backdrop.querySelectorAll('.cmd-group-label').forEach(function (g) { g.hidden = false; });
+    }
+    if (entry.trigger) entry.trigger.focus();
+  }
+
+  function closeTopModal() {
+    if (!openModals.length) return;
+    closeModalEl(openModals[openModals.length - 1].backdrop);
+  }
+
+  function setCmdActive(items, idx) {
+    items.forEach(function (i) { i.classList.remove('active'); });
+    if (items[idx]) { items[idx].classList.add('active'); items[idx].scrollIntoView({ block: 'nearest' }); }
+  }
+
+  var toastTimers = new WeakMap();
+
+  function pushToast(type, title, desc) {
+    var stack = document.getElementById('toast-stack');
+    var el = document.createElement('div');
+    el.className = 'toast-item t-' + type;
+    el.innerHTML = '<span class="bar"></span><span><b></b><span class="desc"></span></span><span class="x" data-toast-close>×</span>';
+    el.querySelector('b').textContent = title || '';
+    el.querySelector('.desc').textContent = desc || '';
+    stack.appendChild(el);
+    requestAnimationFrame(function () { el.classList.add('show'); });
+    var timer = setTimeout(function () { removeToast(el); }, 4200);
+    toastTimers.set(el, timer);
+  }
+
+  function removeToast(el) {
+    if (!el) return;
+    var timer = toastTimers.get(el);
+    if (timer) clearTimeout(timer);
+    el.classList.remove('show');
+    setTimeout(function () { if (el.parentNode) el.parentNode.removeChild(el); }, 200);
+  }
+
+  document.addEventListener('click', function (e) {
+    var popTrigger = e.target.closest('[data-pop]');
+    if (popTrigger) {
+      var panel = document.getElementById(popTrigger.getAttribute('data-pop'));
+      if (panel) { panel.hidden ? openPop(panel) : closeAllPops(); }
+      return;
+    }
+
+    var selectItem = e.target.closest('[data-select-item]');
+    if (selectItem) {
+      var wrap = selectItem.closest('[data-select]');
+      var valueEl = wrap.querySelector('[data-select-value]');
+      valueEl.textContent = selectItem.textContent.trim();
+      wrap.querySelectorAll('[data-select-item]').forEach(function (i) { i.classList.remove('sel'); });
+      selectItem.classList.add('sel');
+      closeAllPops();
+      return;
+    }
+
+    var modalOpener = e.target.closest('[data-modal-open]');
+    if (modalOpener) {
+      var mid = modalOpener.getAttribute('data-modal-open');
+      openModal(mid, modalOpener);
+      if (mid === 'cmdk') {
+        var items = Array.prototype.slice.call(document.querySelectorAll('#cmdk [data-cmd-item]'));
+        setCmdActive(items, 0);
+      }
+      return;
+    }
+
+    var modalCloser = e.target.closest('[data-modal-close]');
+    if (modalCloser) { closeTopModal(); return; }
+
+    if (e.target.classList && e.target.classList.contains('modal-backdrop')) {
+      closeModalEl(e.target);
+      return;
+    }
+
+    var toggle = e.target.closest('[data-toggle]');
+    if (toggle) {
+      var pressed = toggle.getAttribute('aria-pressed') === 'true';
+      toggle.setAttribute('aria-pressed', String(!pressed));
+      toggle.classList.toggle('on', !pressed);
+      return;
+    }
+
+    var tgItem = e.target.closest('[data-toggle-item]');
+    if (tgItem) {
+      var group = tgItem.closest('[data-toggle-group]');
+      if (group.hasAttribute('data-single')) {
+        group.querySelectorAll('[data-toggle-item]').forEach(function (i) { i.classList.remove('on'); i.setAttribute('aria-pressed', 'false'); });
+        tgItem.classList.add('on');
+        tgItem.setAttribute('aria-pressed', 'true');
+      } else {
+        var on = tgItem.classList.toggle('on');
+        tgItem.setAttribute('aria-pressed', String(on));
+      }
+      return;
+    }
+
+    var cbx = e.target.closest('[data-checkbox]');
+    if (cbx) {
+      var isOn = cbx.classList.toggle('on');
+      cbx.classList.remove('ind');
+      cbx.setAttribute('aria-checked', String(isOn));
+      return;
+    }
+
+    var sw = e.target.closest('[data-switch]');
+    if (sw && !sw.hasAttribute('data-disabled')) {
+      var swOn = sw.classList.toggle('on');
+      sw.setAttribute('aria-checked', String(swOn));
+      return;
+    }
+
+    var radio = e.target.closest('[data-radio-item]');
+    if (radio) {
+      var rgroup = radio.closest('[data-radio-group]');
+      rgroup.querySelectorAll('[data-radio-item]').forEach(function (i) { i.classList.remove('on'); i.setAttribute('aria-checked', 'false'); });
+      radio.classList.add('on');
+      radio.setAttribute('aria-checked', 'true');
+      return;
+    }
+
+    var accTrigger = e.target.closest('[data-collapsible-trigger]');
+    if (accTrigger) {
+      var panelId = accTrigger.getAttribute('aria-controls');
+      var accPanel = document.getElementById(panelId);
+      var willOpen = accPanel.hidden;
+      var accGroup = accTrigger.getAttribute('data-accordion-group');
+      if (accGroup) {
+        document.querySelectorAll('[data-accordion-group="' + accGroup + '"]').forEach(function (other) {
+          if (other !== accTrigger) {
+            other.classList.remove('is-open');
+            other.setAttribute('aria-expanded', 'false');
+            document.getElementById(other.getAttribute('aria-controls')).hidden = true;
+          }
+        });
+      }
+      accPanel.hidden = !willOpen;
+      accTrigger.classList.toggle('is-open', willOpen);
+      accTrigger.setAttribute('aria-expanded', String(willOpen));
+      return;
+    }
+
+    var toastBtn = e.target.closest('[data-toast]');
+    if (toastBtn) {
+      pushToast(toastBtn.getAttribute('data-toast'), toastBtn.getAttribute('data-toast-title'), toastBtn.getAttribute('data-toast-desc'));
+      return;
+    }
+
+    var toastClose = e.target.closest('[data-toast-close]');
+    if (toastClose) { removeToast(toastClose.closest('.toast-item')); return; }
+
+    var pgBtn = e.target.closest('[data-pg]');
+    if (pgBtn) {
+      var pgGroup = pgBtn.closest('.pagination-standalone');
+      pgGroup.querySelectorAll('[data-pg]').forEach(function (b) { b.classList.remove('on'); });
+      if (/^[0-9]+$/.test(pgBtn.textContent.trim())) {
+        pgBtn.classList.add('on');
+        var out = pgGroup.querySelector('[data-pg-out]');
+        if (out) out.textContent = pgBtn.textContent.trim();
+      }
+      return;
+    }
+
+    if (!e.target.closest('.pop-panel')) closeAllPops();
+  });
+
+  document.addEventListener('contextmenu', function (e) {
+    var zone = e.target.closest('[data-context-target]');
+    if (!zone) return;
+    e.preventDefault();
+    var panel = document.getElementById(zone.getAttribute('data-context-target'));
+    openPopAt(panel, e.clientX, e.clientY);
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') {
+      if (popPanels.length) { closeAllPops(); return; }
+      if (openModals.length) { closeTopModal(); return; }
+    }
+    if (e.key === 'Tab' && openModals.length) {
+      var top = openModals[openModals.length - 1];
+      var panel = top.backdrop.querySelector('.modal-panel');
+      var focusables = Array.prototype.slice.call(panel.querySelectorAll('button, [href], input, select, textarea, [tabindex]'))
+        .filter(function (el) { return !el.disabled && el.tabIndex !== -1 && el.offsetParent !== null; });
+      if (!focusables.length) return;
+      var first = focusables[0], last = focusables[focusables.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      return;
+    }
+    var cmdk = document.getElementById('cmdk');
+    if (!cmdk.hidden && (e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'Enter')) {
+      var items = Array.prototype.slice.call(cmdk.querySelectorAll('[data-cmd-item]')).filter(function (i) { return !i.hidden; });
+      var idx = items.findIndex(function (i) { return i.classList.contains('active'); });
+      if (e.key === 'ArrowDown') { e.preventDefault(); setCmdActive(items, Math.min(items.length - 1, idx + 1)); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); setCmdActive(items, Math.max(0, idx - 1)); }
+      else if (e.key === 'Enter') { e.preventDefault(); closeModalEl(cmdk); }
+    }
+  });
+
+  document.addEventListener('input', function (e) {
+    if (e.target.matches('[data-cmd-search]')) {
+      var q = e.target.value.trim().toLowerCase();
+      var palette = e.target.closest('.modal-panel');
+      palette.querySelectorAll('[data-cmd-item]').forEach(function (item) {
+        item.hidden = q.length > 0 && !item.textContent.toLowerCase().includes(q);
+      });
+      palette.querySelectorAll('[data-cmd-group]').forEach(function (g) {
+        var anyVisible = Array.prototype.some.call(g.querySelectorAll('[data-cmd-item]'), function (i) { return !i.hidden; });
+        g.querySelector('.cmd-group-label').hidden = !anyVisible;
+      });
+      var items = Array.prototype.slice.call(palette.querySelectorAll('[data-cmd-item]')).filter(function (i) { return !i.hidden; });
+      setCmdActive(items, 0);
+    }
+    if (e.target.matches('[data-combobox-search]')) {
+      var wrap = e.target.closest('[data-select]');
+      var cq = e.target.value.trim().toLowerCase();
+      wrap.querySelectorAll('[data-select-item]').forEach(function (item) {
+        item.hidden = cq.length > 0 && !item.textContent.toLowerCase().includes(cq);
+      });
+    }
+  });
+
+  function initTabs(root) {
+    var triggers = root.querySelectorAll('[data-tab]');
+    triggers.forEach(function (t) {
+      t.addEventListener('click', function () {
+        var key = t.getAttribute('data-tab');
+        root.querySelectorAll('[data-tab]').forEach(function (b) { b.classList.remove('on'); });
+        t.classList.add('on');
+        root.querySelectorAll('[data-tabpanel]').forEach(function (p) { p.hidden = p.getAttribute('data-tabpanel') !== key; });
+      });
+    });
+  }
+  document.querySelectorAll('[data-tabs]').forEach(initTabs);
+
+  function initSlider(root) {
+    var track = root.querySelector('.slider-track');
+    var fill = root.querySelector('.slider-fill');
+    var knob = root.querySelector('.slider-knob');
+    var out = root.parentElement.querySelector('[data-slider-out]');
+    var value = parseInt(root.getAttribute('data-value') || '50', 10);
+    function render() {
+      fill.style.width = value + '%';
+      knob.style.left = value + '%';
+      if (out) out.textContent = value + '%';
+    }
+    function setFromClientX(clientX) {
+      var rect = track.getBoundingClientRect();
+      var pct = ((clientX - rect.left) / rect.width) * 100;
+      value = Math.max(0, Math.min(100, Math.round(pct)));
+      render();
+    }
+    var dragging = false;
+    track.addEventListener('pointerdown', function (e) { dragging = true; setFromClientX(e.clientX); try { track.setPointerCapture(e.pointerId); } catch (err) {} });
+    track.addEventListener('pointermove', function (e) { if (dragging) setFromClientX(e.clientX); });
+    ['pointerup', 'pointercancel'].forEach(function (ev) { track.addEventListener(ev, function () { dragging = false; }); });
+    render();
+  }
+  document.querySelectorAll('[data-slider]').forEach(initSlider);
+
+  function initResizable(root) {
+    var left = root.querySelector('.pane-left');
+    var handle = root.querySelector('[data-resizer]');
+    var dragging = false;
+    handle.addEventListener('pointerdown', function (e) { dragging = true; handle.classList.add('active'); try { handle.setPointerCapture(e.pointerId); } catch (err) {} });
+    handle.addEventListener('pointermove', function (e) {
+      if (!dragging) return;
+      var rect = root.getBoundingClientRect();
+      var pct = ((e.clientX - rect.left) / rect.width) * 100;
+      pct = Math.max(20, Math.min(80, pct));
+      left.style.width = pct + '%';
+    });
+    ['pointerup', 'pointercancel'].forEach(function (ev) { handle.addEventListener(ev, function () { dragging = false; handle.classList.remove('active'); }); });
+  }
+  document.querySelectorAll('[data-resizable]').forEach(initResizable);
+
+  function initOtp(root) {
+    var boxes = Array.prototype.slice.call(root.querySelectorAll('input'));
+    boxes.forEach(function (box, i) {
+      box.addEventListener('input', function () {
+        this.value = this.value.replace(/[^0-9]/g, '').slice(-1);
+        if (this.value && boxes[i + 1]) boxes[i + 1].focus();
+      });
+      box.addEventListener('keydown', function (e) {
+        if (e.key === 'Backspace' && !this.value && boxes[i - 1]) boxes[i - 1].focus();
+      });
+      box.addEventListener('paste', function (e) {
+        e.preventDefault();
+        var text = (e.clipboardData || window.clipboardData).getData('text').replace(/[^0-9]/g, '');
+        for (var k = 0; k < boxes.length; k++) boxes[k].value = text[k] || '';
+        var lastFilled = Math.min(text.length, boxes.length) - 1;
+        (boxes[lastFilled] || boxes[0]).focus();
+      });
+    });
+  }
+  document.querySelectorAll('[data-otp]').forEach(initOtp);
+
+  function initCarousel(root) {
+    var track = root.querySelector('.car-track');
+    var slides = root.querySelectorAll('.car-slide');
+    var dots = root.querySelectorAll('[data-car-dot]');
+    var prevBtn = root.querySelector('[data-car-prev]');
+    var nextBtn = root.querySelector('[data-car-next]');
+    var idx = 0;
+    function go(n) {
+      idx = Math.max(0, Math.min(slides.length - 1, n));
+      track.style.transform = 'translateX(-' + (idx * 100) + '%)';
+      dots.forEach(function (d, i) { d.classList.toggle('on', i === idx); });
+      prevBtn.disabled = idx === 0;
+      nextBtn.disabled = idx === slides.length - 1;
+    }
+    prevBtn.addEventListener('click', function () { go(idx - 1); });
+    nextBtn.addEventListener('click', function () { go(idx + 1); });
+    dots.forEach(function (d, i) { d.addEventListener('click', function () { go(i); }); });
+    go(0);
+  }
+  document.querySelectorAll('[data-carousel]').forEach(initCarousel);
+
+  var RU_MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  var RU_DOW = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+  function buildCalendar(container, year, month, selectedISO, onPick) {
+    container.innerHTML = '';
+    var head = document.createElement('div');
+    head.className = 'cal-head';
+    head.textContent = RU_MONTHS[month][0].toUpperCase() + RU_MONTHS[month].slice(1) + ' ' + year;
+    container.appendChild(head);
+
+    var grid = document.createElement('div');
+    grid.className = 'cal-grid';
+    RU_DOW.forEach(function (d) {
+      var el = document.createElement('div');
+      el.className = 'cal-dow';
+      el.textContent = d;
+      grid.appendChild(el);
+    });
+    var first = new Date(year, month, 1);
+    var startOffset = (first.getDay() + 6) % 7;
+    var daysInMonth = new Date(year, month + 1, 0).getDate();
+    for (var i = 0; i < startOffset; i++) grid.appendChild(document.createElement('div'));
+    var today = new Date();
+    for (var day = 1; day <= daysInMonth; day++) {
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'cal-day';
+      btn.textContent = String(day);
+      var iso = year + '-' + String(month + 1).padStart(2, '0') + '-' + String(day).padStart(2, '0');
+      if (iso === selectedISO) btn.classList.add('sel');
+      if (year === today.getFullYear() && month === today.getMonth() && day === today.getDate()) btn.classList.add('today');
+      btn.addEventListener('click', function () { onPick(this.getAttribute('data-iso')); });
+      btn.setAttribute('data-iso', iso);
+      grid.appendChild(btn);
+    }
+    container.appendChild(grid);
+  }
+
+  var today = new Date();
+  var calSelected = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
+  var calStandaloneOut = document.getElementById('cal-standalone-out');
+
+  function renderCalStandalone() {
+    buildCalendar(document.getElementById('cal-standalone'), today.getFullYear(), today.getMonth(), calSelected, function (iso) {
+      calSelected = iso;
+      renderCalStandalone();
+    });
+    var parts = calSelected.split('-');
+    calStandaloneOut.textContent = 'Selected: ' + Number(parts[2]) + ' ' + RU_MONTHS[Number(parts[1]) - 1] + ' ' + parts[0];
+  }
+  renderCalStandalone();
+
+  var dpSelected = null;
+  function renderDatePicker() {
+    buildCalendar(document.getElementById('cal-datepicker'), today.getFullYear(), today.getMonth(), dpSelected, function (iso) {
+      dpSelected = iso;
+      var parts = iso.split('-');
+      document.getElementById('dp-value').textContent = Number(parts[2]) + ' ' + RU_MONTHS[Number(parts[1]) - 1] + ' ' + parts[0];
+      renderDatePicker();
+      closeAllPops();
+    });
+  }
+  renderDatePicker();
+
+  var scrollNicks = ['nova_wolf', 'ember_cat', 'iron_moth', 'quiet_owl', 'ruby_wren', 'ash_koi', 'comet_fish', 'maple_deer', 'violet_hawk', 'basalt_frog', 'coral_lynx', 'cedar_wren', 'amber_stag', 'onyx_hare', 'plum_otter'];
+  document.getElementById('scroll-demo').innerHTML = scrollNicks.map(function (nick, i) {
+    return '<div class="scroll-row"><span class="t-body">' + (i + 1) + '. ' + nick + '</span><span class="t-mut">' + (240 - i * 12) + ' tickets</span></div>';
+  }).join('');
+
+  var dtData = [
+    { id: 1, nick: 'zen.falcon', hp: 100, score: 701, gifts: 4, status: 'on the field' },
+    { id: 2, nick: 'pixel_bear', hp: 58, score: 628, gifts: 2, status: 'on the field' },
+    { id: 3, nick: 'solar.fox', hp: 95, score: 812, gifts: 5, status: 'on the field' },
+    { id: 4, nick: 'lucky_seven', hp: 87, score: 455, gifts: 3, status: 'queued' },
+    { id: 5, nick: 'tiger.tv', hp: 31, score: 570, gifts: 1, status: 'queued' },
+    { id: 6, nick: 'ember_cat', hp: 64, score: 388, gifts: 1, status: 'queued' },
+    { id: 7, nick: 'ruby_wren', hp: 73, score: 333, gifts: 2, status: 'queued' },
+    { id: 8, nick: 'quiet_owl', hp: 12, score: 140, gifts: 0, status: 'eliminated' },
+    { id: 9, nick: 'nova_wolf', hp: 0, score: 210, gifts: 0, status: 'eliminated' },
+    { id: 10, nick: 'iron_moth', hp: 20, score: 190, gifts: 0, status: 'eliminated' },
+    { id: 11, nick: 'ash_koi', hp: 0, score: 95, gifts: 0, status: 'eliminated' }
+  ];
+  var dtState = { sortKey: 'score', sortDir: 'desc', filter: '', selected: {}, page: 1, pageSize: 5, lastPageIds: [] };
+
+  function dtInitials(nick) {
+    var letters = nick.replace(/[^a-zA-Z]/g, '');
+    return (letters.slice(0, 2) || '??').toUpperCase();
+  }
+  function dtStatusClass(status) {
+    if (status === 'on the field') return 'b-primary';
+    if (status === 'queued') return 'b-muted';
+    return 'b-outline';
+  }
+  function renderDataTable() {
+    var q = dtState.filter.trim().toLowerCase();
+    var rows = dtData.filter(function (r) { return r.nick.toLowerCase().includes(q); });
+    rows.sort(function (a, b) {
+      var dir = dtState.sortDir === 'asc' ? 1 : -1;
+      var av = a[dtState.sortKey], bv = b[dtState.sortKey];
+      if (typeof av === 'string') return av.localeCompare(bv) * dir;
+      return (av - bv) * dir;
+    });
+    var totalPages = Math.max(1, Math.ceil(rows.length / dtState.pageSize));
+    dtState.page = Math.min(dtState.page, totalPages);
+    var pageRows = rows.slice((dtState.page - 1) * dtState.pageSize, dtState.page * dtState.pageSize);
+    dtState.lastPageIds = pageRows.map(function (r) { return r.id; });
+
+    var tbody = document.getElementById('dt-body');
+    if (pageRows.length) {
+      tbody.innerHTML = pageRows.map(function (r) {
+        var checked = dtState.selected[r.id] ? ' checked' : '';
+        return '<tr class="' + (dtState.selected[r.id] ? 'row-sel' : '') + '">' +
+          '<td><input type="checkbox" data-dt-row="' + r.id + '"' + checked + '></td>' +
+          '<td><span class="row" style="margin:0"><span class="avatar">' + dtInitials(r.nick) + '</span>' + r.nick + '</span></td>' +
+          '<td>' + r.hp + '</td>' +
+          '<td><b>' + r.score + '</b></td>' +
+          '<td>' + r.gifts + '</td>' +
+          '<td><span class="badge ' + dtStatusClass(r.status) + '">' + r.status + '</span></td>' +
+          '</tr>';
+      }).join('');
+    } else {
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--muted-fg);padding:16px">Nothing found</td></tr>';
+    }
+
+    document.querySelectorAll('#dt-table th[data-sort-key]').forEach(function (th) {
+      th.classList.remove('sort-asc', 'sort-desc');
+      if (th.getAttribute('data-sort-key') === dtState.sortKey) th.classList.add('sort-' + dtState.sortDir);
+    });
+
+    var allChecked = dtState.lastPageIds.length > 0 && dtState.lastPageIds.every(function (id) { return dtState.selected[id]; });
+    var someChecked = dtState.lastPageIds.some(function (id) { return dtState.selected[id]; });
+    var selAll = document.getElementById('dt-select-all');
+    selAll.checked = allChecked;
+    selAll.indeterminate = someChecked && !allChecked;
+
+    var selectedCount = Object.keys(dtState.selected).filter(function (id) { return dtState.selected[id]; }).length;
+    document.getElementById('dt-selected-count').textContent = selectedCount ? 'Selected: ' + selectedCount : '';
+
+    var pg = document.getElementById('dt-pagination');
+    var html = '<button type="button" data-dt-page="' + (dtState.page - 1) + '"' + (dtState.page === 1 ? ' disabled' : '') + '>‹</button>';
+    for (var p = 1; p <= totalPages; p++) {
+      html += '<button type="button" data-dt-page="' + p + '" class="' + (p === dtState.page ? 'on' : '') + '">' + p + '</button>';
+    }
+    html += '<button type="button" data-dt-page="' + (dtState.page + 1) + '"' + (dtState.page === totalPages ? ' disabled' : '') + '>›</button>';
+    pg.innerHTML = html;
+    document.getElementById('dt-page-info').textContent = 'Page ' + dtState.page + ' of ' + totalPages + ' · total ' + rows.length;
+  }
+
+  document.getElementById('dt-table').addEventListener('click', function (e) {
+    var th = e.target.closest('th[data-sort-key]');
+    if (!th) return;
+    var key = th.getAttribute('data-sort-key');
+    if (dtState.sortKey === key) dtState.sortDir = dtState.sortDir === 'asc' ? 'desc' : 'asc';
+    else { dtState.sortKey = key; dtState.sortDir = 'asc'; }
+    renderDataTable();
+  });
+  document.getElementById('dt-body').addEventListener('change', function (e) {
+    var cb = e.target.closest('[data-dt-row]');
+    if (!cb) return;
+    dtState.selected[Number(cb.getAttribute('data-dt-row'))] = cb.checked;
+    renderDataTable();
+  });
+  document.getElementById('dt-select-all').addEventListener('change', function (e) {
+    var checked = e.target.checked;
+    dtState.lastPageIds.forEach(function (id) { dtState.selected[id] = checked; });
+    renderDataTable();
+  });
+  document.getElementById('dt-pagination').addEventListener('click', function (e) {
+    var btn = e.target.closest('[data-dt-page]');
+    if (!btn || btn.disabled) return;
+    dtState.page = Number(btn.getAttribute('data-dt-page'));
+    renderDataTable();
+  });
+  document.getElementById('dt-search').addEventListener('input', function (e) {
+    dtState.filter = e.target.value;
+    dtState.page = 1;
+    renderDataTable();
+  });
+  renderDataTable();
+})();
+</script>
+</body>
+</html>
