@@ -20,8 +20,9 @@ pnpm dlx shadcn@latest add berezin-pavel/admin-kit/admin-theme
 
 Named explicitly on the command line, the theme is a `registry:theme`,
 and the CLI overwrites the project's color variables with it: it'll ask
-for confirmation if `app/globals.css` already has its own values, and
-once you agree it applies the admin-kit palette wholesale.
+for confirmation if the project's CSS file — `app/globals.css` in Next,
+`src/index.css` in Vite — already has its own values, and once you agree
+it applies the admin-kit palette wholesale.
 
 After that, any registry item installs with the same command and its name:
 
