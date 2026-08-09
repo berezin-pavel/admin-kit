@@ -16,6 +16,10 @@ Before, this was an undocumented trap. Now the constraint is spelled out directl
 
 The v0.1.0 acceptance ran on two clean Vite projects created specifically for verification — one with its own theme, one with someone else's. Since then the registry has grown to nineteen items, but it has never gone into a real consumer project that lives its own life and keeps changing — only into disposable verification projects thrown away right after checking. Questions that only show up on a real consumer — how a repeated `add -o` behaves on an item file the consumer has already edited for themselves; how the registry feels as the catalog grows to the size a real admin panel needs; whether versions of items installed at different times end up diverging from one another — remain unanswered for now.
 
-## `PageStatus` is declared twice
+## `PageStatus` is declared twice — and that stays as is
 
-`registry/page-list/page-list.tsx` and `registry/page-entity/page-entity.tsx` independently declare the same type: `PageStatus = "ready" | "loading" | "error" | "forbidden" | "offline"`. There's no naming conflict — these are different files belonging to different registry items — but separate declarations of one contract will drift the moment the set of states changes: someone fixes the list of values in one file and forgets the other. Worth deciding whether to pull the type out into a shared spot — the pages already share `state-loading` and the other states through `registryDependencies` — or explicitly accept the duplication as the price of keeping items independent of each other.
+`registry/page-list/page-list.tsx` and `registry/page-entity/page-entity.tsx` independently declare the same type: `PageStatus = "ready" | "loading" | "error" | "forbidden" | "offline"`. Instinct says to pull it out into a shared spot, but for a registry that copies files, that would be a mistake.
+
+Items must be installable one at a time. A consumer who only needs the entity card has no reason to also get the list page — and a shared type would mean either one page depending on the other, or a third registry item made up of five string literals. Duplicating five literals costs less than either of those.
+
+The risk of drift here is real, though: if the set of states grows, both files will need fixing. Hence the rule going forward — **the set of states only ever changes together in both pages** — and that's checked on review, not by types.

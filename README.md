@@ -83,9 +83,10 @@ can't do, it's not the right fit for that job.
 `widget-chart` is noticeably heavier than the rest: it pulls in
 `recharts`, adding 354 KB to the consumer's bundle (measured on a clean
 Vite project: 227 KB without the chart versus 581 KB with it,
-uncompressed). The other eighteen items don't pull in any npm packages at
-all, except `lucide-react` for icons. If a dashboard needs just one chart
-and not right away, it's worth loading it dynamically.
+uncompressed). It's the only item with a heavy dependency: eight others
+pull in `lucide-react` for icons, and the remaining ten don't pull in a
+single npm package. If a dashboard needs just one chart and not right
+away, it's worth loading it dynamically.
 
 `page-list` and `page-entity` decide for themselves what to show based on
 the `status` prop: `loading`, `error`, `forbidden`, and `offline` swap the
