@@ -57,7 +57,11 @@ export function PageListFilters({
                 }
               >
                 <SelectTrigger id={controlId} className="w-48">
-                  <SelectValue placeholder={filter.label} />
+                  <SelectValue placeholder={filter.label}>
+                    {filter.options?.find(
+                      (option) => option.value === filter.value
+                    )?.label ?? filter.value}
+                  </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
                   {filter.options?.map((option) => (

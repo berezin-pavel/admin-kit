@@ -439,6 +439,47 @@
           "target": "@components/admin/widget-progress.tsx"
         }
       ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "page-list",
+      "type": "registry:component",
+      "title": "List page",
+      "description": "A list page: a section title, optional actions, a filter bar, a table, and pagination underneath it. Everything is controlled: the page stores neither the current page number nor the filter values, it receives them as props and reports changes via onFilterChange and onPageChange. The status prop picks the body's content: loading, error, forbidden, and offline swap in the matching state, ready shows the table; the title and filters stay visible under any status, so the request can be retried with a different filter. Pagination is built from page, pageSize, and total, and isn't rendered at all if total isn't passed. A filter is either a text search or a dropdown list. Requires the admin-theme theme.",
+      "registryDependencies": [
+        "input",
+        "select",
+        "label",
+        "button",
+        "pagination",
+        "card",
+        "berezin-pavel/admin-kit/admin-theme",
+        "berezin-pavel/admin-kit/widget-table",
+        "berezin-pavel/admin-kit/state-loading",
+        "berezin-pavel/admin-kit/state-error",
+        "berezin-pavel/admin-kit/state-forbidden",
+        "berezin-pavel/admin-kit/state-offline"
+      ],
+      "dependencies": [
+        "lucide-react"
+      ],
+      "files": [
+        {
+          "path": "registry/page-list/page-list.tsx",
+          "type": "registry:component",
+          "target": "@components/admin/page-list.tsx"
+        },
+        {
+          "path": "registry/page-list/page-list-filters.tsx",
+          "type": "registry:component",
+          "target": "@components/admin/page-list-filters.tsx"
+        },
+        {
+          "path": "registry/page-list/page-list-pagination.tsx",
+          "type": "registry:component",
+          "target": "@components/admin/page-list-pagination.tsx"
+        }
+      ]
     }
   ]
 }

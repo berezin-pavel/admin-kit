@@ -13,6 +13,7 @@ import { widgetListEntry } from "./widget-list"
 import { widgetMetricEntry } from "./widget-metric"
 import { widgetPlaceholderEntry } from "./widget-placeholder"
 import { pageEntityEntry } from "./page-entity"
+import { pageListEntry } from "./page-list"
 import { pageHeaderEntry } from "./page-header"
 import { statusBadgeEntry } from "./status-badge"
 import { widgetProgressEntry } from "./widget-progress"
@@ -25,6 +26,7 @@ export const showcaseEntries: readonly ShowcaseEntry[] = [
   widgetMetricEntry,
   widgetTableEntry,
   pageEntityEntry,
+  pageListEntry,
   pageHeaderEntry,
   statusBadgeEntry,
   widgetProgressEntry,

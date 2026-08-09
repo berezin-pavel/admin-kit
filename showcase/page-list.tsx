@@ -93,7 +93,7 @@ export const pageListEntry: ShowcaseEntry = {
           rows={userRows}
           getRowKey={(row) => row.id}
           page={3}
-          pageSize={10}
+          pageSize={5}
           total={42}
         />
       ),
