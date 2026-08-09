@@ -66,12 +66,14 @@ export const widgetTableEntry: ShowcaseEntry = {
     "A table with a title for a dashboard: columns and rows come in via props, and each column pulls its own value from a row through cell. Without rows and without the empty prop it shows a default state.",
   views: [
     {
+      id: "multiple-rows",
       name: "Multiple rows",
       render: () => (
         <WidgetTable title="Recent orders" columns={columns} rows={rows} />
       ),
     },
     {
+      id: "single-row",
       name: "One row",
       render: () => (
         <WidgetTable
@@ -82,6 +84,7 @@ export const widgetTableEntry: ShowcaseEntry = {
       ),
     },
     {
+      id: "stable-row-key",
       name: "With a stable row key",
       render: () => (
         <WidgetTable
@@ -93,6 +96,7 @@ export const widgetTableEntry: ShowcaseEntry = {
       ),
     },
     {
+      id: "derived-cell",
       name: "A row with a field that isn't shown directly",
       render: () => (
         <WidgetTable
@@ -104,6 +108,7 @@ export const widgetTableEntry: ShowcaseEntry = {
       ),
     },
     {
+      id: "empty-custom",
       name: "No rows",
       render: () => (
         <WidgetTable
@@ -115,6 +120,7 @@ export const widgetTableEntry: ShowcaseEntry = {
       ),
     },
     {
+      id: "empty-default",
       name: "No rows, default state",
       render: () => (
         <WidgetTable title="Recent orders" columns={columns} rows={[]} />

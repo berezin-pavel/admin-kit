@@ -1,8 +1,9 @@
-import type { ReactNode } from "react"
+import type { ComponentType } from "react"
 
 export interface ShowcaseView {
+  id: string
   name: string
-  render: () => ReactNode
+  render: ComponentType
 }
 
 export interface ShowcaseEntry {

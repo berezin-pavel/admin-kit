@@ -20,12 +20,12 @@ export function ShowcaseGallery({
           </header>
           <div className="flex flex-col gap-8">
             {entry.views.map((view) => (
-              <figure key={view.name} className="flex flex-col gap-3">
+              <figure key={view.id} className="flex flex-col gap-3">
                 <figcaption className="text-sm text-muted-foreground">
                   {view.name}
                 </figcaption>
-                <div className="rounded-lg border border-border p-6">
-                  {view.render()}
+                <div className="max-h-[36rem] overflow-auto rounded-lg border border-border p-6">
+                  <view.render />
                 </div>
               </figure>
             ))}

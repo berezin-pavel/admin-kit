@@ -32,10 +32,12 @@ export const adminShellEntry: ShowcaseEntry = {
     "The persistent frame of the admin panel: a header, a side navigation, and an empty work area. On a wide screen it's a sidebar with labels; on a narrow one it's a strip of icons and a burger that opens a panel with labels. Nav items and the active section are set by props, and the link renderer can be swapped for your own router.",
   views: [
     {
+      id: "empty",
       name: "With an empty work area",
       render: () => <AdminShell title="Admin Panel" nav={nav} activeHref="/" />,
     },
     {
+      id: "with-content",
       name: "With content in the work area",
       render: () => (
         <AdminShell title="Admin Panel" nav={nav} activeHref="/orders">
@@ -46,6 +48,7 @@ export const adminShellEntry: ShowcaseEntry = {
       ),
     },
     {
+      id: "next-link",
       name: "With link rendering through next/link",
       render: () => (
         <AdminShell

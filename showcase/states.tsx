@@ -10,8 +10,12 @@ export const stateLoadingEntry: ShowcaseEntry = {
   description:
     "A skeleton in place of content while data is on its way. The number of rows is set by a prop.",
   views: [
-    { name: "Three rows", render: () => <StateLoading /> },
-    { name: "Six rows", render: () => <StateLoading rows={6} /> },
+    { id: "three-rows", name: "Three rows", render: () => <StateLoading /> },
+    {
+      id: "six-rows",
+      name: "Six rows",
+      render: () => <StateLoading rows={6} />,
+    },
   ],
 }
 
@@ -22,10 +26,12 @@ export const stateEmptyEntry: ShowcaseEntry = {
     "A screen for when there's no data: a title, an optional description, and an optional action.",
   views: [
     {
+      id: "title-only",
       name: "Title only",
       render: () => <StateEmpty title="No orders yet" />,
     },
     {
+      id: "with-description",
       name: "With a description",
       render: () => (
         <StateEmpty
@@ -35,6 +41,7 @@ export const stateEmptyEntry: ShowcaseEntry = {
       ),
     },
     {
+      id: "with-action",
       name: "With an action",
       render: () => (
         <StateEmpty

@@ -9,10 +9,12 @@ export const widgetMetricEntry: ShowcaseEntry = {
     "A card with a single number: a title, a value, an optional trend, and a caption. Data comes in via props, the widget doesn't fetch anything on its own.",
   views: [
     {
+      id: "no-trend",
       name: "Without a trend",
       render: () => <WidgetMetric title="Users" value="1,248" />,
     },
     {
+      id: "trend-up",
       name: "With growth",
       render: () => (
         <WidgetMetric
@@ -23,6 +25,7 @@ export const widgetMetricEntry: ShowcaseEntry = {
       ),
     },
     {
+      id: "trend-down-positive",
       name: "With a drop",
       render: () => (
         <WidgetMetric
@@ -33,6 +36,7 @@ export const widgetMetricEntry: ShowcaseEntry = {
       ),
     },
     {
+      id: "trend-down-negative",
       name: "With a decline",
       render: () => (
         <WidgetMetric
@@ -43,6 +47,7 @@ export const widgetMetricEntry: ShowcaseEntry = {
       ),
     },
     {
+      id: "with-hint",
       name: "With a caption",
       render: () => (
         <WidgetMetric
