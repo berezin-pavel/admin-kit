@@ -40,7 +40,7 @@ export function AdminShell({
   const section = nav.find((item) => item.href === activeHref)?.title ?? appName
 
   const menu = (
-    <AdminMenu appName={appName}>
+    <AdminMenu appName={appName} footer={sidebarFooter}>
       <AdminNav nav={nav} activeHref={activeHref} renderLink={renderLink} />
     </AdminMenu>
   )

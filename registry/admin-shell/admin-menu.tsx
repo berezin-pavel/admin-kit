@@ -15,10 +15,11 @@ import {
 
 export interface AdminMenuProps {
   appName: string
+  footer?: ReactNode
   children: ReactNode
 }
 
-export function AdminMenu({ appName, children }: AdminMenuProps) {
+export function AdminMenu({ appName, footer, children }: AdminMenuProps) {
   const [open, setOpen] = useState(false)
 
   return (
@@ -39,14 +40,24 @@ export function AdminMenu({ appName, children }: AdminMenuProps) {
         <SheetHeader>
           <SheetTitle>{appName}</SheetTitle>
         </SheetHeader>
-        <div
-          onClick={(event) => {
-            if (event.target instanceof Element && event.target.closest("a")) {
-              setOpen(false)
-            }
-          }}
-        >
-          {children}
+        <div className="flex min-h-0 flex-1 flex-col">
+          <div
+            onClick={(event) => {
+              if (
+                event.target instanceof Element &&
+                event.target.closest("a")
+              ) {
+                setOpen(false)
+              }
+            }}
+          >
+            {children}
+          </div>
+          {footer ? (
+            <div className="mt-auto border-t border-sidebar-border p-3">
+              {footer}
+            </div>
+          ) : null}
         </div>
       </SheetContent>
     </Sheet>

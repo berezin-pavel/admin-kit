@@ -127,6 +127,38 @@ export const adminShellEntry: ShowcaseEntry = {
       ),
     },
     {
+      id: "mobile-menu-footer",
+      name: "sidebarFooter slot in the burger panel (open on a narrow screen)",
+      render: () => (
+        <AdminShell
+          appName="My Store"
+          nav={nav}
+          activeHref="/orders"
+          header={false}
+          sidebarFooter={
+            <div className="flex items-center gap-2">
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                aria-label="User menu"
+              >
+                <UserRound className="size-4" />
+              </Button>
+              <span className="hidden text-xs text-muted-foreground md:inline">
+                Bennett A.
+              </span>
+            </div>
+          }
+        >
+          <div className="text-sm text-muted-foreground">
+            On a narrow screen the burger opens a panel with all the
+            navigation and the same sidebarFooter at the bottom — not just
+            the icon strip.
+          </div>
+        </AdminShell>
+      ),
+    },
+    {
       id: "sidebar-footer",
       name: "With a slot at the bottom of the sidebar",
       render: () => (

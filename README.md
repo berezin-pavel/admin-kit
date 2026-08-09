@@ -88,13 +88,13 @@ sidebar, the icon rail, and the `sidebarFooter` slot stay in place.
 Before, the whole page used to scroll and the navigation would drift
 upward with long content.
 
-The `sidebarFooter` prop sets a slot at the bottom of the sidebar (and at
-the bottom of the icon rail on a narrow screen) — shared by the theme
+The `sidebarFooter` prop sets a slot at the bottom of the sidebar, the
+icon rail on a narrow screen, and the burger panel — shared by the theme
 toggle (`theme-toggle`), a user menu, or a build version; it works even
-with the header turned off. It's the same slot in both views: the same
-content is drawn in a 240px sidebar and in a rail the width of a single
-button — large or multi-line content won't fit there without a separate
-layout for the narrow width.
+with the header turned off. It's the same slot in all three places: the
+same content is drawn in a 240px sidebar, in a rail the width of a single
+button, and in the expanded burger panel — large or multi-line content
+won't fit there without a separate layout for the narrow width.
 
 `admin-shell`'s header can be removed entirely with the `header={false}`
 prop — then it's the sidebar on the left, the work area right after it,
@@ -103,6 +103,24 @@ Navigation links default to plain `<a href>`, and the `renderLink` prop
 swaps their rendering for the consumer's router (`next/link`,
 react-router, and others) — the same way in the sidebar, the icon rail,
 and the burger panel.
+
+**Contract for the `sidebarFooter` and `renderLink` slots: the content is
+drawn as several independent instances at once, rather than moving
+between the icon rail, the sidebar, and the burger panel.** The icon rail
+and the wide sidebar are always mounted in the tree, and switching
+between them is pure CSS (`md:hidden` / `hidden md:flex`); the burger
+panel remounts on every open. That means two instances of the slot live
+in the DOM at the same time at any screen width, and three while the
+panel is open. A component with no state of its own — like `theme-toggle`,
+which gets its `isDark` and `onToggle` as props — renders identically in
+every instance and never notices the difference. A component with its
+own state falls apart: a user menu that stores its own open/closed state
+opens only in the instance that was clicked, while the rest stay closed;
+a counter that fetches its own data via an effect makes an independent
+request in every instance. The content of `sidebarFooter` and whatever
+`renderLink` renders must either have no state of its own or be
+controlled from outside — with state and callbacks arriving as props
+from the shell or the parent, the way `theme-toggle` does.
 
 ## Versions
 
