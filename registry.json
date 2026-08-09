@@ -139,6 +139,39 @@
           "target": "@components/admin/widget-table.tsx"
         }
       ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "state-loading",
+      "type": "registry:component",
+      "title": "Loading state",
+      "description": "A skeleton in place of content while data is on its way. The row count is set by a prop, and role=status and aria-busy are set for screen readers. Requires the admin-theme theme.",
+      "registryDependencies": [
+        "skeleton",
+        "berezin-pavel/admin-kit/admin-theme"
+      ],
+      "files": [
+        {
+          "path": "registry/state-loading/state-loading.tsx",
+          "type": "registry:component",
+          "target": "@components/admin/state-loading.tsx"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "state-empty",
+      "type": "registry:component",
+      "title": "Empty state",
+      "description": "The screen a user sees in place of content when there's no data: a title, an optional description, and an optional action button. Requires the admin-theme theme.",
+      "registryDependencies": ["berezin-pavel/admin-kit/admin-theme"],
+      "files": [
+        {
+          "path": "registry/state-empty/state-empty.tsx",
+          "type": "registry:component",
+          "target": "@components/admin/state-empty.tsx"
+        }
+      ]
     }
   ]
 }

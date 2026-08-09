@@ -1,3 +1,4 @@
+import { StateEmpty } from "@/registry/state-empty/state-empty"
 import {
   WidgetTable,
   type WidgetTableColumn,
@@ -63,11 +64,7 @@ export const widgetTableEntry: ShowcaseEntry = {
           title="Recent orders"
           columns={columns}
           rows={[]}
-          empty={
-            <p className="py-8 text-center text-sm text-muted-foreground">
-              No orders yet
-            </p>
-          }
+          empty={<StateEmpty title="No orders yet" />}
         />
       ),
     },
