@@ -1,3 +1,5 @@
+import Link from "next/link"
+
 import type { ShowcaseEntry } from "@/showcase/types"
 
 export function ShowcaseGallery({
@@ -21,8 +23,14 @@ export function ShowcaseGallery({
           <div className="flex flex-col gap-8">
             {entry.views.map((view) => (
               <figure key={view.id} className="flex flex-col gap-3">
-                <figcaption className="text-sm text-muted-foreground">
-                  {view.name}
+                <figcaption className="flex items-baseline justify-between gap-3 text-sm text-muted-foreground">
+                  <span>{view.name}</span>
+                  <Link
+                    href={`/preview/${entry.item}/${view.id}`}
+                    className="text-xs text-muted-foreground/70 underline-offset-4 hover:text-foreground hover:underline"
+                  >
+                    Open full page
+                  </Link>
                 </figcaption>
                 <div className="max-h-[36rem] overflow-auto rounded-lg border border-border p-6">
                   <view.render />
