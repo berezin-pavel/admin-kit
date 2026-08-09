@@ -8,7 +8,7 @@
       "name": "admin-theme",
       "type": "registry:theme",
       "title": "Admin theme",
-      "description": "Admin colors, fonts, and radii for both light and dark schemes. Installed first: the rest of the admin-kit items rely on these tokens.",
+      "description": "Admin colors and radii for both light and dark schemes. Installed first: the rest of the admin-kit items rely on these tokens.",
       "files": [],
       "cssVars": {
         "light": {

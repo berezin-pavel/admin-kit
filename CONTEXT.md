@@ -31,7 +31,7 @@ _Avoid_: starter theme, builder theme
 ## Parts of the admin panel
 
 **Theme**:
-A registry item that sets the colors, fonts, and radii for both the light and dark scheme at once.
+A registry item that sets the colors and radii for both the light and dark scheme at once.
 _Avoid_: palette, color scheme, styling
 
 **Shell**:
