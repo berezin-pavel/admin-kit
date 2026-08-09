@@ -112,6 +112,7 @@
       "title": "Metric widget",
       "description": "A single-number card for a dashboard: title, value, an optional trend with an arrow, and a caption. Data is passed as props. Requires the admin-theme theme.",
       "registryDependencies": ["card", "berezin-pavel/admin-kit/admin-theme"],
+      "dependencies": ["lucide-react"],
       "files": [
         {
           "path": "registry/widget-metric/widget-metric.tsx",
