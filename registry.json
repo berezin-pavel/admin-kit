@@ -85,8 +85,9 @@
       "name": "admin-shell",
       "type": "registry:block",
       "title": "Admin shell",
-      "description": "The admin's permanent frame: a header, a side navigation, and an empty work area. Placed once per project, with nav items set through props that support icons and swapping the link render for your own router. Requires the admin-theme theme.",
-      "registryDependencies": ["berezin-pavel/admin-kit/admin-theme"],
+      "description": "The admin's permanent frame: a header, a side navigation, and an empty work area. On a wide screen it's a sidebar with the section labels, on a narrow one an icon rail in its place and a burger in the header that opens a panel with the labels. Nav items are set through props and support icons and swapping the link render for your own router — in all three places. Requires the admin-theme theme.",
+      "registryDependencies": ["sheet", "berezin-pavel/admin-kit/admin-theme"],
+      "dependencies": ["lucide-react"],
       "files": [
         {
           "path": "registry/admin-shell/admin-shell.tsx",
@@ -102,6 +103,16 @@
           "path": "registry/admin-shell/admin-nav.tsx",
           "type": "registry:component",
           "target": "@components/admin/admin-nav.tsx"
+        },
+        {
+          "path": "registry/admin-shell/admin-rail.tsx",
+          "type": "registry:component",
+          "target": "@components/admin/admin-rail.tsx"
+        },
+        {
+          "path": "registry/admin-shell/admin-menu.tsx",
+          "type": "registry:component",
+          "target": "@components/admin/admin-menu.tsx"
         }
       ]
     },
