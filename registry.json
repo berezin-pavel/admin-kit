@@ -137,11 +137,12 @@
       "name": "widget-table",
       "type": "registry:component",
       "title": "Table widget",
-      "description": "A table with a title and columns for a dashboard: columns and rows are passed as props, a column is right-aligned via the align prop, and for an empty set of rows it accepts a state of its own. Requires the admin-theme theme.",
+      "description": "A table with a title and columns for a dashboard: columns and rows are passed as props, and each column pulls its value from the row via cell and is right-aligned via the align prop. With no rows and no empty prop passed it shows StateEmpty with \"No data\". Requires the admin-theme theme.",
       "registryDependencies": [
         "card",
         "table",
-        "berezin-pavel/admin-kit/admin-theme"
+        "berezin-pavel/admin-kit/admin-theme",
+        "berezin-pavel/admin-kit/state-empty"
       ],
       "files": [
         {

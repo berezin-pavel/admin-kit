@@ -10,28 +10,30 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { cn } from "@/lib/utils"
+import { StateEmpty } from "@/registry/state-empty/state-empty"
 
 export interface WidgetTableColumn<Row> {
-  key: Extract<keyof Row, string>
+  id: string
   title: string
   align?: "left" | "right"
+  cell: (row: Row) => ReactNode
 }
 
 export interface WidgetTableProps<Row> {
   title: string
   columns: readonly WidgetTableColumn<Row>[]
   rows: readonly Row[]
-  empty?: ReactNode
   getRowKey?: (row: Row, index: number) => Key
+  empty?: ReactNode
   className?: string
 }
 
-export function WidgetTable<Row extends Record<string, ReactNode>>({
+export function WidgetTable<Row>({
   title,
   columns,
   rows,
-  empty,
   getRowKey,
+  empty,
   className,
 }: WidgetTableProps<Row>) {
   return (
@@ -42,15 +44,15 @@ export function WidgetTable<Row extends Record<string, ReactNode>>({
         </CardTitle>
       </CardHeader>
       <CardContent>
-        {rows.length === 0 && empty ? (
-          empty
+        {rows.length === 0 ? (
+          (empty ?? <StateEmpty title="No data" />)
         ) : (
           <Table>
             <TableHeader>
               <TableRow>
                 {columns.map((column) => (
                   <TableHead
-                    key={column.key}
+                    key={column.id}
                     className={cn(column.align === "right" && "text-right")}
                   >
                     {column.title}
@@ -63,12 +65,12 @@ export function WidgetTable<Row extends Record<string, ReactNode>>({
                 <TableRow key={getRowKey?.(row, index) ?? index}>
                   {columns.map((column) => (
                     <TableCell
-                      key={column.key}
+                      key={column.id}
                       className={cn(
                         column.align === "right" && "text-right tabular-nums"
                       )}
                     >
-                      {row[column.key]}
+                      {column.cell(row)}
                     </TableCell>
                   ))}
                 </TableRow>

@@ -6,16 +6,21 @@ import {
 
 import type { ShowcaseEntry } from "./types"
 
-interface OrderRow extends Record<string, React.ReactNode> {
+interface OrderRow {
   number: string
   customer: string
   total: string
 }
 
 const columns: readonly WidgetTableColumn<OrderRow>[] = [
-  { key: "number", title: "Number" },
-  { key: "customer", title: "Customer" },
-  { key: "total", title: "Amount", align: "right" },
+  { id: "number", title: "Number", cell: (row) => row.number },
+  { id: "customer", title: "Customer", cell: (row) => row.customer },
+  {
+    id: "total",
+    title: "Amount",
+    align: "right",
+    cell: (row) => row.total,
+  },
 ]
 
 const rows: readonly OrderRow[] = [
@@ -24,11 +29,41 @@ const rows: readonly OrderRow[] = [
   { number: "1041", customer: "Sanders M.", total: "$12,400" },
 ]
 
+interface OrderWithDateRow {
+  number: string
+  customer: string
+  createdAt: Date
+}
+
+const columnsWithDate: readonly WidgetTableColumn<OrderWithDateRow>[] = [
+  { id: "number", title: "Number", cell: (row) => row.number },
+  { id: "customer", title: "Customer", cell: (row) => row.customer },
+  {
+    id: "createdAt",
+    title: "Date",
+    align: "right",
+    cell: (row) => row.createdAt.toLocaleDateString("en-US"),
+  },
+]
+
+const rowsWithDate: readonly OrderWithDateRow[] = [
+  {
+    number: "1043",
+    customer: "Bennett A.",
+    createdAt: new Date("2026-08-09"),
+  },
+  {
+    number: "1042",
+    customer: "Peters S.",
+    createdAt: new Date("2026-08-08"),
+  },
+]
+
 export const widgetTableEntry: ShowcaseEntry = {
   item: "widget-table",
   title: "Table widget",
   description:
-    "A table with a title for a dashboard: columns and rows come in via props, and for an empty set of rows it renders its own state.",
+    "A table with a title for a dashboard: columns and rows come in via props, and each column pulls its own value from a row through cell. Without rows and without the empty prop it shows a default state.",
   views: [
     {
       name: "Multiple rows",
@@ -58,6 +93,17 @@ export const widgetTableEntry: ShowcaseEntry = {
       ),
     },
     {
+      name: "A row with a field that isn't shown directly",
+      render: () => (
+        <WidgetTable
+          title="Recent orders"
+          columns={columnsWithDate}
+          rows={rowsWithDate}
+          getRowKey={(row) => row.number}
+        />
+      ),
+    },
+    {
       name: "No rows",
       render: () => (
         <WidgetTable
@@ -66,6 +112,12 @@ export const widgetTableEntry: ShowcaseEntry = {
           rows={[]}
           empty={<StateEmpty title="No orders yet" />}
         />
+      ),
+    },
+    {
+      name: "No rows, default state",
+      render: () => (
+        <WidgetTable title="Recent orders" columns={columns} rows={[]} />
       ),
     },
   ],
