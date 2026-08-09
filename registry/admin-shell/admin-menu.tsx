@@ -14,11 +14,11 @@ import {
 } from "@/components/ui/sheet"
 
 export interface AdminMenuProps {
-  title: string
+  appName: string
   children: ReactNode
 }
 
-export function AdminMenu({ title, children }: AdminMenuProps) {
+export function AdminMenu({ appName, children }: AdminMenuProps) {
   const [open, setOpen] = useState(false)
 
   return (
@@ -37,7 +37,7 @@ export function AdminMenu({ title, children }: AdminMenuProps) {
       </SheetTrigger>
       <SheetContent side="left">
         <SheetHeader>
-          <SheetTitle>{title}</SheetTitle>
+          <SheetTitle>{appName}</SheetTitle>
         </SheetHeader>
         <div
           onClick={(event) => {
