@@ -120,6 +120,25 @@
           "target": "@components/admin/widget-metric.tsx"
         }
       ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "widget-table",
+      "type": "registry:component",
+      "title": "Table widget",
+      "description": "A table with a title and columns for a dashboard: columns and rows are passed as props, numeric columns are right-aligned, and for an empty set of rows it accepts a state of its own. Requires the admin-theme theme.",
+      "registryDependencies": [
+        "card",
+        "table",
+        "berezin-pavel/admin-kit/admin-theme"
+      ],
+      "files": [
+        {
+          "path": "registry/widget-table/widget-table.tsx",
+          "type": "registry:component",
+          "target": "@components/admin/widget-table.tsx"
+        }
+      ]
     }
   ]
 }
