@@ -69,7 +69,7 @@ export function AdminShell({
       />
       <aside
         className={cn(
-          "w-60 shrink-0 flex-col",
+          "w-60 shrink-0 flex-col overflow-hidden",
           isCard
             ? "rounded-xl bg-card ring-1 ring-foreground/10"
             : "border-r border-sidebar-border bg-sidebar",
