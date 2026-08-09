@@ -104,6 +104,21 @@
           "target": "@components/admin/admin-nav.tsx"
         }
       ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "widget-metric",
+      "type": "registry:component",
+      "title": "Metric widget",
+      "description": "A single-number card for a dashboard: title, value, an optional trend with an arrow, and a caption. Data is passed as props. Requires the admin-theme theme.",
+      "registryDependencies": ["card", "berezin-pavel/admin-kit/admin-theme"],
+      "files": [
+        {
+          "path": "registry/widget-metric/widget-metric.tsx",
+          "type": "registry:component",
+          "target": "@components/admin/widget-metric.tsx"
+        }
+      ]
     }
   ]
 }
