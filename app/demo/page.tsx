@@ -1,3 +1,4 @@
+import { DemoThemeToggle } from "@/components/demo-theme-toggle"
 import { AdminShell } from "@/registry/admin-shell/admin-shell"
 import { WidgetChart } from "@/registry/widget-chart/widget-chart"
 import { WidgetList } from "@/registry/widget-list/widget-list"
@@ -20,6 +21,7 @@ export default function DemoPage() {
       nav={demoNav}
       activeHref="/"
       header={false}
+      sidebarFooter={<DemoThemeToggle />}
     >
       <div className="flex flex-col gap-4">
         <div className="grid gap-4 sm:grid-cols-3">

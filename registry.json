@@ -85,7 +85,7 @@
       "name": "admin-shell",
       "type": "registry:block",
       "title": "Admin shell",
-      "description": "The admin's permanent frame: an optional header, a side navigation, and a work area. On a wide screen it's a sidebar with the app name and the sections, on a narrow one an icon rail and a burger that opens a panel with the labels. The header prop (true by default) turns the header off entirely: the sidebar and the work area remain, and on a narrow screen without a header the burger moves to the top of the icon rail. Nav items are set through props and support icons and swapping the link render for your own router — in all three places. Requires the admin-theme theme.",
+      "description": "The admin's permanent frame: an optional header, a side navigation, and a work area. On a wide screen it's a sidebar with the app name and the sections, on a narrow one an icon rail and a burger that opens a panel with the labels. The header prop (true by default) turns the header off entirely: the sidebar and the work area remain, and on a narrow screen without a header the burger moves to the top of the icon rail. The sidebarFooter prop sets a slot at the bottom of the sidebar (and at the bottom of the icon rail on a narrow screen) — for a theme toggle, a user menu, or a build version; it works with the header off too. Nav items are set through props and support icons and swapping the link render for your own router — in all three places. Requires the admin-theme theme.",
       "registryDependencies": ["sheet", "berezin-pavel/admin-kit/admin-theme"],
       "dependencies": ["lucide-react"],
       "files": [
@@ -113,6 +113,22 @@
           "path": "registry/admin-shell/admin-menu.tsx",
           "type": "registry:component",
           "target": "@components/admin/admin-menu.tsx"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "theme-toggle",
+      "type": "registry:component",
+      "title": "Theme toggle",
+      "description": "A theme-switch button with no knowledge of how the theme is stored: the isDark state and the onToggle handler arrive as props, and there's neither next-themes nor a context of its own inside. The icon shows the state a click will switch to, and the screen-reader label changes along with it. Fits both the shell's sidebarFooter slot and a standalone spot on a page.",
+      "registryDependencies": ["button"],
+      "dependencies": ["lucide-react"],
+      "files": [
+        {
+          "path": "registry/theme-toggle/theme-toggle.tsx",
+          "type": "registry:component",
+          "target": "@components/admin/theme-toggle.tsx"
         }
       ]
     },

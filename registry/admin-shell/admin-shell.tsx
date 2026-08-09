@@ -18,6 +18,7 @@ type AdminShellBaseProps = {
   nav: readonly AdminNavItem[]
   activeHref: string
   renderLink?: AdminNavLinkRenderer
+  sidebarFooter?: ReactNode
   children?: ReactNode
   className?: string
 }
@@ -30,6 +31,7 @@ export function AdminShell({
   nav,
   activeHref,
   renderLink,
+  sidebarFooter,
   header = true,
   actions,
   children,
@@ -52,12 +54,18 @@ export function AdminShell({
         activeHref={activeHref}
         renderLink={renderLink}
         menu={header ? undefined : menu}
+        footer={sidebarFooter}
       />
-      <aside className="hidden w-60 shrink-0 border-r border-sidebar-border bg-sidebar md:block">
+      <aside className="hidden w-60 shrink-0 flex-col border-r border-sidebar-border bg-sidebar md:flex">
         <div className="flex h-14 items-center px-6 text-sm font-semibold">
           {appName}
         </div>
         <AdminNav nav={nav} activeHref={activeHref} renderLink={renderLink} />
+        {sidebarFooter ? (
+          <div className="mt-auto border-t border-sidebar-border p-3">
+            {sidebarFooter}
+          </div>
+        ) : null}
       </aside>
       <div className="flex min-w-0 flex-1 flex-col">
         {header ? (

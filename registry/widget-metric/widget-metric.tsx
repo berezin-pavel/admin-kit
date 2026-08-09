@@ -37,12 +37,14 @@ export function WidgetMetric({
         </CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-1">
-        <div className="flex items-baseline gap-2">
-          <span className="text-3xl font-semibold tabular-nums">{value}</span>
+        <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+          <span className="text-3xl font-semibold whitespace-nowrap tabular-nums">
+            {value}
+          </span>
           {trend ? (
             <span
               className={cn(
-                "flex items-center gap-1 text-sm",
+                "flex items-center gap-1 text-sm whitespace-nowrap",
                 tone === "negative" ? "text-destructive" : "text-primary"
               )}
             >

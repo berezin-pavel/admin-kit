@@ -9,6 +9,7 @@ export interface AdminRailProps {
   activeHref: string
   renderLink?: AdminNavLinkRenderer
   menu?: ReactNode
+  footer?: ReactNode
   className?: string
 }
 
@@ -27,6 +28,7 @@ export function AdminRail({
   activeHref,
   renderLink,
   menu,
+  footer,
   className,
 }: AdminRailProps) {
   const renderItem = renderLink ?? defaultRenderLink
@@ -72,6 +74,9 @@ export function AdminRail({
           )
         })}
       </nav>
+      {footer ? (
+        <div className="mt-auto flex flex-col items-center gap-1">{footer}</div>
+      ) : null}
     </div>
   )
 }

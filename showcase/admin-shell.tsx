@@ -1,4 +1,4 @@
-import { LayoutDashboard, ShoppingCart } from "lucide-react"
+import { LayoutDashboard, ShoppingCart, UserRound } from "lucide-react"
 import Link from "next/link"
 
 import { Button } from "@/components/ui/button"
@@ -53,7 +53,7 @@ export const adminShellEntry: ShowcaseEntry = {
   item: "admin-shell",
   title: "Admin shell",
   description:
-    "The persistent frame of the admin panel: an optional header, a side navigation, and a work area. On a wide screen it's a sidebar with the app name; on a narrow one it's a strip of icons and a burger that opens a panel with labels. The header prop can remove the header entirely: on a narrow screen without a header, the burger moves to the top of the icon strip. Nav items and the active section are set by props, and the link renderer can be swapped for your own router.",
+    "The persistent frame of the admin panel: an optional header, a side navigation, and a work area. On a wide screen it's a sidebar with the app name; on a narrow one it's a strip of icons and a burger that opens a panel with labels. The header prop can remove the header entirely: on a narrow screen without a header, the burger moves to the top of the icon strip. The sidebarFooter prop is a slot at the bottom of the sidebar and the icon strip for a theme toggle, sidebar toggle, user menu, or build version. Nav items and the active section are set by props, and the link renderer can be swapped for your own router.",
   views: [
     {
       id: "empty",
@@ -116,13 +116,38 @@ export const adminShellEntry: ShowcaseEntry = {
     },
     {
       id: "next-link",
-      name: "With link rendering through next/link",
+      name: "With router-based navigation",
       render: () => (
         <AdminShell
           appName="My Store"
           nav={nav}
           activeHref="/orders"
           renderLink={renderNextLink}
+        />
+      ),
+    },
+    {
+      id: "sidebar-footer",
+      name: "With a slot at the bottom of the sidebar",
+      render: () => (
+        <AdminShell
+          appName="My Store"
+          nav={nav}
+          activeHref="/orders"
+          sidebarFooter={
+            <div className="flex items-center gap-2">
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                aria-label="User menu"
+              >
+                <UserRound className="size-4" />
+              </Button>
+              <span className="hidden text-xs text-muted-foreground md:inline">
+                v0.3.0
+              </span>
+            </div>
+          }
         />
       ),
     },
