@@ -1,19 +1,21 @@
-import { Button } from "@/components/ui/button"
+import { ShowcaseGallery } from "@/components/showcase-gallery"
+import { ThemeToggle } from "@/components/theme-toggle"
+import { showcaseEntries } from "@/showcase/entries"
 
 export default function Page() {
   return (
-    <div className="flex min-h-svh p-6">
-      <div className="flex max-w-md min-w-0 flex-col gap-4 text-sm leading-loose">
-        <div>
-          <h1 className="font-medium">Project ready!</h1>
-          <p>You may now add components and start building.</p>
-          <p>We&apos;ve already added the button component for you.</p>
-          <Button className="mt-2">Button</Button>
+    <main className="mx-auto flex max-w-5xl flex-col gap-12 px-6 py-12">
+      <header className="flex items-start justify-between gap-6">
+        <div className="flex flex-col gap-2">
+          <h1 className="text-3xl font-semibold">admin-kit</h1>
+          <p className="text-muted-foreground">
+            Admin panel parts you install into your project with the shadcn
+            CLI and update whenever you decide.
+          </p>
         </div>
-        <div className="font-mono text-xs text-muted-foreground">
-          (Press <kbd>d</kbd> to toggle dark mode)
-        </div>
-      </div>
-    </div>
+        <ThemeToggle />
+      </header>
+      <ShowcaseGallery entries={showcaseEntries} />
+    </main>
   )
 }
