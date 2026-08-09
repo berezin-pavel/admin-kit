@@ -154,6 +154,27 @@
     },
     {
       "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "widget-chart",
+      "type": "registry:component",
+      "title": "Chart widget",
+      "description": "A chart card for a dashboard: a single data series, with points passed as props as label/value pairs. The kind prop switches the rendering between a line (default) and bars, and the series color comes from the chart-1 token. Multiple series aren't supported — a deliberate limitation of the first version; comparing several series needs a legend, a palette of its own, and a decision about overlaps. With no points and no empty prop passed it shows StateEmpty with \"No data\". Requires the admin-theme theme.",
+      "registryDependencies": [
+        "chart",
+        "card",
+        "berezin-pavel/admin-kit/admin-theme",
+        "berezin-pavel/admin-kit/state-empty"
+      ],
+      "dependencies": ["recharts"],
+      "files": [
+        {
+          "path": "registry/widget-chart/widget-chart.tsx",
+          "type": "registry:component",
+          "target": "@components/admin/widget-chart.tsx"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
       "name": "state-loading",
       "type": "registry:component",
       "title": "Loading state",
