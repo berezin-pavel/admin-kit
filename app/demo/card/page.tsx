@@ -1,8 +1,4 @@
-import Link from "next/link"
-
 import { DemoShell } from "@/components/demo-shell"
-import { buttonVariants } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
 import { WidgetChart } from "@/registry/widget-chart/widget-chart"
 import { WidgetList } from "@/registry/widget-list/widget-list"
 import { WidgetMetric } from "@/registry/widget-metric/widget-metric"
@@ -22,14 +18,6 @@ export default function DemoCardPage() {
   return (
     <DemoShell sidebarVariant="card">
       <div className="flex flex-col gap-4">
-        <div className="flex justify-end">
-          <Link
-            href="/demo"
-            className={cn(buttonVariants({ variant: "outline", size: "sm" }))}
-          >
-            View the flush sidebar variant
-          </Link>
-        </div>
         <div className="grid gap-4 sm:grid-cols-3">
           <WidgetMetric
             title="Orders"
