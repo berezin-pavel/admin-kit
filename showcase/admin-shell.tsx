@@ -1,6 +1,7 @@
 import { LayoutDashboard, ShoppingCart } from "lucide-react"
 import Link from "next/link"
 
+import { Button } from "@/components/ui/button"
 import {
   AdminShell,
   type AdminNavItem,
@@ -70,6 +71,18 @@ export const adminShellEntry: ShowcaseEntry = {
             Widgets go here.
           </div>
         </AdminShell>
+      ),
+    },
+    {
+      id: "with-actions",
+      name: "With actions in the header",
+      render: () => (
+        <AdminShell
+          appName="My Store"
+          nav={nav}
+          activeHref="/orders"
+          actions={<Button size="sm">Create order</Button>}
+        />
       ),
     },
     {

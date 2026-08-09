@@ -13,16 +13,17 @@ import { AdminRail } from "./admin-rail"
 
 export type { AdminNavItem, AdminNavLinkRenderer }
 
-export interface AdminShellProps {
+type AdminShellBaseProps = {
   appName: string
   nav: readonly AdminNavItem[]
   activeHref: string
   renderLink?: AdminNavLinkRenderer
-  header?: boolean
-  actions?: ReactNode
   children?: ReactNode
   className?: string
 }
+
+export type AdminShellProps = AdminShellBaseProps &
+  ({ header?: true; actions?: ReactNode } | { header: false; actions?: never })
 
 export function AdminShell({
   appName,
