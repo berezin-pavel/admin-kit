@@ -8,7 +8,7 @@
       "name": "admin-theme",
       "type": "registry:theme",
       "title": "Admin theme",
-      "description": "Admin colors and radii for both light and dark schemes. Installed first: the rest of the admin-kit items rely on these tokens.",
+      "description": "Admin colors and radii, including a pair of success and warning tokens on top of the standard shadcn set, for both light and dark schemes. Installed first: the rest of the admin-kit items rely on these tokens.",
       "files": [],
       "cssVars": {
         "light": {
@@ -43,7 +43,11 @@
           "sidebar-accent": "oklch(0.97 0 0)",
           "sidebar-accent-foreground": "oklch(0.205 0 0)",
           "sidebar-border": "oklch(0.922 0 0)",
-          "sidebar-ring": "oklch(0.708 0 0)"
+          "sidebar-ring": "oklch(0.708 0 0)",
+          "success": "oklch(0.52 0.12 150)",
+          "success-foreground": "oklch(0.985 0 0)",
+          "warning": "oklch(0.62 0.13 75)",
+          "warning-foreground": "oklch(0.145 0 0)"
         },
         "dark": {
           "background": "oklch(0.145 0 0)",
@@ -76,7 +80,11 @@
           "sidebar-accent": "oklch(0.269 0 0)",
           "sidebar-accent-foreground": "oklch(0.985 0 0)",
           "sidebar-border": "oklch(1 0 0 / 10%)",
-          "sidebar-ring": "oklch(0.556 0 0)"
+          "sidebar-ring": "oklch(0.556 0 0)",
+          "success": "oklch(0.6 0.13 150)",
+          "success-foreground": "oklch(0.145 0 0)",
+          "warning": "oklch(0.72 0.14 78)",
+          "warning-foreground": "oklch(0.145 0 0)"
         }
       }
     },
@@ -375,6 +383,60 @@
           "path": "registry/page-entity/page-entity.tsx",
           "type": "registry:component",
           "target": "@components/admin/page-entity.tsx"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "page-header",
+      "title": "Section header",
+      "type": "registry:component",
+      "description": "A page title, an optional description under it, and an actions slot on the right. A building block for every admin page, not a dashboard widget. Requires the admin-theme theme.",
+      "registryDependencies": [
+        "berezin-pavel/admin-kit/admin-theme"
+      ],
+      "files": [
+        {
+          "path": "registry/page-header/page-header.tsx",
+          "type": "registry:component",
+          "target": "@components/admin/page-header.tsx"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "status-badge",
+      "title": "Status badge",
+      "type": "registry:component",
+      "description": "A record-status badge: an order is new or cancelled, a product is in stock or out, a user is active or blocked. The tone is set by the tone prop (neutral, success, warning, danger) rather than derived from the text. The success and warning colors come from the admin-kit theme's tokens of the same name — the standard shadcn set doesn't have them, so the element requires the admin-theme theme and colors incorrectly without it. A building block for a page, not a dashboard widget.",
+      "registryDependencies": [
+        "badge",
+        "berezin-pavel/admin-kit/admin-theme"
+      ],
+      "files": [
+        {
+          "path": "registry/status-badge/status-badge.tsx",
+          "type": "registry:component",
+          "target": "@components/admin/status-badge.tsx"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "widget-progress",
+      "title": "Progress widget",
+      "type": "registry:component",
+      "description": "A progress-bar card for a dashboard: warehouse fill level, plan completion, quota usage. Next to the bar is a percentage share computed against max (100 by default). A value outside the range doesn't break the layout: a negative one counts as zero, one above max counts as the maximum. Requires the admin-theme theme.",
+      "registryDependencies": [
+        "card",
+        "progress",
+        "berezin-pavel/admin-kit/admin-theme"
+      ],
+      "files": [
+        {
+          "path": "registry/widget-progress/widget-progress.tsx",
+          "type": "registry:component",
+          "target": "@components/admin/widget-progress.tsx"
         }
       ]
     }

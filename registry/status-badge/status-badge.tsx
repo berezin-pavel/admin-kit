@@ -1,6 +1,7 @@
 import type { ReactNode } from "react"
 
 import { Badge } from "@/components/ui/badge"
+import { cn } from "@/lib/utils"
 
 export type StatusTone = "neutral" | "success" | "warning" | "danger"
 
@@ -10,13 +11,11 @@ export interface StatusBadgeProps {
   className?: string
 }
 
-type BadgeVariant = "secondary" | "default" | "outline" | "destructive"
-
-const toneVariant: Record<StatusTone, BadgeVariant> = {
-  neutral: "secondary",
-  success: "default",
-  warning: "outline",
-  danger: "destructive",
+const toneClassName: Record<StatusTone, string> = {
+  neutral: "",
+  success: "border-transparent bg-success text-success-foreground",
+  warning: "border-transparent bg-warning text-warning-foreground",
+  danger: "",
 }
 
 export function StatusBadge({
@@ -25,7 +24,10 @@ export function StatusBadge({
   className,
 }: StatusBadgeProps) {
   return (
-    <Badge variant={toneVariant[tone]} className={className}>
+    <Badge
+      variant={tone === "danger" ? "destructive" : "secondary"}
+      className={cn(toneClassName[tone], className)}
+    >
       {children}
     </Badge>
   )
