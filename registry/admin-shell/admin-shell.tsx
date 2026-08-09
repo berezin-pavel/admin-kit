@@ -3,14 +3,19 @@ import type { ReactNode } from "react"
 import { cn } from "@/lib/utils"
 
 import { AdminHeader } from "./admin-header"
-import { AdminNav, type AdminNavItem } from "./admin-nav"
+import {
+  AdminNav,
+  type AdminNavItem,
+  type AdminNavLinkRenderer,
+} from "./admin-nav"
 
-export type { AdminNavItem }
+export type { AdminNavItem, AdminNavLinkRenderer }
 
 export interface AdminShellProps {
   title: string
   nav: readonly AdminNavItem[]
   activeHref: string
+  renderLink?: AdminNavLinkRenderer
   actions?: ReactNode
   children?: ReactNode
   className?: string
@@ -20,6 +25,7 @@ export function AdminShell({
   title,
   nav,
   activeHref,
+  renderLink,
   actions,
   children,
   className,
@@ -34,7 +40,7 @@ export function AdminShell({
         <div className="flex h-14 items-center px-6 text-sm font-semibold">
           {title}
         </div>
-        <AdminNav items={nav} activeHref={activeHref} />
+        <AdminNav nav={nav} activeHref={activeHref} renderLink={renderLink} />
       </aside>
       <div className="flex min-w-0 flex-1 flex-col">
         <AdminHeader section={section} actions={actions} />
