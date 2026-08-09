@@ -1,7 +1,7 @@
 # admin-kit
 
-Ready-made admin panel parts — a theme, a shell, widgets, and screen
-states — that install into your project with the `shadcn` command
+Ready-made admin panel parts — a theme, a shell, widgets, pages, and
+screen states — that install into your project with the `shadcn` command
 and update whenever you decide to. Distributed as its own shadcn registry
 straight from this GitHub repository: no build, no hosting, no tokens.
 
@@ -66,6 +66,11 @@ as they were.
 | `state-error`         | `registry:component` | A screen for a load or request failure: a title, an explanation, an actions slot, a red error icon by default |
 | `state-forbidden`     | `registry:component` | A forbidden screen: a title, an explanation, an actions slot, a muted lock icon — missing permissions is a denial, not a breakage |
 | `state-offline`       | `registry:component` | A connection-lost screen: a title, an explanation, an actions slot, a red network-outage icon by default |
+| `page-entity`         | `registry:component` | A single-record page: a heading with actions and fields grouped into sections, with the field value being `ReactNode` rather than a string. The `status` prop swaps the fields for a loading, error, forbidden, or offline state, while the heading stays visible |
+| `page-header`         | `registry:component` | A section header: a title, an explanation, an actions slot on the right — a page building block, not a dashboard widget |
+| `status-badge`        | `registry:component` | A record-status badge with tone `neutral`, `success`, `warning`, `danger`; the `success` and `warning` tones depend on admin-kit's theme tokens |
+| `widget-progress`     | `registry:component` | A dashboard progress-bar card: the share as a percentage of `max` (100 by default), an out-of-range value doesn't break the layout |
+| `page-list`           | `registry:component` | A list page: a heading, a filter row, a table (`widget-table` inside), and page navigation. Every value is controlled, and pagination isn't rendered without `total`. The `status` prop swaps the body for a state, while the heading and filters stay visible |
 
 `widget-table`, `widget-chart`, and `widget-list` — the widgets with
 data — show `state-empty` themselves when there's no data: no rows, no
@@ -78,9 +83,23 @@ can't do, it's not the right fit for that job.
 `widget-chart` is noticeably heavier than the rest: it pulls in
 `recharts`, adding 354 KB to the consumer's bundle (measured on a clean
 Vite project: 227 KB without the chart versus 581 KB with it,
-uncompressed). The other twelve items don't pull in any npm packages at
+uncompressed). The other eighteen items don't pull in any npm packages at
 all, except `lucide-react` for icons. If a dashboard needs just one chart
 and not right away, it's worth loading it dynamically.
+
+`page-list` and `page-entity` decide for themselves what to show based on
+the `status` prop: `loading`, `error`, `forbidden`, and `offline` swap the
+page's body for the matching state, and `ready` (the default) shows the
+data. The heading stays put at any `status`, and for `page-list` the
+filter row stays with it too — so a query can be retried with a different
+filter without waiting for the page to reload.
+
+`status-badge` colors the `success` and `warning` tones with admin-kit
+theme tokens `--success` and `--warning` — they're not in shadcn's
+standard set at all ([ADR 0003](docs/adr/0003-success-and-warning-tokens.md)).
+Without the admin-kit theme, two of the four tones will be left without
+color; `neutral` and `danger` rest on shadcn's standard tokens and don't
+depend on the theme.
 
 `admin-shell` is the layout for the whole application, not a chunk of
 markup inside a page: the shell takes up the full screen height (`h-svh`)
@@ -97,6 +116,13 @@ the same slot in all three places: the same content is drawn in a 240px
 sidebar, in a rail the width of a single button, and in the expanded
 burger panel — large or multi-line content won't fit there without a
 separate layout for the narrow width.
+
+The shell itself dictates the layout of the slot's content, not whatever
+is placed inside it: buttons go into `sidebarFooter` without their own
+wrapper container — the shell arranges them in a row in the wide sidebar
+and in the burger panel, and stacks them in the narrow icon rail. A
+wrapper of your own on top breaks this: the consumer's horizontal
+container won't fit into the narrow icon rail's width.
 
 `admin-shell`'s header can be removed entirely with the `header={false}`
 prop — then it's the sidebar on the left, the work area right after it,
