@@ -18,6 +18,8 @@ export function AdminShell({
   actions,
   children,
 }: AdminShellProps) {
+  const section = nav.find((item) => item.href === activeHref)?.title ?? title
+
   return (
     <div className="flex min-h-svh bg-background text-foreground">
       <aside className="hidden w-60 shrink-0 border-r border-sidebar-border bg-sidebar md:block">
@@ -27,7 +29,7 @@ export function AdminShell({
         <AdminNav items={nav} activeHref={activeHref} />
       </aside>
       <div className="flex min-w-0 flex-1 flex-col">
-        <AdminHeader title={title} actions={actions} />
+        <AdminHeader section={section} actions={actions} />
         <main className="flex-1 p-6">{children}</main>
       </div>
     </div>
