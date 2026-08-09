@@ -73,6 +73,13 @@ limited to a single data series: a deliberate constraint of the first
 version — comparing several series on one chart is something this item
 can't do, it's not the right fit for that job.
 
+`widget-chart` is noticeably heavier than the rest: it pulls in
+`recharts`, adding 354 KB to the consumer's bundle (measured on a clean
+Vite project: 227 KB without the chart versus 581 KB with it,
+uncompressed). The other eleven items don't pull in any npm packages at
+all, except `lucide-react` for icons. If a dashboard needs just one chart
+and not right away, it's worth loading it dynamically.
+
 `admin-shell`'s header can be removed entirely with the `header={false}`
 prop — then it's the sidebar on the left, the work area right after it,
 and on a narrow screen the menu button moves to the top of the icon rail.
