@@ -1,10 +1,10 @@
 # admin-kit: brief
 
-Date: 2026-08-09. Drawn up from a discussion in the avatar-live project session.
+Date: 2026-08-09.
 
 ## Why
 
-A reusable foundation for React admin panels. One for all of the owner's projects: the avatar-live game's admin panel, admin panels for other apps and sites. The requirement is a living foundation that gets updated and maintained centrally, not a one-off template.
+A reusable foundation for React admin panels. One for all of the owner's projects: admin panels for apps and sites. The requirement is a living foundation that gets updated and maintained centrally, not a one-off template.
 
 ## Key decision: how to deliver it
 
@@ -58,29 +58,9 @@ The showcase replaces a static HTML reference: it's both the documentation and t
 - **States** — loading, empty, error, no access, connection lost.
 - **Pages** — a list with filters, an entity card.
 
-## What moves over from avatar-live
-
-Ready-made, proven code from the `feature/admin-react` branch of the avatar-live project. Paths are relative to `apps/admin/src`:
-
-| From | What it is | To |
-|---|---|---|
-| `core/state/createStore.ts` | a store primitive with immutable snapshots for `useSyncExternalStore` | packages/core |
-| `core/state/adminTokenStore.ts` | the admin token in localStorage | packages/core |
-| `core/state/connectionStore.ts` | connection status | packages/core |
-| `core/net/wsClient.ts` | the ws client, routing incoming messages | packages/core |
-| `ui/hooks/useStore.ts` | a bridge to the stores | packages/core |
-| `ui/layout/Header.tsx`, `Sidebar.tsx`, `BlocksZone.tsx` | the page shell | registry: admin-shell |
-| `ui/blocks/Card.tsx`, `StatsBlock.tsx` | a card and a metrics block | registry: blocks |
-| `ui/sections/ParticipantsTable.tsx` | a table with search | registry: data-table |
-| `ui/theme.css` | theme tokens | registry: theme |
-
-Game-specific things — the streams overview, the viewer generator, the stream tile — stay in avatar-live.
-
-An important lesson from experience: `packages/shared/src/ws.ts` in avatar-live returns a typed connection status `WsStatus = "connecting" | "open" | "closed" | "error"` as the second argument to `onStatus`. Parsing message text to determine status is off-limits — renaming a string silently breaks the indicator, and tests don't catch it.
-
 ## "Northern lights" palette (light theme)
 
-Current values from avatar-live. In admin-kit they'll become one of several palettes, not the only one.
+Cancelled by the 09.08.2026 grilling: the theme is taken from the preset as a whole, and the token set is shadcn's standard one. The table is kept as a reference for picking colors; it isn't used in the code.
 
 | Variable | Value | Role |
 |---|---|---|
@@ -122,3 +102,4 @@ The same ones as in the owner's other projects:
 - `any`, `as` casts to work around types, `@ts-ignore`, `eslint-disable`, and lowering config strictness are all forbidden. The root cause gets fixed, not suppressed.
 - Interface text and commit messages are in Russian; file and identifier names are in English, kebab-case for files.
 - Commit heading: one line, up to 72 characters, about the result, not imperative, doesn't start with a verb, no `feat:`/`fix:` prefixes.
+- The ws connection status arrives as a separate typed value rather than being derived by parsing message text: renaming a string silently breaks the indicator, and tests don't catch it.
