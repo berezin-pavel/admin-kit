@@ -1,7 +1,11 @@
 import type { ReactNode } from "react"
 
+import { cn } from "@/lib/utils"
+
 import { AdminHeader } from "./admin-header"
 import { AdminNav, type AdminNavItem } from "./admin-nav"
+
+export type { AdminNavItem }
 
 export interface AdminShellProps {
   title: string
@@ -9,6 +13,7 @@ export interface AdminShellProps {
   activeHref: string
   actions?: ReactNode
   children?: ReactNode
+  className?: string
 }
 
 export function AdminShell({
@@ -17,11 +22,14 @@ export function AdminShell({
   activeHref,
   actions,
   children,
+  className,
 }: AdminShellProps) {
   const section = nav.find((item) => item.href === activeHref)?.title ?? title
 
   return (
-    <div className="flex min-h-svh bg-background text-foreground">
+    <div
+      className={cn("flex min-h-svh bg-background text-foreground", className)}
+    >
       <aside className="hidden w-60 shrink-0 border-r border-sidebar-border bg-sidebar md:block">
         <div className="flex h-14 items-center px-6 text-sm font-semibold">
           {title}

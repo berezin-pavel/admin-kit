@@ -126,7 +126,7 @@
       "name": "widget-table",
       "type": "registry:component",
       "title": "Table widget",
-      "description": "A table with a title and columns for a dashboard: columns and rows are passed as props, numeric columns are right-aligned, and for an empty set of rows it accepts a state of its own. Requires the admin-theme theme.",
+      "description": "A table with a title and columns for a dashboard: columns and rows are passed as props, a column is right-aligned via the align prop, and for an empty set of rows it accepts a state of its own. Requires the admin-theme theme.",
       "registryDependencies": [
         "card",
         "table",
