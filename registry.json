@@ -175,6 +175,40 @@
     },
     {
       "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "widget-list",
+      "type": "registry:component",
+      "title": "List widget",
+      "description": "A list of rows for a dashboard: a title, an optional description under it, an optional meta on the right, and an optional icon on the left. The icon is accepted as a component — the element doesn't pull in a specific icon library. With no rows and no empty prop passed it shows StateEmpty with \"No data\". Requires the admin-theme theme.",
+      "registryDependencies": [
+        "card",
+        "berezin-pavel/admin-kit/admin-theme",
+        "berezin-pavel/admin-kit/state-empty"
+      ],
+      "files": [
+        {
+          "path": "registry/widget-list/widget-list.tsx",
+          "type": "registry:component",
+          "target": "@components/admin/widget-list.tsx"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "widget-placeholder",
+      "type": "registry:component",
+      "title": "Widget placeholder",
+      "description": "A dashed frame with muted text marking a spot in the work area where a widget hasn't been chosen yet. It doesn't show a \"no data\" state — widgets already have a built-in StateEmpty for that; this placeholder is about the widget itself being missing, not about data being missing inside it. Both texts are optional and default to English. Requires the admin-theme theme.",
+      "registryDependencies": ["berezin-pavel/admin-kit/admin-theme"],
+      "files": [
+        {
+          "path": "registry/widget-placeholder/widget-placeholder.tsx",
+          "type": "registry:component",
+          "target": "@components/admin/widget-placeholder.tsx"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
       "name": "state-loading",
       "type": "registry:component",
       "title": "Loading state",
