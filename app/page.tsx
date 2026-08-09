@@ -18,12 +18,23 @@ export default function Page() {
               CLI and update whenever you decide.
             </p>
           </div>
-          <Link
-            href="/demo"
-            className={cn(buttonVariants({ size: "sm" }), "w-fit")}
-          >
-            View the whole demo admin panel
-          </Link>
+          <div className="flex flex-wrap gap-3">
+            <Link
+              href="/demo"
+              className={cn(buttonVariants({ size: "sm" }), "w-fit")}
+            >
+              View the whole demo admin panel
+            </Link>
+            <Link
+              href="/demo/card"
+              className={cn(
+                buttonVariants({ variant: "outline", size: "sm" }),
+                "w-fit"
+              )}
+            >
+              View the card sidebar variant
+            </Link>
+          </div>
         </div>
         <ThemeToggle />
       </header>

@@ -19,6 +19,8 @@ type AdminShellBaseProps = {
   activeHref: string
   renderLink?: AdminNavLinkRenderer
   sidebarFooter?: ReactNode
+  collapsed?: boolean
+  sidebarVariant?: "flush" | "card"
   children?: ReactNode
   className?: string
 }
@@ -32,12 +34,15 @@ export function AdminShell({
   activeHref,
   renderLink,
   sidebarFooter,
+  collapsed = false,
+  sidebarVariant = "flush",
   header = true,
   actions,
   children,
   className,
 }: AdminShellProps) {
   const section = nav.find((item) => item.href === activeHref)?.title ?? appName
+  const isCard = sidebarVariant === "card"
 
   const menu = (
     <AdminMenu appName={appName} footer={sidebarFooter}>
@@ -46,15 +51,31 @@ export function AdminShell({
   )
 
   return (
-    <div className={cn("flex h-svh bg-background text-foreground", className)}>
+    <div
+      className={cn(
+        "flex h-svh bg-background text-foreground",
+        isCard && "gap-4 p-4",
+        className
+      )}
+    >
       <AdminRail
         nav={nav}
         activeHref={activeHref}
         renderLink={renderLink}
         menu={header ? undefined : menu}
         footer={sidebarFooter}
+        collapsed={collapsed}
+        variant={sidebarVariant}
       />
-      <aside className="hidden w-60 shrink-0 flex-col border-r border-sidebar-border bg-sidebar md:flex">
+      <aside
+        className={cn(
+          "w-60 shrink-0 flex-col",
+          isCard
+            ? "rounded-xl bg-card ring-1 ring-foreground/10"
+            : "border-r border-sidebar-border bg-sidebar",
+          collapsed ? "hidden" : "hidden md:flex"
+        )}
+      >
         <div className="flex h-14 shrink-0 items-center px-6 text-sm font-semibold">
           {appName}
         </div>

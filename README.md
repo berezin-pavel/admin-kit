@@ -53,8 +53,9 @@ as they were.
 | Name                 | Type                 | What it does |
 | -------------------- | -------------------- | ------------- |
 | `admin-theme`         | `registry:theme`     | Colors and radii for the admin panel, for the light and dark schemes. Installed first — the other items rely on its tokens |
-| `admin-shell`         | `registry:block`     | A persistent full-height frame for the admin panel: an optional header, side navigation (on a narrow screen — an icon rail and a burger menu), a `sidebarFooter` slot at the bottom, and a work area with its own scrolling. Installed once per project |
+| `admin-shell`         | `registry:block`     | A persistent full-height frame for the admin panel: an optional header, side navigation (on a narrow screen — an icon rail and a burger menu; on a wide one — a sidebar, or with `collapsed`, that same rail), a `sidebarFooter` slot at the bottom, and a work area with its own scrolling. The `sidebarVariant` prop switches the sidebar's look between `flush` (default) and `card`. Installed once per project |
 | `theme-toggle`        | `registry:component` | A theme-switch button that doesn't store the theme itself: the `isDark` state and the `onToggle` handler arrive as props. Fits the shell's `sidebarFooter` slot or anywhere else on the page |
+| `sidebar-toggle`      | `registry:component` | A button that collapses the shell's sidebar into the icon rail, built the same way as `theme-toggle`: `collapsed` and `onToggle` arrive as props. Visible only on a wide screen — on a narrow one the sidebar is already an icon rail with a burger menu. Its place is the `sidebarFooter` slot next to the theme toggle |
 | `widget-metric`       | `registry:component` | A single-number card for a dashboard: a title, a value, optional trend (an arrow with its own separate color), and a caption |
 | `widget-table`        | `registry:component` | A table with a header and columns: each column pulls its own value from the row and aligns via the `align` prop; without data and its own `empty` it shows `state-empty` |
 | `widget-chart`        | `registry:component` | A chart card: a single data series as `label`/`value` pairs, the `kind` prop switches between a line and bars; without data and its own `empty` it shows `state-empty` |
@@ -77,7 +78,7 @@ can't do, it's not the right fit for that job.
 `widget-chart` is noticeably heavier than the rest: it pulls in
 `recharts`, adding 354 KB to the consumer's bundle (measured on a clean
 Vite project: 227 KB without the chart versus 581 KB with it,
-uncompressed). The other eleven items don't pull in any npm packages at
+uncompressed). The other twelve items don't pull in any npm packages at
 all, except `lucide-react` for icons. If a dashboard needs just one chart
 and not right away, it's worth loading it dynamically.
 
@@ -90,11 +91,12 @@ upward with long content.
 
 The `sidebarFooter` prop sets a slot at the bottom of the sidebar, the
 icon rail on a narrow screen, and the burger panel — shared by the theme
-toggle (`theme-toggle`), a user menu, or a build version; it works even
-with the header turned off. It's the same slot in all three places: the
-same content is drawn in a 240px sidebar, in a rail the width of a single
-button, and in the expanded burger panel — large or multi-line content
-won't fit there without a separate layout for the narrow width.
+toggle (`theme-toggle`), the sidebar toggle (`sidebar-toggle`), a user
+menu, or a build version; it works even with the header turned off. It's
+the same slot in all three places: the same content is drawn in a 240px
+sidebar, in a rail the width of a single button, and in the expanded
+burger panel — large or multi-line content won't fit there without a
+separate layout for the narrow width.
 
 `admin-shell`'s header can be removed entirely with the `header={false}`
 prop — then it's the sidebar on the left, the work area right after it,
@@ -104,6 +106,18 @@ swaps their rendering for the consumer's router (`next/link`,
 react-router, and others) — the same way in the sidebar, the icon rail,
 and the burger panel.
 
+The controlled `collapsed` prop (`false` by default) collapses the
+sidebar on a wide screen down to the same icon rail already shown on a
+narrow one: the consumer holds the state, the shell doesn't store it.
+`sidebar-toggle` provides the button for this — built the same way as
+`theme-toggle`, it goes into the same `sidebarFooter` slot and is visible
+only on a wide screen, hidden right inside the item itself on a narrow
+one. The `sidebarVariant` prop switches the look of the sidebar and the
+icon rail: `flush` (default) — pinned to the screen edge and separated
+by a line; `card` — a separate panel with margin from the edges, rounded
+corners, a background, and a border like the widgets have; in this
+variant the work area also gets margin from the edges.
+
 **Contract for the `sidebarFooter` and `renderLink` slots: the content is
 drawn as several independent instances at once, rather than moving
 between the icon rail, the sidebar, and the burger panel.** The icon rail
@@ -111,10 +125,10 @@ and the wide sidebar are always mounted in the tree, and switching
 between them is pure CSS (`md:hidden` / `hidden md:flex`); the burger
 panel remounts on every open. That means two instances of the slot live
 in the DOM at the same time at any screen width, and three while the
-panel is open. A component with no state of its own — like `theme-toggle`,
-which gets its `isDark` and `onToggle` as props — renders identically in
-every instance and never notices the difference. A component with its
-own state falls apart: a user menu that stores its own open/closed state
+panel is open. A component with no state of its own — like `theme-toggle`
+and `sidebar-toggle`, which get their state and handler as props —
+renders identically in every instance and never notices the difference.
+A component with its own state falls apart: a user menu that stores its own open/closed state
 opens only in the instance that was clicked, while the rest stay closed;
 a counter that fetches its own data via an effect makes an independent
 request in every instance. The content of `sidebarFooter` and whatever

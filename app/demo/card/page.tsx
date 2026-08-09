@@ -16,18 +16,18 @@ import {
   demoOrdersByMonth,
   demoProductItems,
   demoRevenueByMonth,
-} from "./data"
+} from "../data"
 
-export default function DemoPage() {
+export default function DemoCardPage() {
   return (
-    <DemoShell sidebarVariant="flush">
+    <DemoShell sidebarVariant="card">
       <div className="flex flex-col gap-4">
         <div className="flex justify-end">
           <Link
-            href="/demo/card"
+            href="/demo"
             className={cn(buttonVariants({ variant: "outline", size: "sm" }))}
           >
-            View the card sidebar variant
+            View the flush sidebar variant
           </Link>
         </div>
         <div className="grid gap-4 sm:grid-cols-3">

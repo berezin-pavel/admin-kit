@@ -85,7 +85,7 @@
       "name": "admin-shell",
       "type": "registry:block",
       "title": "Admin shell",
-      "description": "The admin's permanent frame: an optional header, a side navigation, and a work area. The shell takes the full viewport height and never scrolls as a whole: the sidebar, the icon rail, and their sidebarFooter stay put, and only the work area scrolls. On a wide screen it's a sidebar with the app name and the sections, on a narrow one an icon rail and a burger that opens a panel with the labels and the same sidebarFooter at the bottom. The header prop (true by default) turns the header off entirely: the sidebar and the work area remain, and on a narrow screen without a header the burger moves to the top of the icon rail. The sidebarFooter prop sets a slot at the bottom of the sidebar, the icon rail, and the burger panel — for a theme toggle, a user menu, or a build version; it works with the header off too. Nav items are set through props and support icons and swapping the link render for your own router — in all three places. The content of renderLink and sidebarFooter is drawn in several places at once, so it must have no state of its own or be controlled from the outside. Requires the admin-theme theme.",
+      "description": "The admin's permanent frame: an optional header, a side navigation, and a work area. The shell takes the full viewport height and never scrolls as a whole: the sidebar, the icon rail, and their sidebarFooter stay put, and only the work area scrolls. On a wide screen it's a sidebar with the app name and the sections, on a narrow one an icon rail and a burger that opens a panel with the labels and the same sidebarFooter at the bottom. The controlled collapsed prop (false by default) collapses the sidebar on a wide screen down to the same icon rail as on a narrow one — the consumer holds the state, the shell doesn't store it. The sidebarVariant prop switches the look of the sidebar and the icon rail: flush (default) sits against the screen edge, separated by a line, card is a separate panel inset from the edges, with the rounding, background, and border of a Card; in that variant the work area is inset from the edges too. The header prop (true by default) turns the header off entirely: the sidebar and the work area remain, and on a narrow screen without a header the burger moves to the top of the icon rail. The sidebarFooter prop sets a slot at the bottom of the sidebar, the icon rail, and the burger panel — for a theme toggle, a sidebar toggle, a user menu, or a build version; it works with the header off too. Nav items are set through props and support icons and swapping the link render for your own router — in all three places. The content of renderLink and sidebarFooter is drawn in several places at once, so it must have no state of its own or be controlled from the outside. Requires the admin-theme theme.",
       "registryDependencies": ["sheet", "berezin-pavel/admin-kit/admin-theme"],
       "dependencies": ["lucide-react"],
       "files": [
@@ -129,6 +129,22 @@
           "path": "registry/theme-toggle/theme-toggle.tsx",
           "type": "registry:component",
           "target": "@components/admin/theme-toggle.tsx"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "sidebar-toggle",
+      "type": "registry:component",
+      "title": "Sidebar toggle",
+      "description": "A button that collapses the shell's sidebar into an icon rail on a wide screen, built like theme-toggle: the collapsed state and the onToggle handler arrive as props, with no state of its own. The icon shows the action a click will perform, and the screen-reader label changes along with it. Hidden on a narrow screen right inside the element itself — there the sidebar is already an icon rail with a burger, so the button isn't needed. Its place is the shell's sidebarFooter slot next to the theme toggle; no dedicated prop for it is needed in admin-shell.",
+      "registryDependencies": ["button"],
+      "dependencies": ["lucide-react"],
+      "files": [
+        {
+          "path": "registry/sidebar-toggle/sidebar-toggle.tsx",
+          "type": "registry:component",
+          "target": "@components/admin/sidebar-toggle.tsx"
         }
       ]
     },

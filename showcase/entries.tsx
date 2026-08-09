@@ -1,4 +1,5 @@
 import { adminShellEntry } from "./admin-shell"
+import { sidebarToggleEntry } from "./sidebar-toggle"
 import { stateEmptyEntry, stateLoadingEntry } from "./states"
 import {
   stateErrorEntry,
@@ -16,6 +17,7 @@ import { widgetTableEntry } from "./widget-table"
 export const showcaseEntries: readonly ShowcaseEntry[] = [
   adminShellEntry,
   themeToggleEntry,
+  sidebarToggleEntry,
   widgetMetricEntry,
   widgetTableEntry,
   widgetChartEntry,

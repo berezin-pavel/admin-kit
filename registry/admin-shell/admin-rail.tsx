@@ -10,6 +10,8 @@ export interface AdminRailProps {
   renderLink?: AdminNavLinkRenderer
   menu?: ReactNode
   footer?: ReactNode
+  collapsed?: boolean
+  variant?: "flush" | "card"
   className?: string
 }
 
@@ -29,6 +31,8 @@ export function AdminRail({
   renderLink,
   menu,
   footer,
+  collapsed = false,
+  variant = "flush",
   className,
 }: AdminRailProps) {
   const renderItem = renderLink ?? defaultRenderLink
@@ -36,7 +40,11 @@ export function AdminRail({
   return (
     <div
       className={cn(
-        "flex w-14 shrink-0 flex-col items-center gap-1 border-r border-sidebar-border bg-sidebar py-3 md:hidden",
+        "flex w-14 shrink-0 flex-col items-center gap-1 py-3",
+        variant === "card"
+          ? "rounded-xl bg-card ring-1 ring-foreground/10"
+          : "border-r border-sidebar-border bg-sidebar",
+        !collapsed && "md:hidden",
         className
       )}
     >
