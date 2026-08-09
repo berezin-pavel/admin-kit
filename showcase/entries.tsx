@@ -12,6 +12,7 @@ import { widgetChartEntry } from "./widget-chart"
 import { widgetListEntry } from "./widget-list"
 import { widgetMetricEntry } from "./widget-metric"
 import { widgetPlaceholderEntry } from "./widget-placeholder"
+import { pageEntityEntry } from "./page-entity"
 import { widgetTableEntry } from "./widget-table"
 
 export const showcaseEntries: readonly ShowcaseEntry[] = [
@@ -20,6 +21,7 @@ export const showcaseEntries: readonly ShowcaseEntry[] = [
   sidebarToggleEntry,
   widgetMetricEntry,
   widgetTableEntry,
+  pageEntityEntry,
   widgetChartEntry,
   widgetListEntry,
   widgetPlaceholderEntry,
