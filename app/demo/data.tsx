@@ -26,12 +26,48 @@ export const demoNav: readonly AdminNavItem[] = [
 ]
 
 export const demoRevenueByMonth: readonly WidgetChartPoint[] = [
+  { label: "Jan", value: 298 },
+  { label: "Feb", value: 312 },
   { label: "Mar", value: 356 },
   { label: "Apr", value: 379 },
   { label: "May", value: 402 },
   { label: "Jun", value: 431 },
   { label: "Jul", value: 458 },
   { label: "Aug", value: 486 },
+  { label: "Sep", value: 512 },
+  { label: "Oct", value: 549 },
+  { label: "Nov", value: 601 },
+  { label: "Dec", value: 668 },
+]
+
+export const demoOrdersByMonth: readonly WidgetChartPoint[] = [
+  { label: "Jan", value: 210 },
+  { label: "Feb", value: 198 },
+  { label: "Mar", value: 235 },
+  { label: "Apr", value: 250 },
+  { label: "May", value: 267 },
+  { label: "Jun", value: 289 },
+  { label: "Jul", value: 301 },
+  { label: "Aug", value: 312 },
+  { label: "Sep", value: 298 },
+  { label: "Oct", value: 330 },
+  { label: "Nov", value: 356 },
+  { label: "Dec", value: 402 },
+]
+
+export const demoNewCustomersByMonth: readonly WidgetChartPoint[] = [
+  { label: "Jan", value: 40 },
+  { label: "Feb", value: 38 },
+  { label: "Mar", value: 52 },
+  { label: "Apr", value: 61 },
+  { label: "May", value: 58 },
+  { label: "Jun", value: 66 },
+  { label: "Jul", value: 70 },
+  { label: "Aug", value: 75 },
+  { label: "Sep", value: 68 },
+  { label: "Oct", value: 82 },
+  { label: "Nov", value: 91 },
+  { label: "Dec", value: 103 },
 ]
 
 type OrderStatus = "delivered" | "in-transit" | "paid" | "cancelled"

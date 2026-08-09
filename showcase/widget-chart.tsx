@@ -13,6 +13,12 @@ const revenueByMonth: readonly WidgetChartPoint[] = [
   { label: "Apr", value: 1204 },
   { label: "May", value: 1390 },
   { label: "Jun", value: 1280 },
+  { label: "Jul", value: 1340 },
+  { label: "Aug", value: 1450 },
+  { label: "Sep", value: 1510 },
+  { label: "Oct", value: 1602 },
+  { label: "Nov", value: 1780 },
+  { label: "Dec", value: 2040 },
 ]
 
 export const widgetChartEntry: ShowcaseEntry = {

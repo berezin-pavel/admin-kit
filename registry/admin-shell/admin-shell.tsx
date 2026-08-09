@@ -46,9 +46,7 @@ export function AdminShell({
   )
 
   return (
-    <div
-      className={cn("flex min-h-svh bg-background text-foreground", className)}
-    >
+    <div className={cn("flex h-svh bg-background text-foreground", className)}>
       <AdminRail
         nav={nav}
         activeHref={activeHref}
@@ -57,7 +55,7 @@ export function AdminShell({
         footer={sidebarFooter}
       />
       <aside className="hidden w-60 shrink-0 flex-col border-r border-sidebar-border bg-sidebar md:flex">
-        <div className="flex h-14 items-center px-6 text-sm font-semibold">
+        <div className="flex h-14 shrink-0 items-center px-6 text-sm font-semibold">
           {appName}
         </div>
         <AdminNav nav={nav} activeHref={activeHref} renderLink={renderLink} />
@@ -67,11 +65,11 @@ export function AdminShell({
           </div>
         ) : null}
       </aside>
-      <div className="flex min-w-0 flex-1 flex-col">
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col">
         {header ? (
           <AdminHeader section={section} actions={actions} menu={menu} />
         ) : null}
-        <main className="flex-1 p-6">{children}</main>
+        <main className="min-h-0 flex-1 overflow-y-auto p-6">{children}</main>
       </div>
     </div>
   )

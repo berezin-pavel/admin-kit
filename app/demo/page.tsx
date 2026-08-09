@@ -8,8 +8,10 @@ import { WidgetTable } from "@/registry/widget-table/widget-table"
 
 import {
   demoNav,
+  demoNewCustomersByMonth,
   demoOrderColumns,
   demoOrderRows,
+  demoOrdersByMonth,
   demoProductItems,
   demoRevenueByMonth,
 } from "./data"
@@ -49,9 +51,19 @@ export default function DemoPage() {
           data={demoRevenueByMonth}
           hint="in thousands of dollars"
         />
-        <div className="grid gap-4 lg:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-2">
+          <WidgetChart
+            title="Orders by month"
+            data={demoOrdersByMonth}
+            kind="bar"
+          />
+          <WidgetChart
+            title="New customers by month"
+            data={demoNewCustomersByMonth}
+          />
+        </div>
+        <div className="grid gap-4 lg:grid-cols-2">
           <WidgetTable
-            className="lg:col-span-2"
             title="Recent orders"
             columns={demoOrderColumns}
             rows={demoOrderRows}

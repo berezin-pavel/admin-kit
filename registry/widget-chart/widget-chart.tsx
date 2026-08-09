@@ -52,7 +52,7 @@ export function WidgetChart({
         {data.length === 0 ? (
           (empty ?? <StateEmpty title="No data" />)
         ) : (
-          <ChartContainer config={chartConfig}>
+          <ChartContainer config={chartConfig} className="aspect-auto h-56">
             {kind === "line" ? (
               <LineChart data={data} margin={{ left: 12, right: 12 }}>
                 <CartesianGrid vertical={false} />
