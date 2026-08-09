@@ -47,7 +47,7 @@ export const stateEmptyEntry: ShowcaseEntry = {
         <StateEmpty
           title="No orders yet"
           description="You can create an order manually."
-          action={<Button>Create order</Button>}
+          actions={<Button>Create order</Button>}
         />
       ),
     },

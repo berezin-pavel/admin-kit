@@ -1,20 +1,21 @@
 import type { ReactNode } from "react"
+import { WifiOff } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
-export interface StateEmptyProps {
-  title: string
+export interface StateOfflineProps {
+  title?: string
   description?: string
   actions?: ReactNode
   className?: string
 }
 
-export function StateEmpty({
-  title,
+export function StateOffline({
+  title = "Connection lost",
   description,
   actions,
   className,
-}: StateEmptyProps) {
+}: StateOfflineProps) {
   return (
     <div
       className={cn(
@@ -22,6 +23,7 @@ export function StateEmpty({
         className
       )}
     >
+      <WifiOff className="size-8 text-destructive" />
       <span className="font-medium">{title}</span>
       {description ? (
         <p className="max-w-sm text-sm text-muted-foreground">{description}</p>

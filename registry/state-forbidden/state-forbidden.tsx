@@ -1,20 +1,21 @@
 import type { ReactNode } from "react"
+import { Lock } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
-export interface StateEmptyProps {
-  title: string
+export interface StateForbiddenProps {
+  title?: string
   description?: string
   actions?: ReactNode
   className?: string
 }
 
-export function StateEmpty({
-  title,
+export function StateForbidden({
+  title = "No access",
   description,
   actions,
   className,
-}: StateEmptyProps) {
+}: StateForbiddenProps) {
   return (
     <div
       className={cn(
@@ -22,6 +23,7 @@ export function StateEmpty({
         className
       )}
     >
+      <Lock className="size-8 text-muted-foreground" />
       <span className="font-medium">{title}</span>
       {description ? (
         <p className="max-w-sm text-sm text-muted-foreground">{description}</p>

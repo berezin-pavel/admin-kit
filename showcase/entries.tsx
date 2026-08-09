@@ -1,5 +1,10 @@
 import { adminShellEntry } from "./admin-shell"
 import { stateEmptyEntry, stateLoadingEntry } from "./states"
+import {
+  stateErrorEntry,
+  stateForbiddenEntry,
+  stateOfflineEntry,
+} from "./states-problem"
 import type { ShowcaseEntry } from "./types"
 import { widgetChartEntry } from "./widget-chart"
 import { widgetListEntry } from "./widget-list"
@@ -16,4 +21,7 @@ export const showcaseEntries: readonly ShowcaseEntry[] = [
   widgetPlaceholderEntry,
   stateLoadingEntry,
   stateEmptyEntry,
+  stateErrorEntry,
+  stateForbiddenEntry,
+  stateOfflineEntry,
 ]

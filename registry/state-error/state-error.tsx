@@ -1,20 +1,21 @@
 import type { ReactNode } from "react"
+import { CircleAlert } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
-export interface StateEmptyProps {
-  title: string
+export interface StateErrorProps {
+  title?: string
   description?: string
   actions?: ReactNode
   className?: string
 }
 
-export function StateEmpty({
-  title,
+export function StateError({
+  title = "Something went wrong",
   description,
   actions,
   className,
-}: StateEmptyProps) {
+}: StateErrorProps) {
   return (
     <div
       className={cn(
@@ -22,6 +23,7 @@ export function StateEmpty({
         className
       )}
     >
+      <CircleAlert className="size-8 text-destructive" />
       <span className="font-medium">{title}</span>
       {description ? (
         <p className="max-w-sm text-sm text-muted-foreground">{description}</p>

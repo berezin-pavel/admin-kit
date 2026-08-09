@@ -230,13 +230,61 @@
       "name": "state-empty",
       "type": "registry:component",
       "title": "Empty state",
-      "description": "The screen a user sees in place of content when there's no data: a title, an optional description, and an optional action button. Requires the admin-theme theme.",
+      "description": "The screen a user sees in place of content when there's no data: a title, an optional description, and an optional actions slot. No data is normal, so there's no icon by default. Requires the admin-theme theme.",
       "registryDependencies": ["berezin-pavel/admin-kit/admin-theme"],
       "files": [
         {
           "path": "registry/state-empty/state-empty.tsx",
           "type": "registry:component",
           "target": "@components/admin/state-empty.tsx"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "state-error",
+      "type": "registry:component",
+      "title": "Error state",
+      "description": "A screen for a loading or request failure: a title, an optional description, and an optional actions slot, with an error icon by default — the failure should read before the text does. Not for missing data — state-empty covers that. Requires the admin-theme theme.",
+      "registryDependencies": ["berezin-pavel/admin-kit/admin-theme"],
+      "dependencies": ["lucide-react"],
+      "files": [
+        {
+          "path": "registry/state-error/state-error.tsx",
+          "type": "registry:component",
+          "target": "@components/admin/state-error.tsx"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "state-forbidden",
+      "type": "registry:component",
+      "title": "Forbidden state",
+      "description": "A screen for access denial: a title, an optional description, and an optional actions slot, with a muted lock icon by default — lacking permissions is a denial, not a breakage, so the color isn't alarming. Requires the admin-theme theme.",
+      "registryDependencies": ["berezin-pavel/admin-kit/admin-theme"],
+      "dependencies": ["lucide-react"],
+      "files": [
+        {
+          "path": "registry/state-forbidden/state-forbidden.tsx",
+          "type": "registry:component",
+          "target": "@components/admin/state-forbidden.tsx"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "state-offline",
+      "type": "registry:component",
+      "title": "Offline state",
+      "description": "A screen for a lost connection: a title, an optional description, and an optional actions slot, with a network-disconnect icon by default — the failure should read before the text does. Not for a server error — state-error covers that. Requires the admin-theme theme.",
+      "registryDependencies": ["berezin-pavel/admin-kit/admin-theme"],
+      "dependencies": ["lucide-react"],
+      "files": [
+        {
+          "path": "registry/state-offline/state-offline.tsx",
+          "type": "registry:component",
+          "target": "@components/admin/state-offline.tsx"
         }
       ]
     }
