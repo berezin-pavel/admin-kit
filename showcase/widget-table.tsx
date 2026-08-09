@@ -46,6 +46,17 @@ export const widgetTableEntry: ShowcaseEntry = {
       ),
     },
     {
+      name: "With a stable row key",
+      render: () => (
+        <WidgetTable
+          title="Recent orders"
+          columns={columns}
+          rows={rows}
+          getRowKey={(row) => row.number}
+        />
+      ),
+    },
+    {
       name: "No rows",
       render: () => (
         <WidgetTable

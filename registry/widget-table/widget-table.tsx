@@ -1,4 +1,4 @@
-import type { ReactNode } from "react"
+import type { Key, ReactNode } from "react"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
@@ -22,6 +22,7 @@ export interface WidgetTableProps<Row> {
   columns: readonly WidgetTableColumn<Row>[]
   rows: readonly Row[]
   empty?: ReactNode
+  getRowKey?: (row: Row, index: number) => Key
   className?: string
 }
 
@@ -30,6 +31,7 @@ export function WidgetTable<Row extends Record<string, ReactNode>>({
   columns,
   rows,
   empty,
+  getRowKey,
   className,
 }: WidgetTableProps<Row>) {
   return (
@@ -58,7 +60,7 @@ export function WidgetTable<Row extends Record<string, ReactNode>>({
             </TableHeader>
             <TableBody>
               {rows.map((row, index) => (
-                <TableRow key={index}>
+                <TableRow key={getRowKey?.(row, index) ?? index}>
                   {columns.map((column) => (
                     <TableCell
                       key={column.key}
