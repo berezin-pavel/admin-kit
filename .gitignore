@@ -36,3 +36,9 @@ pnpm-debug.log*
 next-env.d.ts
 
 public/r/
+
+# Personal and machine-specific: not published to the public repository
+.claude/
+.mcp.json
+CLAUDE.md
+docs/superpowers/
