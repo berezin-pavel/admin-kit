@@ -4,12 +4,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 
 export type MetricDirection = "up" | "down"
+export type MetricTone = "positive" | "negative"
 
 export interface WidgetMetricProps {
   title: string
   value: string
   hint?: string
-  trend?: { direction: MetricDirection; value: string }
+  trend?: {
+    direction: MetricDirection
+    value: string
+    tone?: MetricTone
+  }
   className?: string
 }
 
@@ -21,6 +26,8 @@ export function WidgetMetric({
   className,
 }: WidgetMetricProps) {
   const TrendIcon = trend?.direction === "down" ? TrendingDown : TrendingUp
+  const tone =
+    trend?.tone ?? (trend?.direction === "down" ? "negative" : "positive")
 
   return (
     <Card className={className}>
@@ -36,7 +43,7 @@ export function WidgetMetric({
             <span
               className={cn(
                 "flex items-center gap-1 text-sm",
-                trend.direction === "down" ? "text-destructive" : "text-primary"
+                tone === "negative" ? "text-destructive" : "text-primary"
               )}
             >
               <TrendIcon className="size-4" />

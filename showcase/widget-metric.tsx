@@ -28,7 +28,17 @@ export const widgetMetricEntry: ShowcaseEntry = {
         <WidgetMetric
           title="Bounces"
           value="27"
-          trend={{ direction: "down", value: "−4%" }}
+          trend={{ direction: "down", value: "−4%", tone: "positive" }}
+        />
+      ),
+    },
+    {
+      name: "With a decline",
+      render: () => (
+        <WidgetMetric
+          title="Active users"
+          value="842"
+          trend={{ direction: "down", value: "−15%" }}
         />
       ),
     },
