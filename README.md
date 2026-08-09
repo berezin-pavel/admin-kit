@@ -10,6 +10,14 @@ straight from this GitHub repository: no build, no hosting, no tokens.
 The consumer project is already initialized for shadcn: Next or Vite, Tailwind
 v4, `components.json` at the root. From there, plain `shadcn add` does the job.
 
+The primitives items depend on (`card`, `table`, `skeleton`, `sheet`, and
+others) are installed by the CLI in whatever style is already chosen in
+the consumer project — admin-kit's items themselves don't require
+specifically Base UI or Radix. The exception is `admin-shell`: its source
+is built around Base UI's composition API, and it won't drop into a
+project already initialized on Radix without edits — details and
+reasoning in [ADR 0002](docs/adr/0002-base-ui-instead-of-radix.md).
+
 ## Installation
 
 The theme is installed first, with its own separate command:
@@ -42,14 +50,22 @@ as they were.
 
 ## Registry items
 
-| Name             | Type                  | What it does                                                                                                          |
-| --------------- | -------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| `admin-theme`   | `registry:theme`     | Colors and radii for the admin panel, for the light and dark schemes. Installed first — the other items rely on its tokens  |
-| `admin-shell`   | `registry:block`     | A persistent frame for the admin panel: a header, side navigation, and a work area. Installed once per project              |
-| `widget-metric` | `registry:component` | A single-number card for a dashboard: a title, a value, optional trend, and a caption                        |
-| `widget-table`  | `registry:component` | A table with a header and columns: a column aligns right via the `align` prop, and it takes its own state for empty data |
-| `state-loading` | `registry:component` | A skeleton in place of content while data is loading                                                                       |
-| `state-empty`   | `registry:component` | A screen in place of content when there's no data: a title, an explanation, an action button                                   |
+| Name            | Type                 | What it does |
+| --------------- | -------------------- | ------------- |
+| `admin-theme`    | `registry:theme`     | Colors and radii for the admin panel, for the light and dark schemes. Installed first — the other items rely on its tokens |
+| `admin-shell`    | `registry:block`     | A persistent frame for the admin panel: an optional header, side navigation (on a narrow screen — an icon rail and a burger menu), and a work area. Installed once per project |
+| `widget-metric`  | `registry:component` | A single-number card for a dashboard: a title, a value, optional trend (an arrow with its own separate color), and a caption |
+| `widget-table`   | `registry:component` | A table with a header and columns: each column pulls its own value from the row and aligns via the `align` prop; without data and its own `empty` it shows `state-empty` |
+| `state-loading`  | `registry:component` | A skeleton in place of content while data is loading |
+| `state-empty`    | `registry:component` | A screen in place of content when there's no data: a title, an explanation, an action button |
+
+`admin-shell`'s header can be removed entirely with the `header={false}`
+prop — then it's the sidebar on the left, the work area right after it,
+and on a narrow screen the menu button moves to the top of the icon rail.
+Navigation links default to plain `<a href>`, and the `renderLink` prop
+swaps their rendering for the consumer's router (`next/link`,
+react-router, and others) — the same way in the sidebar, the icon rail,
+and the burger panel.
 
 ## Versions
 

@@ -35,7 +35,7 @@ A registry item that sets the colors and radii for both the light and dark schem
 _Avoid_: palette, color scheme, styling
 
 **Shell**:
-A registry item with the admin panel's persistent frame: a header, navigation, and an empty work area.
+A registry item with the admin panel's persistent frame: an optional header, navigation — a sidebar on a wide screen, an icon rail and a burger panel on a narrow one — and an empty work area.
 _Avoid_: layout, wrapper
 
 **Widget**:
