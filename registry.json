@@ -79,6 +79,31 @@
           "sidebar-ring": "oklch(0.556 0 0)"
         }
       }
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "admin-shell",
+      "type": "registry:block",
+      "title": "Admin shell",
+      "description": "The admin's permanent frame: a header, a side navigation, and an empty work area. Placed once per project, with nav items set through props. Requires the admin-theme theme.",
+      "registryDependencies": ["berezin-pavel/admin-kit/admin-theme"],
+      "files": [
+        {
+          "path": "registry/admin-shell/admin-shell.tsx",
+          "type": "registry:component",
+          "target": "@components/admin/admin-shell.tsx"
+        },
+        {
+          "path": "registry/admin-shell/admin-header.tsx",
+          "type": "registry:component",
+          "target": "@components/admin/admin-header.tsx"
+        },
+        {
+          "path": "registry/admin-shell/admin-nav.tsx",
+          "type": "registry:component",
+          "target": "@components/admin/admin-nav.tsx"
+        }
+      ]
     }
   ]
 }
