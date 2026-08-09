@@ -27,13 +27,13 @@ export function DemoShell({
       collapsed={collapsed}
       sidebarVariant={sidebarVariant}
       sidebarFooter={
-        <div className="flex items-center gap-2">
+        <>
           <SidebarToggle
             collapsed={collapsed}
             onToggle={() => setCollapsed((prev) => !prev)}
           />
           <DemoThemeToggle />
-        </div>
+        </>
       }
     >
       {children}

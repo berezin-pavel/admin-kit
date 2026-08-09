@@ -54,7 +54,7 @@ export function AdminMenu({ appName, footer, children }: AdminMenuProps) {
             {children}
           </div>
           {footer ? (
-            <div className="mt-auto border-t border-sidebar-border p-3">
+            <div className="mt-auto flex items-center gap-2 border-t border-sidebar-border p-3">
               {footer}
             </div>
           ) : null}

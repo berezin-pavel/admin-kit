@@ -81,7 +81,7 @@ export function AdminShell({
         </div>
         <AdminNav nav={nav} activeHref={activeHref} renderLink={renderLink} />
         {sidebarFooter ? (
-          <div className="mt-auto border-t border-sidebar-border p-3">
+          <div className="mt-auto flex items-center gap-2 border-t border-sidebar-border p-3">
             {sidebarFooter}
           </div>
         ) : null}
