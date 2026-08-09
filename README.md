@@ -50,14 +50,28 @@ as they were.
 
 ## Registry items
 
-| Name            | Type                 | What it does |
-| --------------- | -------------------- | ------------- |
-| `admin-theme`    | `registry:theme`     | Colors and radii for the admin panel, for the light and dark schemes. Installed first — the other items rely on its tokens |
-| `admin-shell`    | `registry:block`     | A persistent frame for the admin panel: an optional header, side navigation (on a narrow screen — an icon rail and a burger menu), and a work area. Installed once per project |
-| `widget-metric`  | `registry:component` | A single-number card for a dashboard: a title, a value, optional trend (an arrow with its own separate color), and a caption |
-| `widget-table`   | `registry:component` | A table with a header and columns: each column pulls its own value from the row and aligns via the `align` prop; without data and its own `empty` it shows `state-empty` |
-| `state-loading`  | `registry:component` | A skeleton in place of content while data is loading |
-| `state-empty`    | `registry:component` | A screen in place of content when there's no data: a title, an explanation, an action button |
+| Name                 | Type                 | What it does |
+| -------------------- | -------------------- | ------------- |
+| `admin-theme`         | `registry:theme`     | Colors and radii for the admin panel, for the light and dark schemes. Installed first — the other items rely on its tokens |
+| `admin-shell`         | `registry:block`     | A persistent frame for the admin panel: an optional header, side navigation (on a narrow screen — an icon rail and a burger menu), and a work area. Installed once per project |
+| `widget-metric`       | `registry:component` | A single-number card for a dashboard: a title, a value, optional trend (an arrow with its own separate color), and a caption |
+| `widget-table`        | `registry:component` | A table with a header and columns: each column pulls its own value from the row and aligns via the `align` prop; without data and its own `empty` it shows `state-empty` |
+| `widget-chart`        | `registry:component` | A chart card: a single data series as `label`/`value` pairs, the `kind` prop switches between a line and bars; without data and its own `empty` it shows `state-empty` |
+| `widget-list`         | `registry:component` | A list of rows: a name, an optional explanation, optional content on the right, and an icon; without rows and its own `empty`, it shows `state-empty` |
+| `widget-placeholder`  | `registry:component` | A dashed-border placeholder in the work area where a widget hasn't been chosen yet — not about missing data, that's what `state-empty` is for |
+| `state-loading`       | `registry:component` | A skeleton in place of content while data is loading |
+| `state-empty`         | `registry:component` | A screen in place of content when there's no data: a title, an explanation, an actions slot; no icon — empty data is normal |
+| `state-error`         | `registry:component` | A screen for a load or request failure: a title, an explanation, an actions slot, a red error icon by default |
+| `state-forbidden`     | `registry:component` | A forbidden screen: a title, an explanation, an actions slot, a muted lock icon — missing permissions is a denial, not a breakage |
+| `state-offline`       | `registry:component` | A connection-lost screen: a title, an explanation, an actions slot, a red network-outage icon by default |
+
+`widget-table`, `widget-chart`, and `widget-list` — the widgets with
+data — show `state-empty` themselves when there's no data: no rows, no
+points, or no list items, and the `empty` prop wasn't passed. There's no
+need to wrap them in a state from outside. `widget-chart` on its own is
+limited to a single data series: a deliberate constraint of the first
+version — comparing several series on one chart is something this item
+can't do, it's not the right fit for that job.
 
 `admin-shell`'s header can be removed entirely with the `header={false}`
 prop — then it's the sidebar on the left, the work area right after it,
