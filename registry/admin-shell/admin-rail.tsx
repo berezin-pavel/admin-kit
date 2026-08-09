@@ -9,12 +9,24 @@ export interface AdminRailProps {
   className?: string
 }
 
+const defaultRenderLink: AdminNavLinkRenderer = ({
+  href,
+  className,
+  children,
+}) => (
+  <a href={href} className={className}>
+    {children}
+  </a>
+)
+
 export function AdminRail({
   nav,
   activeHref,
   renderLink,
   className,
 }: AdminRailProps) {
+  const renderItem = renderLink ?? defaultRenderLink
+
   return (
     <nav
       aria-label="Sections"
@@ -26,16 +38,6 @@ export function AdminRail({
       {nav.map((item) => {
         const isActive = item.href === activeHref
         const Icon = item.icon
-        const defaultRenderLink: AdminNavLinkRenderer = ({
-          href,
-          className: linkClassName,
-          children,
-        }) => (
-          <a href={href} className={linkClassName} aria-label={item.title}>
-            {children}
-          </a>
-        )
-        const renderItem = renderLink ?? defaultRenderLink
 
         return (
           <div key={item.href} aria-current={isActive ? "page" : undefined}>
@@ -50,11 +52,13 @@ export function AdminRail({
               ),
               children: (
                 <>
-                  {Icon ? (
-                    <Icon className="size-4 shrink-0" />
-                  ) : (
-                    item.title.charAt(0).toUpperCase()
-                  )}
+                  <span aria-hidden="true">
+                    {Icon ? (
+                      <Icon className="size-4 shrink-0" />
+                    ) : (
+                      item.title.charAt(0).toUpperCase()
+                    )}
+                  </span>
                   <span className="sr-only">{item.title}</span>
                 </>
               ),
