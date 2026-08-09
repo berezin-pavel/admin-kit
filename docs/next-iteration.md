@@ -6,6 +6,14 @@ The naming inconsistency this table had tracked since the first review is closed
 
 - **`admin-shell` compatibility with Radix projects.** This point is dropped: the kit deliberately stays on Base UI, see [ADR 0002](adr/0002-base-ui-instead-of-radix.md). No need to revisit it — the condition for doing so is spelled out in the ADR itself.
 
+## sidebarFooter: one item renders as two instances at once
+
+`admin-shell` passes `sidebarFooter` into both places at once — `AdminRail` (the narrow icon rail) and the full sidebar (`registry/admin-shell/admin-shell.tsx`). Switching between them is pure CSS (`md:hidden` / `hidden md:flex`), and both nodes are always in the DOM. That means the slot's content mounts as two independent instances at the same time, rather than moving between the two.
+
+For `theme-toggle` this isn't a problem: it's fully controlled from outside and has no state of its own. But `sidebarFooter`'s description in `registry.json` explicitly names a "user menu" too — and an item like that will almost certainly have its own open/closed state or a portal with a unique id. Only the instance that got clicked at the current screen width will end up open or focused, the other will stay in its initial state — and that will read as a bug, not as two separate things.
+
+Not resolved: either explicitly restrict `sidebarFooter` in the README and `registry.json` to content that's fully controlled from outside (like `theme-toggle`), or change how the shell is built so the slot doesn't get duplicated between the rail and the sidebar. Work this out before an item with its own state shows up in the registry wanting this slot.
+
 ## Pages: a list with filters and an entity card
 
 `docs/brief.md` names two pages for the next iteration but doesn't set a contract for them — without one, each implementation will turn into guesswork on the spot. Work this out before writing code, not while writing it.

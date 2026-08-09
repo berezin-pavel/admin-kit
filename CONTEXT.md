@@ -38,6 +38,10 @@ _Avoid_: palette, color scheme, styling
 A registry item with the admin panel's persistent frame: an optional header, navigation — a sidebar on a wide screen, an icon rail and a burger panel on a narrow one — and an empty work area.
 _Avoid_: layout, wrapper
 
+**Control**:
+A small self-contained shell control — not tied to the work area and doesn't show screen state. Its value and handler arrive as props, and storage stays with the consumer — the same reason widgets don't fetch their own data. Placed in the shell's `sidebarFooter` slot or anywhere else on the page.
+_Avoid_: control widget, toggle, button
+
 **Widget**:
 A self-contained card in the work area — a metric, a table, a chart, a list. Gets its data from outside and never fetches it itself.
 _Avoid_: block, card, tile

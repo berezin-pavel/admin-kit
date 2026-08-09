@@ -53,7 +53,8 @@ as they were.
 | Name                 | Type                 | What it does |
 | -------------------- | -------------------- | ------------- |
 | `admin-theme`         | `registry:theme`     | Colors and radii for the admin panel, for the light and dark schemes. Installed first — the other items rely on its tokens |
-| `admin-shell`         | `registry:block`     | A persistent frame for the admin panel: an optional header, side navigation (on a narrow screen — an icon rail and a burger menu), and a work area. Installed once per project |
+| `admin-shell`         | `registry:block`     | A persistent full-height frame for the admin panel: an optional header, side navigation (on a narrow screen — an icon rail and a burger menu), a `sidebarFooter` slot at the bottom, and a work area with its own scrolling. Installed once per project |
+| `theme-toggle`        | `registry:component` | A theme-switch button that doesn't store the theme itself: the `isDark` state and the `onToggle` handler arrive as props. Fits the shell's `sidebarFooter` slot or anywhere else on the page |
 | `widget-metric`       | `registry:component` | A single-number card for a dashboard: a title, a value, optional trend (an arrow with its own separate color), and a caption |
 | `widget-table`        | `registry:component` | A table with a header and columns: each column pulls its own value from the row and aligns via the `align` prop; without data and its own `empty` it shows `state-empty` |
 | `widget-chart`        | `registry:component` | A chart card: a single data series as `label`/`value` pairs, the `kind` prop switches between a line and bars; without data and its own `empty` it shows `state-empty` |
@@ -79,6 +80,21 @@ Vite project: 227 KB without the chart versus 581 KB with it,
 uncompressed). The other eleven items don't pull in any npm packages at
 all, except `lucide-react` for icons. If a dashboard needs just one chart
 and not right away, it's worth loading it dynamically.
+
+`admin-shell` is the layout for the whole application, not a chunk of
+markup inside a page: the shell takes up the full screen height (`h-svh`)
+and doesn't scroll itself — only the work area scrolls, while the
+sidebar, the icon rail, and the `sidebarFooter` slot stay in place.
+Before, the whole page used to scroll and the navigation would drift
+upward with long content.
+
+The `sidebarFooter` prop sets a slot at the bottom of the sidebar (and at
+the bottom of the icon rail on a narrow screen) — shared by the theme
+toggle (`theme-toggle`), a user menu, or a build version; it works even
+with the header turned off. It's the same slot in both views: the same
+content is drawn in a 240px sidebar and in a rail the width of a single
+button — large or multi-line content won't fit there without a separate
+layout for the narrow width.
 
 `admin-shell`'s header can be removed entirely with the `header={false}`
 prop — then it's the sidebar on the left, the work area right after it,
