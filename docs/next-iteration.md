@@ -6,11 +6,21 @@ The naming inconsistency this table had tracked since the first review is closed
 
 - **`admin-shell` compatibility with Radix projects.** This point is dropped: the kit deliberately stays on Base UI, see [ADR 0002](adr/0002-base-ui-instead-of-radix.md). No need to revisit it — the condition for doing so is spelled out in the ADR itself.
 
-## sidebarFooter: the content renders in several places at once
+## sidebarFooter: the cause was removed
 
-`admin-shell` passes `sidebarFooter` into three places: `AdminRail` (the narrow icon rail), the full sidebar (`registry/admin-shell/admin-shell.tsx`), and the burger panel (`registry/admin-shell/admin-menu.tsx`, where the slot showed up in v0.5.0). The rail and the full sidebar are always mounted in the tree — switching between them is pure CSS (`md:hidden` / `hidden md:flex`); the burger panel remounts every time it opens. At any screen width, two instances of the slot live in the DOM at once, and three while the panel is open.
+The shell used to draw navigation in three places, and the narrow icon rail and the full sidebar were **two nodes mounted in parallel** — only CSS switched between them. That's where the standing slot duplication came from, rather than it being a one-off.
 
-Before, this was an undocumented trap. Now the constraint is spelled out directly, both in `registry.json` (the `admin-shell` description) and in the README: `sidebarFooter`'s content must have no state of its own, or be controlled from outside, like `theme-toggle` and `sidebar-toggle`. But this is still only a description of the constraint, not a fix for the cause — the render duplication itself hasn't gone anywhere, and the registry still doesn't have a single item with its own state that would go into this slot and show that the warning actually holds up in practice, not just on paper. Open question — leave this as a permanent boundary of the contract, or change how the shell is built so the slot stops duplicating.
+Now it's a single node: the collapsed view comes from styling the same tree, and `admin-rail.tsx` was removed. The burger panel remains a second instance, but it's modal and remounts on every open.
+
+The requirement on the slot's content has become an ordinary one for the kit as a result — **controlled from outside** — rather than the special caveat of "no state of its own." No need to revisit the topic.
+
+## Hydration mismatch in the `pagination` primitive — not ours
+
+`components/ui/pagination.tsx`, which shadcn generates, produces a mismatch between server and client: `PaginationLink` sets `data-slot="pagination-link"`, and the `Button` nested inside it overwrites it with `data-slot="button"` — React reports the mismatch during hydration.
+
+This doesn't affect us: `page-list` builds pagination directly from `Button` and doesn't use `PaginationLink`. The mismatch is only visible on the `/primitives` page, where the primitive is shown exactly as shadcn ships it.
+
+It can't be fixed on our end: the consumer gets their own copy of the primitive from shadcn, our fix would never reach it, and our version would just drift from theirs. This is a question for shadcn, not for the kit.
 
 ## The kit has never been installed into a real admin panel
 
