@@ -2,6 +2,8 @@ import Link from "next/link"
 
 import { ShowcaseGallery } from "@/components/showcase-gallery"
 import { ShowcaseNav } from "@/components/showcase-nav"
+import { ShowcasePrimitives } from "@/components/showcase-primitives"
+import { ShowcaseTokens } from "@/components/showcase-tokens"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { buttonVariants } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
@@ -19,30 +21,23 @@ export default function Page() {
               CLI and update whenever you decide.
             </p>
           </div>
-          <div className="flex flex-wrap gap-3">
-            <Link
-              href="/demo"
-              className={cn(buttonVariants({ size: "sm" }), "w-fit")}
-            >
-              View the whole demo admin panel
-            </Link>
-            <Link
-              href="/demo/card"
-              className={cn(
-                buttonVariants({ variant: "outline", size: "sm" }),
-                "w-fit"
-              )}
-            >
-              View the card sidebar variant
-            </Link>
-          </div>
+          <Link
+            href="/demo"
+            className={cn(buttonVariants({ size: "sm" }), "w-fit")}
+          >
+            View demo
+          </Link>
         </div>
         <ThemeToggle />
       </header>
       <div className="flex flex-col gap-8 md:flex-row md:items-start md:gap-10">
         <ShowcaseNav entries={showcaseEntries} />
         <div className="min-w-0 flex-1">
-          <ShowcaseGallery entries={showcaseEntries} />
+          <div className="flex flex-col gap-16">
+            <ShowcaseGallery entries={showcaseEntries} />
+            <ShowcaseTokens />
+            <ShowcasePrimitives />
+          </div>
         </div>
       </div>
     </main>

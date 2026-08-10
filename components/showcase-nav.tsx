@@ -44,9 +44,9 @@ const ENTRY_GROUPS: readonly ShowcaseNavGroup[] = [
   },
 ]
 
-const OTHER_PAGES = [
-  { href: "/tokens", title: "Theme tokens" },
-  { href: "/primitives", title: "shadcn primitives" },
+const REFERENCE_SECTIONS = [
+  { href: "#tokens", title: "Theme tokens" },
+  { href: "#primitives", title: "Primitives" },
 ]
 
 function resolveGroups(
@@ -82,8 +82,11 @@ export function ShowcaseNav({
   const groups = resolveGroups(entries)
 
   return (
-    <nav aria-label="Showcase sections" className="md:w-56 md:shrink-0">
-      <details className="sticky top-0 z-20 -mx-6 border-b border-border bg-background/95 px-6 py-2 backdrop-blur md:hidden">
+    <nav
+      aria-label="Showcase sections"
+      className="sticky top-0 z-20 md:top-8 md:w-56 md:shrink-0"
+    >
+      <details className="-mx-6 border-b border-border bg-background/95 px-6 py-2 backdrop-blur md:hidden">
         <summary className="flex cursor-pointer list-none items-center justify-between gap-2 text-sm font-medium">
           Sections
           <ChevronDown className="size-4 text-muted-foreground" />
@@ -92,7 +95,7 @@ export function ShowcaseNav({
           <NavGroups groups={groups} />
         </div>
       </details>
-      <div className="hidden md:sticky md:top-8 md:block md:max-h-[calc(100svh-4rem)] md:overflow-y-auto">
+      <div className="hidden md:block md:max-h-[calc(100svh-4rem)] md:overflow-y-auto">
         <NavGroups groups={groups} />
       </div>
     </nav>
@@ -123,16 +126,16 @@ function NavGroups({ groups }: { groups: readonly ResolvedNavGroup[] }) {
       ))}
       <div className="flex flex-col gap-1.5 border-t border-border pt-4">
         <span className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
-          More in the showcase
+          Reference
         </span>
         <ul className="flex flex-col gap-1">
-          {OTHER_PAGES.map((page) => (
-            <li key={page.href}>
+          {REFERENCE_SECTIONS.map((section) => (
+            <li key={section.href}>
               <Link
-                href={page.href}
+                href={section.href}
                 className="block rounded-md px-2 py-1 text-muted-foreground hover:bg-muted hover:text-foreground"
               >
-                {page.title}
+                {section.title}
               </Link>
             </li>
           ))}

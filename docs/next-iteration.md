@@ -18,7 +18,7 @@ The requirement on the slot's content has become an ordinary one for the kit as 
 
 `components/ui/pagination.tsx`, which shadcn generates, produces a mismatch between server and client: `PaginationLink` sets `data-slot="pagination-link"`, and the `Button` nested inside it overwrites it with `data-slot="button"` — React reports the mismatch during hydration.
 
-This doesn't affect us: `page-list` builds pagination directly from `Button` and doesn't use `PaginationLink`. The mismatch is only visible on the `/primitives` page, where the primitive is shown exactly as shadcn ships it.
+This doesn't affect us: `page-list` builds pagination directly from `Button` and doesn't use `PaginationLink`. The mismatch is visible in the showcase's "Primitives" section (`/#primitives`), where the primitive is shown exactly as shadcn ships it.
 
 It can't be fixed on our end: the consumer gets their own copy of the primitive from shadcn, our fix would never reach it, and our version would just drift from theirs. This is a question for shadcn, not for the kit.
 
