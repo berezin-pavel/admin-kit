@@ -1,6 +1,7 @@
 import Link from "next/link"
 
 import { ShowcaseGallery } from "@/components/showcase-gallery"
+import { ShowcaseNav } from "@/components/showcase-nav"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { buttonVariants } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
@@ -8,7 +9,7 @@ import { showcaseEntries } from "@/showcase/entries"
 
 export default function Page() {
   return (
-    <main className="mx-auto flex max-w-5xl flex-col gap-12 px-6 py-12">
+    <main className="mx-auto flex max-w-6xl flex-col gap-8 px-6 py-8 md:py-12">
       <header className="flex items-start justify-between gap-6">
         <div className="flex flex-col gap-3">
           <div className="flex flex-col gap-2">
@@ -38,7 +39,12 @@ export default function Page() {
         </div>
         <ThemeToggle />
       </header>
-      <ShowcaseGallery entries={showcaseEntries} />
+      <div className="flex flex-col gap-8 md:flex-row md:items-start md:gap-10">
+        <ShowcaseNav entries={showcaseEntries} />
+        <div className="min-w-0 flex-1">
+          <ShowcaseGallery entries={showcaseEntries} />
+        </div>
+      </div>
     </main>
   )
 }
