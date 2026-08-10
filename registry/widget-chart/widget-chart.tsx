@@ -6,41 +6,71 @@ import { Bar, BarChart, CartesianGrid, Line, LineChart, XAxis } from "recharts"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
   ChartContainer,
+  ChartLegend,
+  ChartLegendContent,
   ChartTooltip,
   ChartTooltipContent,
   type ChartConfig,
 } from "@/components/ui/chart"
 import { StateEmpty } from "@/registry/state-empty/state-empty"
 
-export interface WidgetChartPoint {
+export interface WidgetChartSeries {
+  id: string
   label: string
-  value: number
+  values: readonly number[]
 }
 
 export interface WidgetChartProps {
   title: string
-  data: readonly WidgetChartPoint[]
+  labels: readonly string[]
+  series: readonly WidgetChartSeries[]
   kind?: "line" | "bar"
   hint?: string
   empty?: ReactNode
   className?: string
 }
 
-const chartConfig = {
-  value: {
-    label: "Value",
-    color: "var(--chart-1)",
-  },
-} satisfies ChartConfig
+const seriesColorCount = 5
+
+function buildChartConfig(series: readonly WidgetChartSeries[]): ChartConfig {
+  return Object.fromEntries(
+    series.map((item, index) => [
+      item.id,
+      {
+        label: item.label,
+        color: `var(--chart-${(index % seriesColorCount) + 1})`,
+      },
+    ])
+  )
+}
+
+function buildChartData(
+  labels: readonly string[],
+  series: readonly WidgetChartSeries[]
+) {
+  return labels.map((label, index) => {
+    const row: Record<string, string | number> = { label }
+    for (const item of series) {
+      const value = item.values[index]
+      if (value !== undefined) {
+        row[item.id] = value
+      }
+    }
+    return row
+  })
+}
 
 export function WidgetChart({
   title,
-  data,
+  labels,
+  series,
   kind = "line",
   hint,
   empty,
   className,
 }: WidgetChartProps) {
+  const isEmpty = labels.length === 0 || series.length === 0
+
   return (
     <Card className={className}>
       <CardHeader>
@@ -49,12 +79,18 @@ export function WidgetChart({
         </CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-3">
-        {data.length === 0 ? (
+        {isEmpty ? (
           (empty ?? <StateEmpty title="No data" />)
         ) : (
-          <ChartContainer config={chartConfig} className="aspect-auto h-56">
+          <ChartContainer
+            config={buildChartConfig(series)}
+            className="aspect-auto h-56"
+          >
             {kind === "line" ? (
-              <LineChart data={data} margin={{ left: 12, right: 12 }}>
+              <LineChart
+                data={buildChartData(labels, series)}
+                margin={{ left: 12, right: 12 }}
+              >
                 <CartesianGrid vertical={false} />
                 <XAxis
                   dataKey="label"
@@ -62,20 +98,26 @@ export function WidgetChart({
                   axisLine={false}
                   tickMargin={8}
                 />
-                <ChartTooltip
-                  cursor={false}
-                  content={<ChartTooltipContent hideLabel />}
-                />
-                <Line
-                  dataKey="value"
-                  type="monotone"
-                  stroke="var(--color-value)"
-                  strokeWidth={2}
-                  dot={false}
-                />
+                <ChartTooltip content={<ChartTooltipContent />} />
+                {series.length > 1 ? (
+                  <ChartLegend content={<ChartLegendContent />} />
+                ) : null}
+                {series.map((item) => (
+                  <Line
+                    key={item.id}
+                    dataKey={item.id}
+                    type="monotone"
+                    stroke={`var(--color-${item.id})`}
+                    strokeWidth={2}
+                    dot={false}
+                  />
+                ))}
               </LineChart>
             ) : (
-              <BarChart data={data} margin={{ left: 12, right: 12 }}>
+              <BarChart
+                data={buildChartData(labels, series)}
+                margin={{ left: 12, right: 12 }}
+              >
                 <CartesianGrid vertical={false} />
                 <XAxis
                   dataKey="label"
@@ -83,11 +125,18 @@ export function WidgetChart({
                   axisLine={false}
                   tickMargin={8}
                 />
-                <ChartTooltip
-                  cursor={false}
-                  content={<ChartTooltipContent hideLabel />}
-                />
-                <Bar dataKey="value" fill="var(--color-value)" radius={4} />
+                <ChartTooltip content={<ChartTooltipContent />} />
+                {series.length > 1 ? (
+                  <ChartLegend content={<ChartLegendContent />} />
+                ) : null}
+                {series.map((item) => (
+                  <Bar
+                    key={item.id}
+                    dataKey={item.id}
+                    fill={`var(--color-${item.id})`}
+                    radius={4}
+                  />
+                ))}
               </BarChart>
             )}
           </ChartContainer>

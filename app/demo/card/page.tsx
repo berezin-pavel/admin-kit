@@ -6,12 +6,13 @@ import { WidgetPlaceholder } from "@/registry/widget-placeholder/widget-placehol
 import { WidgetTable } from "@/registry/widget-table/widget-table"
 
 import {
-  demoNewCustomersByMonth,
+  demoMonths,
+  demoNewCustomersSeries,
   demoOrderColumns,
   demoOrderRows,
-  demoOrdersByMonth,
+  demoOrdersSeries,
   demoProductItems,
-  demoRevenueByMonth,
+  demoRevenueSeries,
 } from "../data"
 
 export default function DemoCardPage() {
@@ -40,18 +41,21 @@ export default function DemoCardPage() {
         </div>
         <WidgetChart
           title="Revenue by month"
-          data={demoRevenueByMonth}
+          labels={demoMonths}
+          series={demoRevenueSeries}
           hint="in thousands of dollars"
         />
         <div className="grid gap-4 md:grid-cols-2">
           <WidgetChart
             title="Orders by month"
-            data={demoOrdersByMonth}
+            labels={demoMonths}
+            series={demoOrdersSeries}
             kind="bar"
           />
           <WidgetChart
             title="New customers by month"
-            data={demoNewCustomersByMonth}
+            labels={demoMonths}
+            series={demoNewCustomersSeries}
           />
         </div>
         <div className="grid gap-4 lg:grid-cols-2">
