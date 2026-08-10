@@ -9,13 +9,7 @@ import { SidebarToggle } from "@/registry/sidebar-toggle/sidebar-toggle"
 
 import { demoNav } from "@/app/demo/data"
 
-export function DemoShell({
-  sidebarVariant,
-  children,
-}: {
-  sidebarVariant: "flush" | "card"
-  children: ReactNode
-}) {
+export function DemoShell({ children }: { children: ReactNode }) {
   const [collapsed, setCollapsed] = useState(false)
 
   return (
@@ -25,7 +19,6 @@ export function DemoShell({
       activeHref="/"
       header={false}
       collapsed={collapsed}
-      sidebarVariant={sidebarVariant}
       sidebarFooter={
         <>
           <SidebarToggle

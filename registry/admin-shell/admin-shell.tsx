@@ -34,7 +34,7 @@ export function AdminShell({
   renderLink,
   sidebarFooter,
   collapsed = false,
-  sidebarVariant = "flush",
+  sidebarVariant = "card",
   header = true,
   actions,
   children,
@@ -44,7 +44,11 @@ export function AdminShell({
   const isCard = sidebarVariant === "card"
 
   const menu = (
-    <AdminMenu appName={appName} footer={sidebarFooter}>
+    <AdminMenu
+      appName={appName}
+      footer={sidebarFooter}
+      showOnDesktop={collapsed}
+    >
       <AdminNav nav={nav} activeHref={activeHref} renderLink={renderLink} />
     </AdminMenu>
   )
@@ -67,7 +71,12 @@ export function AdminShell({
         )}
       >
         {header === false ? (
-          <div className="flex shrink-0 justify-center p-3 md:hidden">
+          <div
+            className={cn(
+              "flex shrink-0 justify-center p-3",
+              !collapsed && "md:hidden"
+            )}
+          >
             {menu}
           </div>
         ) : null}

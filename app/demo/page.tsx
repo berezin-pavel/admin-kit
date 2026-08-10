@@ -1,8 +1,4 @@
-import Link from "next/link"
-
 import { DemoShell } from "@/components/demo-shell"
-import { buttonVariants } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
 import { WidgetChart } from "@/registry/widget-chart/widget-chart"
 import { WidgetList } from "@/registry/widget-list/widget-list"
 import { WidgetMetric } from "@/registry/widget-metric/widget-metric"
@@ -10,27 +6,19 @@ import { WidgetPlaceholder } from "@/registry/widget-placeholder/widget-placehol
 import { WidgetTable } from "@/registry/widget-table/widget-table"
 
 import {
+  demoFinanceSeries,
   demoMonths,
   demoNewCustomersSeries,
   demoOrderColumns,
   demoOrderRows,
-  demoOrdersSeries,
+  demoOrdersByChannelSeries,
   demoProductItems,
-  demoRevenueSeries,
 } from "./data"
 
 export default function DemoPage() {
   return (
-    <DemoShell sidebarVariant="flush">
+    <DemoShell>
       <div className="flex flex-col gap-4">
-        <div className="flex justify-end">
-          <Link
-            href="/demo/card"
-            className={cn(buttonVariants({ variant: "outline", size: "sm" }))}
-          >
-            View the card sidebar variant
-          </Link>
-        </div>
         <div className="grid gap-4 sm:grid-cols-3">
           <WidgetMetric
             title="Orders"
@@ -52,16 +40,16 @@ export default function DemoPage() {
           />
         </div>
         <WidgetChart
-          title="Revenue by month"
+          title="Revenue, expenses, and profit by month"
           labels={demoMonths}
-          series={demoRevenueSeries}
+          series={demoFinanceSeries}
           hint="in thousands of dollars"
         />
         <div className="grid gap-4 md:grid-cols-2">
           <WidgetChart
-            title="Orders by month"
+            title="Orders by channel"
             labels={demoMonths}
-            series={demoOrdersSeries}
+            series={demoOrdersByChannelSeries}
             kind="bar"
           />
           <WidgetChart

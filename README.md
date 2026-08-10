@@ -53,7 +53,7 @@ as they were.
 | Name                 | Type                 | What it does |
 | -------------------- | -------------------- | ------------- |
 | `admin-theme`         | `registry:theme`     | Colors and radii for the admin panel, for the light and dark schemes. Installed first — the other items rely on its tokens |
-| `admin-shell`         | `registry:block`     | A persistent full-height frame for the admin panel: an optional header, side navigation (on a narrow screen — an icon rail and a burger menu; on a wide one — a sidebar, or with `collapsed`, that same rail), a `sidebarFooter` slot at the bottom, and a work area with its own scrolling. The `sidebarVariant` prop switches the sidebar's look between `flush` (default) and `card`. Installed once per project |
+| `admin-shell`         | `registry:block`     | A persistent full-height frame for the admin panel: an optional header, side navigation (on a narrow screen — always an icon rail and a burger menu; on a wide one — a sidebar, or with `collapsed`, that same rail and burger menu), a `sidebarFooter` slot at the bottom, and a work area with its own scrolling. The `sidebarVariant` prop switches the sidebar's look between `flush` and `card` (default). Installed once per project |
 | `theme-toggle`        | `registry:component` | A theme-switch button that doesn't store the theme itself: the `isDark` state and the `onToggle` handler arrive as props. Fits the shell's `sidebarFooter` slot or anywhere else on the page |
 | `sidebar-toggle`      | `registry:component` | A button that collapses the shell's sidebar into the icon rail, built the same way as `theme-toggle`: `collapsed` and `onToggle` arrive as props. Visible only on a wide screen — on a narrow one the sidebar is already an icon rail with a burger menu. Its place is the `sidebarFooter` slot next to the theme toggle |
 | `widget-metric`       | `registry:component` | A single-number card for a dashboard: a title, a value, optional trend (an arrow with its own separate color), and a caption |
@@ -135,15 +135,18 @@ and the burger panel.
 
 The controlled `collapsed` prop (`false` by default) collapses the
 sidebar on a wide screen down to the same icon rail already shown on a
-narrow one: the consumer holds the state, the shell doesn't store it.
-`sidebar-toggle` provides the button for this — built the same way as
-`theme-toggle`, it goes into the same `sidebarFooter` slot and is visible
-only on a wide screen, hidden right inside the item itself on a narrow
-one. The `sidebarVariant` prop switches the look of the sidebar and the
-icon rail: `flush` (default) — pinned to the screen edge and separated
-by a line; `card` — a separate panel with margin from the edges, rounded
-corners, a background, and a border like the widgets have; in this
-variant the work area also gets margin from the edges.
+narrow one: the consumer holds the state, the shell doesn't store it. In
+the collapsed view a burger menu also appears next to the icons, opening
+a panel with section names — the same behavior as on a narrow screen,
+where the sidebar is always collapsed. `sidebar-toggle` provides the
+collapse button — built the same way as `theme-toggle`, it goes into the
+same `sidebarFooter` slot and is visible only on a wide screen, hidden
+right inside the item itself on a narrow one. The `sidebarVariant` prop
+switches the look of the sidebar and the icon rail: `flush` — pinned to
+the screen edge and separated by a line; `card` (default) — a separate
+panel with margin from the edges, rounded corners, a background, and a
+border like the widgets have; in this variant the work area also gets
+margin from the edges.
 
 **Contract for the `sidebarFooter` and `renderLink` slots: the content is
 drawn as several independent instances at once, rather than moving

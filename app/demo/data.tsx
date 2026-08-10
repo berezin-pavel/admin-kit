@@ -40,19 +40,34 @@ export const demoMonths = [
   "Dec",
 ] as const
 
-export const demoRevenueSeries: readonly WidgetChartSeries[] = [
+export const demoFinanceSeries: readonly WidgetChartSeries[] = [
   {
     id: "revenue",
     label: "Revenue",
     values: [298, 312, 356, 379, 402, 431, 458, 486, 512, 549, 601, 668],
   },
+  {
+    id: "expenses",
+    label: "Expenses",
+    values: [210, 205, 230, 235, 245, 255, 260, 270, 275, 285, 300, 320],
+  },
+  {
+    id: "profit",
+    label: "Profit",
+    values: [88, 107, 126, 144, 157, 176, 198, 216, 237, 264, 301, 348],
+  },
 ]
 
-export const demoOrdersSeries: readonly WidgetChartSeries[] = [
+export const demoOrdersByChannelSeries: readonly WidgetChartSeries[] = [
   {
-    id: "orders",
-    label: "Orders",
-    values: [210, 198, 235, 250, 267, 289, 301, 312, 298, 330, 356, 402],
+    id: "online",
+    label: "Online",
+    values: [115, 109, 133, 145, 157, 173, 184, 195, 188, 214, 235, 271],
+  },
+  {
+    id: "retail",
+    label: "Retail",
+    values: [95, 89, 102, 105, 110, 116, 117, 117, 110, 116, 121, 131],
   },
 ]
 

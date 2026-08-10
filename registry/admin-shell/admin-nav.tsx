@@ -48,9 +48,9 @@ export function AdminNav({
     <nav
       aria-label="Sections"
       className={cn(
-        "flex flex-col items-center gap-1 py-3",
-        isExpanded && "px-3",
-        collapsesAtMd && "md:px-3",
+        "flex flex-col gap-1 py-3",
+        isExpanded ? "items-stretch px-3" : "items-center",
+        collapsesAtMd && "md:items-stretch md:px-3",
         className
       )}
     >
