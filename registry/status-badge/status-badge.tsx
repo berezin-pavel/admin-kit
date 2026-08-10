@@ -15,7 +15,7 @@ const toneClassName: Record<StatusTone, string> = {
   neutral: "",
   success: "border-transparent bg-success text-success-foreground",
   warning: "border-transparent bg-warning text-warning-foreground",
-  danger: "",
+  danger: "border-transparent bg-destructive text-destructive-foreground",
 }
 
 export function StatusBadge({

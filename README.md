@@ -102,12 +102,15 @@ data. The heading stays put at any `status`, and for `page-list` the
 filter row stays with it too — so a query can be retried with a different
 filter without waiting for the page to reload.
 
-`status-badge` colors the `success` and `warning` tones with admin-kit
-theme tokens `--success` and `--warning` — they're not in shadcn's
-standard set at all ([ADR 0003](docs/adr/0003-success-and-warning-tokens.md)).
-Without the admin-kit theme, two of the four tones will be left without
-color; `neutral` and `danger` rest on shadcn's standard tokens and don't
-depend on the theme.
+`status-badge` and `admin-toaster` color the `success`, `warning`, and
+`danger` tones with admin-kit theme tokens `--success`, `--warning`, and
+`--destructive-foreground` — the first two aren't in shadcn's standard set
+at all, and `--destructive` there has no matching text color
+([ADR 0003](docs/adr/0003-success-and-warning-tokens.md)). Without the
+admin-kit theme, three of the four tones render incorrectly; `neutral`
+rests on the standard tokens and doesn't depend on the theme.
+`--destructive` itself is overridden by the theme with a muted color: the
+standard red stands out of line when it fills an entire toast.
 
 `admin-shell` is the layout for the whole application, not a chunk of
 markup inside a page: the shell takes up the full screen height (`h-svh`)

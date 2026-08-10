@@ -50,10 +50,9 @@ const toastIconByType: Record<string, ReactNode> = {
 }
 
 const toastClassNameByType: Record<string, string> = {
-  info: "border-transparent bg-foreground text-background",
   success: "border-transparent bg-success text-success-foreground",
   warning: "border-transparent bg-warning text-warning-foreground",
-  error: "border-transparent bg-destructive text-white",
+  error: "border-transparent bg-destructive text-destructive-foreground",
 }
 
 const TONED_TOAST_PARTS =
@@ -98,26 +97,31 @@ function AdminToastIcon({ type }: { type: string | undefined }) {
 function AdminToastList() {
   const { toasts } = useToastManager()
 
-  return toasts.map((item) => (
-    <Toast
-      key={item.id}
-      toast={item}
-      className={cn(
-        item.type ? toastClassNameByType[item.type] : undefined,
-        item.type ? TONED_TOAST_PARTS : undefined
-      )}
-    >
-      <ToastContent>
-        <AdminToastIcon type={item.type} />
-        <div className="flex min-w-0 flex-1 flex-col gap-1">
-          <ToastTitle />
-          <ToastDescription />
-        </div>
-        <ToastAction />
-        <ToastClose />
-      </ToastContent>
-    </Toast>
-  ))
+  return toasts.map((item) => {
+    const toned =
+      item.type && item.type in toastClassNameByType ? item.type : undefined
+
+    return (
+      <Toast
+        key={item.id}
+        toast={item}
+        className={cn(
+          toned ? toastClassNameByType[toned] : undefined,
+          toned ? TONED_TOAST_PARTS : undefined
+        )}
+      >
+        <ToastContent>
+          <AdminToastIcon type={item.type} />
+          <div className="flex min-w-0 flex-1 flex-col gap-1">
+            <ToastTitle />
+            <ToastDescription />
+          </div>
+          <ToastAction />
+          <ToastClose />
+        </ToastContent>
+      </Toast>
+    )
+  })
 }
 
 export function AdminToaster({ className }: AdminToasterProps) {
