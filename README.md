@@ -7,8 +7,9 @@ straight from this GitHub repository: no build, no hosting, no tokens.
 
 ## Requirements
 
-The consumer project is already initialized for shadcn: Next or Vite, Tailwind
-v4, `components.json` at the root. From there, plain `shadcn add` does the job.
+The consumer project is already initialized for shadcn: Next or Vite,
+Tailwind v4, `components.json` at the root. From there, plain `shadcn add`
+does the job.
 
 The primitives items depend on (`card`, `table`, `skeleton`, `sheet`, and
 others) are installed by the CLI in whatever style is already chosen in
@@ -50,42 +51,41 @@ as they were.
 
 ## Registry items
 
-| Name                 | Type                 | What it does |
-| -------------------- | -------------------- | ------------- |
-| `admin-theme`         | `registry:theme`     | Colors and radii for the admin panel, for the light and dark schemes. Installed first — the other items rely on its tokens |
-| `admin-shell`         | `registry:block`     | A persistent full-height frame for the admin panel: an optional header, side navigation (on a narrow screen — always an icon rail and a burger menu; on a wide one — a sidebar, or with `collapsed`, that same rail and burger menu), a `sidebarFooter` slot at the bottom, and a work area with its own scrolling. The `sidebarVariant` prop switches the sidebar's look between `flush` and `card` (default). Installed once per project |
-| `theme-toggle`        | `registry:component` | A theme-switch button that doesn't store the theme itself: the `isDark` state and the `onToggle` handler arrive as props. Fits the shell's `sidebarFooter` slot or anywhere else on the page |
-| `sidebar-toggle`      | `registry:component` | A button that collapses the shell's sidebar into the icon rail, built the same way as `theme-toggle`: `collapsed` and `onToggle` arrive as props. Visible only on a wide screen — on a narrow one the sidebar is already an icon rail with a burger menu. Its place is the `sidebarFooter` slot next to the theme toggle |
-| `widget-metric`       | `registry:component` | A single-number card for a dashboard: a title, a value, optional trend (an arrow with its own separate color), and a caption |
-| `widget-table`        | `registry:component` | A table with a header and columns: each column pulls its own value from the row and aligns via the `align` prop; without data and its own `empty` it shows `state-empty` |
-| `widget-chart`        | `registry:component` | A chart card: a shared `labels` axis and a `series` list each with its own `values`; the `kind` prop switches between a line and bars; series colors cycle through the `chart-1`…`chart-5` tokens, and a legend appears once there are two or more series; without `labels` or `series` it shows `state-empty` |
-| `widget-list`         | `registry:component` | A list of rows: a name, an optional explanation, optional content on the right, and an icon; without rows and its own `empty`, it shows `state-empty` |
-| `widget-placeholder`  | `registry:component` | A dashed-border placeholder in the work area where a widget hasn't been chosen yet — not about missing data, that's what `state-empty` is for |
-| `state-loading`       | `registry:component` | A skeleton in place of content while data is loading |
-| `state-empty`         | `registry:component` | A screen in place of content when there's no data: a title, an explanation, an actions slot; no icon — empty data is normal |
-| `state-error`         | `registry:component` | A screen for a load or request failure: a title, an explanation, an actions slot, a red error icon by default |
-| `state-forbidden`     | `registry:component` | A forbidden screen: a title, an explanation, an actions slot, a muted lock icon — missing permissions is a denial, not a breakage |
-| `state-offline`       | `registry:component` | A connection-lost screen: a title, an explanation, an actions slot, a red network-outage icon by default |
-| `page-entity`         | `registry:component` | A single-record page: a heading with actions and fields grouped into sections, with the field value being `ReactNode` rather than a string. The `status` prop swaps the fields for a loading, error, forbidden, or offline state, while the heading stays visible |
-| `page-header`         | `registry:component` | A section header: a title, an explanation, an actions slot on the right — a page building block, not a dashboard widget |
-| `status-badge`        | `registry:component` | A record-status badge with tone `neutral`, `success`, `warning`, `danger`; the `success` and `warning` tones depend on admin-kit's theme tokens |
-| `hint`                | `registry:component` | A tooltip hint next to a field label, column header, or metric: without `children` a question-mark icon, with `children` a wrapper around your own element; opens on hover and from the keyboard |
-| `date-field`          | `registry:component` | A date-picker field: a calendar in a popover, with the value a `YYYY-MM-DD` string with no `Date` object or time zone, so it doesn't drift by a day on serialization |
-| `date-time-field`     | `registry:component` | A date-and-time field: the value is a `YYYY-MM-DDTHH:mm` string; changing the date keeps the time, changing the time keeps the date, and the popover doesn't close on date selection |
-| `time-field`          | `registry:component` | A time field on a native `input type=time`: value `HH:mm`, `step` in minutes (5 by default), `min` and `max` bound the selection |
-| `color-field`         | `registry:component` | A color-picker field for a label, category, or kanban column: the value is HEX `#rrggbb`, with a `presets` palette in the popover, a native picker, and manual HEX entry |
-| `confirm-dialog`      | `registry:component` | A controlled confirmation modal: `open` and `onOpenChange` are held by the consumer, `tone="danger"` colors the confirm button, `loading` disables the buttons and blocks closing while the operation is in progress |
-| `admin-toaster`       | `registry:component` | Toasts about an operation's outcome: `AdminToaster` is placed once, and they're shown by calling `notify.info`, `notify.success`, `notify.warning`, `notify.danger` from anywhere, including code outside React |
-| `widget-progress`     | `registry:component` | A dashboard progress-bar card: the share as a percentage of `max` (100 by default), an out-of-range value doesn't break the layout |
-| `page-list`           | `registry:component` | A list page: a heading, a filter row, a table (`widget-table` inside), and page navigation. Every value is controlled, and pagination isn't rendered without `total`. The `status` prop swaps the body for a state, while the heading and filters stay visible |
+| Name                  | Type                  | What it does                                                                                                                                                                                                                                                                                                                                                           |
+| --------------------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `admin-theme`        | `registry:theme`     | Colors and radii for the admin panel, for the light and dark schemes. Installed first — the other items rely on its tokens                                                                                                                                                                                                                                            |
+| `admin-shell`        | `registry:block`     | A persistent full-height frame for the admin panel: an optional header, side navigation (on a narrow screen — always an icon rail and a burger menu; on a wide one — a sidebar, or with `collapsed`, that same rail and burger menu), a `sidebarFooter` slot at the bottom, and a work area with its own scrolling. The `sidebarVariant` prop switches the sidebar's look between `flush` and `card` (default). Installed once per project |
+| `theme-toggle`       | `registry:component` | A theme-switch button that doesn't store the theme itself: the `isDark` state and the `onToggle` handler arrive as props. Fits the shell's `sidebarFooter` slot or anywhere else on the page                                                                                                                                                                          |
+| `sidebar-toggle`     | `registry:component` | A button that collapses the shell's sidebar into the icon rail, built the same way as `theme-toggle`: `collapsed` and `onToggle` arrive as props. Visible only on a wide screen — on a narrow one the sidebar is already an icon rail with a burger menu. Its place is the `sidebarFooter` slot next to the theme toggle                                             |
+| `widget-metric`      | `registry:component` | A single-number card for a dashboard: a title, a value, optional trend (an arrow with its own separate color), and a caption                                                                                                                                                                                                                                          |
+| `widget-table`       | `registry:component` | A self-contained table card: the heading is optional, the header has a `toolbar` slot for filters, and the footer has a record count, pagination, and a page-size picker. A column with `sortable` gets a sort button and `aria-sort`; row order and slicing are set by the data owner, the table only reports the choice via `onSortChange` and `onPageChange`      |
+| `widget-chart`       | `registry:component` | A chart card: a shared `labels` axis and a `series` list each with its own `values`; the `kind` prop switches between a line and bars; series colors cycle through the `chart-1`…`chart-5` tokens, and a legend appears once there are two or more series; without `labels` or `series` it shows `state-empty`                                                       |
+| `widget-list`        | `registry:component` | A list of rows: a name, an optional explanation, optional content on the right, and an icon; without rows and its own `empty`, it shows `state-empty`                                                                                                                                                                                                                  |
+| `widget-placeholder` | `registry:component` | A dashed-border placeholder in the work area where a widget hasn't been chosen yet — not about missing data, that's what `state-empty` is for                                                                                                                                                                                                                          |
+| `state-loading`      | `registry:component` | A skeleton in place of content while data is loading                                                                                                                                                                                                                                                                                                                    |
+| `state-empty`        | `registry:component` | A screen in place of content when there's no data: a title, an explanation, an actions slot; no icon — empty data is normal                                                                                                                                                                                                                                            |
+| `state-error`        | `registry:component` | A screen for a load or request failure: a title, an explanation, an actions slot, a red error icon by default                                                                                                                                                                                                                                                          |
+| `state-forbidden`    | `registry:component` | A forbidden screen: a title, an explanation, an actions slot, a muted lock icon — missing permissions is a denial, not a breakage                                                                                                                                                                                                                                       |
+| `state-offline`      | `registry:component` | A connection-lost screen: a title, an explanation, an actions slot, a red network-outage icon by default                                                                                                                                                                                                                                                                |
+| `page-entity`        | `registry:component` | A single-record page: a heading with actions and fields grouped into sections, with the field value being `ReactNode` rather than a string. The `status` prop swaps the fields for a loading, error, forbidden, or offline state, while the heading stays visible                                                                                                     |
+| `page-header`        | `registry:component` | A section header: a title, an explanation, an actions slot on the right — a page building block, not a dashboard widget                                                                                                                                                                                                                                                |
+| `status-badge`       | `registry:component` | A record-status badge with tone `neutral`, `success`, `warning`, `danger`; the `success` and `warning` tones depend on admin-kit's theme tokens                                                                                                                                                                                                                        |
+| `hint`               | `registry:component` | A tooltip hint next to a field label, column header, or metric: without `children` a question-mark icon, with `children` a wrapper around your own element; opens on hover and from the keyboard                                                                                                                                                                      |
+| `date-field`         | `registry:component` | A date-picker field: a calendar in a popover, with the value a `YYYY-MM-DD` string with no `Date` object or time zone, so it doesn't drift by a day on serialization                                                                                                                                                                                                    |
+| `date-time-field`    | `registry:component` | A date-and-time field: the value is a `YYYY-MM-DDTHH:mm` string; changing the date keeps the time, changing the time keeps the date, and the popover doesn't close on date selection                                                                                                                                                                                   |
+| `time-field`         | `registry:component` | A time field on a native `input type=time`: value `HH:mm`, `step` in minutes (5 by default), `min` and `max` bound the selection                                                                                                                                                                                                                                        |
+| `color-field`        | `registry:component` | A color-picker field for a label, category, or kanban column: the value is HEX `#rrggbb`, with a `presets` palette in the popover, a native picker, and manual HEX entry                                                                                                                                                                                                |
+| `confirm-dialog`     | `registry:component` | A controlled confirmation modal: `open` and `onOpenChange` are held by the consumer, `tone="danger"` colors the confirm button, `loading` disables the buttons and blocks closing while the operation is in progress                                                                                                                                                   |
+| `admin-toaster`      | `registry:component` | Toasts about an operation's outcome: `AdminToaster` is placed once, and they're shown by calling `notify.info`, `notify.success`, `notify.warning`, `notify.danger` from anywhere, including code outside React                                                                                                                                                        |
+| `widget-progress`    | `registry:component` | A dashboard progress-bar card: the share as a percentage of `max` (100 by default), an out-of-range value doesn't break the layout                                                                                                                                                                                                                                      |
+| `page-list`          | `registry:component` | A list page: a section heading outside and a `widget-table` card below it — filters in its header, pagination and a page-size picker in the footer. Every value is controlled, and pagination isn't rendered without `total`. The `status` prop swaps the card's body for a state, while the heading and filters stay available                                     |
 
 `widget-table`, `widget-chart`, and `widget-list` — the widgets with
 data — show `state-empty` themselves when there's no data: no rows, no
 series, or no list items, and the `empty` prop wasn't passed. There's no
-need to wrap them in a state from outside. `widget-chart` needs the
-length of each series' `values` to match the length of `labels` — this
-isn't checked by types; on a mismatch, the missing points simply aren't
-drawn.
+need to wrap them in a state from outside. In `widget-chart` the length of
+each series' `values` should match the length of `labels` — this isn't
+checked by types; on a mismatch, the missing points simply aren't drawn.
 
 `widget-chart` is noticeably heavier than the rest: it pulls in
 `recharts`, adding 354 KB to the consumer's bundle (measured on a clean
@@ -168,13 +168,14 @@ in the DOM at the same time at any screen width, and three while the
 panel is open. A component with no state of its own — like `theme-toggle`
 and `sidebar-toggle`, which get their state and handler as props —
 renders identically in every instance and never notices the difference.
-A component with its own state falls apart: a user menu that stores its own open/closed state
-opens only in the instance that was clicked, while the rest stay closed;
-a counter that fetches its own data via an effect makes an independent
-request in every instance. The content of `sidebarFooter` and whatever
-`renderLink` renders must either have no state of its own or be
-controlled from outside — with state and callbacks arriving as props
-from the shell or the parent, the way `theme-toggle` does.
+A component with its own state falls apart: a user menu that stores its
+own open/closed state opens only in the instance that was clicked, while
+the rest stay closed; a counter that fetches its own data via an effect
+makes an independent request in every instance. The content of
+`sidebarFooter` and whatever `renderLink` renders must either have no
+state of its own or be controlled from outside — with state and
+callbacks arriving as props from the shell or the parent, the way
+`theme-toggle` does.
 
 ## Versions
 

@@ -108,7 +108,7 @@ const orderStatusClassName: Record<OrderStatus, string> = {
 }
 
 export const demoOrderColumns: readonly WidgetTableColumn<OrderRow>[] = [
-  { id: "number", title: "Number", cell: (row) => row.number },
+  { id: "number", title: "Number", sortable: true, cell: (row) => row.number },
   { id: "customer", title: "Customer", cell: (row) => row.customer },
   { id: "product", title: "Product", cell: (row) => row.product },
   {
@@ -120,7 +120,13 @@ export const demoOrderColumns: readonly WidgetTableColumn<OrderRow>[] = [
       </span>
     ),
   },
-  { id: "total", title: "Amount", align: "right", cell: (row) => row.total },
+  {
+    id: "total",
+    title: "Amount",
+    align: "right",
+    sortable: true,
+    cell: (row) => row.total,
+  },
 ]
 
 export const demoOrderRows: readonly OrderRow[] = [

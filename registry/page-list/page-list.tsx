@@ -1,6 +1,5 @@
 import type { Key, ReactNode } from "react"
 
-import { Card, CardContent } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 import { StateError } from "@/registry/state-error/state-error"
 import { StateForbidden } from "@/registry/state-forbidden/state-forbidden"
@@ -9,10 +8,10 @@ import { StateOffline } from "@/registry/state-offline/state-offline"
 import {
   WidgetTable,
   type WidgetTableColumn,
+  type WidgetTableSort,
 } from "@/registry/widget-table/widget-table"
 
 import { PageListFilters } from "./page-list-filters"
-import { PageListPagination } from "./page-list-pagination"
 
 export interface PageListFilter {
   id: string
@@ -37,8 +36,20 @@ export interface PageListProps<Row> {
   pageSize?: number
   total?: number
   onPageChange?: (page: number) => void
+  pageSizeOptions?: readonly number[]
+  onPageSizeChange?: (pageSize: number) => void
+  sort?: WidgetTableSort
+  onSortChange?: (sort: WidgetTableSort | undefined) => void
   status?: PageStatus
   className?: string
+}
+
+function getStatusContent(status: PageStatus): ReactNode {
+  if (status === "loading") return <StateLoading />
+  if (status === "error") return <StateError />
+  if (status === "forbidden") return <StateForbidden />
+  if (status === "offline") return <StateOffline />
+  return null
 }
 
 export function PageList<Row>({
@@ -54,6 +65,10 @@ export function PageList<Row>({
   pageSize = 10,
   total,
   onPageChange,
+  pageSizeOptions,
+  onPageSizeChange,
+  sort,
+  onSortChange,
   status = "ready",
   className,
 }: PageListProps<Row>) {
@@ -73,37 +88,34 @@ export function PageList<Row>({
         ) : null}
       </div>
 
-      {filters && filters.length > 0 ? (
-        <PageListFilters filters={filters} onFilterChange={onFilterChange} />
-      ) : null}
-
-      {status === "ready" ? (
-        <div className="flex flex-col gap-4">
-          <WidgetTable
-            title={title}
-            columns={columns}
-            rows={rows}
-            getRowKey={getRowKey}
-          />
-          {total !== undefined ? (
-            <PageListPagination
-              page={page}
-              pageSize={pageSize}
-              total={total}
-              onPageChange={onPageChange}
+      <WidgetTable
+        columns={columns}
+        rows={status === "ready" ? rows : []}
+        getRowKey={getRowKey}
+        toolbar={
+          filters && filters.length > 0 ? (
+            <PageListFilters
+              filters={filters}
+              onFilterChange={onFilterChange}
             />
-          ) : null}
-        </div>
-      ) : (
-        <Card>
-          <CardContent>
-            {status === "loading" ? <StateLoading /> : null}
-            {status === "error" ? <StateError /> : null}
-            {status === "forbidden" ? <StateForbidden /> : null}
-            {status === "offline" ? <StateOffline /> : null}
-          </CardContent>
-        </Card>
-      )}
+          ) : undefined
+        }
+        empty={status === "ready" ? undefined : getStatusContent(status)}
+        pagination={
+          status === "ready" && total !== undefined
+            ? {
+                page,
+                pageSize,
+                total,
+                onPageChange,
+                pageSizeOptions,
+                onPageSizeChange,
+              }
+            : undefined
+        }
+        sort={sort}
+        onSortChange={onSortChange}
+      />
     </div>
   )
 }

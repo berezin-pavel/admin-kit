@@ -192,19 +192,40 @@
       "name": "widget-table",
       "type": "registry:component",
       "title": "Table widget",
-      "description": "A table with a title and columns for a dashboard: columns and rows are passed as props, and each column pulls its value from the row via cell and is right-aligned via the align prop. With no rows and no empty prop passed it shows StateEmpty with \"No data\". Requires the admin-theme theme.",
+      "description": "A table card, self-sufficient: the title is optional, the header holds a toolbar slot for filters and search, and the footer holds the record count, pagination, and a page-size select. A column pulls its value from the row via cell and aligns with the align prop; a column with sortable gets a sort button in its header and aria-sort. Sorting and paging are controlled: the table reports the choice via onSortChange and onPageChange but never reorders or slices the rows itself — whoever owns the data sets the order and the slice, otherwise the element would lie on a server with paginated output. Pagination appears only with the pagination prop, and the page-size select only when pageSizeOptions and onPageSizeChange are passed. With no rows and no empty prop of its own it shows state-empty; the header and footer stay in place.",
       "registryDependencies": [
-        "card",
-        "table",
         "berezin-pavel/admin-kit/admin-theme",
-        "berezin-pavel/admin-kit/state-empty"
+        "berezin-pavel/admin-kit/state-empty",
+        "button",
+        "card",
+        "pagination",
+        "select",
+        "table"
       ],
       "files": [
         {
           "path": "registry/widget-table/widget-table.tsx",
           "type": "registry:component",
           "target": "@components/admin/widget-table.tsx"
+        },
+        {
+          "path": "registry/widget-table/widget-table-pagination.tsx",
+          "type": "registry:component",
+          "target": "@components/admin/widget-table-pagination.tsx"
+        },
+        {
+          "path": "registry/widget-table/widget-table-sort-button.tsx",
+          "type": "registry:component",
+          "target": "@components/admin/widget-table-sort-button.tsx"
+        },
+        {
+          "path": "registry/widget-table/widget-table-page-size-select.tsx",
+          "type": "registry:component",
+          "target": "@components/admin/widget-table-page-size-select.tsx"
         }
+      ],
+      "dependencies": [
+        "lucide-react"
       ]
     },
     {
@@ -594,18 +615,17 @@
       "title": "List page",
       "description": "A list page: a section title, optional actions, a filter bar, a table, and pagination underneath it. Everything is controlled: the page stores neither the current page number nor the filter values, it receives them as props and reports changes via onFilterChange and onPageChange. The status prop picks the body's content: loading, error, forbidden, and offline swap in the matching state, ready shows the table; the title and filters stay visible under any status, so the request can be retried with a different filter. Pagination is built from page, pageSize, and total, and isn't rendered at all if total isn't passed. A filter is either a text search or a dropdown list. Requires the admin-theme theme.",
       "registryDependencies": [
-        "input",
-        "select",
-        "label",
-        "button",
-        "pagination",
-        "card",
         "berezin-pavel/admin-kit/admin-theme",
-        "berezin-pavel/admin-kit/widget-table",
-        "berezin-pavel/admin-kit/state-loading",
         "berezin-pavel/admin-kit/state-error",
         "berezin-pavel/admin-kit/state-forbidden",
-        "berezin-pavel/admin-kit/state-offline"
+        "berezin-pavel/admin-kit/state-loading",
+        "berezin-pavel/admin-kit/state-offline",
+        "berezin-pavel/admin-kit/widget-table",
+        "button",
+        "card",
+        "input",
+        "label",
+        "select"
       ],
       "dependencies": [
         "lucide-react"
@@ -620,11 +640,6 @@
           "path": "registry/page-list/page-list-filters.tsx",
           "type": "registry:component",
           "target": "@components/admin/page-list-filters.tsx"
-        },
-        {
-          "path": "registry/page-list/page-list-pagination.tsx",
-          "type": "registry:component",
-          "target": "@components/admin/page-list-pagination.tsx"
         }
       ]
     }

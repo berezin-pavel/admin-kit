@@ -5,6 +5,7 @@ import {
 } from "@/registry/widget-table/widget-table"
 
 import type { ShowcaseEntry } from "./types"
+import { WidgetTableShowcaseView } from "./widget-table-view"
 
 interface OrderRow {
   number: string
@@ -63,7 +64,7 @@ export const widgetTableEntry: ShowcaseEntry = {
   item: "widget-table",
   title: "Table widget",
   description:
-    "A table with a title for a dashboard: columns and rows come in via props, and each column pulls its own value from a row through cell. Without rows and without the empty prop it shows a default state.",
+    "A self-contained table for a dashboard: columns and rows come in via props, and each column pulls its own value from a row through cell. The title is optional — without it the toolbar panel sits as the card's first row. The toolbar and pagination props put the filter panel and page navigation inside the same card, so the table can stand alone as its own block with no outer wrapping. Sorting is controlled: a column with sortable reports a click through onSortChange, but the table doesn't reorder rows — whoever owns the data does that. Pagination can offer a page-size choice via pageSizeOptions and onPageSizeChange. Without rows and without the empty prop it shows a default state.",
   views: [
     {
       id: "multiple-rows",
@@ -124,6 +125,54 @@ export const widgetTableEntry: ShowcaseEntry = {
       name: "No rows, default state",
       render: () => (
         <WidgetTable title="Recent orders" columns={columns} rows={[]} />
+      ),
+    },
+    {
+      id: "with-header-toolbar",
+      name: "With a title and a header panel",
+      render: () => (
+        <WidgetTableShowcaseView title="Recent orders" withToolbar />
+      ),
+    },
+    {
+      id: "without-header",
+      name: "Without a title",
+      render: () => <WidgetTableShowcaseView withToolbar />,
+    },
+    {
+      id: "with-pagination",
+      name: "With pagination",
+      render: () => (
+        <WidgetTableShowcaseView title="Recent orders" withPagination />
+      ),
+    },
+    {
+      id: "with-toolbar-and-pagination",
+      name: "With a panel and pagination together",
+      render: () => (
+        <WidgetTableShowcaseView
+          title="Recent orders"
+          withToolbar
+          withPagination
+        />
+      ),
+    },
+    {
+      id: "with-sort",
+      name: "With sortable columns",
+      render: () => (
+        <WidgetTableShowcaseView title="Recent orders" withSort />
+      ),
+    },
+    {
+      id: "with-page-size",
+      name: "With a page size picker",
+      render: () => (
+        <WidgetTableShowcaseView
+          title="Recent orders"
+          withPagination
+          withPageSizeOptions
+        />
       ),
     },
   ],

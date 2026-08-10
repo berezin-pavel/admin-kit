@@ -1,6 +1,12 @@
 import type { Key, ReactNode } from "react"
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import {
   Table,
   TableBody,
@@ -12,20 +18,64 @@ import {
 import { cn } from "@/lib/utils"
 import { StateEmpty } from "@/registry/state-empty/state-empty"
 
+import { WidgetTablePageSizeSelect } from "./widget-table-page-size-select"
+import { WidgetTablePaginationControls } from "./widget-table-pagination"
+import { WidgetTableSortButton } from "./widget-table-sort-button"
+
 export interface WidgetTableColumn<Row> {
   id: string
   title: string
   align?: "left" | "right"
+  sortable?: boolean
   cell: (row: Row) => ReactNode
 }
 
+export interface WidgetTableSort {
+  columnId: string
+  direction: "asc" | "desc"
+}
+
+export interface WidgetTablePagination {
+  page: number
+  pageSize: number
+  total: number
+  onPageChange?: (page: number) => void
+  pageSizeOptions?: readonly number[]
+  onPageSizeChange?: (pageSize: number) => void
+}
+
 export interface WidgetTableProps<Row> {
-  title: string
+  title?: string
   columns: readonly WidgetTableColumn<Row>[]
   rows: readonly Row[]
   getRowKey?: (row: Row, index: number) => Key
   empty?: ReactNode
   className?: string
+  toolbar?: ReactNode
+  pagination?: WidgetTablePagination
+  footer?: ReactNode
+  sort?: WidgetTableSort
+  onSortChange?: (sort: WidgetTableSort | undefined) => void
+}
+
+function formatPaginationRange(pagination: WidgetTablePagination) {
+  const rangeStart =
+    pagination.total === 0 ? 0 : (pagination.page - 1) * pagination.pageSize + 1
+  const rangeEnd = Math.min(
+    pagination.page * pagination.pageSize,
+    pagination.total
+  )
+  return `${rangeStart}–${rangeEnd} of ${pagination.total}`
+}
+
+function getAriaSort(
+  columnId: string,
+  sort: WidgetTableSort | undefined
+): "ascending" | "descending" | "none" {
+  if (!sort || sort.columnId !== columnId) {
+    return "none"
+  }
+  return sort.direction === "asc" ? "ascending" : "descending"
 }
 
 export function WidgetTable<Row>({
@@ -35,14 +85,26 @@ export function WidgetTable<Row>({
   getRowKey,
   empty,
   className,
+  toolbar,
+  pagination,
+  footer,
+  sort,
+  onSortChange,
 }: WidgetTableProps<Row>) {
   return (
     <Card className={className}>
-      <CardHeader>
-        <CardTitle className="text-sm font-medium text-muted-foreground">
-          {title}
-        </CardTitle>
-      </CardHeader>
+      {title || toolbar ? (
+        <CardHeader className="flex flex-wrap items-start justify-between gap-4">
+          {title ? (
+            <CardTitle className="text-sm font-medium text-muted-foreground">
+              {title}
+            </CardTitle>
+          ) : null}
+          {toolbar ? (
+            <div className="flex flex-wrap items-center gap-3">{toolbar}</div>
+          ) : null}
+        </CardHeader>
+      ) : null}
       <CardContent>
         {rows.length === 0 ? (
           (empty ?? <StateEmpty title="No data" />)
@@ -53,9 +115,28 @@ export function WidgetTable<Row>({
                 {columns.map((column) => (
                   <TableHead
                     key={column.id}
-                    className={cn(column.align === "right" && "text-right")}
+                    aria-sort={
+                      column.sortable && onSortChange
+                        ? getAriaSort(column.id, sort)
+                        : undefined
+                    }
+                    className={cn(
+                      column.align === "right" && "text-right",
+                      column.sortable && onSortChange && "p-0"
+                    )}
                   >
-                    {column.title}
+                    {column.sortable && onSortChange ? (
+                      <WidgetTableSortButton
+                        columnId={column.id}
+                        align={column.align}
+                        sort={sort}
+                        onSortChange={onSortChange}
+                      >
+                        {column.title}
+                      </WidgetTableSortButton>
+                    ) : (
+                      column.title
+                    )}
                   </TableHead>
                 ))}
               </TableRow>
@@ -79,6 +160,32 @@ export function WidgetTable<Row>({
           </Table>
         )}
       </CardContent>
+      {pagination ? (
+        <CardFooter className="flex-wrap justify-between gap-4">
+          <div className="flex flex-wrap items-center gap-3">
+            {footer ?? (
+              <>
+                {pagination.pageSizeOptions && pagination.onPageSizeChange ? (
+                  <WidgetTablePageSizeSelect
+                    pageSize={pagination.pageSize}
+                    pageSizeOptions={pagination.pageSizeOptions}
+                    onPageSizeChange={pagination.onPageSizeChange}
+                  />
+                ) : null}
+                <span className="text-sm text-muted-foreground">
+                  {formatPaginationRange(pagination)}
+                </span>
+              </>
+            )}
+          </div>
+          <WidgetTablePaginationControls
+            page={pagination.page}
+            pageSize={pagination.pageSize}
+            total={pagination.total}
+            onPageChange={pagination.onPageChange}
+          />
+        </CardFooter>
+      ) : null}
     </Card>
   )
 }

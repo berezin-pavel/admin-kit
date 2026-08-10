@@ -8,7 +8,10 @@ import { notify } from "@/registry/admin-toaster/admin-toaster"
 import { ConfirmDialog } from "@/registry/confirm-dialog/confirm-dialog"
 import { PageList, type PageListFilter } from "@/registry/page-list/page-list"
 import { StatusBadge } from "@/registry/status-badge/status-badge"
-import type { WidgetTableColumn } from "@/registry/widget-table/widget-table"
+import type {
+  WidgetTableColumn,
+  WidgetTableSort,
+} from "@/registry/widget-table/widget-table"
 
 import {
   demoOrderRows,
@@ -25,19 +28,44 @@ const statusOptions = [
   { value: "cancelled", label: orderStatusLabel.cancelled },
 ]
 
-const PAGE_SIZE = 4
+const PAGE_SIZE_OPTIONS = [4, 8, 12] as const
+const DEFAULT_PAGE_SIZE = 4
+
+function parseTotal(total: string) {
+  return Number(total.replace(/\D/g, ""))
+}
+
+function sortOrderRows(
+  rows: readonly OrderRow[],
+  sort: WidgetTableSort | undefined
+): readonly OrderRow[] {
+  if (!sort) {
+    return rows
+  }
+
+  const direction = sort.direction === "asc" ? 1 : -1
+
+  return [...rows].sort((a, b) => {
+    if (sort.columnId === "total") {
+      return (parseTotal(a.total) - parseTotal(b.total)) * direction
+    }
+    return (Number(a.number) - Number(b.number)) * direction
+  })
+}
 
 export function DemoOrders() {
   const [search, setSearch] = useState("")
   const [status, setStatus] = useState("all")
   const [page, setPage] = useState(1)
+  const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE)
+  const [sort, setSort] = useState<WidgetTableSort | undefined>(undefined)
   const [rows, setRows] = useState<readonly OrderRow[]>(demoOrderRows)
   const [pendingOrder, setPendingOrder] = useState<OrderRow | null>(null)
   const [deleting, setDeleting] = useState(false)
 
   const query = search.trim().toLowerCase()
 
-  const matched = rows.filter((row) => {
+  const filtered = rows.filter((row) => {
     const byStatus = status === "all" || row.status === status
     const byQuery =
       query === "" ||
@@ -48,13 +76,16 @@ export function DemoOrders() {
     return byStatus && byQuery
   })
 
-  const lastPage = Math.max(1, Math.ceil(matched.length / PAGE_SIZE))
+  const matched = sortOrderRows(filtered, sort)
+
+  const lastPage = Math.max(1, Math.ceil(matched.length / pageSize))
   const currentPage = Math.min(page, lastPage)
 
   const columns: readonly WidgetTableColumn<OrderRow>[] = [
     {
       id: "number",
       title: "Number",
+      sortable: true,
       cell: (row) => (
         <Link href="/demo/order" className="font-medium hover:underline">
           #{row.number}
@@ -72,7 +103,13 @@ export function DemoOrders() {
         </StatusBadge>
       ),
     },
-    { id: "total", title: "Total", align: "right", cell: (row) => row.total },
+    {
+      id: "total",
+      title: "Total",
+      align: "right",
+      sortable: true,
+      cell: (row) => row.total,
+    },
     {
       id: "actions",
       title: "",
@@ -144,14 +181,24 @@ export function DemoOrders() {
         }}
         columns={columns}
         rows={matched.slice(
-          (currentPage - 1) * PAGE_SIZE,
-          currentPage * PAGE_SIZE
+          (currentPage - 1) * pageSize,
+          currentPage * pageSize
         )}
         getRowKey={(row) => row.number}
         page={currentPage}
-        pageSize={PAGE_SIZE}
+        pageSize={pageSize}
         total={matched.length}
         onPageChange={setPage}
+        pageSizeOptions={PAGE_SIZE_OPTIONS}
+        onPageSizeChange={(nextPageSize) => {
+          setPageSize(nextPageSize)
+          setPage(1)
+        }}
+        sort={sort}
+        onSortChange={(nextSort) => {
+          setSort(nextSort)
+          setPage(1)
+        }}
       />
       <ConfirmDialog
         open={pendingOrder !== null}

@@ -3,6 +3,7 @@ import { DemoConfirmDialog } from "@/components/demo-confirm-dialog"
 import { DemoDateField } from "@/components/demo-date-field"
 import { DemoDateTimeField } from "@/components/demo-date-time-field"
 import { DemoHint } from "@/components/demo-hint"
+import { DemoStandaloneTable } from "@/components/demo-standalone-table"
 import { DemoTimeField } from "@/components/demo-time-field"
 import { DemoToaster } from "@/components/demo-toaster"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -10,14 +11,11 @@ import { WidgetChart } from "@/registry/widget-chart/widget-chart"
 import { WidgetList } from "@/registry/widget-list/widget-list"
 import { WidgetMetric } from "@/registry/widget-metric/widget-metric"
 import { WidgetPlaceholder } from "@/registry/widget-placeholder/widget-placeholder"
-import { WidgetTable } from "@/registry/widget-table/widget-table"
 
 import {
   demoFinanceSeries,
   demoMonths,
   demoNewCustomersSeries,
-  demoOrderColumns,
-  demoOrderRows,
   demoOrdersByChannelSeries,
   demoProductItems,
 } from "./data"
@@ -65,12 +63,7 @@ export default function DemoPage() {
         />
       </div>
       <div className="grid gap-4 lg:grid-cols-2">
-        <WidgetTable
-          title="Recent orders"
-          columns={demoOrderColumns}
-          rows={demoOrderRows}
-          getRowKey={(row) => row.number}
-        />
+        <DemoStandaloneTable />
         <div className="flex flex-col gap-4">
           <WidgetList title="Products" items={demoProductItems} />
           <WidgetPlaceholder

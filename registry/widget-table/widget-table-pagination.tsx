@@ -10,7 +10,7 @@ import {
   PaginationItem,
 } from "@/components/ui/pagination"
 
-export interface PageListPaginationProps {
+export interface WidgetTablePaginationControlsProps {
   page: number
   pageSize: number
   total: number
@@ -41,22 +41,17 @@ function getPageNumbers(
   }, [])
 }
 
-export function PageListPagination({
+export function WidgetTablePaginationControls({
   page,
   pageSize,
   total,
   onPageChange,
-}: PageListPaginationProps) {
+}: WidgetTablePaginationControlsProps) {
   const pageCount = Math.max(1, Math.ceil(total / pageSize))
-  const rangeStart = total === 0 ? 0 : (page - 1) * pageSize + 1
-  const rangeEnd = Math.min(page * pageSize, total)
   const pageNumbers = getPageNumbers(page, pageCount)
 
   return (
-    <Pagination className="justify-between">
-      <span className="text-sm text-muted-foreground">
-        {rangeStart}–{rangeEnd} of {total}
-      </span>
+    <Pagination className="mx-0 w-fit">
       <PaginationContent>
         <PaginationItem>
           <Button
