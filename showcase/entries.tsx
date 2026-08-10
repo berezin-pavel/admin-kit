@@ -1,8 +1,12 @@
 import { adminShellEntry } from "./admin-shell"
 import { adminToasterEntry } from "./admin-toaster"
+import { colorFieldEntry } from "./color-field"
 import { confirmDialogEntry } from "./confirm-dialog"
+import { dateFieldEntry } from "./date-field"
+import { dateTimeFieldEntry } from "./date-time-field"
 import { hintEntry } from "./hint"
 import { sidebarToggleEntry } from "./sidebar-toggle"
+import { timeFieldEntry } from "./time-field"
 import { stateEmptyEntry, stateLoadingEntry } from "./states"
 import {
   stateErrorEntry,
@@ -33,6 +37,10 @@ export const showcaseEntries: readonly ShowcaseEntry[] = [
   pageHeaderEntry,
   statusBadgeEntry,
   hintEntry,
+  dateFieldEntry,
+  dateTimeFieldEntry,
+  timeFieldEntry,
+  colorFieldEntry,
   confirmDialogEntry,
   adminToasterEntry,
   widgetProgressEntry,

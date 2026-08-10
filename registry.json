@@ -478,6 +478,96 @@
     },
     {
       "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "date-field",
+      "type": "registry:component",
+      "title": "Date field",
+      "description": "A single-date picker with a calendar in a popover. The value is a YYYY-MM-DD string, and an empty string means \"nothing selected\": there's no Date object and no timezone in the props — parsing and formatting go by local date components, so the value never drifts a day off during serialization or on the server. Controlled: the consumer holds value and onChange. The trigger button, as wide as the field, shows the date in English (e.g. \"August 10, 2026\"), and picking a date in the calendar closes the popover right away. The label prop draws a caption and links it to the trigger.",
+      "registryDependencies": [
+        "button",
+        "calendar",
+        "label",
+        "popover"
+      ],
+      "dependencies": [
+        "date-fns",
+        "lucide-react"
+      ],
+      "files": [
+        {
+          "path": "registry/date-field/date-field.tsx",
+          "type": "registry:component",
+          "target": "@components/admin/date-field.tsx"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "date-time-field",
+      "type": "registry:component",
+      "title": "Date-time field",
+      "description": "A picker for a date together with a time. The value is a YYYY-MM-DDTHH:mm string with no seconds and no timezone, and an empty string means \"nothing selected\". Controlled, built like date-field but deliberately independent of it: registry items are installed one at a time, so each one parses its string on its own. The popover has a time field next to the calendar — changing the date keeps the chosen time, changing the time keeps the date, and if there's no date yet, today is used. The popover doesn't close when a date is picked, or there'd be no time to set the time.",
+      "registryDependencies": [
+        "button",
+        "calendar",
+        "input",
+        "label",
+        "popover"
+      ],
+      "dependencies": [
+        "date-fns",
+        "lucide-react"
+      ],
+      "files": [
+        {
+          "path": "registry/date-time-field/date-time-field.tsx",
+          "type": "registry:component",
+          "target": "@components/admin/date-time-field.tsx"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "time-field",
+      "type": "registry:component",
+      "title": "Time field",
+      "description": "A time picker built on a native input type=time: the value is an HH:mm string in 24-hour format, and an empty string means \"nothing selected\". Controlled, holds no state of its own. The step prop sets the step in minutes (5 by default) and is converted to seconds internally, as the native element requires; min and max constrain the selection in the same format. The native base is a deliberate choice — it gives keyboard input, a local format, and a mobile picker with no code of your own; the clock icon is inverted in the dark theme.",
+      "registryDependencies": [
+        "input",
+        "label"
+      ],
+      "dependencies": [],
+      "files": [
+        {
+          "path": "registry/time-field/time-field.tsx",
+          "type": "registry:component",
+          "target": "@components/admin/time-field.tsx"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "color-field",
+      "type": "registry:component",
+      "title": "Color field",
+      "description": "A color picker for entities that carry their own color — an order tag, a product category, a kanban column. The value is a HEX string like #rrggbb, and an empty string means \"nothing selected\"; the color always leaves the component in lowercase. Controlled. Inside the popover: a grid of quick colors from presets (its own palette of twelve data colors, not theme tokens — otherwise the value stored in the consumer's database would shift along with the look), a native input type=color for an arbitrary shade, and a text field for manually typing a HEX code, where an unfinished entry never leaves as a value.",
+      "registryDependencies": [
+        "input",
+        "label",
+        "popover"
+      ],
+      "dependencies": [
+        "lucide-react"
+      ],
+      "files": [
+        {
+          "path": "registry/color-field/color-field.tsx",
+          "type": "registry:component",
+          "target": "@components/admin/color-field.tsx"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
       "name": "widget-progress",
       "title": "Progress widget",
       "type": "registry:component",

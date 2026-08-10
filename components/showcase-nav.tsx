@@ -35,6 +35,10 @@ const ENTRY_GROUPS: readonly ShowcaseNavGroup[] = [
     items: ["page-header", "status-badge", "hint"],
   },
   {
+    title: "Fields",
+    items: ["date-field", "date-time-field", "time-field", "color-field"],
+  },
+  {
     title: "Feedback",
     items: ["confirm-dialog", "admin-toaster"],
   },

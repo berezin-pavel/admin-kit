@@ -1,5 +1,9 @@
+import { DemoColorField } from "@/components/demo-color-field"
 import { DemoConfirmDialog } from "@/components/demo-confirm-dialog"
+import { DemoDateField } from "@/components/demo-date-field"
+import { DemoDateTimeField } from "@/components/demo-date-time-field"
 import { DemoHint } from "@/components/demo-hint"
+import { DemoTimeField } from "@/components/demo-time-field"
 import { DemoToaster } from "@/components/demo-toaster"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { WidgetChart } from "@/registry/widget-chart/widget-chart"
@@ -75,6 +79,18 @@ export default function DemoPage() {
           />
         </div>
       </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Form fields</CardTitle>
+        </CardHeader>
+        <CardContent className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <DemoDateField />
+          <DemoDateTimeField />
+          <DemoTimeField />
+          <DemoColorField />
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader>
