@@ -9,7 +9,6 @@ import {
   type AdminNavItem,
   type AdminNavLinkRenderer,
 } from "./admin-nav"
-import { AdminRail } from "./admin-rail"
 
 export type { AdminNavItem, AdminNavLinkRenderer }
 
@@ -58,30 +57,42 @@ export function AdminShell({
         className
       )}
     >
-      <AdminRail
-        nav={nav}
-        activeHref={activeHref}
-        renderLink={renderLink}
-        menu={header ? undefined : menu}
-        footer={sidebarFooter}
-        collapsed={collapsed}
-        variant={sidebarVariant}
-      />
       <aside
         className={cn(
-          "w-60 shrink-0 flex-col overflow-hidden",
+          "flex w-14 shrink-0 flex-col overflow-hidden",
+          !collapsed && "md:w-60",
           isCard
             ? "rounded-xl bg-card ring-1 ring-foreground/10"
-            : "border-r border-sidebar-border bg-sidebar",
-          collapsed ? "hidden" : "hidden md:flex"
+            : "border-r border-sidebar-border bg-sidebar"
         )}
       >
-        <div className="flex h-14 shrink-0 items-center px-6 text-sm font-semibold">
+        {header === false ? (
+          <div className="flex shrink-0 justify-center p-3 md:hidden">
+            {menu}
+          </div>
+        ) : null}
+        <div
+          className={cn(
+            "hidden h-14 shrink-0 items-center px-6 text-sm font-semibold",
+            !collapsed && "md:flex"
+          )}
+        >
           {appName}
         </div>
-        <AdminNav nav={nav} activeHref={activeHref} renderLink={renderLink} />
+        <AdminNav
+          nav={nav}
+          activeHref={activeHref}
+          renderLink={renderLink}
+          collapsed={collapsed}
+          responsive
+        />
         {sidebarFooter ? (
-          <div className="mt-auto flex items-center gap-2 border-t border-sidebar-border p-3">
+          <div
+            className={cn(
+              "mt-auto flex shrink-0 flex-col items-center gap-2 border-t border-sidebar-border p-3",
+              !collapsed && "md:flex-row"
+            )}
+          >
             {sidebarFooter}
           </div>
         ) : null}
