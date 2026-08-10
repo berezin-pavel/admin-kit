@@ -1,8 +1,4 @@
-import { readdirSync } from "node:fs"
-import path from "node:path"
 import type { ReactNode } from "react"
-
-import Link from "next/link"
 
 import { PrimitiveChartDemo } from "@/components/primitive-chart-demo"
 import { PrimitiveSection } from "@/components/primitive-section"
@@ -57,18 +53,19 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { getRequiredPrimitives } from "@/lib/registry-primitives"
 
 interface PrimitiveDemo {
-  file: string
   name: string
+  title: string
   description: string
   demo: ReactNode
 }
 
-const PRIMITIVES: readonly PrimitiveDemo[] = [
+const PRIMITIVE_DEMOS: readonly PrimitiveDemo[] = [
   {
-    file: "badge.tsx",
-    name: "Badge",
+    name: "badge",
+    title: "Badge",
     description: "A compact label for status, count, or a tag.",
     demo: (
       <>
@@ -78,8 +75,8 @@ const PRIMITIVES: readonly PrimitiveDemo[] = [
     ),
   },
   {
-    file: "button.tsx",
-    name: "Button",
+    name: "button",
+    title: "Button",
     description: "An action button: filled and outline variants.",
     demo: (
       <>
@@ -89,8 +86,8 @@ const PRIMITIVES: readonly PrimitiveDemo[] = [
     ),
   },
   {
-    file: "card.tsx",
-    name: "Card",
+    name: "card",
+    title: "Card",
     description: 'A container card, regular size and compact size="sm".',
     demo: (
       <>
@@ -117,15 +114,15 @@ const PRIMITIVES: readonly PrimitiveDemo[] = [
     ),
   },
   {
-    file: "chart.tsx",
-    name: "Chart",
+    name: "chart",
+    title: "Chart",
     description:
       "A wrapper around recharts: a container with theme colors and a tooltip. Line and bar are the same primitive.",
     demo: <PrimitiveChartDemo />,
   },
   {
-    file: "input.tsx",
-    name: "Input",
+    name: "input",
+    title: "Input",
     description: "A text field: regular and disabled.",
     demo: (
       <>
@@ -135,8 +132,8 @@ const PRIMITIVES: readonly PrimitiveDemo[] = [
     ),
   },
   {
-    file: "label.tsx",
-    name: "Label",
+    name: "label",
+    title: "Label",
     description:
       "A form field caption. Dims along with the field when it's disabled.",
     demo: (
@@ -162,8 +159,8 @@ const PRIMITIVES: readonly PrimitiveDemo[] = [
     ),
   },
   {
-    file: "pagination.tsx",
-    name: "Pagination",
+    name: "pagination",
+    title: "Pagination",
     description: "Paginated navigation with an active link and regular ones.",
     demo: (
       <Pagination>
@@ -193,8 +190,8 @@ const PRIMITIVES: readonly PrimitiveDemo[] = [
     ),
   },
   {
-    file: "progress.tsx",
-    name: "Progress",
+    name: "progress",
+    title: "Progress",
     description: "A progress bar with a label and a value, two states.",
     demo: (
       <>
@@ -214,8 +211,8 @@ const PRIMITIVES: readonly PrimitiveDemo[] = [
     ),
   },
   {
-    file: "select.tsx",
-    name: "Select",
+    name: "select",
+    title: "Select",
     description: "A dropdown list: with a selected value and without.",
     demo: (
       <>
@@ -242,8 +239,8 @@ const PRIMITIVES: readonly PrimitiveDemo[] = [
     ),
   },
   {
-    file: "sheet.tsx",
-    name: "Sheet",
+    name: "sheet",
+    title: "Sheet",
     description: "A side panel that slides in from the right or left. Click it.",
     demo: (
       <>
@@ -282,8 +279,8 @@ const PRIMITIVES: readonly PrimitiveDemo[] = [
     ),
   },
   {
-    file: "skeleton.tsx",
-    name: "Skeleton",
+    name: "skeleton",
+    title: "Skeleton",
     description: "A loading placeholder: text lines and a round avatar.",
     demo: (
       <>
@@ -296,8 +293,8 @@ const PRIMITIVES: readonly PrimitiveDemo[] = [
     ),
   },
   {
-    file: "table.tsx",
-    name: "Table",
+    name: "table",
+    title: "Table",
     description: "A table with rows: regular and selected (data-state).",
     demo: (
       <Table>
@@ -322,59 +319,69 @@ const PRIMITIVES: readonly PrimitiveDemo[] = [
   },
 ]
 
-function findUndocumentedPrimitives() {
-  const uiDirectory = path.join(process.cwd(), "components/ui")
-  const files = readdirSync(uiDirectory)
-    .filter((file) => file.endsWith(".tsx"))
-    .sort()
-  const documented = new Set(PRIMITIVES.map((primitive) => primitive.file))
-
-  return files.filter((file) => !documented.has(file))
-}
-
-export default function PrimitivesPage() {
-  const undocumented = findUndocumentedPrimitives()
+export function ShowcasePrimitives() {
+  const required = getRequiredPrimitives()
+  const demoByName = new Map(
+    PRIMITIVE_DEMOS.map((primitive) => [primitive.name, primitive])
+  )
 
   return (
-    <main className="mx-auto flex max-w-5xl flex-col gap-10 px-6 py-12">
-      <header className="flex flex-col gap-3">
-        <Link
-          href="/"
-          className="w-fit text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
-        >
-          ← Showcase
-        </Link>
-        <h1 className="text-3xl font-semibold">shadcn primitives</h1>
+    <section id="primitives" className="flex scroll-mt-20 flex-col gap-6">
+      <header className="flex flex-col gap-2">
+        <h2 className="text-2xl font-semibold">Primitives</h2>
         <p className="max-w-2xl text-muted-foreground">
-          These aren&apos;t admin-kit registry items — they&apos;re shadcn
-          primitives (
+          The primitives admin-kit items depend on — entries from{" "}
+          <code className="rounded bg-muted px-1.5 py-0.5 text-sm">
+            registryDependencies
+          </code>{" "}
+          in{" "}
+          <code className="rounded bg-muted px-1.5 py-0.5 text-sm">
+            registry.json
+          </code>
+          , which are not items of admin-kit itself. The CLI installs them
+          for the consumer automatically as a dependency of the chosen item,
+          they aren’t distributed by a separate command. The list is built
+          from the registry, not from the contents of{" "}
           <code className="rounded bg-muted px-1.5 py-0.5 text-sm">
             components/ui/
           </code>
-          ) the kit is built on. The CLI installs them for the consumer
-          automatically as dependencies of the chosen items; they aren&apos;t
-          distributed by a separate command. Below is what&apos;s here and how
-          it looks in the admin-kit theme, with a couple of characteristic
-          states per primitive.
+          , so it won’t drift from the kit when the set of primitives
+          changes. Each one shows which kit items depend on it.
         </p>
       </header>
-      {undocumented.length > 0 ? (
-        <div className="rounded-lg border border-warning/40 bg-warning/10 px-4 py-3 text-sm text-foreground">
-          No demo on this page for: {undocumented.join(", ")}.
-        </div>
-      ) : null}
       <div className="flex flex-col gap-12">
-        {PRIMITIVES.map((primitive) => (
-          <PrimitiveSection
-            key={primitive.file}
-            file={primitive.file}
-            name={primitive.name}
-            description={primitive.description}
-          >
-            {primitive.demo}
-          </PrimitiveSection>
-        ))}
+        {required.map((primitive) => {
+          const demo = demoByName.get(primitive.name)
+
+          if (!demo) {
+            return (
+              <div
+                key={primitive.name}
+                className="rounded-lg border border-warning/40 bg-warning/10 px-4 py-3 text-sm text-foreground"
+              >
+                No demo for this primitive{" "}
+                <code className="rounded bg-muted px-1 py-0.5">
+                  {primitive.name}
+                </code>
+                , even though the kit depends on it. Required by:{" "}
+                {primitive.requiredBy.join(", ")}.
+              </div>
+            )
+          }
+
+          return (
+            <PrimitiveSection
+              key={primitive.name}
+              file={`${primitive.name}.tsx`}
+              name={demo.title}
+              description={demo.description}
+              requiredBy={primitive.requiredBy}
+            >
+              {demo.demo}
+            </PrimitiveSection>
+          )
+        })}
       </div>
-    </main>
+    </section>
   )
 }

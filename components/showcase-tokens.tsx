@@ -1,5 +1,3 @@
-import Link from "next/link"
-
 import {
   Table,
   TableBody,
@@ -36,7 +34,7 @@ const GROUPS: {
   },
 ]
 
-export default function TokensPage() {
+export function ShowcaseTokens() {
   const tokens = getThemeTokens()
   const background = tokens.find((token) => token.name === "background")
 
@@ -45,15 +43,9 @@ export default function TokensPage() {
   }
 
   return (
-    <main className="mx-auto flex max-w-5xl flex-col gap-10 px-6 py-12">
-      <header className="flex flex-col gap-3">
-        <Link
-          href="/"
-          className="w-fit text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
-        >
-          ← Showcase
-        </Link>
-        <h1 className="text-3xl font-semibold">Theme tokens</h1>
+    <section id="tokens" className="flex scroll-mt-20 flex-col gap-6">
+      <header className="flex flex-col gap-2">
+        <h2 className="text-2xl font-semibold">Theme tokens</h2>
         <p className="max-w-2xl text-muted-foreground">
           A color swatch, the variable name, and its value — for the light
           and dark schemes at once. Values are read directly from{" "}
@@ -64,7 +56,7 @@ export default function TokensPage() {
           <code className="rounded bg-muted px-1.5 py-0.5 text-sm">:root</code>{" "}
           and{" "}
           <code className="rounded bg-muted px-1.5 py-0.5 text-sm">.dark</code>
-          {" "}blocks), so the page never drifts from the theme after the
+          {" "}blocks), so this section never drifts from the theme after the
           next edit.
         </p>
         <p className="max-w-2xl text-sm text-muted-foreground">
@@ -85,17 +77,19 @@ export default function TokensPage() {
           ) and shown here alongside the rest.
         </p>
       </header>
-      {GROUPS.map((group) => (
-        <TokenGroup
-          key={group.key}
-          title={group.title}
-          description={group.description}
-          tokens={tokens.filter((token) => token.group === group.key)}
-          lightBackdrop={background.light}
-          darkBackdrop={background.dark}
-        />
-      ))}
-    </main>
+      <div className="flex flex-col gap-10">
+        {GROUPS.map((group) => (
+          <TokenGroup
+            key={group.key}
+            title={group.title}
+            description={group.description}
+            tokens={tokens.filter((token) => token.group === group.key)}
+            lightBackdrop={background.light}
+            darkBackdrop={background.dark}
+          />
+        ))}
+      </div>
+    </section>
   )
 }
 
@@ -113,9 +107,9 @@ function TokenGroup({
   darkBackdrop: string
 }) {
   return (
-    <section className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-1">
-        <h2 className="text-xl font-semibold">{title}</h2>
+        <h3 className="text-xl font-semibold">{title}</h3>
         <p className="text-sm text-muted-foreground">{description}</p>
       </div>
       <div className="overflow-hidden rounded-lg border border-border">
@@ -144,7 +138,7 @@ function TokenGroup({
           </TableBody>
         </Table>
       </div>
-    </section>
+    </div>
   )
 }
 
