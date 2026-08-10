@@ -10,7 +10,11 @@ export function ShowcaseGallery({
   return (
     <div className="flex flex-col gap-16">
       {entries.map((entry) => (
-        <section key={entry.item} className="flex flex-col gap-6">
+        <section
+          key={entry.item}
+          id={entry.item}
+          className="flex scroll-mt-20 flex-col gap-6"
+        >
           <header className="flex flex-col gap-2">
             <h2 className="text-2xl font-semibold">{entry.title}</h2>
             <p className="max-w-2xl text-muted-foreground">
