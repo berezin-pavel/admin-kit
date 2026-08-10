@@ -46,8 +46,8 @@
           "sidebar-ring": "oklch(0.708 0 0)",
           "success": "oklch(0.52 0.12 150)",
           "success-foreground": "oklch(0.985 0 0)",
-          "warning": "oklch(0.77 0.16 70)",
-          "warning-foreground": "oklch(0.216 0.04 60)"
+          "warning": "oklch(0.55 0.14 55)",
+          "warning-foreground": "oklch(0.985 0 0)"
         },
         "dark": {
           "background": "oklch(0.145 0 0)",
@@ -81,10 +81,10 @@
           "sidebar-accent-foreground": "oklch(0.985 0 0)",
           "sidebar-border": "oklch(1 0 0 / 10%)",
           "sidebar-ring": "oklch(0.556 0 0)",
-          "success": "oklch(0.6 0.13 150)",
-          "success-foreground": "oklch(0.145 0 0)",
-          "warning": "oklch(0.82 0.15 75)",
-          "warning-foreground": "oklch(0.216 0.04 60)"
+          "success": "oklch(0.52 0.12 150)",
+          "success-foreground": "oklch(0.985 0 0)",
+          "warning": "oklch(0.55 0.14 55)",
+          "warning-foreground": "oklch(0.985 0 0)"
         }
       }
     },
@@ -421,7 +421,7 @@
       "name": "admin-toaster",
       "type": "registry:component",
       "title": "Toast notifications",
-      "description": "Toasts about an operation's outcome: an order was saved, an email failed to send, stock is running low. AdminToaster is placed once — in the root layout or in the shell — and shows nothing by itself; toasts are triggered by calling notify.info, notify.success, notify.warning, and notify.danger from anywhere in the code, including handlers outside React. The element has no state or context of its own: the queue lives in the toast primitive's manager. The tone sets the icon and the color; optional description and an actionLabel/onAction pair add explanatory text and an action button inside the toast.",
+      "description": "Toasts about an operation's outcome: an order was saved, an email failed to send, stock is running low. AdminToaster is placed once — in the root layout or in the shell — and shows nothing by itself; toasts are triggered by calling notify.info, notify.success, notify.warning, and notify.danger from anywhere in the code, including handlers outside React. The element has no state or context of its own: the queue lives in the toast primitive's manager. The tone sets the whole toast's color — the same tokens as status-badge: neutral dark for info, success, warning, and destructive for the rest — and its icon; optional description and an actionLabel/onAction pair add explanatory text and an action button inside the toast.",
       "registryDependencies": [
         "toast"
       ],
