@@ -4,25 +4,22 @@ import {
   Headphones,
   LayoutDashboard,
   Package,
-  Settings,
   Shirt,
   ShoppingCart,
   SportShoe,
-  Users,
 } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import type { AdminNavItem } from "@/registry/admin-shell/admin-shell"
+import type { StatusTone } from "@/registry/status-badge/status-badge"
 import type { WidgetChartSeries } from "@/registry/widget-chart/widget-chart"
 import type { WidgetListItem } from "@/registry/widget-list/widget-list"
 import type { WidgetTableColumn } from "@/registry/widget-table/widget-table"
 
 export const demoNav: readonly AdminNavItem[] = [
-  { href: "/", title: "Overview", icon: LayoutDashboard },
-  { href: "/orders", title: "Orders", icon: ShoppingCart },
-  { href: "/products", title: "Products", icon: Package },
-  { href: "/customers", title: "Customers", icon: Users },
-  { href: "/settings", title: "Settings", icon: Settings },
+  { href: "/demo", title: "Overview", icon: LayoutDashboard },
+  { href: "/demo/orders", title: "Orders", icon: ShoppingCart },
+  { href: "/demo/order", title: "Order #4187", icon: Package },
 ]
 
 export const demoMonths = [
@@ -79,9 +76,9 @@ export const demoNewCustomersSeries: readonly WidgetChartSeries[] = [
   },
 ]
 
-type OrderStatus = "delivered" | "in-transit" | "paid" | "cancelled"
+export type OrderStatus = "delivered" | "in-transit" | "paid" | "cancelled"
 
-interface OrderRow {
+export interface OrderRow {
   number: string
   customer: string
   product: string
@@ -89,11 +86,18 @@ interface OrderRow {
   total: string
 }
 
-const orderStatusLabel: Record<OrderStatus, string> = {
+export const orderStatusLabel: Record<OrderStatus, string> = {
   delivered: "Delivered",
   "in-transit": "Shipped",
   paid: "Paid",
   cancelled: "Cancelled",
+}
+
+export const orderStatusTone: Record<OrderStatus, StatusTone> = {
+  delivered: "success",
+  "in-transit": "neutral",
+  paid: "warning",
+  cancelled: "danger",
 }
 
 const orderStatusClassName: Record<OrderStatus, string> = {

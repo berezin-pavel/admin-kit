@@ -2,6 +2,18 @@ import type { ReactNode } from "react"
 
 import { PrimitiveChartDemo } from "@/components/primitive-chart-demo"
 import { PrimitiveSection } from "@/components/primitive-section"
+import { PrimitiveToastDemo } from "@/components/primitive-toast-demo"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
@@ -53,6 +65,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { getRequiredPrimitives } from "@/lib/registry-primitives"
 
 interface PrimitiveDemo {
@@ -239,6 +256,31 @@ const PRIMITIVE_DEMOS: readonly PrimitiveDemo[] = [
     ),
   },
   {
+    name: "alert-dialog",
+    title: "Alert Dialog",
+    description:
+      "A modal window with a question: closes only via buttons, an outside click won't dismiss it.",
+    demo: (
+      <AlertDialog>
+        <AlertDialogTrigger render={<Button variant="outline" />}>
+          Delete order
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete order #4187?</AlertDialogTitle>
+            <AlertDialogDescription>
+              The order will disappear from the list and can’t be restored.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction variant="destructive">Delete</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    ),
+  },
+  {
     name: "sheet",
     title: "Sheet",
     description: "A side panel that slides in from the right or left. Click it.",
@@ -289,6 +331,35 @@ const PRIMITIVE_DEMOS: readonly PrimitiveDemo[] = [
           <Skeleton className="h-4 w-32" />
         </div>
         <Skeleton className="size-10 rounded-full" />
+      </>
+    ),
+  },
+  {
+    name: "toast",
+    title: "Toast",
+    description:
+      "A popup notification about an operation's outcome: the queue and the timer live in the toast manager.",
+    demo: <PrimitiveToastDemo />,
+  },
+  {
+    name: "tooltip",
+    title: "Tooltip",
+    description:
+      "A hint on hover and on keyboard focus, the popup side is set by a prop.",
+    demo: (
+      <>
+        <Tooltip>
+          <TooltipTrigger render={<Button variant="outline" />}>
+            Hover here
+          </TooltipTrigger>
+          <TooltipContent>Tooltip on top</TooltipContent>
+        </Tooltip>
+        <Tooltip>
+          <TooltipTrigger render={<Button variant="outline" />}>
+            And here
+          </TooltipTrigger>
+          <TooltipContent side="right">Tooltip on the right</TooltipContent>
+        </Tooltip>
       </>
     ),
   },

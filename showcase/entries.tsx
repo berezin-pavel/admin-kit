@@ -1,4 +1,7 @@
 import { adminShellEntry } from "./admin-shell"
+import { adminToasterEntry } from "./admin-toaster"
+import { confirmDialogEntry } from "./confirm-dialog"
+import { hintEntry } from "./hint"
 import { sidebarToggleEntry } from "./sidebar-toggle"
 import { stateEmptyEntry, stateLoadingEntry } from "./states"
 import {
@@ -29,6 +32,9 @@ export const showcaseEntries: readonly ShowcaseEntry[] = [
   pageListEntry,
   pageHeaderEntry,
   statusBadgeEntry,
+  hintEntry,
+  confirmDialogEntry,
+  adminToasterEntry,
   widgetProgressEntry,
   widgetChartEntry,
   widgetListEntry,

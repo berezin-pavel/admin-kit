@@ -9,7 +9,7 @@ import { StateOffline } from "@/registry/state-offline/state-offline"
 
 export interface PageEntityField {
   id: string
-  label: string
+  label: ReactNode
   value: ReactNode
 }
 

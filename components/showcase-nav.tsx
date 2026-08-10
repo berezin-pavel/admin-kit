@@ -30,7 +30,14 @@ const ENTRY_GROUPS: readonly ShowcaseNavGroup[] = [
       "widget-placeholder",
     ],
   },
-  { title: "Page parts", items: ["page-header", "status-badge"] },
+  {
+    title: "Page parts",
+    items: ["page-header", "status-badge", "hint"],
+  },
+  {
+    title: "Feedback",
+    items: ["confirm-dialog", "admin-toaster"],
+  },
   { title: "Pages", items: ["page-list", "page-entity"] },
   {
     title: "States",

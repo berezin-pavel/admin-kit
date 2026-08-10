@@ -69,6 +69,9 @@ as they were.
 | `page-entity`         | `registry:component` | A single-record page: a heading with actions and fields grouped into sections, with the field value being `ReactNode` rather than a string. The `status` prop swaps the fields for a loading, error, forbidden, or offline state, while the heading stays visible |
 | `page-header`         | `registry:component` | A section header: a title, an explanation, an actions slot on the right — a page building block, not a dashboard widget |
 | `status-badge`        | `registry:component` | A record-status badge with tone `neutral`, `success`, `warning`, `danger`; the `success` and `warning` tones depend on admin-kit's theme tokens |
+| `hint`                | `registry:component` | A tooltip hint next to a field label, column header, or metric: without `children` a question-mark icon, with `children` a wrapper around your own element; opens on hover and from the keyboard |
+| `confirm-dialog`      | `registry:component` | A controlled confirmation modal: `open` and `onOpenChange` are held by the consumer, `tone="danger"` colors the confirm button, `loading` disables the buttons and blocks closing while the operation is in progress |
+| `admin-toaster`       | `registry:component` | Toasts about an operation's outcome: `AdminToaster` is placed once, and they're shown by calling `notify.info`, `notify.success`, `notify.warning`, `notify.danger` from anywhere, including code outside React |
 | `widget-progress`     | `registry:component` | A dashboard progress-bar card: the share as a percentage of `max` (100 by default), an out-of-range value doesn't break the layout |
 | `page-list`           | `registry:component` | A list page: a heading, a filter row, a table (`widget-table` inside), and page navigation. Every value is controlled, and pagination isn't rendered without `total`. The `status` prop swaps the body for a state, while the heading and filters stay visible |
 

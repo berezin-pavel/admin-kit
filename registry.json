@@ -418,6 +418,66 @@
     },
     {
       "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "admin-toaster",
+      "type": "registry:component",
+      "title": "Toast notifications",
+      "description": "Toasts about an operation's outcome: an order was saved, an email failed to send, stock is running low. AdminToaster is placed once — in the root layout or in the shell — and shows nothing by itself; toasts are triggered by calling notify.info, notify.success, notify.warning, and notify.danger from anywhere in the code, including handlers outside React. The element has no state or context of its own: the queue lives in the toast primitive's manager. The tone sets the icon and the color; optional description and an actionLabel/onAction pair add explanatory text and an action button inside the toast.",
+      "registryDependencies": [
+        "toast"
+      ],
+      "dependencies": [
+        "lucide-react"
+      ],
+      "files": [
+        {
+          "path": "registry/admin-toaster/admin-toaster.tsx",
+          "type": "registry:component",
+          "target": "@components/admin/admin-toaster.tsx"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "confirm-dialog",
+      "type": "registry:component",
+      "title": "Confirm dialog",
+      "description": "A confirmation dialog for an action — delete a record, cancel an order, revoke access. Controlled: the consumer holds open and onOpenChange, and closing it after success is on them too, so the dialog can be left open while a request is still in flight. The tone prop colors the confirm button (default, or danger for an irreversible action), and loading disables both buttons, shows a busy indicator, and blocks closing via Escape or an outside click. Button labels are set by props, defaulting to \"Confirm\" and \"Cancel\".",
+      "registryDependencies": [
+        "alert-dialog"
+      ],
+      "dependencies": [
+        "lucide-react"
+      ],
+      "files": [
+        {
+          "path": "registry/confirm-dialog/confirm-dialog.tsx",
+          "type": "registry:component",
+          "target": "@components/admin/confirm-dialog.tsx"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "hint",
+      "type": "registry:component",
+      "title": "Hint",
+      "description": "A tooltip hint for a field label, column header, or metric: it explains a term or what goes into a figure, without taking up screen space. With no children it draws a muted question-mark icon whose accessible name comes from text; with children it wraps the passed element with its own trigger and draws no icon. The side prop picks which side it pops up on. The trigger is a native button, so the hint also opens from the keyboard; TooltipProvider isn't required, it only syncs the delay between neighboring tooltips.",
+      "registryDependencies": [
+        "tooltip"
+      ],
+      "dependencies": [
+        "lucide-react"
+      ],
+      "files": [
+        {
+          "path": "registry/hint/hint.tsx",
+          "type": "registry:component",
+          "target": "@components/admin/hint.tsx"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
       "name": "widget-progress",
       "title": "Progress widget",
       "type": "registry:component",
