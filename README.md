@@ -58,7 +58,7 @@ as they were.
 | `sidebar-toggle`      | `registry:component` | A button that collapses the shell's sidebar into the icon rail, built the same way as `theme-toggle`: `collapsed` and `onToggle` arrive as props. Visible only on a wide screen — on a narrow one the sidebar is already an icon rail with a burger menu. Its place is the `sidebarFooter` slot next to the theme toggle |
 | `widget-metric`       | `registry:component` | A single-number card for a dashboard: a title, a value, optional trend (an arrow with its own separate color), and a caption |
 | `widget-table`        | `registry:component` | A table with a header and columns: each column pulls its own value from the row and aligns via the `align` prop; without data and its own `empty` it shows `state-empty` |
-| `widget-chart`        | `registry:component` | A chart card: a single data series as `label`/`value` pairs, the `kind` prop switches between a line and bars; without data and its own `empty` it shows `state-empty` |
+| `widget-chart`        | `registry:component` | A chart card: a shared `labels` axis and a `series` list each with its own `values`; the `kind` prop switches between a line and bars; series colors cycle through the `chart-1`…`chart-5` tokens, and a legend appears once there are two or more series; without `labels` or `series` it shows `state-empty` |
 | `widget-list`         | `registry:component` | A list of rows: a name, an optional explanation, optional content on the right, and an icon; without rows and its own `empty`, it shows `state-empty` |
 | `widget-placeholder`  | `registry:component` | A dashed-border placeholder in the work area where a widget hasn't been chosen yet — not about missing data, that's what `state-empty` is for |
 | `state-loading`       | `registry:component` | A skeleton in place of content while data is loading |
@@ -74,11 +74,11 @@ as they were.
 
 `widget-table`, `widget-chart`, and `widget-list` — the widgets with
 data — show `state-empty` themselves when there's no data: no rows, no
-points, or no list items, and the `empty` prop wasn't passed. There's no
-need to wrap them in a state from outside. `widget-chart` on its own is
-limited to a single data series: a deliberate constraint of the first
-version — comparing several series on one chart is something this item
-can't do, it's not the right fit for that job.
+series, or no list items, and the `empty` prop wasn't passed. There's no
+need to wrap them in a state from outside. `widget-chart` needs the
+length of each series' `values` to match the length of `labels` — this
+isn't checked by types; on a mismatch, the missing points simply aren't
+drawn.
 
 `widget-chart` is noticeably heavier than the rest: it pulls in
 `recharts`, adding 354 KB to the consumer's bundle (measured on a clean
