@@ -46,8 +46,8 @@
           "sidebar-ring": "oklch(0.708 0 0)",
           "success": "oklch(0.52 0.12 150)",
           "success-foreground": "oklch(0.985 0 0)",
-          "warning": "oklch(0.62 0.13 75)",
-          "warning-foreground": "oklch(0.145 0 0)"
+          "warning": "oklch(0.77 0.16 70)",
+          "warning-foreground": "oklch(0.216 0.04 60)"
         },
         "dark": {
           "background": "oklch(0.145 0 0)",
@@ -83,8 +83,8 @@
           "sidebar-ring": "oklch(0.556 0 0)",
           "success": "oklch(0.6 0.13 150)",
           "success-foreground": "oklch(0.145 0 0)",
-          "warning": "oklch(0.72 0.14 78)",
-          "warning-foreground": "oklch(0.145 0 0)"
+          "warning": "oklch(0.82 0.15 75)",
+          "warning-foreground": "oklch(0.216 0.04 60)"
         }
       }
     },
