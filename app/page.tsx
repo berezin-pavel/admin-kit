@@ -2,6 +2,7 @@ import Link from "next/link"
 
 import { ShowcaseGallery } from "@/components/showcase-gallery"
 import { ShowcaseNav } from "@/components/showcase-nav"
+import { SHOWCASE_NAV_SENTINEL_ID } from "@/components/showcase-nav-body"
 import { ShowcasePrimitives } from "@/components/showcase-primitives"
 import { ShowcaseTokens } from "@/components/showcase-tokens"
 import { ThemeToggle } from "@/components/theme-toggle"
@@ -38,6 +39,11 @@ export default function Page() {
             <ShowcaseTokens />
             <ShowcasePrimitives />
           </div>
+          <div
+            id={SHOWCASE_NAV_SENTINEL_ID}
+            aria-hidden="true"
+            className="h-px"
+          />
         </div>
       </div>
     </main>
