@@ -53,7 +53,7 @@ export const adminShellEntry: ShowcaseEntry = {
   item: "admin-shell",
   title: "Admin shell",
   description:
-    "The persistent frame of the admin panel: an optional header, a side navigation, and a work area. On a wide screen it's a sidebar with the app name; on a narrow one it's a strip of icons and a burger that opens a panel with labels. The controlled collapsed prop shrinks the sidebar on a wide screen to that same icon strip, and sidebarVariant switches its look between flush (pinned to the edge) and card (a panel with padding, rounding, and a border like Card). The header prop can remove the header entirely: on a narrow screen without a header, the burger moves to the top of the icon strip. The sidebarFooter prop is a slot at the bottom of the sidebar and the icon strip for a theme toggle, sidebar toggle, user menu, or build version. Nav items and the active section are set by props, and the link renderer can be swapped for your own router.",
+    "The persistent frame of the admin panel: an optional header, a side navigation, and a work area. On a wide screen it's a sidebar with the app name; on a narrow one it's a strip of icons and a burger that opens a panel with labels. The controlled collapsed prop shrinks the sidebar on a wide screen to that same icon strip, where the burger also appears. The sidebarVariant prop switches the sidebar's look between card (default: a panel with padding, rounding, and a border like Card) and flush (pinned to the screen edge). The header prop can remove the header entirely: on a narrow screen without a header, the burger moves to the top of the icon strip. The sidebarFooter prop is a slot at the bottom of the sidebar and the icon strip for a theme toggle, sidebar toggle, user menu, or build version. Nav items and the active section are set by props, and the link renderer can be swapped for your own router.",
   views: [
     {
       id: "empty",
@@ -201,37 +201,37 @@ export const adminShellEntry: ShowcaseEntry = {
       ),
     },
     {
-      id: "sidebar-card",
-      name: "Card sidebar variant",
+      id: "sidebar-flush",
+      name: "Flush sidebar variant",
       render: () => (
         <AdminShell
           appName="My Store"
           nav={nav}
           activeHref="/orders"
-          sidebarVariant="card"
+          sidebarVariant="flush"
         >
           <div className="text-sm text-muted-foreground">
-            The sidebar looks like the rest of the blocks: padding from the
-            edges, rounding, background, and a border like Card. The work
-            area is also inset from the edges.
+            The sidebar is pinned to the screen edge and set off by a
+            border, with no padding or rounding. By default the shell draws
+            it as a card — this view shows the second variant.
           </div>
         </AdminShell>
       ),
     },
     {
-      id: "sidebar-card-collapsed",
-      name: "Card variant with a collapsed sidebar",
+      id: "sidebar-flush-collapsed",
+      name: "Flush variant with a collapsed sidebar",
       render: () => (
         <AdminShell
           appName="My Store"
           nav={nav}
           activeHref="/orders"
           collapsed
-          sidebarVariant="card"
+          sidebarVariant="flush"
         >
           <div className="text-sm text-muted-foreground">
             collapsed and sidebarVariant are independent: an icon strip
-            styled as a card.
+            pinned to the edge.
           </div>
         </AdminShell>
       ),
