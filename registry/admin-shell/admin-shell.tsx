@@ -57,7 +57,7 @@ export function AdminShell({
     <div
       className={cn(
         "flex h-svh bg-background text-foreground",
-        isCard && "gap-4 p-4",
+        isCard && "gap-2 p-2 md:gap-4 md:p-4",
         className
       )}
     >
@@ -110,7 +110,7 @@ export function AdminShell({
         {header ? (
           <AdminHeader section={section} actions={actions} menu={menu} />
         ) : null}
-        <main className="min-h-0 flex-1 overflow-y-auto p-6">{children}</main>
+        <main className="min-h-0 flex-1 overflow-y-auto p-4 md:p-6">{children}</main>
       </div>
     </div>
   )

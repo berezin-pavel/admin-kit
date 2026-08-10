@@ -98,7 +98,10 @@ export function WidgetChart({
                   axisLine={false}
                   tickMargin={8}
                 />
-                <ChartTooltip content={<ChartTooltipContent />} />
+                <ChartTooltip
+                  isAnimationActive={false}
+                  content={<ChartTooltipContent />}
+                />
                 {series.length > 1 ? (
                   <ChartLegend content={<ChartLegendContent />} />
                 ) : null}
@@ -125,7 +128,10 @@ export function WidgetChart({
                   axisLine={false}
                   tickMargin={8}
                 />
-                <ChartTooltip content={<ChartTooltipContent />} />
+                <ChartTooltip
+                  isAnimationActive={false}
+                  content={<ChartTooltipContent />}
+                />
                 {series.length > 1 ? (
                   <ChartLegend content={<ChartLegendContent />} />
                 ) : null}
