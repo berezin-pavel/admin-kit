@@ -218,7 +218,7 @@ const PRIMITIVE_DEMOS: readonly PrimitiveDemo[] = [
       <>
         <Select defaultValue="week">
           <SelectTrigger className="w-40">
-            <SelectValue placeholder="Period" />
+            <SelectValue placeholder="Period">Week</SelectValue>
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="day">Day</SelectItem>
