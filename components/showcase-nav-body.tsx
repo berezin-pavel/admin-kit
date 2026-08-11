@@ -2,7 +2,7 @@
 
 import { ChevronDown } from "lucide-react"
 import Link from "next/link"
-import { type RefObject, useEffect, useMemo, useRef, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 
 import { cn } from "@/lib/utils"
 
@@ -11,11 +11,6 @@ export const SHOWCASE_NAV_SENTINEL_ID = "showcase-nav-sentinel"
 export interface ShowcaseNavItem {
   id: string
   title: string
-}
-
-export interface ShowcaseNavGroupData {
-  title: string
-  items: readonly ShowcaseNavItem[]
 }
 
 function useActiveSection(ids: readonly string[]) {
@@ -93,18 +88,18 @@ function useActiveSection(ids: readonly string[]) {
 }
 
 export function ShowcaseNavBody({
-  groups,
-  referenceSection,
+  items,
+  referenceItems,
 }: {
-  groups: readonly ShowcaseNavGroupData[]
-  referenceSection: ShowcaseNavGroupData
+  items: readonly ShowcaseNavItem[]
+  referenceItems: readonly ShowcaseNavItem[]
 }) {
   const ids = useMemo(
     () => [
-      ...groups.flatMap((group) => group.items.map((item) => item.id)),
-      ...referenceSection.items.map((item) => item.id),
+      ...items.map((item) => item.id),
+      ...referenceItems.map((item) => item.id),
     ],
-    [groups, referenceSection]
+    [items, referenceItems]
   )
   const { activeId, activate } = useActiveSection(ids)
 
@@ -116,116 +111,84 @@ export function ShowcaseNavBody({
           <ChevronDown className="size-4 text-muted-foreground" />
         </summary>
         <NavLinkList
-          groups={groups}
-          referenceSection={referenceSection}
+          items={items}
+          referenceItems={referenceItems}
           activeId={activeId}
           onNavigate={activate}
           className="max-h-[70svh] overflow-y-auto py-3"
         />
       </details>
       <NavLinkList
-        groups={groups}
-        referenceSection={referenceSection}
+        items={items}
+        referenceItems={referenceItems}
         activeId={activeId}
         onNavigate={activate}
-        className="hidden md:block md:max-h-[calc(100svh-4rem)] md:overflow-y-auto"
+        className="hidden md:block"
       />
     </>
   )
 }
 
 function NavLinkList({
-  groups,
-  referenceSection,
+  items,
+  referenceItems,
   activeId,
   onNavigate,
   className,
 }: {
-  groups: readonly ShowcaseNavGroupData[]
-  referenceSection: ShowcaseNavGroupData
+  items: readonly ShowcaseNavItem[]
+  referenceItems: readonly ShowcaseNavItem[]
   activeId: string | null
   onNavigate: (id: string) => void
   className?: string
 }) {
-  const linkRefs = useRef(new Map<string, HTMLAnchorElement>())
-
-  useEffect(() => {
-    if (!activeId) return
-    const link = linkRefs.current.get(activeId)
-    if (link && link.offsetParent !== null) {
-      link.scrollIntoView({ block: "nearest" })
-    }
-  }, [activeId])
-
   return (
     <div className={cn("flex flex-col gap-5 text-sm", className)}>
-      {groups.map((group) => (
-        <NavGroup
-          key={group.title}
-          group={group}
-          activeId={activeId}
-          onNavigate={onNavigate}
-          linkRefs={linkRefs}
-        />
-      ))}
-      <div className="flex flex-col gap-1.5 border-t border-border pt-4">
-        <NavGroup
-          group={referenceSection}
-          activeId={activeId}
-          onNavigate={onNavigate}
-          linkRefs={linkRefs}
-        />
-      </div>
+      <NavItemList items={items} activeId={activeId} onNavigate={onNavigate} />
+      <NavItemList
+        items={referenceItems}
+        activeId={activeId}
+        onNavigate={onNavigate}
+        className="border-t border-border pt-4"
+      />
     </div>
   )
 }
 
-function NavGroup({
-  group,
+function NavItemList({
+  items,
   activeId,
   onNavigate,
-  linkRefs,
+  className,
 }: {
-  group: ShowcaseNavGroupData
+  items: readonly ShowcaseNavItem[]
   activeId: string | null
   onNavigate: (id: string) => void
-  linkRefs: RefObject<Map<string, HTMLAnchorElement>>
+  className?: string
 }) {
   return (
-    <div className="flex flex-col gap-1.5">
-      <span className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
-        {group.title}
-      </span>
-      <ul className="flex flex-col gap-1">
-        {group.items.map((item) => {
-          const isActive = item.id === activeId
+    <ul className={cn("flex flex-col gap-1", className)}>
+      {items.map((item) => {
+        const isActive = item.id === activeId
 
-          return (
-            <li key={item.id}>
-              <Link
-                href={`#${item.id}`}
-                ref={(element) => {
-                  if (element) {
-                    linkRefs.current.set(item.id, element)
-                  } else {
-                    linkRefs.current.delete(item.id)
-                  }
-                }}
-                aria-current={isActive ? "page" : undefined}
-                onClick={() => onNavigate(item.id)}
-                className={cn(
-                  "block rounded-md px-2 py-1 transition-colors",
-                  isActive
-                    ? "bg-muted font-medium text-foreground"
-                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                )}
-              >
-                {item.title}
-              </Link>
-            </li>
-          )
-        })}
-      </ul>
-    </div>
+        return (
+          <li key={item.id}>
+            <Link
+              href={`#${item.id}`}
+              aria-current={isActive ? "page" : undefined}
+              onClick={() => onNavigate(item.id)}
+              className={cn(
+                "block rounded-md px-2 py-1 transition-colors",
+                isActive
+                  ? "bg-muted font-medium text-foreground"
+                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
+              )}
+            >
+              {item.title}
+            </Link>
+          </li>
+        )
+      })}
+    </ul>
   )
 }
