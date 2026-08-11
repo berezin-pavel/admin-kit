@@ -5,6 +5,7 @@ import { confirmDialogEntry } from "./confirm-dialog"
 import { dateFieldEntry } from "./date-field"
 import { dateTimeFieldEntry } from "./date-time-field"
 import { hintEntry } from "./hint"
+import { rowActionsEntry } from "./row-actions"
 import { sidebarToggleEntry } from "./sidebar-toggle"
 import { timeFieldEntry } from "./time-field"
 import { stateEmptyEntry, stateLoadingEntry } from "./states"
@@ -37,6 +38,7 @@ export const showcaseEntries: readonly ShowcaseEntry[] = [
   pageHeaderEntry,
   statusBadgeEntry,
   hintEntry,
+  rowActionsEntry,
   dateFieldEntry,
   dateTimeFieldEntry,
   timeFieldEntry,

@@ -9,6 +9,7 @@ import {
   WidgetTable,
   type WidgetTableColumn,
   type WidgetTableSort,
+  type WidgetTableSortOption,
 } from "@/registry/widget-table/widget-table"
 
 import { PageListFilters } from "./page-list-filters"
@@ -40,6 +41,7 @@ export interface PageListProps<Row> {
   onPageSizeChange?: (pageSize: number) => void
   sort?: WidgetTableSort
   onSortChange?: (sort: WidgetTableSort | undefined) => void
+  sortOptions?: readonly WidgetTableSortOption[]
   status?: PageStatus
   className?: string
 }
@@ -69,6 +71,7 @@ export function PageList<Row>({
   onPageSizeChange,
   sort,
   onSortChange,
+  sortOptions,
   status = "ready",
   className,
 }: PageListProps<Row>) {
@@ -115,6 +118,7 @@ export function PageList<Row>({
         }
         sort={sort}
         onSortChange={onSortChange}
+        sortOptions={sortOptions}
       />
     </div>
   )

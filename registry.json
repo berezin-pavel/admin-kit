@@ -192,7 +192,7 @@
       "name": "widget-table",
       "type": "registry:component",
       "title": "Table widget",
-      "description": "A table card, self-sufficient: the title is optional, the header holds a toolbar slot for filters and search, and the footer holds the record count, pagination, and a page-size select. A column pulls its value from the row via cell and aligns with the align prop; a column with sortable gets a sort button in its header and aria-sort. Sorting and paging are controlled: the table reports the choice via onSortChange and onPageChange but never reorders or slices the rows itself — whoever owns the data sets the order and the slice, otherwise the element would lie on a server with paginated output. Pagination appears only with the pagination prop, and the page-size select only when pageSizeOptions and onPageSizeChange are passed. With no rows and no empty prop of its own it shows state-empty; the header and footer stay in place.",
+      "description": "A self-sufficient table card: the title is optional, the header holds a toolbar slot for filters on the left and a record count, page-size select, and sort select on the right, and the footer holds centered pagination. A column pulls its value from the row via cell and aligns with the align prop; a column with sortable gets a sort button in its header and aria-sort. The sort select is set with a sortOptions list, and an option's key need not match a column: this lets you sort by a field that isn't rendered, or apply a composite sort behind one opaque key. Sorting and paging are controlled: the table reports the choice via onSortChange and onPageChange but never reorders or slices the rows itself — whoever owns the data sets the order and the slice, otherwise the element would lie on a server with paginated output. With no rows and no empty prop of its own it shows state-empty; the header and footer stay in place.",
       "registryDependencies": [
         "berezin-pavel/admin-kit/admin-theme",
         "berezin-pavel/admin-kit/state-empty",
@@ -217,6 +217,11 @@
           "path": "registry/widget-table/widget-table-sort-button.tsx",
           "type": "registry:component",
           "target": "@components/admin/widget-table-sort-button.tsx"
+        },
+        {
+          "path": "registry/widget-table/widget-table-sort-select.tsx",
+          "type": "registry:component",
+          "target": "@components/admin/widget-table-sort-select.tsx"
         },
         {
           "path": "registry/widget-table/widget-table-page-size-select.tsx",
@@ -484,7 +489,7 @@
       "name": "hint",
       "type": "registry:component",
       "title": "Hint",
-      "description": "A tooltip hint for a field label, column header, or metric: it explains a term or what goes into a figure, without taking up screen space. With no children it draws a muted question-mark icon whose accessible name comes from text; with children it wraps the passed element with its own trigger and draws no icon. The side prop picks which side it pops up on. The trigger is a native button, so the hint also opens from the keyboard; TooltipProvider isn't required, it only syncs the delay between neighboring tooltips.",
+      "description": "A tooltip hint for a field label, column header, or metric: it explains a term or what goes into a figure, without taking up screen space. With no children it draws a muted question-mark icon whose accessible name comes from text; with children it wraps the passed element with its own trigger and draws no icon. The side prop picks which side it pops up on, and the render prop swaps in your own element instead of the default trigger — this lets you hang the hint on an existing button instead of nesting a button inside a button. The trigger is a native button, so the hint also opens from the keyboard; TooltipProvider isn't required, it only syncs the delay between neighboring tooltips.",
       "registryDependencies": [
         "tooltip"
       ],
@@ -496,6 +501,24 @@
           "path": "registry/hint/hint.tsx",
           "type": "registry:component",
           "target": "@components/admin/hint.tsx"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "row-actions",
+      "type": "registry:component",
+      "title": "Row actions",
+      "description": "A row of compact icon buttons for a table row or a list card: view, edit, delete. The label takes up no space in the row but remains the button's accessible name and pops up as a tooltip on hover — the element reuses hint for that. The danger tone colors the icon with the destructive color, and disabled blocks an individual action. Controlled: each action gets its own onSelect, and the element holds no state of its own.",
+      "registryDependencies": [
+        "button",
+        "berezin-pavel/admin-kit/hint"
+      ],
+      "files": [
+        {
+          "path": "registry/row-actions/row-actions.tsx",
+          "type": "registry:component",
+          "target": "@components/admin/row-actions.tsx"
         }
       ]
     },

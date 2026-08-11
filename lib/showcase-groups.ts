@@ -34,7 +34,7 @@ export const SHOWCASE_ENTRY_GROUPS: readonly ShowcaseGroupDefinition[] = [
   {
     id: "page-parts",
     title: "Page parts",
-    items: ["page-header", "status-badge", "hint"],
+    items: ["page-header", "status-badge", "hint", "row-actions"],
   },
   {
     id: "fields",

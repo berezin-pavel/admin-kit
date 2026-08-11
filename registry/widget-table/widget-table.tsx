@@ -21,6 +21,7 @@ import { StateEmpty } from "@/registry/state-empty/state-empty"
 import { WidgetTablePageSizeSelect } from "./widget-table-page-size-select"
 import { WidgetTablePaginationControls } from "./widget-table-pagination"
 import { WidgetTableSortButton } from "./widget-table-sort-button"
+import { WidgetTableSortSelect } from "./widget-table-sort-select"
 
 export interface WidgetTableColumn<Row> {
   id: string
@@ -33,6 +34,11 @@ export interface WidgetTableColumn<Row> {
 export interface WidgetTableSort {
   columnId: string
   direction: "asc" | "desc"
+}
+
+export interface WidgetTableSortOption {
+  label: string
+  sort: WidgetTableSort
 }
 
 export interface WidgetTablePagination {
@@ -56,6 +62,7 @@ export interface WidgetTableProps<Row> {
   footer?: ReactNode
   sort?: WidgetTableSort
   onSortChange?: (sort: WidgetTableSort | undefined) => void
+  sortOptions?: readonly WidgetTableSortOption[]
 }
 
 function formatPaginationRange(pagination: WidgetTablePagination) {
@@ -90,19 +97,52 @@ export function WidgetTable<Row>({
   footer,
   sort,
   onSortChange,
+  sortOptions,
 }: WidgetTableProps<Row>) {
+  const hasSortSelect = Boolean(
+    sortOptions && sortOptions.length > 0 && onSortChange
+  )
+  const hasServiceGroup = Boolean(pagination) || hasSortSelect
+  const hasHeader = Boolean(title || toolbar || hasServiceGroup)
+
   return (
     <Card className={className}>
-      {title || toolbar ? (
+      {hasHeader ? (
         <CardHeader className="flex flex-wrap items-start justify-between gap-4">
-          {title ? (
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              {title}
-            </CardTitle>
-          ) : null}
-          {toolbar ? (
-            <div className="flex flex-wrap items-center gap-3">{toolbar}</div>
-          ) : null}
+          <div className="flex flex-wrap items-center gap-3">
+            {title ? (
+              <CardTitle className="text-sm font-medium text-muted-foreground">
+                {title}
+              </CardTitle>
+            ) : null}
+            {toolbar}
+          </div>
+          <div className="flex flex-wrap items-center gap-3">
+            {pagination
+              ? (footer ?? (
+                  <>
+                    {pagination.pageSizeOptions &&
+                    pagination.onPageSizeChange ? (
+                      <WidgetTablePageSizeSelect
+                        pageSize={pagination.pageSize}
+                        pageSizeOptions={pagination.pageSizeOptions}
+                        onPageSizeChange={pagination.onPageSizeChange}
+                      />
+                    ) : null}
+                    <span className="text-sm text-muted-foreground">
+                      {formatPaginationRange(pagination)}
+                    </span>
+                  </>
+                ))
+              : null}
+            {hasSortSelect && sortOptions && onSortChange ? (
+              <WidgetTableSortSelect
+                sortOptions={sortOptions}
+                sort={sort}
+                onSortChange={onSortChange}
+              />
+            ) : null}
+          </div>
         </CardHeader>
       ) : null}
       <CardContent>
@@ -161,23 +201,7 @@ export function WidgetTable<Row>({
         )}
       </CardContent>
       {pagination ? (
-        <CardFooter className="flex-wrap justify-between gap-4">
-          <div className="flex flex-wrap items-center gap-3">
-            {footer ?? (
-              <>
-                {pagination.pageSizeOptions && pagination.onPageSizeChange ? (
-                  <WidgetTablePageSizeSelect
-                    pageSize={pagination.pageSize}
-                    pageSizeOptions={pagination.pageSizeOptions}
-                    onPageSizeChange={pagination.onPageSizeChange}
-                  />
-                ) : null}
-                <span className="text-sm text-muted-foreground">
-                  {formatPaginationRange(pagination)}
-                </span>
-              </>
-            )}
-          </div>
+        <CardFooter className="justify-center bg-card">
           <WidgetTablePaginationControls
             page={pagination.page}
             pageSize={pagination.pageSize}

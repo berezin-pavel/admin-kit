@@ -64,7 +64,7 @@ export const widgetTableEntry: ShowcaseEntry = {
   item: "widget-table",
   title: "Table widget",
   description:
-    "A self-contained table for a dashboard: columns and rows come in via props, and each column pulls its own value from a row through cell. The title is optional — without it the toolbar panel sits as the card's first row. The toolbar and pagination props put the filter panel and page navigation inside the same card, so the table can stand alone as its own block with no outer wrapping. Sorting is controlled: a column with sortable reports a click through onSortChange, but the table doesn't reorder rows — whoever owns the data does that. Pagination can offer a page-size choice via pageSizeOptions and onPageSizeChange. Without rows and without the empty prop it shows a default state.",
+    "A self-contained table for a dashboard: columns and rows come in via props, and each column pulls its value from a row through cell. The title is optional — without it the toolbar panel sits as the card's first row. The toolbar prop (the consumer's filters) sits in the header on the left, with the record count, page size picker, and sort select on the right of the same header; the card's footer is reserved for pagination alone, with page buttons centered, their count depending on the total number of pages. Sorting is controlled: a column with sortable reports a click through onSortChange, but the table doesn't reorder rows — whoever owns the data does that. The sortOptions prop adds the same choice as a select: each option has its own sort, which doesn't have to reference a visible column — that's how sorting by a hidden or composite field is set up. The select and the column-header buttons share the same sort, so they show a consistent state. Pagination can offer a page-size choice via pageSizeOptions and onPageSizeChange. Without rows and without the empty prop it shows a default state.",
   views: [
     {
       id: "multiple-rows",
@@ -173,6 +173,24 @@ export const widgetTableEntry: ShowcaseEntry = {
           withPagination
           withPageSizeOptions
         />
+      ),
+    },
+    {
+      id: "with-sort-select",
+      name: "With a sort select, including by a hidden field",
+      render: () => (
+        <WidgetTableShowcaseView
+          title="Recent orders"
+          withSort
+          withSortSelect
+        />
+      ),
+    },
+    {
+      id: "with-row-actions",
+      name: "With row icon-button actions",
+      render: () => (
+        <WidgetTableShowcaseView title="Recent orders" withRowActions />
       ),
     },
   ],

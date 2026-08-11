@@ -1,16 +1,20 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import Link from "next/link"
+import { Eye, Pencil, Trash2 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { notify } from "@/registry/admin-toaster/admin-toaster"
 import { ConfirmDialog } from "@/registry/confirm-dialog/confirm-dialog"
 import { PageList, type PageListFilter } from "@/registry/page-list/page-list"
+import { RowActions } from "@/registry/row-actions/row-actions"
 import { StatusBadge } from "@/registry/status-badge/status-badge"
 import type {
   WidgetTableColumn,
   WidgetTableSort,
+  WidgetTableSortOption,
 } from "@/registry/widget-table/widget-table"
 
 import {
@@ -31,6 +35,33 @@ const statusOptions = [
 const PAGE_SIZE_OPTIONS = [4, 8, 12] as const
 const DEFAULT_PAGE_SIZE = 4
 
+const sortOptions: readonly WidgetTableSortOption[] = [
+  {
+    label: "Number: descending",
+    sort: { columnId: "number", direction: "desc" },
+  },
+  {
+    label: "Number: ascending",
+    sort: { columnId: "number", direction: "asc" },
+  },
+  {
+    label: "Total: descending",
+    sort: { columnId: "total", direction: "desc" },
+  },
+  {
+    label: "Total: ascending",
+    sort: { columnId: "total", direction: "asc" },
+  },
+  {
+    label: "Newest first",
+    sort: { columnId: "createdAt", direction: "desc" },
+  },
+  {
+    label: "Oldest first",
+    sort: { columnId: "createdAt", direction: "asc" },
+  },
+]
+
 function parseTotal(total: string) {
   return Number(total.replace(/\D/g, ""))
 }
@@ -49,11 +80,15 @@ function sortOrderRows(
     if (sort.columnId === "total") {
       return (parseTotal(a.total) - parseTotal(b.total)) * direction
     }
+    if (sort.columnId === "createdAt") {
+      return (a.createdAt.getTime() - b.createdAt.getTime()) * direction
+    }
     return (Number(a.number) - Number(b.number)) * direction
   })
 }
 
 export function DemoOrders() {
+  const router = useRouter()
   const [search, setSearch] = useState("")
   const [status, setStatus] = useState("all")
   const [page, setPage] = useState(1)
@@ -115,9 +150,32 @@ export function DemoOrders() {
       title: "",
       align: "right",
       cell: (row) => (
-        <Button variant="ghost" size="sm" onClick={() => setPendingOrder(row)}>
-          Delete
-        </Button>
+        <RowActions
+          actions={[
+            {
+              id: "view",
+              label: "View order",
+              icon: Eye,
+              onSelect: () => router.push("/demo/order"),
+            },
+            {
+              id: "edit",
+              label: "Edit order",
+              icon: Pencil,
+              onSelect: () =>
+                notify.info("Coming soon", {
+                  description: "Order editing isn't ready yet",
+                }),
+            },
+            {
+              id: "delete",
+              label: "Delete order",
+              icon: Trash2,
+              tone: "danger",
+              onSelect: () => setPendingOrder(row),
+            },
+          ]}
+        />
       ),
     },
   ]
@@ -199,6 +257,7 @@ export function DemoOrders() {
           setSort(nextSort)
           setPage(1)
         }}
+        sortOptions={sortOptions}
       />
       <ConfirmDialog
         open={pendingOrder !== null}

@@ -1,26 +1,46 @@
 "use client"
 
 import { useState } from "react"
+import { Eye, Pencil, Trash2 } from "lucide-react"
 
 import { Input } from "@/components/ui/input"
+import { notify } from "@/registry/admin-toaster/admin-toaster"
+import { RowActions } from "@/registry/row-actions/row-actions"
 import {
   WidgetTable,
   type WidgetTableColumn,
   type WidgetTableSort,
+  type WidgetTableSortOption,
 } from "@/registry/widget-table/widget-table"
 
 interface OrderRow {
   number: string
   customer: string
   total: string
+  urgency: number
 }
 
 const allRows: readonly OrderRow[] = [
-  { number: "1043", customer: "Bennett A.", total: "$4,200" },
-  { number: "1042", customer: "Peters S.", total: "$1,750" },
-  { number: "1041", customer: "Sanders M.", total: "$12,400" },
-  { number: "1040", customer: "Cooper O.", total: "$980" },
-  { number: "1039", customer: "Smith D.", total: "$3,150" },
+  { number: "1043", customer: "Bennett A.", total: "$4,200", urgency: 3 },
+  { number: "1042", customer: "Peters S.", total: "$1,750", urgency: 1 },
+  { number: "1041", customer: "Sanders M.", total: "$12,400", urgency: 5 },
+  { number: "1040", customer: "Cooper O.", total: "$980", urgency: 2 },
+  { number: "1039", customer: "Smith D.", total: "$3,150", urgency: 4 },
+]
+
+const SORT_OPTIONS: readonly WidgetTableSortOption[] = [
+  {
+    label: "Number: newest first",
+    sort: { columnId: "number", direction: "desc" },
+  },
+  {
+    label: "Amount: descending",
+    sort: { columnId: "total", direction: "desc" },
+  },
+  {
+    label: "Urgent first",
+    sort: { columnId: "urgency", direction: "desc" },
+  },
 ]
 
 const PAGE_SIZE_OPTIONS = [2, 3, 5] as const
@@ -44,6 +64,9 @@ function sortRows(
     if (sort.columnId === "total") {
       return (parseTotal(a.total) - parseTotal(b.total)) * direction
     }
+    if (sort.columnId === "urgency") {
+      return (a.urgency - b.urgency) * direction
+    }
     return a.number.localeCompare(b.number) * direction
   })
 }
@@ -54,6 +77,8 @@ export interface WidgetTableShowcaseViewProps {
   withPagination?: boolean
   withSort?: boolean
   withPageSizeOptions?: boolean
+  withSortSelect?: boolean
+  withRowActions?: boolean
 }
 
 export function WidgetTableShowcaseView({
@@ -62,13 +87,15 @@ export function WidgetTableShowcaseView({
   withPagination = false,
   withSort = false,
   withPageSizeOptions = false,
+  withSortSelect = false,
+  withRowActions = false,
 }: WidgetTableShowcaseViewProps) {
   const [search, setSearch] = useState("")
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE)
   const [sort, setSort] = useState<WidgetTableSort | undefined>(undefined)
 
-  const columns: readonly WidgetTableColumn<OrderRow>[] = [
+  const baseColumns: readonly WidgetTableColumn<OrderRow>[] = [
     {
       id: "number",
       title: "Number",
@@ -85,6 +112,43 @@ export function WidgetTableShowcaseView({
     },
   ]
 
+  const actionsColumn: WidgetTableColumn<OrderRow> = {
+    id: "actions",
+    title: "",
+    align: "right",
+    cell: (row) => (
+      <RowActions
+        actions={[
+          {
+            id: "view",
+            label: "View order",
+            icon: Eye,
+            onSelect: () => notify.info(`Order #${row.number}`),
+          },
+          {
+            id: "edit",
+            label: "Edit order",
+            icon: Pencil,
+            onSelect: () => notify.info("Coming soon"),
+          },
+          {
+            id: "delete",
+            label: "Delete order",
+            icon: Trash2,
+            tone: "danger",
+            onSelect: () =>
+              notify.danger(`Order #${row.number} deleted`, {
+                description:
+                  "This action in the showcase doesn't actually change anything",
+              }),
+          },
+        ]}
+      />
+    ),
+  }
+
+  const columns = withRowActions ? [...baseColumns, actionsColumn] : baseColumns
+
   const query = search.trim().toLowerCase()
   const filtered = allRows.filter(
     (row) =>
@@ -99,6 +163,8 @@ export function WidgetTableShowcaseView({
   const rows = withPagination
     ? matched.slice((currentPage - 1) * pageSize, currentPage * pageSize)
     : matched
+
+  const sortIsManaged = withSort || withSortSelect
 
   return (
     <WidgetTable
@@ -120,8 +186,9 @@ export function WidgetTableShowcaseView({
           />
         ) : undefined
       }
-      sort={withSort ? sort : undefined}
-      onSortChange={withSort ? setSort : undefined}
+      sort={sortIsManaged ? sort : undefined}
+      onSortChange={sortIsManaged ? setSort : undefined}
+      sortOptions={withSortSelect ? SORT_OPTIONS : undefined}
       pagination={
         withPagination
           ? {

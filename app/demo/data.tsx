@@ -84,6 +84,7 @@ export interface OrderRow {
   product: string
   status: OrderStatus
   total: string
+  createdAt: Date
 }
 
 export const orderStatusLabel: Record<OrderStatus, string> = {
@@ -129,50 +130,82 @@ export const demoOrderColumns: readonly WidgetTableColumn<OrderRow>[] = [
   },
 ]
 
-export const demoOrderRows: readonly OrderRow[] = [
-  {
-    number: "4187",
-    customer: "Smith E.",
-    product: "Nova Sneakers",
-    status: "delivered",
-    total: "$2,340",
-  },
-  {
-    number: "4186",
-    customer: "Cooper D.",
-    product: "Pulse Headphones",
-    status: "in-transit",
-    total: "$890",
-  },
-  {
-    number: "4185",
-    customer: "Novak O.",
-    product: "City Backpack",
-    status: "paid",
-    total: "$1,120",
-  },
-  {
-    number: "4184",
-    customer: "Walker P.",
-    product: "Basic Hoodie",
-    status: "delivered",
-    total: "$1,480",
-  },
-  {
-    number: "4183",
-    customer: "Frost T.",
-    product: "Loop Travel Mug",
-    status: "cancelled",
-    total: "$640",
-  },
-  {
-    number: "4182",
-    customer: "Hawkins I.",
-    product: "Nova Sneakers",
-    status: "in-transit",
-    total: "$2,890",
-  },
+const ORDER_CUSTOMERS = [
+  "Smith E.",
+  "Cooper D.",
+  "Novak O.",
+  "Walker P.",
+  "Frost T.",
+  "Hawkins I.",
+  "Bennett A.",
+  "Peters S.",
+  "Sanders M.",
+  "Nichols R.",
+  "Fisher N.",
+  "Roman K.",
+  "White Y.",
+  "Foster A.",
+  "Reed V.",
+] as const
+
+const ORDER_PRODUCTS = [
+  "Nova Sneakers",
+  "Pulse Headphones",
+  "City Backpack",
+  "Basic Hoodie",
+  "Loop Travel Mug",
+  "Trail Cap",
+  "Rainy Umbrella",
+  "Cozy Blanket",
+  "Weekend Bag",
+  "Ember Candle",
+] as const
+
+const ORDER_STATUS_CYCLE: readonly OrderStatus[] = [
+  "delivered",
+  "in-transit",
+  "paid",
+  "cancelled",
 ]
+
+const ORDER_COUNT = 100
+const LATEST_ORDER_NUMBER = 4187
+const ORDER_REFERENCE_DATE = { year: 2026, month: 7, day: 10 }
+
+function formatThousands(value: number): string {
+  return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+}
+
+function computeOrderAmount(index: number): number {
+  const cycle = (index * 13 + 5) % 50
+  const amount = 300 + cycle * cycle * 22
+  return Math.round(amount / 10) * 10
+}
+
+function computeOrderCreatedAt(index: number): Date {
+  const dayOffset = (index * 7 + 3) % 30
+  return new Date(
+    ORDER_REFERENCE_DATE.year,
+    ORDER_REFERENCE_DATE.month,
+    ORDER_REFERENCE_DATE.day - dayOffset
+  )
+}
+
+function buildOrderRow(index: number): OrderRow {
+  return {
+    number: String(LATEST_ORDER_NUMBER - index),
+    customer: ORDER_CUSTOMERS[index % ORDER_CUSTOMERS.length],
+    product: ORDER_PRODUCTS[(index * 3 + 1) % ORDER_PRODUCTS.length],
+    status: ORDER_STATUS_CYCLE[(index * 3 + 2) % ORDER_STATUS_CYCLE.length],
+    total: `$${formatThousands(computeOrderAmount(index))}`,
+    createdAt: computeOrderCreatedAt(index),
+  }
+}
+
+export const demoOrderRows: readonly OrderRow[] = Array.from(
+  { length: ORDER_COUNT },
+  (_, index) => buildOrderRow(index)
+)
 
 export const demoProductItems: readonly WidgetListItem[] = [
   {
