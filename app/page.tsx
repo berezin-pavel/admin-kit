@@ -35,9 +35,9 @@ export default function Page() {
         <ShowcaseNav entries={showcaseEntries} />
         <div className="min-w-0 flex-1">
           <div className="flex flex-col gap-16">
-            <ShowcaseGallery entries={showcaseEntries} />
             <ShowcaseTokens />
             <ShowcasePrimitives />
+            <ShowcaseGallery entries={showcaseEntries} />
           </div>
           <div
             id={SHOWCASE_NAV_SENTINEL_ID}

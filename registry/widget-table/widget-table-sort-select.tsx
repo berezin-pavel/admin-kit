@@ -51,7 +51,7 @@ export function WidgetTableSortSelect({
       <SelectTrigger className="w-44" aria-label="Sort">
         <SelectValue>{activeOption?.label ?? "No sorting"}</SelectValue>
       </SelectTrigger>
-      <SelectContent>
+      <SelectContent align="start" alignItemWithTrigger={false}>
         <SelectItem value={NONE_VALUE}>No sorting</SelectItem>
         {sortOptions.map((option, index) => (
           <SelectItem key={index} value={String(index)}>

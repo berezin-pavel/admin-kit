@@ -1,5 +1,9 @@
 import type { ReactNode } from "react"
 
+import {
+  PrimitiveCalendarDemo,
+  PrimitivePopoverDemo,
+} from "@/components/primitive-calendar-demo"
 import { PrimitiveChartDemo } from "@/components/primitive-chart-demo"
 import { PrimitiveSection } from "@/components/primitive-section"
 import { PrimitiveToastDemo } from "@/components/primitive-toast-demo"
@@ -101,6 +105,13 @@ const PRIMITIVE_DEMOS: readonly PrimitiveDemo[] = [
         <Button variant="outline">Cancel</Button>
       </>
     ),
+  },
+  {
+    name: "calendar",
+    title: "Calendar",
+    description:
+      "A calendar built on react-day-picker with an English locale: pick a single date, months paged with arrows.",
+    demo: <PrimitiveCalendarDemo />,
   },
   {
     name: "card",
@@ -205,6 +216,13 @@ const PRIMITIVE_DEMOS: readonly PrimitiveDemo[] = [
         </PaginationContent>
       </Pagination>
     ),
+  },
+  {
+    name: "popover",
+    title: "Popover",
+    description:
+      "A floating panel anchored to an element: closes on an outside click and Escape, side and alignment are set by props.",
+    demo: <PrimitivePopoverDemo />,
   },
   {
     name: "progress",

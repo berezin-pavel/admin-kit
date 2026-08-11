@@ -96,8 +96,8 @@ export function ShowcaseNavBody({
 }) {
   const ids = useMemo(
     () => [
-      ...items.map((item) => item.id),
       ...referenceItems.map((item) => item.id),
+      ...items.map((item) => item.id),
     ],
     [items, referenceItems]
   )
@@ -143,14 +143,13 @@ function NavLinkList({
   className?: string
 }) {
   return (
-    <div className={cn("flex flex-col gap-5 text-sm", className)}>
-      <NavItemList items={items} activeId={activeId} onNavigate={onNavigate} />
+    <div className={cn("flex flex-col gap-2 text-sm", className)}>
       <NavItemList
         items={referenceItems}
         activeId={activeId}
         onNavigate={onNavigate}
-        className="border-t border-border pt-4"
       />
+      <NavItemList items={items} activeId={activeId} onNavigate={onNavigate} />
     </div>
   )
 }

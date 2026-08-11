@@ -24,16 +24,13 @@ export function PageListFilters({
   onFilterChange,
 }: PageListFiltersProps) {
   return (
-    <div className="flex flex-wrap items-end gap-3">
+    <div className="flex flex-wrap items-center gap-2">
       {filters.map((filter) => {
         const controlId = `page-list-filter-${filter.id}`
 
         return (
-          <div key={filter.id} className="flex flex-col gap-1.5">
-            <Label
-              htmlFor={controlId}
-              className="text-xs text-muted-foreground"
-            >
+          <div key={filter.id} className="flex items-center gap-2">
+            <Label htmlFor={controlId} className="sr-only">
               {filter.label}
             </Label>
             {filter.kind === "search" ? (
@@ -46,7 +43,7 @@ export function PageListFilters({
                     onFilterChange?.(filter.id, event.target.value)
                   }
                   placeholder={filter.label}
-                  className="w-48 pl-8"
+                  className="w-44 pl-8"
                 />
               </div>
             ) : (
@@ -56,14 +53,14 @@ export function PageListFilters({
                   onFilterChange?.(filter.id, value ?? "")
                 }
               >
-                <SelectTrigger id={controlId} className="w-48">
+                <SelectTrigger id={controlId} className="w-40">
                   <SelectValue placeholder={filter.label}>
                     {filter.options?.find(
                       (option) => option.value === filter.value
                     )?.label ?? filter.value}
                   </SelectValue>
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent align="start" alignItemWithTrigger={false}>
                   {filter.options?.map((option) => (
                     <SelectItem key={option.value} value={option.value}>
                       {option.label}
