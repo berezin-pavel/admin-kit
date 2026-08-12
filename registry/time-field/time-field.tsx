@@ -17,6 +17,10 @@ export interface TimeFieldProps {
   className?: string
 }
 
+export function minutesToSeconds(minutes: number): number {
+  return minutes * 60
+}
+
 export function TimeField({
   value,
   onChange,
@@ -37,7 +41,7 @@ export function TimeField({
         type="time"
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        step={step * 60}
+        step={minutesToSeconds(step)}
         min={min}
         max={max}
         disabled={disabled}

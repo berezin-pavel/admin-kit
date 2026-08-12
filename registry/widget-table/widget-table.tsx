@@ -87,7 +87,7 @@ export interface WidgetTableProps<Row> {
   labels?: WidgetTableLabels
 }
 
-function formatPaginationRange(
+export function formatPaginationRange(
   pagination: WidgetTablePagination,
   range: (rangeStart: number, rangeEnd: number, total: number) => string
 ) {

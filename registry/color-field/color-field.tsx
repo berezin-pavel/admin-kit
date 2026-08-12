@@ -40,11 +40,15 @@ const DEFAULT_PRESETS = [
 
 const HEX_PATTERN = /^#[0-9a-f]{6}$/i
 
-function toHexDigits(raw: string) {
+export function toHexDigits(raw: string) {
   return raw
     .toLowerCase()
     .replace(/[^0-9a-f]/g, "")
     .slice(0, 6)
+}
+
+export function isValidHexColor(value: string): boolean {
+  return HEX_PATTERN.test(value)
 }
 
 export function ColorField(props: ColorFieldProps): React.ReactElement {
@@ -60,7 +64,7 @@ export function ColorField(props: ColorFieldProps): React.ReactElement {
   } = props
 
   const triggerId = React.useId()
-  const isValid = HEX_PATTERN.test(value)
+  const isValid = isValidHexColor(value)
   const color = value.toLowerCase()
   const [hexDigits, setHexDigits] = React.useState(() => color.slice(1))
   const [syncedValue, setSyncedValue] = React.useState(value)

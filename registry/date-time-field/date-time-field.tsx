@@ -28,7 +28,7 @@ export interface DateTimeFieldProps {
   displayFormat?: string
 }
 
-function parseDateTimeValue(value: string): Date | undefined {
+export function parseDateTimeValue(value: string): Date | undefined {
   const [datePart, timePart] = value.split("T")
   const [year, month, day] = (datePart ?? "").split("-").map(Number)
 
@@ -41,7 +41,7 @@ function parseDateTimeValue(value: string): Date | undefined {
   return new Date(year, month - 1, day, hours || 0, minutes || 0)
 }
 
-function formatDateTimeValue(date: Date): string {
+export function formatDateTimeValue(date: Date): string {
   const year = date.getFullYear()
   const month = String(date.getMonth() + 1).padStart(2, "0")
   const day = String(date.getDate()).padStart(2, "0")
@@ -49,6 +49,30 @@ function formatDateTimeValue(date: Date): string {
   const minutes = String(date.getMinutes()).padStart(2, "0")
 
   return `${year}-${month}-${day}T${hours}:${minutes}`
+}
+
+export function mergeSelectedDate(date: Date, selected: Date | undefined): Date {
+  const next = new Date(date)
+
+  if (selected) {
+    next.setHours(selected.getHours(), selected.getMinutes())
+  } else {
+    next.setHours(0, 0)
+  }
+
+  return next
+}
+
+export function mergeSelectedTime(
+  base: Date,
+  hours: number,
+  minutes: number
+): Date {
+  const next = new Date(base)
+
+  next.setHours(hours, minutes, 0, 0)
+
+  return next
 }
 
 export function DateTimeField({
@@ -102,15 +126,7 @@ export function DateTimeField({
                 return
               }
 
-              const next = new Date(date)
-
-              if (selected) {
-                next.setHours(selected.getHours(), selected.getMinutes())
-              } else {
-                next.setHours(0, 0)
-              }
-
-              onChange(formatDateTimeValue(next))
+              onChange(formatDateTimeValue(mergeSelectedDate(date, selected)))
             }}
           />
           <div className="border-t px-3 py-2.5">
@@ -127,11 +143,10 @@ export function DateTimeField({
 
                 const [hours, minutes] = time.split(":").map(Number)
                 const base = selected ?? new Date()
-                const next = new Date(base)
 
-                next.setHours(hours, minutes, 0, 0)
-
-                onChange(formatDateTimeValue(next))
+                onChange(
+                  formatDateTimeValue(mergeSelectedTime(base, hours, minutes))
+                )
               }}
             />
           </div>

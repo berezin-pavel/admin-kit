@@ -15,7 +15,7 @@ export interface WidgetTableSortButtonProps {
   children: ReactNode
 }
 
-function getNextSort(
+export function getNextSort(
   columnId: string,
   current: WidgetTableSort | undefined
 ): WidgetTableSort | undefined {
