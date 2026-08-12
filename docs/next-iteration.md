@@ -1,5 +1,15 @@
 # Deferred to the next iteration
 
+## When the kit gets its own form inputs, drop the bare primitives
+
+Decision recorded ahead of the forms iteration: once the kit ships its own
+text/number/select/checkbox fields, the bare shadcn form primitives (input,
+select, label and friends) stop being shown as standalone catalog entries —
+consumers should reach for the kit's fields, and the primitives remain mere
+`registryDependencies` that the CLI installs implicitly. The showcase
+"Primitives" section then shrinks to whatever still has no kit-level
+counterpart.
+
 The naming inconsistency this table had tracked since the first review is closed: in `state-empty` the `action` prop was renamed to `actions`, so the actions slot is now named the same way across every item in the kit. The pages from `docs/brief.md` — a list with filters and an entity card — are also done: `page-list` and `page-entity` are in the registry. What follows is what got closed by a decision rather than by code, and what's still unresolved after this iteration.
 
 ## Closed by decision, not by code

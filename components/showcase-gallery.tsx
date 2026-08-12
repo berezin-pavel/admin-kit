@@ -48,7 +48,7 @@ export function ShowcaseGallery({
                           Open full page
                         </Link>
                       </figcaption>
-                      <div className="max-h-[36rem] overflow-auto rounded-lg border border-border p-6">
+                      <div className="overflow-x-auto rounded-lg border border-border p-6">
                         <view.render />
                       </div>
                     </figure>

@@ -102,7 +102,7 @@ export function WidgetTablePaginationControls({
         {pageNumbers.map((item, index) =>
           item === "ellipsis" ? (
             <PaginationItem key={`ellipsis-${index}`}>
-              <PaginationEllipsis />
+              <PaginationEllipsis className="relative" />
             </PaginationItem>
           ) : (
             <PaginationItem key={item}>

@@ -135,7 +135,7 @@ export function WidgetTable<Row>({
   return (
     <Card className={className}>
       {hasHeader ? (
-        <CardHeader className="flex flex-wrap items-start justify-between gap-4">
+        <CardHeader className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex flex-wrap items-center gap-3">
             {title ? (
               <CardTitle className="text-sm font-medium text-muted-foreground">

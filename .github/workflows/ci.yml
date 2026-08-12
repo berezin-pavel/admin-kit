@@ -1,0 +1,50 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm lint
+      - run: pnpm registry:build
+      - run: pnpm build
+      - name: no cyrillic outside locale files
+        run: |
+          python3 - <<'EOF'
+          import re, subprocess, sys
+          allowed = (
+              "registry/locale-ru/",
+              "app/demo/locale.ts",
+              "app/demo/data.tsx",
+              "showcase/locale-ru-view.tsx",
+          )
+          cyrillic = re.compile(r"[Ѐ-ӿ]")
+          bad = []
+          files = subprocess.run(
+              ["git", "ls-files"], capture_output=True, text=True, check=True
+          ).stdout.splitlines()
+          for name in files:
+              if name.startswith(allowed):
+                  continue
+              try:
+                  text = open(name, encoding="utf-8").read()
+              except (UnicodeDecodeError, IsADirectoryError):
+                  continue
+              if cyrillic.search(text):
+                  bad.append(name)
+          if bad:
+              print("Cyrillic found outside the locale dictionaries:", *bad, sep="\n")
+              sys.exit(1)
+          EOF
