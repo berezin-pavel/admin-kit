@@ -3,7 +3,6 @@ import { ru } from "date-fns/locale"
 export const localeRu = {
   widgetTable: {
     emptyTitle: "Данных нет",
-    show: "Показывать",
     rowsPerPage: "Строк на странице",
     noSorting: "Без сортировки",
     sorting: "Сортировка",
@@ -23,7 +22,11 @@ export const localeRu = {
     hint: "Место зарезервировано, виджет пока не выбран",
   },
   confirmDialog: { confirmLabel: "Подтвердить", cancelLabel: "Отмена" },
-  dateField: { placeholder: "Выберите дату", displayFormat: "d MMMM yyyy", locale: ru },
+  dateField: {
+    placeholder: "Выберите дату",
+    displayFormat: "d MMMM yyyy",
+    locale: ru,
+  },
   dateTimeField: {
     placeholder: "Выберите дату и время",
     displayFormat: "d MMMM yyyy, HH:mm",

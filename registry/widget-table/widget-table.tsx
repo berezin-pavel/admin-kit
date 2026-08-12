@@ -52,7 +52,6 @@ export interface WidgetTablePagination {
 
 export interface WidgetTableLabels {
   emptyTitle?: string
-  show?: string
   rowsPerPage?: string
   noSorting?: string
   sorting?: string
@@ -63,13 +62,13 @@ export interface WidgetTableLabels {
 
 export const widgetTableLabelDefaults: Required<WidgetTableLabels> = {
   emptyTitle: "No data",
-  show: "Show",
   rowsPerPage: "Rows per page",
   noSorting: "No sorting",
   sorting: "Sorting",
   previousPage: "Previous page",
   nextPage: "Next page",
-  range: (rangeStart, rangeEnd, total) => `${rangeStart}–${rangeEnd} of ${total}`,
+  range: (rangeStart, rangeEnd, total) =>
+    `${rangeStart}–${rangeEnd} of ${total}`,
 }
 
 export interface WidgetTableProps<Row> {
@@ -149,19 +148,18 @@ export function WidgetTable<Row>({
             {pagination
               ? (footer ?? (
                   <>
+                    <span className="text-sm text-muted-foreground">
+                      {formatPaginationRange(pagination, resolvedLabels.range)}
+                    </span>
                     {pagination.pageSizeOptions &&
                     pagination.onPageSizeChange ? (
                       <WidgetTablePageSizeSelect
                         pageSize={pagination.pageSize}
                         pageSizeOptions={pagination.pageSizeOptions}
                         onPageSizeChange={pagination.onPageSizeChange}
-                        showLabel={resolvedLabels.show}
                         ariaLabel={resolvedLabels.rowsPerPage}
                       />
                     ) : null}
-                    <span className="text-sm text-muted-foreground">
-                      {formatPaginationRange(pagination, resolvedLabels.range)}
-                    </span>
                   </>
                 ))
               : null}

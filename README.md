@@ -185,7 +185,7 @@ Every hardcoded string in the kit — a fallback title, an `aria-label`, a
 select's placeholder text — is also a prop, defaulting to the English
 wording it replaced. Most of these props are grouped under a single
 `labels` object rather than spread across the item's flat prop list:
-`widget-table`'s `labels` (`emptyTitle`, `show`, `rowsPerPage`,
+`widget-table`'s `labels` (`emptyTitle`, `rowsPerPage`,
 `noSorting`, `sorting`, `previousPage`, `nextPage`, `range`),
 `sidebar-toggle`'s `labels` (`expand`, `collapse`), `theme-toggle`'s
 `labels` (`toLight`, `toDark`), and `admin-shell`'s `labels` (`openMenu`,
