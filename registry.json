@@ -188,10 +188,46 @@
     },
     {
       "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "user-menu",
+      "type": "registry:component",
+      "title": "User menu",
+      "description": "An avatar icon button for the shell's sidebarFooter slot that opens a dropdown with the signed-in user's name, email, and a list of actions — profile, sign out, and similar. The fallback avatar shows initials derived from name (the first letters of its first two words, uppercase); avatarUrl swaps in a real image. An item's tone=\"danger\" colors it with the destructive color, matching row-actions. The dropdown's open state lives in the primitive, same as every other popup in the kit — that's transient UI state, not the persistent state the sidebarFooter contract warns about, so it doesn't break the slot's multi-instance mounting.",
+      "registryDependencies": [
+        "avatar",
+        "dropdown-menu",
+        "button"
+      ],
+      "files": [
+        {
+          "path": "registry/user-menu/user-menu.tsx",
+          "type": "registry:component",
+          "target": "@components/admin/user-menu.tsx"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "breadcrumbs",
+      "type": "registry:component",
+      "title": "Breadcrumbs",
+      "description": "A trail of section links above a page's heading. Every entry except the last renders as a link when it has an href (through renderLink when provided, a plain <a> otherwise — the same substitution pattern as admin-shell's renderLink); an entry without an href in the middle of the trail renders as plain text. The last entry is always the current page — BreadcrumbPage with aria-current=\"page\", never a link, regardless of whether it has an href. Server-compatible: no client state, no \"use client\".",
+      "registryDependencies": [
+        "breadcrumb"
+      ],
+      "files": [
+        {
+          "path": "registry/breadcrumbs/breadcrumbs.tsx",
+          "type": "registry:component",
+          "target": "@components/admin/breadcrumbs.tsx"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
       "name": "locale-ru",
       "type": "registry:component",
       "title": "Russian locale pack",
-      "description": "A Russian dictionary for the kit's items: a single const, localeRu, sliced into the exact shapes the other items' labels and locale props expect, so a slice spreads or passes straight into a prop — labels={localeRu.widgetTable}, locale={localeRu.dateField.locale}. Covers widget-table, widget-list, widget-chart, state-loading, state-error, state-forbidden, state-offline, widget-placeholder, confirm-dialog, date-field, date-time-field, color-field, sidebar-toggle, theme-toggle, admin-shell, and language-toggle, and bundles date-fns's ru locale for the date fields. Not a runtime i18n solution — it's a static dictionary, and switching locale at runtime is on the consumer.",
+      "description": "A Russian dictionary for the kit's items: a single const, localeRu, sliced into the exact shapes the other items' labels and locale props expect, so a slice spreads or passes straight into a prop — labels={localeRu.widgetTable}, locale={localeRu.dateField.locale}. Covers widget-table, widget-list, widget-chart, state-loading, state-error, state-forbidden, state-offline, widget-placeholder, confirm-dialog, date-field, date-time-field, color-field, sidebar-toggle, theme-toggle, admin-shell, language-toggle, user-menu, and breadcrumbs, and bundles date-fns's ru locale for the date fields. Not a runtime i18n solution — it's a static dictionary, and switching locale at runtime is on the consumer.",
       "dependencies": [
         "date-fns"
       ],

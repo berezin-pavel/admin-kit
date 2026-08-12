@@ -58,6 +58,7 @@ as they were.
 | `theme-toggle`       | `registry:component` | A theme-switch button that doesn't store the theme itself: the `isDark` state and the `onToggle` handler arrive as props. Fits the shell's `sidebarFooter` slot or anywhere else on the page                                                                                                                                                                          |
 | `sidebar-toggle`     | `registry:component` | A button that collapses the shell's sidebar into the icon rail, built the same way as `theme-toggle`: `collapsed` and `onToggle` arrive as props. Visible only on a wide screen — on a narrow one the sidebar is already an icon rail with a burger menu. Its place is the `sidebarFooter` slot next to the theme toggle                                             |
 | `language-toggle`    | `registry:component` | A locale-switch button built the same way as `theme-toggle`: `locale`, `locales`, and `onLocaleChange` arrive as props. Shows the current locale's short label, cycling to the next one in the list on click. Its place is the `sidebarFooter` slot next to the theme toggle                                                                                        |
+| `user-menu`          | `registry:component` | An avatar icon button for the `sidebarFooter` slot that opens a dropdown with the user's name, email, and a list of `items` (icon, label, and a `danger` tone for actions like sign-out). The fallback avatar shows initials derived from `name`; `avatarUrl` swaps in a real image. The dropdown's open state lives in the primitive, the same as the kit's other popups |
 | `locale-ru`          | `registry:component` | A Russian dictionary: one `localeRu` const sliced into the exact shapes the other items' `labels`/`locale` props expect, so a slice passes straight into a prop. Bundles `date-fns`'s `ru` locale for the date fields                                                                                                                                                 |
 | `widget-metric`      | `registry:component` | A single-number card for a dashboard: a title, a value, optional trend (an arrow with its own separate color), and a caption                                                                                                                                                                                                                                          |
 | `widget-table`       | `registry:component` | A self-contained table card: the heading is optional, the header has a `toolbar` slot for filters, and the footer has a record count, pagination, and a page-size picker. A column with `sortable` gets a sort button and `aria-sort`; row order and slicing are set by the data owner, the table only reports the choice via `onSortChange` and `onPageChange`. Passing both `selectedKeys` and `onSelectionChange` adds a checkbox column — the header checkbox selects or clears the current page only — and swaps the header's left side for a selection bar with an N-selected count and `selectionActions`      |
@@ -71,6 +72,7 @@ as they were.
 | `state-offline`      | `registry:component` | A connection-lost screen: a title, an explanation, an actions slot, a red network-outage icon by default                                                                                                                                                                                                                                                                |
 | `page-entity`        | `registry:component` | A single-record page: a heading with actions and fields grouped into sections, with the field value being `ReactNode` rather than a string. The `status` prop swaps the fields for a loading, error, forbidden, or offline state, while the heading stays visible                                                                                                     |
 | `page-header`        | `registry:component` | A section header: a title, an explanation, an actions slot on the right — a page building block, not a dashboard widget                                                                                                                                                                                                                                                |
+| `breadcrumbs`        | `registry:component` | A trail of section links above a page's heading: every entry but the last renders as a link when it has an `href` (through `renderLink`, or a plain `<a>` otherwise), and the last entry is always the current page, never a link. Server-compatible — no client state                                                                                              |
 | `status-badge`       | `registry:component` | A record-status badge with tone `neutral`, `success`, `warning`, `danger`; the `success` and `warning` tones depend on admin-kit's theme tokens                                                                                                                                                                                                                        |
 | `hint`               | `registry:component` | A tooltip hint next to a field label, column header, or metric: without `children` a question-mark icon, with `children` a wrapper around your own element; opens on hover and from the keyboard                                                                                                                                                                      |
 | `date-field`         | `registry:component` | A date-picker field: a calendar in a popover, with the value a `YYYY-MM-DD` string with no `Date` object or time zone, so it doesn't drift by a day on serialization                                                                                                                                                                                                    |
@@ -129,8 +131,9 @@ upward with long content.
 
 The `sidebarFooter` prop sets a slot at the bottom of the sidebar, the
 icon rail on a narrow screen, and the burger panel — shared by the theme
-toggle (`theme-toggle`), the sidebar toggle (`sidebar-toggle`), a user
-menu, or a build version; it works even with the header turned off. It's
+toggle (`theme-toggle`), the sidebar toggle (`sidebar-toggle`), the user
+menu (`user-menu`), or a build version; it works even with the header
+turned off. It's
 the same slot in all three places: the same content is drawn in a 240px
 sidebar, in a rail the width of a single button, and in the expanded
 burger panel — large or multi-line content won't fit there without a
@@ -176,14 +179,19 @@ in the DOM at the same time at any screen width, and three while the
 panel is open. A component with no state of its own — like `theme-toggle`
 and `sidebar-toggle`, which get their state and handler as props —
 renders identically in every instance and never notices the difference.
-A component with its own state falls apart: a user menu that stores its
-own open/closed state opens only in the instance that was clicked, while
-the rest stay closed; a counter that fetches its own data via an effect
-makes an independent request in every instance. The content of
+A component with its own persistent state falls apart: a widget that
+fetches its own data via an effect makes an independent request in every
+instance, and a counter that stores its count in `useState` drifts out of
+sync between instances the moment one of them updates. The content of
 `sidebarFooter` and whatever `renderLink` renders must either have no
-state of its own or be controlled from outside — with state and
-callbacks arriving as props from the shell or the parent, the way
-`theme-toggle` does.
+persistent state of its own or be controlled from outside — with state
+and callbacks arriving as props from the shell or the parent, the way
+`theme-toggle` does. A popup's own open/closed state is the one exception:
+it's transient UI state scoped to whichever instance is actually visible
+and clicked, the same way a native `<select>` doesn't need its open state
+lifted either — `user-menu`'s dropdown works this way, and rendering two
+mounted-but-hidden copies of it is no different from two mounted-but-hidden
+`<select>` elements.
 
 ## Localization
 
@@ -196,7 +204,10 @@ wording it replaced. Most of these props are grouped under a single
 `selectAllOnPage`, `selected`, `clearSelection`),
 `sidebar-toggle`'s `labels` (`expand`, `collapse`), `theme-toggle`'s
 `labels` (`toLight`, `toDark`), and `admin-shell`'s `labels` (`openMenu`,
-`sections`). A handful of items already had a dedicated prop for their one
+`sections`). `user-menu` and `breadcrumbs` each carry a single string as a
+flat `label` prop rather than a `labels` object — the `aria-label` on the
+avatar trigger and on the `nav`, defaulting to "Open user menu" and
+"Breadcrumb". A handful of items already had a dedicated prop for their one
 string before this convention existed — `widget-list` and `widget-chart`
 take `emptyTitle` directly, `state-loading` takes `label`, `color-field`
 takes `placeholder` and `hexInputLabel` — and stayed flat rather than being

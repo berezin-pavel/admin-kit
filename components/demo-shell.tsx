@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation"
 
 import { DemoLanguageToggle } from "@/components/demo-language-toggle"
 import { DemoThemeToggle } from "@/components/demo-theme-toggle"
+import { DemoUserMenu } from "@/components/demo-user-menu"
 import { AdminShell } from "@/registry/admin-shell/admin-shell"
 import type { AdminNavLinkRenderer } from "@/registry/admin-shell/admin-shell"
 import { AdminToaster } from "@/registry/admin-toaster/admin-toaster"
@@ -50,6 +51,7 @@ export function DemoShell({ children }: { children: ReactNode }) {
           />
           <DemoThemeToggle />
           <DemoLanguageToggle />
+          <DemoUserMenu />
         </>
       }
     >

@@ -161,6 +161,15 @@ export interface DemoDictionary {
     saveToastTitle: string
     saveToastDescription: string
   }
+  userMenu: {
+    profileAction: string
+    signOutAction: string
+    profileToastTitle: string
+    signOutToastTitle: string
+  }
+  breadcrumbs: {
+    editLabel: string
+  }
 }
 
 export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
@@ -334,6 +343,15 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       saveToastTitle: "Order saved",
       saveToastDescription: "Order #4187 updated",
     },
+    userMenu: {
+      profileAction: "Profile",
+      signOutAction: "Sign out",
+      profileToastTitle: "Opened profile",
+      signOutToastTitle: "Signed out",
+    },
+    breadcrumbs: {
+      editLabel: "Edit",
+    },
   },
   ru: {
     appName: "Мой магазин",
@@ -501,6 +519,15 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       commentPlaceholder: "Добавьте заметку для сборщиков заказа",
       saveToastTitle: "Заказ сохранён",
       saveToastDescription: "Заказ №4187 обновлён",
+    },
+    userMenu: {
+      profileAction: "Профиль",
+      signOutAction: "Выйти",
+      profileToastTitle: "Открыт профиль",
+      signOutToastTitle: "Вы вышли из аккаунта",
+    },
+    breadcrumbs: {
+      editLabel: "Редактирование",
     },
   },
 }

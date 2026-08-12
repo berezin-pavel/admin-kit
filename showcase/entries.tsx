@@ -1,5 +1,6 @@
 import { adminShellEntry } from "./admin-shell"
 import { adminToasterEntry } from "./admin-toaster"
+import { breadcrumbsEntry } from "./breadcrumbs"
 import { checkboxFieldEntry } from "./checkbox-field"
 import { colorFieldEntry } from "./color-field"
 import { confirmDialogEntry } from "./confirm-dialog"
@@ -15,6 +16,7 @@ import { sidebarToggleEntry } from "./sidebar-toggle"
 import { textFieldEntry } from "./text-field"
 import { textareaFieldEntry } from "./textarea-field"
 import { timeFieldEntry } from "./time-field"
+import { userMenuEntry } from "./user-menu"
 import { stateEmptyEntry, stateLoadingEntry } from "./states"
 import {
   stateErrorEntry,
@@ -39,6 +41,7 @@ export const showcaseEntries: readonly ShowcaseEntry[] = [
   adminShellEntry,
   themeToggleEntry,
   sidebarToggleEntry,
+  userMenuEntry,
   languageToggleEntry,
   localeRuEntry,
   widgetMetricEntry,
@@ -50,6 +53,7 @@ export const showcaseEntries: readonly ShowcaseEntry[] = [
   statusBadgeEntry,
   hintEntry,
   rowActionsEntry,
+  breadcrumbsEntry,
   dateFieldEntry,
   dateTimeFieldEntry,
   timeFieldEntry,

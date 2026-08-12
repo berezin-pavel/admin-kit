@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 
+import { DemoOrderBreadcrumbs } from "@/components/demo-order-breadcrumbs"
 import { notify } from "@/registry/admin-toaster/admin-toaster"
 import { CheckboxField } from "@/registry/checkbox-field/checkbox-field"
 import { DateField } from "@/registry/date-field/date-field"
@@ -39,73 +40,76 @@ export function DemoOrderEdit() {
   const [submitting, setSubmitting] = useState(false)
 
   return (
-    <PageForm
-      title={strings.title}
-      description={strings.description}
-      submitLabel={locale === "ru" ? localeRu.pageForm.submitLabel : undefined}
-      cancelLabel={locale === "ru" ? localeRu.pageForm.cancelLabel : undefined}
-      sections={[
-        {
-          title: strings.sectionTitle,
-          children: (
-            <div className="flex flex-col gap-4">
-              <TextField
-                label={strings.customerLabel}
-                value={customer}
-                onChange={setCustomer}
-              />
-              <SelectField
-                label={strings.productLabel}
-                value={product}
-                onChange={setProduct}
-                options={productOptions}
-                placeholder={
-                  locale === "ru" ? localeRu.selectField.placeholder : undefined
-                }
-              />
-              <NumberField
-                label={strings.amountLabel}
-                value={amount}
-                onChange={setAmount}
-                min={0}
-              />
-              <DateField
-                label={strings.dateLabel}
-                value={date}
-                onChange={setDate}
-                locale={locale === "ru" ? localeRu.dateField.locale : undefined}
-                displayFormat={
-                  locale === "ru" ? localeRu.dateField.displayFormat : undefined
-                }
-              />
-              <CheckboxField
-                label={strings.paidLabel}
-                checked={paid}
-                onChange={setPaid}
-              />
-              <TextareaField
-                label={strings.commentLabel}
-                value={comment}
-                onChange={setComment}
-                placeholder={strings.commentPlaceholder}
-              />
-            </div>
-          ),
-        },
-      ]}
-      submitting={submitting}
-      onSubmit={() => {
-        setSubmitting(true)
+    <div className="flex flex-col gap-4">
+      <DemoOrderBreadcrumbs current="edit" />
+      <PageForm
+        title={strings.title}
+        description={strings.description}
+        submitLabel={locale === "ru" ? localeRu.pageForm.submitLabel : undefined}
+        cancelLabel={locale === "ru" ? localeRu.pageForm.cancelLabel : undefined}
+        sections={[
+          {
+            title: strings.sectionTitle,
+            children: (
+              <div className="flex flex-col gap-4">
+                <TextField
+                  label={strings.customerLabel}
+                  value={customer}
+                  onChange={setCustomer}
+                />
+                <SelectField
+                  label={strings.productLabel}
+                  value={product}
+                  onChange={setProduct}
+                  options={productOptions}
+                  placeholder={
+                    locale === "ru" ? localeRu.selectField.placeholder : undefined
+                  }
+                />
+                <NumberField
+                  label={strings.amountLabel}
+                  value={amount}
+                  onChange={setAmount}
+                  min={0}
+                />
+                <DateField
+                  label={strings.dateLabel}
+                  value={date}
+                  onChange={setDate}
+                  locale={locale === "ru" ? localeRu.dateField.locale : undefined}
+                  displayFormat={
+                    locale === "ru" ? localeRu.dateField.displayFormat : undefined
+                  }
+                />
+                <CheckboxField
+                  label={strings.paidLabel}
+                  checked={paid}
+                  onChange={setPaid}
+                />
+                <TextareaField
+                  label={strings.commentLabel}
+                  value={comment}
+                  onChange={setComment}
+                  placeholder={strings.commentPlaceholder}
+                />
+              </div>
+            ),
+          },
+        ]}
+        submitting={submitting}
+        onSubmit={() => {
+          setSubmitting(true)
 
-        window.setTimeout(() => {
-          setSubmitting(false)
-          notify.success(strings.saveToastTitle, {
-            description: strings.saveToastDescription,
-          })
-          router.push("/demo/orders")
-        }, 700)
-      }}
-      onCancel={() => router.push("/demo/orders")}
-    />
+          window.setTimeout(() => {
+            setSubmitting(false)
+            notify.success(strings.saveToastTitle, {
+              description: strings.saveToastDescription,
+            })
+            router.push("/demo/orders")
+          }, 700)
+        }}
+        onCancel={() => router.push("/demo/orders")}
+      />
+    </div>
   )
 }

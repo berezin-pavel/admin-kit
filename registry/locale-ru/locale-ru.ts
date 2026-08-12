@@ -46,6 +46,8 @@ export const localeRu = {
   },
   adminShell: { openMenu: "Открыть меню навигации", sections: "Разделы" },
   languageToggle: { label: "Переключить язык" },
+  userMenu: { label: "Открыть меню пользователя" },
+  breadcrumbs: { label: "Хлебные крошки" },
 } as const
 
 export type LocaleRu = typeof localeRu

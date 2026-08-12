@@ -17,7 +17,7 @@ export const SHOWCASE_ENTRY_GROUPS: readonly ShowcaseGroupDefinition[] = [
   {
     id: "controls",
     title: "Controls",
-    items: ["theme-toggle", "sidebar-toggle"],
+    items: ["theme-toggle", "sidebar-toggle", "user-menu"],
   },
   {
     id: "localization",
@@ -39,7 +39,7 @@ export const SHOWCASE_ENTRY_GROUPS: readonly ShowcaseGroupDefinition[] = [
   {
     id: "page-parts",
     title: "Page parts",
-    items: ["page-header", "status-badge", "hint", "row-actions"],
+    items: ["page-header", "status-badge", "hint", "row-actions", "breadcrumbs"],
   },
   {
     id: "fields",

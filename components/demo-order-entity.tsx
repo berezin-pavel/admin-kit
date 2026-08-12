@@ -3,6 +3,7 @@
 import { useState } from "react"
 
 import { Button } from "@/components/ui/button"
+import { DemoOrderBreadcrumbs } from "@/components/demo-order-breadcrumbs"
 import { notify } from "@/registry/admin-toaster/admin-toaster"
 import { ConfirmDialog } from "@/registry/confirm-dialog/confirm-dialog"
 import { Hint } from "@/registry/hint/hint"
@@ -108,7 +109,8 @@ export function DemoOrderEntity() {
   }
 
   return (
-    <>
+    <div className="flex flex-col gap-4">
+      <DemoOrderBreadcrumbs />
       <PageEntity
         title={strings.title}
         description={strings.description}
@@ -148,6 +150,6 @@ export function DemoOrderEntity() {
         loading={cancelling}
         onConfirm={cancelOrder}
       />
-    </>
+    </div>
   )
 }
