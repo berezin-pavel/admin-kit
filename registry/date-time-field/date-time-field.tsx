@@ -22,6 +22,8 @@ export interface DateTimeFieldProps {
   onChange: (value: string) => void
   label?: string
   placeholder?: string
+  hint?: string
+  error?: string
   disabled?: boolean
   className?: string
   locale?: Locale
@@ -38,7 +40,23 @@ export function parseDateTimeValue(value: string): Date | undefined {
 
   const [hours = 0, minutes = 0] = (timePart ?? "").split(":").map(Number)
 
-  return new Date(year, month - 1, day, hours || 0, minutes || 0)
+  if (hours > 23 || minutes > 59) {
+    return undefined
+  }
+
+  const date = new Date(year, month - 1, day, hours || 0, minutes || 0)
+
+  if (
+    date.getFullYear() !== year ||
+    date.getMonth() !== month - 1 ||
+    date.getDate() !== day ||
+    date.getHours() !== (hours || 0) ||
+    date.getMinutes() !== (minutes || 0)
+  ) {
+    return undefined
+  }
+
+  return date
 }
 
 export function formatDateTimeValue(date: Date): string {
@@ -80,12 +98,16 @@ export function DateTimeField({
   onChange,
   label,
   placeholder = "Pick a date and time",
+  hint,
+  error,
   disabled = false,
   className,
   locale = enUS,
   displayFormat = "MMMM d, yyyy HH:mm",
 }: DateTimeFieldProps) {
   const id = React.useId()
+  const errorId = `${id}-error`
+  const hintId = `${id}-hint`
   const [open, setOpen] = React.useState(false)
   const selected = parseDateTimeValue(value)
   const timeValue = selected
@@ -101,6 +123,8 @@ export function DateTimeField({
         <PopoverTrigger
           id={id}
           disabled={disabled}
+          aria-invalid={error ? true : undefined}
+          aria-describedby={error ? errorId : hint ? hintId : undefined}
           render={
             <Button
               variant="outline"
@@ -152,6 +176,15 @@ export function DateTimeField({
           </div>
         </PopoverContent>
       </Popover>
+      {error ? (
+        <p id={errorId} className="text-sm text-destructive">
+          {error}
+        </p>
+      ) : hint ? (
+        <p id={hintId} className="text-sm text-muted-foreground">
+          {hint}
+        </p>
+      ) : null}
     </div>
   )
 }

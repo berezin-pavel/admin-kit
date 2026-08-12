@@ -2,39 +2,37 @@
 
 import * as React from "react"
 
+import { cn } from "@/lib/utils"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { cn } from "@/lib/utils"
 
-export interface TimeFieldProps {
+export interface NumberFieldProps {
   value: string
   onChange: (value: string) => void
   label?: string
+  placeholder?: string
+  min?: number
+  max?: number
   step?: number
-  min?: string
-  max?: string
   hint?: string
   error?: string
   disabled?: boolean
   className?: string
 }
 
-export function minutesToSeconds(minutes: number): number {
-  return minutes * 60
-}
-
-export function TimeField({
+export function NumberField({
   value,
   onChange,
   label,
-  step = 5,
+  placeholder,
   min,
   max,
+  step,
   hint,
   error,
-  disabled,
+  disabled = false,
   className,
-}: TimeFieldProps) {
+}: NumberFieldProps) {
   const id = React.useId()
   const errorId = `${id}-error`
   const hintId = `${id}-hint`
@@ -44,16 +42,16 @@ export function TimeField({
       {label ? <Label htmlFor={id}>{label}</Label> : null}
       <Input
         id={id}
-        type="time"
+        type="number"
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        step={minutesToSeconds(step)}
+        placeholder={placeholder}
         min={min}
         max={max}
+        step={step}
         disabled={disabled}
         aria-invalid={error ? true : undefined}
         aria-describedby={error ? errorId : hint ? hintId : undefined}
-        className="[&::-webkit-calendar-picker-indicator]:cursor-pointer dark:[&::-webkit-calendar-picker-indicator]:opacity-80 dark:[&::-webkit-calendar-picker-indicator]:invert"
       />
       {error ? (
         <p id={errorId} className="text-sm text-destructive">

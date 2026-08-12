@@ -651,6 +651,117 @@
     },
     {
       "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "text-field",
+      "type": "registry:component",
+      "title": "Text field",
+      "description": "A single-line text input. The value is a string; the type prop switches between text, email, password, url and tel. Renders label, control, hint and error in the kit's shared field anatomy: when error is set it replaces the hint, the control gets aria-invalid and aria-describedby. Controlled: the consumer holds value and onChange.",
+      "registryDependencies": [
+        "input",
+        "label"
+      ],
+      "files": [
+        {
+          "path": "registry/text-field/text-field.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "number-field",
+      "type": "registry:component",
+      "title": "Number field",
+      "description": "A numeric input. The value is deliberately a string and passes through unparsed — mid-typing states like \"1.\" or \"-\" cannot live in a number, and the kit's field values stay serializable; the consumer parses on submit. min, max and step forward to the native input. Renders label, control, hint and error in the kit's shared field anatomy: when error is set it replaces the hint, the control gets aria-invalid and aria-describedby. Controlled: the consumer holds value and onChange.",
+      "registryDependencies": [
+        "input",
+        "label"
+      ],
+      "files": [
+        {
+          "path": "registry/number-field/number-field.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "textarea-field",
+      "type": "registry:component",
+      "title": "Textarea field",
+      "description": "A multi-line text input with a rows prop (4 by default). The value is a string. Renders label, control, hint and error in the kit's shared field anatomy: when error is set it replaces the hint, the control gets aria-invalid and aria-describedby. Controlled: the consumer holds value and onChange.",
+      "registryDependencies": [
+        "textarea",
+        "label"
+      ],
+      "files": [
+        {
+          "path": "registry/textarea-field/textarea-field.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "select-field",
+      "type": "registry:component",
+      "title": "Select field",
+      "description": "A single-choice select over an options list of value/label pairs. An empty value shows the placeholder (\"Select…\" by default — the placeholder prop localizes it); the popup is pinned to the trigger like the kit's other selects. Renders label, control, hint and error in the kit's shared field anatomy: when error is set it replaces the hint, the control gets aria-invalid and aria-describedby. Controlled: the consumer holds value and onChange.",
+      "registryDependencies": [
+        "select",
+        "label"
+      ],
+      "files": [
+        {
+          "path": "registry/select-field/select-field.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "checkbox-field",
+      "type": "registry:component",
+      "title": "Checkbox field",
+      "description": "A boolean checkbox with its label to the right; hint or error render below the pair. Controlled via checked and onChange. Renders label, control, hint and error in the kit's shared field anatomy: when error is set it replaces the hint, the control gets aria-invalid and aria-describedby. Controlled: the consumer holds value and onChange.",
+      "registryDependencies": [
+        "checkbox",
+        "label"
+      ],
+      "files": [
+        {
+          "path": "registry/checkbox-field/checkbox-field.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "page-form",
+      "type": "registry:component",
+      "title": "Form page",
+      "description": "A create/edit record page: a header with a title, description and an actions slot, sections of consumer-laid-out fields, and a footer with Cancel and Save (labels are props, so they localize). It is a real form element — Save submits, submitting disables both buttons and sets aria-busy. The status prop (ready/loading/error/forbidden/offline) swaps the sections for the matching State screen while the header stays. Requires the state screens it renders.",
+      "registryDependencies": [
+        "berezin-pavel/admin-kit/admin-theme",
+        "button",
+        "card",
+        "berezin-pavel/admin-kit/state-loading",
+        "berezin-pavel/admin-kit/state-error",
+        "berezin-pavel/admin-kit/state-forbidden",
+        "berezin-pavel/admin-kit/state-offline"
+      ],
+      "files": [
+        {
+          "path": "registry/page-form/page-form.tsx",
+          "type": "registry:component"
+        },
+        {
+          "path": "registry/page-form/page-form-body.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
       "name": "widget-progress",
       "title": "Progress widget",
       "type": "registry:component",

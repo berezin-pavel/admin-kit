@@ -33,6 +33,8 @@ export const localeRu = {
     locale: ru,
   },
   colorField: { placeholder: "Выберите цвет", hexInputLabel: "HEX-код цвета" },
+  selectField: { placeholder: "Выберите…" },
+  pageForm: { submitLabel: "Сохранить", cancelLabel: "Отмена" },
   sidebarToggle: { expand: "Развернуть сайдбар", collapse: "Свернуть сайдбар" },
   themeToggle: {
     toLight: "Переключить на светлую тему",

@@ -12,6 +12,7 @@ import {
 
 import { cn } from "@/lib/utils"
 import type { AdminNavItem } from "@/registry/admin-shell/admin-shell"
+import type { SelectFieldOption } from "@/registry/select-field/select-field"
 import type { StatusTone } from "@/registry/status-badge/status-badge"
 import type { WidgetChartSeries } from "@/registry/widget-chart/widget-chart"
 import type { WidgetListItem } from "@/registry/widget-list/widget-list"
@@ -417,5 +418,14 @@ export function getDemoProductItems(
     description: copy.description,
     meta: copy.meta,
     icon: PRODUCT_ICONS[index],
+  }))
+}
+
+export function getDemoProductOptions(
+  locale: DemoLocale
+): readonly SelectFieldOption[] {
+  return PRODUCT_COPY[locale].map((copy, index) => ({
+    value: PRODUCT_IDS[index],
+    label: copy.title,
   }))
 }

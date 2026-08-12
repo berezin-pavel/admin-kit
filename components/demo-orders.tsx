@@ -165,10 +165,7 @@ export function DemoOrders() {
               id: "edit",
               label: strings.editOrderAction,
               icon: Pencil,
-              onSelect: () =>
-                notify.info(strings.editComingSoonTitle, {
-                  description: strings.editComingSoonDescription,
-                }),
+              onSelect: () => router.push("/demo/order/edit"),
             },
             {
               id: "delete",

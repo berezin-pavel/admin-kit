@@ -17,6 +17,8 @@ export interface ColorFieldProps {
   onChange: (value: string) => void
   label?: string
   presets?: readonly string[]
+  hint?: string
+  error?: string
   disabled?: boolean
   className?: string
   placeholder?: string
@@ -57,6 +59,8 @@ export function ColorField(props: ColorFieldProps): React.ReactElement {
     onChange,
     label,
     presets = DEFAULT_PRESETS,
+    hint,
+    error,
     disabled = false,
     className,
     placeholder = "Pick a color",
@@ -64,6 +68,8 @@ export function ColorField(props: ColorFieldProps): React.ReactElement {
   } = props
 
   const triggerId = React.useId()
+  const errorId = `${triggerId}-error`
+  const hintId = `${triggerId}-hint`
   const isValid = isValidHexColor(value)
   const color = value.toLowerCase()
   const [hexDigits, setHexDigits] = React.useState(() => color.slice(1))
@@ -91,6 +97,8 @@ export function ColorField(props: ColorFieldProps): React.ReactElement {
         <PopoverTrigger
           id={triggerId}
           disabled={disabled}
+          aria-invalid={error ? true : undefined}
+          aria-describedby={error ? errorId : hint ? hintId : undefined}
           className="flex h-8 w-full items-center gap-2 rounded-lg border border-input bg-transparent px-2.5 text-sm transition-colors outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 aria-expanded:border-ring aria-expanded:ring-3 aria-expanded:ring-ring/50 dark:bg-input/30 dark:hover:bg-input/50"
         >
           <span
@@ -181,6 +189,15 @@ export function ColorField(props: ColorFieldProps): React.ReactElement {
           </div>
         </PopoverContent>
       </Popover>
+      {error ? (
+        <p id={errorId} className="text-sm text-destructive">
+          {error}
+        </p>
+      ) : hint ? (
+        <p id={hintId} className="text-sm text-muted-foreground">
+          {hint}
+        </p>
+      ) : null}
     </div>
   )
 }

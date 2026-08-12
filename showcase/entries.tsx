@@ -1,5 +1,6 @@
 import { adminShellEntry } from "./admin-shell"
 import { adminToasterEntry } from "./admin-toaster"
+import { checkboxFieldEntry } from "./checkbox-field"
 import { colorFieldEntry } from "./color-field"
 import { confirmDialogEntry } from "./confirm-dialog"
 import { dateFieldEntry } from "./date-field"
@@ -7,8 +8,12 @@ import { dateTimeFieldEntry } from "./date-time-field"
 import { hintEntry } from "./hint"
 import { languageToggleEntry } from "./language-toggle"
 import { localeRuEntry } from "./locale-ru"
+import { numberFieldEntry } from "./number-field"
 import { rowActionsEntry } from "./row-actions"
+import { selectFieldEntry } from "./select-field"
 import { sidebarToggleEntry } from "./sidebar-toggle"
+import { textFieldEntry } from "./text-field"
+import { textareaFieldEntry } from "./textarea-field"
 import { timeFieldEntry } from "./time-field"
 import { stateEmptyEntry, stateLoadingEntry } from "./states"
 import {
@@ -23,6 +28,7 @@ import { widgetListEntry } from "./widget-list"
 import { widgetMetricEntry } from "./widget-metric"
 import { widgetPlaceholderEntry } from "./widget-placeholder"
 import { pageEntityEntry } from "./page-entity"
+import { pageFormEntry } from "./page-form"
 import { pageListEntry } from "./page-list"
 import { pageHeaderEntry } from "./page-header"
 import { statusBadgeEntry } from "./status-badge"
@@ -39,6 +45,7 @@ export const showcaseEntries: readonly ShowcaseEntry[] = [
   widgetTableEntry,
   pageEntityEntry,
   pageListEntry,
+  pageFormEntry,
   pageHeaderEntry,
   statusBadgeEntry,
   hintEntry,
@@ -47,6 +54,11 @@ export const showcaseEntries: readonly ShowcaseEntry[] = [
   dateTimeFieldEntry,
   timeFieldEntry,
   colorFieldEntry,
+  textFieldEntry,
+  numberFieldEntry,
+  textareaFieldEntry,
+  selectFieldEntry,
+  checkboxFieldEntry,
   confirmDialogEntry,
   adminToasterEntry,
   widgetProgressEntry,

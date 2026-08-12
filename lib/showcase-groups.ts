@@ -44,14 +44,28 @@ export const SHOWCASE_ENTRY_GROUPS: readonly ShowcaseGroupDefinition[] = [
   {
     id: "fields",
     title: "Fields",
-    items: ["date-field", "date-time-field", "time-field", "color-field"],
+    items: [
+      "text-field",
+      "number-field",
+      "textarea-field",
+      "select-field",
+      "checkbox-field",
+      "date-field",
+      "date-time-field",
+      "time-field",
+      "color-field",
+    ],
   },
   {
     id: "feedback",
     title: "Feedback",
     items: ["confirm-dialog", "admin-toaster"],
   },
-  { id: "pages", title: "Pages", items: ["page-list", "page-entity"] },
+  {
+    id: "pages",
+    title: "Pages",
+    items: ["page-list", "page-entity", "page-form"],
+  },
   {
     id: "states",
     title: "States",

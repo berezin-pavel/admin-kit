@@ -96,8 +96,6 @@ export interface DemoDictionary {
     viewOrderAction: string
     editOrderAction: string
     deleteOrderAction: string
-    editComingSoonTitle: string
-    editComingSoonDescription: string
     deleteConfirmTitle: string
     deleteConfirmDescription: (orderNumber: string, customer: string) => string
     deleteConfirmLabel: string
@@ -140,6 +138,20 @@ export interface DemoDictionary {
     cancelConfirmCancelLabel: string
     cancelToastTitle: string
     cancelToastDescription: string
+  }
+  orderEdit: {
+    title: string
+    description: string
+    sectionTitle: string
+    customerLabel: string
+    productLabel: string
+    amountLabel: string
+    dateLabel: string
+    paidLabel: string
+    commentLabel: string
+    commentPlaceholder: string
+    saveToastTitle: string
+    saveToastDescription: string
   }
 }
 
@@ -244,8 +256,6 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       viewOrderAction: "View order",
       editOrderAction: "Edit order",
       deleteOrderAction: "Delete order",
-      editComingSoonTitle: "Coming soon",
-      editComingSoonDescription: "Order editing isn't ready yet",
       deleteConfirmTitle: "Delete order?",
       deleteConfirmDescription: (orderNumber, customer) =>
         `Order #${orderNumber} from ${customer} will be deleted with no way to restore it.`,
@@ -291,6 +301,20 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       cancelConfirmCancelLabel: "Keep it",
       cancelToastTitle: "Order cancelled",
       cancelToastDescription: "The refund will reach the customer within three days",
+    },
+    orderEdit: {
+      title: "Edit order #4187",
+      description: "Update the order and save the changes",
+      sectionTitle: "Order",
+      customerLabel: "Customer",
+      productLabel: "Product",
+      amountLabel: "Amount",
+      dateLabel: "Delivery date",
+      paidLabel: "Paid",
+      commentLabel: "Comment",
+      commentPlaceholder: "Add a note for the fulfillment team",
+      saveToastTitle: "Order saved",
+      saveToastDescription: "Order #4187 updated",
     },
   },
   ru: {
@@ -391,8 +415,6 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       viewOrderAction: "Просмотреть заказ",
       editOrderAction: "Редактировать заказ",
       deleteOrderAction: "Удалить заказ",
-      editComingSoonTitle: "Скоро",
-      editComingSoonDescription: "Редактирование заказов ещё не готово",
       deleteConfirmTitle: "Удалить заказ?",
       deleteConfirmDescription: (orderNumber, customer) =>
         `Заказ №${orderNumber} покупателя ${customer} будет удалён без возможности восстановить.`,
@@ -437,6 +459,20 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       cancelConfirmCancelLabel: "Оставить",
       cancelToastTitle: "Заказ отменён",
       cancelToastDescription: "Деньги вернутся покупателю в течение трёх дней",
+    },
+    orderEdit: {
+      title: "Редактирование заказа №4187",
+      description: "Обновите заказ и сохраните изменения",
+      sectionTitle: "Заказ",
+      customerLabel: "Покупатель",
+      productLabel: "Товар",
+      amountLabel: "Сумма",
+      dateLabel: "Дата доставки",
+      paidLabel: "Оплачен",
+      commentLabel: "Комментарий",
+      commentPlaceholder: "Добавьте заметку для сборщиков заказа",
+      saveToastTitle: "Заказ сохранён",
+      saveToastDescription: "Заказ №4187 обновлён",
     },
   },
 }

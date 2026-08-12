@@ -37,9 +37,25 @@ describe("parseDateValue with invalid input", () => {
     expect(parseDateValue("0000-01-10")).toBeUndefined()
   })
 
-  it("does not validate calendar overflow: it lets the native Date roll the value over", () => {
-    const parsed = parseDateValue("2026-13-99")
-    expect(parsed).toEqual(new Date(2026, 12, 99))
+  it("returns undefined for a day that overflows its month", () => {
+    expect(parseDateValue("2026-02-30")).toBeUndefined()
+  })
+
+  it("returns undefined for a month above 12", () => {
+    expect(parseDateValue("2026-13-01")).toBeUndefined()
+  })
+
+  it("accepts February 29 on a leap year", () => {
+    const parsed = parseDateValue("2028-02-29")
+    expect(parsed?.getFullYear()).toBe(2028)
+    expect(parsed?.getMonth()).toBe(1)
+    expect(parsed?.getDate()).toBe(29)
+  })
+
+  it("accepts the last day of a 31-day month", () => {
+    const parsed = parseDateValue("2026-01-31")
+    expect(parsed?.getMonth()).toBe(0)
+    expect(parsed?.getDate()).toBe(31)
   })
 })
 

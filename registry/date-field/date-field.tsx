@@ -21,6 +21,8 @@ export interface DateFieldProps {
   onChange: (value: string) => void
   label?: string
   placeholder?: string
+  hint?: string
+  error?: string
   disabled?: boolean
   className?: string
   locale?: Locale
@@ -34,7 +36,17 @@ export function parseDateValue(value: string): Date | undefined {
     return undefined
   }
 
-  return new Date(year, month - 1, day)
+  const date = new Date(year, month - 1, day)
+
+  if (
+    date.getFullYear() !== year ||
+    date.getMonth() !== month - 1 ||
+    date.getDate() !== day
+  ) {
+    return undefined
+  }
+
+  return date
 }
 
 export function formatDateValue(date: Date): string {
@@ -50,12 +62,16 @@ export function DateField({
   onChange,
   label,
   placeholder = "Pick a date",
+  hint,
+  error,
   disabled = false,
   className,
   locale = enUS,
   displayFormat = "MMMM d, yyyy",
 }: DateFieldProps) {
   const id = React.useId()
+  const errorId = `${id}-error`
+  const hintId = `${id}-hint`
   const [open, setOpen] = React.useState(false)
   const selected = parseDateValue(value)
 
@@ -66,6 +82,8 @@ export function DateField({
         <PopoverTrigger
           id={id}
           disabled={disabled}
+          aria-invalid={error ? true : undefined}
+          aria-describedby={error ? errorId : hint ? hintId : undefined}
           render={
             <Button
               variant="outline"
@@ -97,6 +115,15 @@ export function DateField({
           />
         </PopoverContent>
       </Popover>
+      {error ? (
+        <p id={errorId} className="text-sm text-destructive">
+          {error}
+        </p>
+      ) : hint ? (
+        <p id={hintId} className="text-sm text-muted-foreground">
+          {hint}
+        </p>
+      ) : null}
     </div>
   )
 }

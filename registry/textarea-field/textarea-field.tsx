@@ -2,39 +2,33 @@
 
 import * as React from "react"
 
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { cn } from "@/lib/utils"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
 
-export interface TimeFieldProps {
+export interface TextareaFieldProps {
   value: string
   onChange: (value: string) => void
   label?: string
-  step?: number
-  min?: string
-  max?: string
+  placeholder?: string
+  rows?: number
   hint?: string
   error?: string
   disabled?: boolean
   className?: string
 }
 
-export function minutesToSeconds(minutes: number): number {
-  return minutes * 60
-}
-
-export function TimeField({
+export function TextareaField({
   value,
   onChange,
   label,
-  step = 5,
-  min,
-  max,
+  placeholder,
+  rows = 4,
   hint,
   error,
-  disabled,
+  disabled = false,
   className,
-}: TimeFieldProps) {
+}: TextareaFieldProps) {
   const id = React.useId()
   const errorId = `${id}-error`
   const hintId = `${id}-hint`
@@ -42,18 +36,15 @@ export function TimeField({
   return (
     <div className={cn("flex flex-col gap-1.5", className)}>
       {label ? <Label htmlFor={id}>{label}</Label> : null}
-      <Input
+      <Textarea
         id={id}
-        type="time"
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        step={minutesToSeconds(step)}
-        min={min}
-        max={max}
+        placeholder={placeholder}
+        rows={rows}
         disabled={disabled}
         aria-invalid={error ? true : undefined}
         aria-describedby={error ? errorId : hint ? hintId : undefined}
-        className="[&::-webkit-calendar-picker-indicator]:cursor-pointer dark:[&::-webkit-calendar-picker-indicator]:opacity-80 dark:[&::-webkit-calendar-picker-indicator]:invert"
       />
       {error ? (
         <p id={errorId} className="text-sm text-destructive">

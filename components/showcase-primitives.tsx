@@ -27,8 +27,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import {
   Pagination,
   PaginationContent,
@@ -43,13 +41,6 @@ import {
   ProgressLabel,
   ProgressValue,
 } from "@/components/ui/progress"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import {
   Sheet,
   SheetClose,
@@ -80,7 +71,25 @@ interface PrimitiveDemo {
   name: string
   title: string
   description: string
-  demo: ReactNode
+  demo?: ReactNode
+  supersededBy?: readonly string[]
+}
+
+function SupersededNotice({ items }: { items: readonly string[] }) {
+  return (
+    <p className="text-sm text-muted-foreground">
+      Superseded by the kit&apos;s{" "}
+      {items.map((item, index) => (
+        <span key={item}>
+          {index > 0 ? (index === items.length - 1 ? " and " : ", ") : null}
+          <code className="rounded bg-muted px-1.5 py-0.5 text-sm">
+            {item}
+          </code>
+        </span>
+      ))}
+      .
+    </p>
+  )
 }
 
 const PRIMITIVE_DEMOS: readonly PrimitiveDemo[] = [
@@ -152,39 +161,20 @@ const PRIMITIVE_DEMOS: readonly PrimitiveDemo[] = [
     name: "input",
     title: "Input",
     description: "A text field: regular and disabled.",
-    demo: (
-      <>
-        <Input placeholder="Product name" className="w-56" />
-        <Input placeholder="Unavailable" disabled className="w-56" />
-      </>
-    ),
+    supersededBy: ["text-field", "number-field"],
   },
   {
     name: "label",
     title: "Label",
     description:
       "A form field caption. Dims along with the field when it's disabled.",
-    demo: (
-      <>
-        <div className="flex flex-col gap-1.5">
-          <Label htmlFor="primitive-label-active">Name</Label>
-          <Input
-            id="primitive-label-active"
-            placeholder="Jane Doe"
-            className="w-56"
-          />
-        </div>
-        <div className="flex flex-col gap-1.5">
-          <Label htmlFor="primitive-label-disabled">Name</Label>
-          <Input
-            id="primitive-label-disabled"
-            placeholder="Unavailable"
-            disabled
-            className="w-56"
-          />
-        </div>
-      </>
-    ),
+    supersededBy: [
+      "text-field",
+      "number-field",
+      "textarea-field",
+      "select-field",
+      "checkbox-field",
+    ],
   },
   {
     name: "pagination",
@@ -249,29 +239,19 @@ const PRIMITIVE_DEMOS: readonly PrimitiveDemo[] = [
     name: "select",
     title: "Select",
     description: "A dropdown list: with a selected value and without.",
-    demo: (
-      <>
-        <Select defaultValue="week">
-          <SelectTrigger className="w-40">
-            <SelectValue placeholder="Period">Week</SelectValue>
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="day">Day</SelectItem>
-            <SelectItem value="week">Week</SelectItem>
-            <SelectItem value="month">Month</SelectItem>
-          </SelectContent>
-        </Select>
-        <Select>
-          <SelectTrigger className="w-40">
-            <SelectValue placeholder="Not selected" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="asc">Ascending</SelectItem>
-            <SelectItem value="desc">Descending</SelectItem>
-          </SelectContent>
-        </Select>
-      </>
-    ),
+    supersededBy: ["select-field"],
+  },
+  {
+    name: "textarea",
+    title: "Textarea",
+    description: "A multi-line text field.",
+    supersededBy: ["textarea-field"],
+  },
+  {
+    name: "checkbox",
+    title: "Checkbox",
+    description: "A boolean control with a checked and unchecked state.",
+    supersededBy: ["checkbox-field"],
   },
   {
     name: "alert-dialog",
@@ -466,7 +446,11 @@ export function ShowcasePrimitives() {
               description={demo.description}
               requiredBy={primitive.requiredBy}
             >
-              {demo.demo}
+              {demo.supersededBy ? (
+                <SupersededNotice items={demo.supersededBy} />
+              ) : (
+                demo.demo
+              )}
             </PrimitiveSection>
           )
         })}
