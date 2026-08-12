@@ -57,6 +57,8 @@ as they were.
 | `admin-shell`        | `registry:block`     | A persistent full-height frame for the admin panel: an optional header, side navigation (on a narrow screen — always an icon rail and a burger menu; on a wide one — a sidebar, or with `collapsed`, that same rail and burger menu), a `sidebarFooter` slot at the bottom, and a work area with its own scrolling. The `sidebarVariant` prop switches the sidebar's look between `flush` and `card` (default). Installed once per project |
 | `theme-toggle`       | `registry:component` | A theme-switch button that doesn't store the theme itself: the `isDark` state and the `onToggle` handler arrive as props. Fits the shell's `sidebarFooter` slot or anywhere else on the page                                                                                                                                                                          |
 | `sidebar-toggle`     | `registry:component` | A button that collapses the shell's sidebar into the icon rail, built the same way as `theme-toggle`: `collapsed` and `onToggle` arrive as props. Visible only on a wide screen — on a narrow one the sidebar is already an icon rail with a burger menu. Its place is the `sidebarFooter` slot next to the theme toggle                                             |
+| `language-toggle`    | `registry:component` | A locale-switch button built the same way as `theme-toggle`: `locale`, `locales`, and `onLocaleChange` arrive as props. Shows the current locale's short label, cycling to the next one in the list on click. Its place is the `sidebarFooter` slot next to the theme toggle                                                                                        |
+| `locale-ru`          | `registry:component` | A Russian dictionary: one `localeRu` const sliced into the exact shapes the other items' `labels`/`locale` props expect, so a slice passes straight into a prop. Bundles `date-fns`'s `ru` locale for the date fields                                                                                                                                                 |
 | `widget-metric`      | `registry:component` | A single-number card for a dashboard: a title, a value, optional trend (an arrow with its own separate color), and a caption                                                                                                                                                                                                                                          |
 | `widget-table`       | `registry:component` | A self-contained table card: the heading is optional, the header has a `toolbar` slot for filters, and the footer has a record count, pagination, and a page-size picker. A column with `sortable` gets a sort button and `aria-sort`; row order and slicing are set by the data owner, the table only reports the choice via `onSortChange` and `onPageChange`      |
 | `widget-chart`       | `registry:component` | A chart card: a shared `labels` axis and a `series` list each with its own `values`; the `kind` prop switches between a line and bars; series colors cycle through the `chart-1`…`chart-5` tokens, and a legend appears once there are two or more series; without `labels` or `series` it shows `state-empty`                                                       |
@@ -176,6 +178,49 @@ makes an independent request in every instance. The content of
 state of its own or be controlled from outside — with state and
 callbacks arriving as props from the shell or the parent, the way
 `theme-toggle` does.
+
+## Localization
+
+Every hardcoded string in the kit — a fallback title, an `aria-label`, a
+select's placeholder text — is also a prop, defaulting to the English
+wording it replaced. Most of these props are grouped under a single
+`labels` object rather than spread across the item's flat prop list:
+`widget-table`'s `labels` (`emptyTitle`, `show`, `rowsPerPage`,
+`noSorting`, `sorting`, `previousPage`, `nextPage`, `range`),
+`sidebar-toggle`'s `labels` (`expand`, `collapse`), `theme-toggle`'s
+`labels` (`toLight`, `toDark`), and `admin-shell`'s `labels` (`openMenu`,
+`sections`). A handful of items already had a dedicated prop for their one
+string before this convention existed — `widget-list` and `widget-chart`
+take `emptyTitle` directly, `state-loading` takes `label`, `color-field`
+takes `placeholder` and `hexInputLabel` — and stayed flat rather than being
+wrapped in a single-key object. `date-field` and `date-time-field` also
+gained `locale` (a `date-fns` `Locale`, `enUS` by default) and
+`displayFormat`, so the calendar and the formatted date can move off
+English without a wrapper. Every one of these props is optional: an item
+installed with no `labels` and no locale renders exactly as before.
+
+`locale-ru` is a Russian dictionary for the whole set: a single
+`localeRu` const, sliced into the exact shape each prop above expects, so
+a slice passes straight in — `<WidgetTable labels={localeRu.widgetTable} />`,
+`<DateField locale={localeRu.dateField.locale} displayFormat={localeRu.dateField.displayFormat} />`.
+It bundles `date-fns`'s `ru` locale for the two date fields. It's a static
+object, not a runtime i18n system: it doesn't watch a locale setting or
+re-render anything itself, it just holds the words. Install it like any
+other item:
+
+```bash
+pnpm dlx shadcn@latest add berezin-pavel/admin-kit/locale-ru
+```
+
+`language-toggle` is a locale-switch button for the moving part
+`locale-ru` doesn't cover — actually changing the locale at runtime. Built
+the same way as `theme-toggle`: `locale`, `locales`, and `onLocaleChange`
+arrive as props, and the consumer decides where the current locale is
+held and persisted. A click cycles to the next locale in the `locales`
+list, wrapping back to the first; the button shows the current locale's
+short label. Its place is the shell's `sidebarFooter` slot next to
+`theme-toggle`, and — like every `sidebarFooter` candidate — it carries no
+state of its own, so it renders identically in every instance of the slot.
 
 ## Versions
 

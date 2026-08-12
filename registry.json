@@ -168,6 +168,43 @@
     },
     {
       "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "language-toggle",
+      "type": "registry:component",
+      "title": "Language toggle",
+      "description": "A locale-switch button with no knowledge of where the locale is stored, built like theme-toggle: the current locale, the list of available locales, and the onLocaleChange handler arrive as props, with no i18n library and no context of its own inside. The button shows the short label of the current locale (e.g. \"EN\"), falling back to a Languages icon before the current locale is known, and a click cycles to the next locale in the list, wrapping back to the first. Fits the shell's sidebarFooter slot next to theme-toggle or anywhere else on the page — it holds no internal state, so it renders identically in every sidebarFooter instance.",
+      "registryDependencies": [
+        "button"
+      ],
+      "dependencies": [
+        "lucide-react"
+      ],
+      "files": [
+        {
+          "path": "registry/language-toggle/language-toggle.tsx",
+          "type": "registry:component",
+          "target": "@components/admin/language-toggle.tsx"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "locale-ru",
+      "type": "registry:component",
+      "title": "Russian locale pack",
+      "description": "A Russian dictionary for the kit's items: a single const, localeRu, sliced into the exact shapes the other items' labels and locale props expect, so a slice spreads or passes straight into a prop — labels={localeRu.widgetTable}, locale={localeRu.dateField.locale}. Covers widget-table, widget-list, widget-chart, state-loading, state-error, state-forbidden, state-offline, widget-placeholder, confirm-dialog, date-field, date-time-field, color-field, sidebar-toggle, theme-toggle, admin-shell, and language-toggle, and bundles date-fns's ru locale for the date fields. Not a runtime i18n solution — it's a static dictionary, and switching locale at runtime is on the consumer.",
+      "dependencies": [
+        "date-fns"
+      ],
+      "files": [
+        {
+          "path": "registry/locale-ru/locale-ru.ts",
+          "type": "registry:component",
+          "target": "@components/admin/locale-ru.ts"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
       "name": "widget-metric",
       "type": "registry:component",
       "title": "Metric widget",

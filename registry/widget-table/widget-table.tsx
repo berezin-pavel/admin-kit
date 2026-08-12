@@ -50,6 +50,28 @@ export interface WidgetTablePagination {
   onPageSizeChange?: (pageSize: number) => void
 }
 
+export interface WidgetTableLabels {
+  emptyTitle?: string
+  show?: string
+  rowsPerPage?: string
+  noSorting?: string
+  sorting?: string
+  previousPage?: string
+  nextPage?: string
+  range?: (rangeStart: number, rangeEnd: number, total: number) => string
+}
+
+export const widgetTableLabelDefaults: Required<WidgetTableLabels> = {
+  emptyTitle: "No data",
+  show: "Show",
+  rowsPerPage: "Rows per page",
+  noSorting: "No sorting",
+  sorting: "Sorting",
+  previousPage: "Previous page",
+  nextPage: "Next page",
+  range: (rangeStart, rangeEnd, total) => `${rangeStart}–${rangeEnd} of ${total}`,
+}
+
 export interface WidgetTableProps<Row> {
   title?: string
   columns: readonly WidgetTableColumn<Row>[]
@@ -63,16 +85,20 @@ export interface WidgetTableProps<Row> {
   sort?: WidgetTableSort
   onSortChange?: (sort: WidgetTableSort | undefined) => void
   sortOptions?: readonly WidgetTableSortOption[]
+  labels?: WidgetTableLabels
 }
 
-function formatPaginationRange(pagination: WidgetTablePagination) {
+function formatPaginationRange(
+  pagination: WidgetTablePagination,
+  range: (rangeStart: number, rangeEnd: number, total: number) => string
+) {
   const rangeStart =
     pagination.total === 0 ? 0 : (pagination.page - 1) * pagination.pageSize + 1
   const rangeEnd = Math.min(
     pagination.page * pagination.pageSize,
     pagination.total
   )
-  return `${rangeStart}–${rangeEnd} of ${pagination.total}`
+  return range(rangeStart, rangeEnd, pagination.total)
 }
 
 function getAriaSort(
@@ -98,7 +124,9 @@ export function WidgetTable<Row>({
   sort,
   onSortChange,
   sortOptions,
+  labels,
 }: WidgetTableProps<Row>) {
+  const resolvedLabels = { ...widgetTableLabelDefaults, ...labels }
   const hasSortSelect = Boolean(
     sortOptions && sortOptions.length > 0 && onSortChange
   )
@@ -127,10 +155,12 @@ export function WidgetTable<Row>({
                         pageSize={pagination.pageSize}
                         pageSizeOptions={pagination.pageSizeOptions}
                         onPageSizeChange={pagination.onPageSizeChange}
+                        showLabel={resolvedLabels.show}
+                        ariaLabel={resolvedLabels.rowsPerPage}
                       />
                     ) : null}
                     <span className="text-sm text-muted-foreground">
-                      {formatPaginationRange(pagination)}
+                      {formatPaginationRange(pagination, resolvedLabels.range)}
                     </span>
                   </>
                 ))
@@ -140,6 +170,8 @@ export function WidgetTable<Row>({
                 sortOptions={sortOptions}
                 sort={sort}
                 onSortChange={onSortChange}
+                noSortingLabel={resolvedLabels.noSorting}
+                ariaLabel={resolvedLabels.sorting}
               />
             ) : null}
           </div>
@@ -147,7 +179,7 @@ export function WidgetTable<Row>({
       ) : null}
       <CardContent>
         {rows.length === 0 ? (
-          (empty ?? <StateEmpty title="No data" />)
+          (empty ?? <StateEmpty title={resolvedLabels.emptyTitle} />)
         ) : (
           <Table>
             <TableHeader>
@@ -207,6 +239,8 @@ export function WidgetTable<Row>({
             pageSize={pagination.pageSize}
             total={pagination.total}
             onPageChange={pagination.onPageChange}
+            previousLabel={resolvedLabels.previousPage}
+            nextLabel={resolvedLabels.nextPage}
           />
         </CardFooter>
       ) : null}

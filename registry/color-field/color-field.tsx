@@ -19,6 +19,8 @@ export interface ColorFieldProps {
   presets?: readonly string[]
   disabled?: boolean
   className?: string
+  placeholder?: string
+  hexInputLabel?: string
 }
 
 const DEFAULT_PRESETS = [
@@ -53,6 +55,8 @@ export function ColorField(props: ColorFieldProps): React.ReactElement {
     presets = DEFAULT_PRESETS,
     disabled = false,
     className,
+    placeholder = "Pick a color",
+    hexInputLabel = "Color HEX code",
   } = props
 
   const triggerId = React.useId()
@@ -110,7 +114,7 @@ export function ColorField(props: ColorFieldProps): React.ReactElement {
               !isValid && "text-muted-foreground"
             )}
           >
-            {isValid ? color : "Pick a color"}
+            {isValid ? color : placeholder}
           </span>
         </PopoverTrigger>
         <PopoverContent className="w-64">
@@ -166,7 +170,7 @@ export function ColorField(props: ColorFieldProps): React.ReactElement {
                 maxLength={6}
                 spellCheck={false}
                 autoComplete="off"
-                aria-label="Color HEX code"
+                aria-label={hexInputLabel}
                 className="h-full border-0 bg-transparent px-0 focus-visible:ring-0"
               />
             </div>

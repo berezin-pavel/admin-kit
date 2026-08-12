@@ -12,6 +12,11 @@ import {
 
 export type { AdminNavItem, AdminNavLinkRenderer }
 
+export interface AdminShellLabels {
+  openMenu?: string
+  sections?: string
+}
+
 type AdminShellBaseProps = {
   appName: string
   nav: readonly AdminNavItem[]
@@ -22,6 +27,7 @@ type AdminShellBaseProps = {
   sidebarVariant?: "flush" | "card"
   children?: ReactNode
   className?: string
+  labels?: AdminShellLabels
 }
 
 export type AdminShellProps = AdminShellBaseProps &
@@ -39,17 +45,26 @@ export function AdminShell({
   actions,
   children,
   className,
+  labels,
 }: AdminShellProps) {
   const section = nav.find((item) => item.href === activeHref)?.title ?? appName
   const isCard = sidebarVariant === "card"
+  const openMenuLabel = labels?.openMenu ?? "Open navigation menu"
+  const sectionsLabel = labels?.sections ?? "Sections"
 
   const menu = (
     <AdminMenu
       appName={appName}
       footer={sidebarFooter}
       showOnDesktop={collapsed}
+      openMenuLabel={openMenuLabel}
     >
-      <AdminNav nav={nav} activeHref={activeHref} renderLink={renderLink} />
+      <AdminNav
+        nav={nav}
+        activeHref={activeHref}
+        renderLink={renderLink}
+        sectionsLabel={sectionsLabel}
+      />
     </AdminMenu>
   )
 
@@ -94,6 +109,7 @@ export function AdminShell({
           renderLink={renderLink}
           collapsed={collapsed}
           responsive
+          sectionsLabel={sectionsLabel}
         />
         {sidebarFooter ? (
           <div

@@ -15,6 +15,8 @@ export interface WidgetTablePaginationControlsProps {
   pageSize: number
   total: number
   onPageChange?: (page: number) => void
+  previousLabel?: string
+  nextLabel?: string
 }
 
 const BOUNDARY_COUNT = 1
@@ -77,6 +79,8 @@ export function WidgetTablePaginationControls({
   pageSize,
   total,
   onPageChange,
+  previousLabel = "Previous page",
+  nextLabel = "Next page",
 }: WidgetTablePaginationControlsProps) {
   const pageCount = Math.max(1, Math.ceil(total / pageSize))
   const pageNumbers = getPageNumbers(page, pageCount)
@@ -88,7 +92,7 @@ export function WidgetTablePaginationControls({
           <Button
             variant="ghost"
             size="icon"
-            aria-label="Previous page"
+            aria-label={previousLabel}
             disabled={page <= 1}
             onClick={() => onPageChange?.(page - 1)}
           >
@@ -117,7 +121,7 @@ export function WidgetTablePaginationControls({
           <Button
             variant="ghost"
             size="icon"
-            aria-label="Next page"
+            aria-label={nextLabel}
             disabled={page >= pageCount}
             onClick={() => onPageChange?.(page + 1)}
           >

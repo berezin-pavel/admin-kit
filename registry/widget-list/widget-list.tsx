@@ -15,6 +15,7 @@ export interface WidgetListProps {
   title: string
   items: readonly WidgetListItem[]
   empty?: ReactNode
+  emptyTitle?: string
   className?: string
 }
 
@@ -22,6 +23,7 @@ export function WidgetList({
   title,
   items,
   empty,
+  emptyTitle = "No data",
   className,
 }: WidgetListProps) {
   return (
@@ -33,7 +35,7 @@ export function WidgetList({
       </CardHeader>
       <CardContent>
         {items.length === 0 ? (
-          (empty ?? <StateEmpty title="No data" />)
+          (empty ?? <StateEmpty title={emptyTitle} />)
         ) : (
           <ul className="flex flex-col divide-y divide-border">
             {items.map((item) => {

@@ -4,12 +4,15 @@ import { useState } from "react"
 import { Search } from "lucide-react"
 
 import { Input } from "@/components/ui/input"
+import { localeRu } from "@/registry/locale-ru/locale-ru"
 import {
   WidgetTable,
   type WidgetTableSort,
 } from "@/registry/widget-table/widget-table"
 
-import { demoOrderColumns, demoOrderRows, type OrderRow } from "@/app/demo/data"
+import { getDemoOrderColumns, getDemoOrderRows, type OrderRow } from "@/app/demo/data"
+import { demoDictionary } from "@/app/demo/locale"
+import { useDemoLocale } from "@/app/demo/locale-store"
 
 const PAGE_SIZE_OPTIONS = [3, 6, 9] as const
 const DEFAULT_PAGE_SIZE = 3
@@ -41,9 +44,12 @@ export function DemoStandaloneTable() {
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE)
   const [sort, setSort] = useState<WidgetTableSort | undefined>(undefined)
+  const locale = useDemoLocale()
+  const strings = demoDictionary[locale].standaloneTable
 
+  const orderRows = getDemoOrderRows(locale)
   const query = search.trim().toLowerCase()
-  const filtered = demoOrderRows.filter(
+  const filtered = orderRows.filter(
     (row) =>
       query === "" ||
       row.number.includes(query) ||
@@ -57,8 +63,8 @@ export function DemoStandaloneTable() {
 
   return (
     <WidgetTable
-      title="Recent orders"
-      columns={demoOrderColumns}
+      title={strings.title}
+      columns={getDemoOrderColumns(locale)}
       rows={matched.slice((currentPage - 1) * pageSize, currentPage * pageSize)}
       getRowKey={(row) => row.number}
       toolbar={
@@ -70,8 +76,8 @@ export function DemoStandaloneTable() {
               setSearch(event.target.value)
               setPage(1)
             }}
-            placeholder="Search orders"
-            aria-label="Search orders"
+            placeholder={strings.searchPlaceholder}
+            aria-label={strings.searchPlaceholder}
             className="w-56 pl-8"
           />
         </div>
@@ -92,6 +98,7 @@ export function DemoStandaloneTable() {
           setPage(1)
         },
       }}
+      labels={locale === "ru" ? localeRu.widgetTable : undefined}
     />
   )
 }

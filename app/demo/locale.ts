@@ -1,0 +1,442 @@
+import type { DemoLocale } from "./locale-store"
+
+export interface DemoDictionary {
+  appName: string
+  nav: {
+    overview: string
+    orders: string
+    order: string
+  }
+  overview: {
+    metricOrdersTitle: string
+    metricRevenueTitle: string
+    metricAverageOrderTitle: string
+    metricHint: string
+    financeChartTitle: string
+    financeChartHint: string
+    ordersByChannelChartTitle: string
+    newCustomersChartTitle: string
+    productsTitle: string
+    placeholderTitle: string
+    placeholderHint: string
+    formFieldsCardTitle: string
+    feedbackCardTitle: string
+  }
+  standaloneTable: {
+    title: string
+    searchPlaceholder: string
+  }
+  colorField: {
+    label: string
+    previewLabel: string
+    badgeText: string
+  }
+  dateField: {
+    label: string
+  }
+  dateTimeField: {
+    label: string
+  }
+  timeField: {
+    label: string
+  }
+  hint: {
+    metricLabel: string
+    metricHint: string
+    discountLabel: string
+    discountHint: string
+    discountPlaceholder: string
+  }
+  confirmDialogDemo: {
+    triggerLabel: string
+    title: string
+    description: string
+    confirmLabel: string
+  }
+  toaster: {
+    updateStatusButton: string
+    updateStatusTitle: string
+    updateStatusDescription: string
+    saveOrderButton: string
+    saveOrderTitle: string
+    saveOrderDescription: string
+    checkStockButton: string
+    checkStockTitle: string
+    checkStockDescription: string
+    sendEmailButton: string
+    sendEmailTitle: string
+    sendEmailDescription: string
+    removeProductButton: string
+    removeProductTitle: string
+    removeProductDescription: string
+    removeProductActionLabel: string
+    restoreProductTitle: string
+    restoreProductDescription: string
+  }
+  orders: {
+    title: string
+    description: string
+    exportButton: string
+    exportToastTitle: string
+    exportToastDescription: string
+    searchFilterLabel: string
+    statusFilterLabel: string
+    statusAll: string
+    columnNumber: string
+    columnCustomer: string
+    columnProduct: string
+    columnStatus: string
+    columnTotal: string
+    sortNumberDesc: string
+    sortNumberAsc: string
+    sortTotalDesc: string
+    sortTotalAsc: string
+    sortNewestFirst: string
+    sortOldestFirst: string
+    viewOrderAction: string
+    editOrderAction: string
+    deleteOrderAction: string
+    editComingSoonTitle: string
+    editComingSoonDescription: string
+    deleteConfirmTitle: string
+    deleteConfirmDescription: (orderNumber: string, customer: string) => string
+    deleteConfirmLabel: string
+    deleteToastTitle: string
+    deleteToastDescription: (orderNumber: string) => string
+  }
+  orderEntity: {
+    title: string
+    description: string
+    sectionOrder: string
+    fieldStatus: string
+    fieldPlaced: string
+    fieldPlacedValue: string
+    fieldChannel: string
+    fieldChannelValue: string
+    fieldTotal: string
+    fieldTotalHint: string
+    fieldTotalValue: string
+    sectionCustomer: string
+    fieldName: string
+    fieldNameValue: string
+    fieldEmail: string
+    fieldEmailValue: string
+    fieldPhone: string
+    fieldPhoneValue: string
+    sectionDelivery: string
+    fieldAddress: string
+    fieldAddressValue: string
+    fieldCarrier: string
+    fieldCarrierValue: string
+    fieldDelivered: string
+    fieldDeliveredValue: string
+    sendReceiptButton: string
+    sendReceiptToastTitle: string
+    sendReceiptToastDescription: string
+    cancelOrderButton: string
+    cancelConfirmTitle: string
+    cancelConfirmDescription: string
+    cancelConfirmLabel: string
+    cancelConfirmCancelLabel: string
+    cancelToastTitle: string
+    cancelToastDescription: string
+  }
+}
+
+export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
+  en: {
+    appName: "My Store",
+    nav: {
+      overview: "Overview",
+      orders: "Orders",
+      order: "Order #4187",
+    },
+    overview: {
+      metricOrdersTitle: "Orders",
+      metricRevenueTitle: "Revenue",
+      metricAverageOrderTitle: "Average order",
+      metricHint: "over the last 30 days",
+      financeChartTitle: "Revenue, expenses, and profit by month",
+      financeChartHint: "in thousands of dollars",
+      ordersByChannelChartTitle: "Orders by channel",
+      newCustomersChartTitle: "New customers by month",
+      productsTitle: "Products",
+      placeholderTitle: "Conversion widget",
+      placeholderHint: "Connect analytics to add it here",
+      formFieldsCardTitle: "Form fields",
+      feedbackCardTitle: "Feedback and hints",
+    },
+    standaloneTable: {
+      title: "Recent orders",
+      searchPlaceholder: "Search orders",
+    },
+    colorField: {
+      label: "Category tag color",
+      previewLabel: "Storefront tag",
+      badgeText: "Seasonal",
+    },
+    dateField: {
+      label: "Delivery date",
+    },
+    dateTimeField: {
+      label: "Pick up order",
+    },
+    timeField: {
+      label: "Delivery time",
+    },
+    hint: {
+      metricLabel: "Average order value",
+      metricHint:
+        "The sum of all paid orders for the period, divided by their count. Refunds and cancelled orders are excluded.",
+      discountLabel: "Supplier discount",
+      discountHint:
+        "Applied before tax and reflected in the purchase price, not the retail price",
+      discountPlaceholder: "e.g. 12%",
+    },
+    confirmDialogDemo: {
+      triggerLabel: "Delete order",
+      title: "Delete order #1042?",
+      description:
+        "The order and its related data will be deleted with no way to restore them. The customer will receive a cancellation email.",
+      confirmLabel: "Delete",
+    },
+    toaster: {
+      updateStatusButton: "Update delivery status",
+      updateStatusTitle: "Delivery status updated",
+      updateStatusDescription: "Courier is on the way for order #10482",
+      saveOrderButton: "Save order",
+      saveOrderTitle: "Order saved",
+      saveOrderDescription: "Order #10482 added to the fulfillment queue",
+      checkStockButton: "Check stock",
+      checkStockTitle: "Stock is running low",
+      checkStockDescription: "SKU 4410 has 3 units left",
+      sendEmailButton: "Email the customer",
+      sendEmailTitle: "Failed to send the email",
+      sendEmailDescription: "Check the customer's address and resend",
+      removeProductButton: "Remove product from catalog",
+      removeProductTitle: "Product removed from the catalog",
+      removeProductDescription: "\"Aroma 12 Coffee Machine\" is hidden from the storefront",
+      removeProductActionLabel: "Restore",
+      restoreProductTitle: "Product restored to the catalog",
+      restoreProductDescription:
+        "\"Aroma 12 Coffee Machine\" is visible on the storefront again",
+    },
+    orders: {
+      title: "Orders",
+      description: "All store orders from the last 30 days",
+      exportButton: "Export to CSV",
+      exportToastTitle: "Export started",
+      exportToastDescription: "The file will arrive by email in a couple of minutes",
+      searchFilterLabel: "Search",
+      statusFilterLabel: "Status",
+      statusAll: "All statuses",
+      columnNumber: "Number",
+      columnCustomer: "Customer",
+      columnProduct: "Product",
+      columnStatus: "Status",
+      columnTotal: "Total",
+      sortNumberDesc: "Number: descending",
+      sortNumberAsc: "Number: ascending",
+      sortTotalDesc: "Total: descending",
+      sortTotalAsc: "Total: ascending",
+      sortNewestFirst: "Newest first",
+      sortOldestFirst: "Oldest first",
+      viewOrderAction: "View order",
+      editOrderAction: "Edit order",
+      deleteOrderAction: "Delete order",
+      editComingSoonTitle: "Coming soon",
+      editComingSoonDescription: "Order editing isn't ready yet",
+      deleteConfirmTitle: "Delete order?",
+      deleteConfirmDescription: (orderNumber, customer) =>
+        `Order #${orderNumber} from ${customer} will be deleted with no way to restore it.`,
+      deleteConfirmLabel: "Delete",
+      deleteToastTitle: "Order deleted",
+      deleteToastDescription: (orderNumber) =>
+        `Order #${orderNumber} removed from the list`,
+    },
+    orderEntity: {
+      title: "Order #4187",
+      description: "Nova sneakers, delivery in Austin",
+      sectionOrder: "Order",
+      fieldStatus: "Status",
+      fieldPlaced: "Placed",
+      fieldPlacedValue: "August 3, 2026, 2:12 PM",
+      fieldChannel: "Channel",
+      fieldChannelValue: "Online storefront",
+      fieldTotal: "Total",
+      fieldTotalHint: "Item total after discount, delivery is calculated separately",
+      fieldTotalValue: "$2,340",
+      sectionCustomer: "Customer",
+      fieldName: "Name",
+      fieldNameValue: "Emily Carter",
+      fieldEmail: "Email",
+      fieldEmailValue: "emily.carter@example.com",
+      fieldPhone: "Phone",
+      fieldPhoneValue: "+1 512 555-0142",
+      sectionDelivery: "Delivery",
+      fieldAddress: "Address",
+      fieldAddressValue: "Austin, TX, 214 Congress Ave",
+      fieldCarrier: "Carrier",
+      fieldCarrierValue: "In-house courier",
+      fieldDelivered: "Delivered",
+      fieldDeliveredValue: "August 5, 2026, 11:40 AM",
+      sendReceiptButton: "Send receipt",
+      sendReceiptToastTitle: "Receipt sent",
+      sendReceiptToastDescription: "The email went to emily.carter@example.com",
+      cancelOrderButton: "Cancel order",
+      cancelConfirmTitle: "Cancel order #4187?",
+      cancelConfirmDescription:
+        "The customer will get a cancellation email, and the refund will reach their card within three days.",
+      cancelConfirmLabel: "Cancel order",
+      cancelConfirmCancelLabel: "Keep it",
+      cancelToastTitle: "Order cancelled",
+      cancelToastDescription: "The refund will reach the customer within three days",
+    },
+  },
+  ru: {
+    appName: "Мой магазин",
+    nav: {
+      overview: "Обзор",
+      orders: "Заказы",
+      order: "Заказ №4187",
+    },
+    overview: {
+      metricOrdersTitle: "Заказы",
+      metricRevenueTitle: "Выручка",
+      metricAverageOrderTitle: "Средний чек",
+      metricHint: "за последние 30 дней",
+      financeChartTitle: "Выручка, расходы и прибыль по месяцам",
+      financeChartHint: "в тысячах рублей",
+      ordersByChannelChartTitle: "Заказы по каналам",
+      newCustomersChartTitle: "Новые клиенты по месяцам",
+      productsTitle: "Товары",
+      placeholderTitle: "Виджет конверсии",
+      placeholderHint: "Подключите аналитику, чтобы добавить сюда",
+      formFieldsCardTitle: "Поля формы",
+      feedbackCardTitle: "Обратная связь и подсказки",
+    },
+    standaloneTable: {
+      title: "Последние заказы",
+      searchPlaceholder: "Поиск по заказам",
+    },
+    colorField: {
+      label: "Цвет метки категории",
+      previewLabel: "Метка на витрине",
+      badgeText: "Сезонное",
+    },
+    dateField: {
+      label: "Дата доставки",
+    },
+    dateTimeField: {
+      label: "Забрать заказ",
+    },
+    timeField: {
+      label: "Время доставки",
+    },
+    hint: {
+      metricLabel: "Средний чек",
+      metricHint:
+        "Сумма всех оплаченных заказов за период, делённая на их количество. Возвраты и отменённые заказы не учитываются.",
+      discountLabel: "Скидка поставщика",
+      discountHint: "Применяется до налога и отражается в закупочной цене, а не в розничной",
+      discountPlaceholder: "Например, 12%",
+    },
+    confirmDialogDemo: {
+      triggerLabel: "Удалить заказ",
+      title: "Удалить заказ №1042?",
+      description:
+        "Заказ и связанные с ним данные будут удалены без возможности восстановления. Покупателю уйдёт письмо об отмене.",
+      confirmLabel: "Удалить",
+    },
+    toaster: {
+      updateStatusButton: "Обновить статус доставки",
+      updateStatusTitle: "Статус доставки обновлён",
+      updateStatusDescription: "Курьер выехал по заказу №10482",
+      saveOrderButton: "Сохранить заказ",
+      saveOrderTitle: "Заказ сохранён",
+      saveOrderDescription: "Заказ №10482 добавлен в очередь на сборку",
+      checkStockButton: "Проверить остатки",
+      checkStockTitle: "Заканчивается остаток на складе",
+      checkStockDescription: "По артикулу 4410 осталось 3 штуки",
+      sendEmailButton: "Отправить письмо покупателю",
+      sendEmailTitle: "Не удалось отправить письмо",
+      sendEmailDescription: "Проверьте адрес покупателя и повторите отправку",
+      removeProductButton: "Удалить товар из каталога",
+      removeProductTitle: "Товар удалён из каталога",
+      removeProductDescription: "«Кофемашина Aroma 12» скрыта из витрины",
+      removeProductActionLabel: "Вернуть",
+      restoreProductTitle: "Товар возвращён в каталог",
+      restoreProductDescription: "«Кофемашина Aroma 12» снова видна в витрине",
+    },
+    orders: {
+      title: "Заказы",
+      description: "Все заказы магазина за последние 30 дней",
+      exportButton: "Выгрузить в CSV",
+      exportToastTitle: "Экспорт запущен",
+      exportToastDescription: "Файл придёт на почту через пару минут",
+      searchFilterLabel: "Поиск",
+      statusFilterLabel: "Статус",
+      statusAll: "Все статусы",
+      columnNumber: "Номер",
+      columnCustomer: "Покупатель",
+      columnProduct: "Товар",
+      columnStatus: "Статус",
+      columnTotal: "Сумма",
+      sortNumberDesc: "Номер: по убыванию",
+      sortNumberAsc: "Номер: по возрастанию",
+      sortTotalDesc: "Сумма: по убыванию",
+      sortTotalAsc: "Сумма: по возрастанию",
+      sortNewestFirst: "Сначала новые",
+      sortOldestFirst: "Сначала старые",
+      viewOrderAction: "Просмотреть заказ",
+      editOrderAction: "Редактировать заказ",
+      deleteOrderAction: "Удалить заказ",
+      editComingSoonTitle: "Скоро",
+      editComingSoonDescription: "Редактирование заказов ещё не готово",
+      deleteConfirmTitle: "Удалить заказ?",
+      deleteConfirmDescription: (orderNumber, customer) =>
+        `Заказ №${orderNumber} покупателя ${customer} будет удалён без возможности восстановить.`,
+      deleteConfirmLabel: "Удалить",
+      deleteToastTitle: "Заказ удалён",
+      deleteToastDescription: (orderNumber) => `Заказ №${orderNumber} убран из списка`,
+    },
+    orderEntity: {
+      title: "Заказ №4187",
+      description: "Кроссовки Nova, доставка по Казани",
+      sectionOrder: "Заказ",
+      fieldStatus: "Статус",
+      fieldPlaced: "Оформлен",
+      fieldPlacedValue: "3 августа 2026, 14:12",
+      fieldChannel: "Канал",
+      fieldChannelValue: "Онлайн-витрина",
+      fieldTotal: "Сумма",
+      fieldTotalHint: "Сумма товаров со скидкой, доставка считается отдельно",
+      fieldTotalValue: "₽ 2 340",
+      sectionCustomer: "Покупатель",
+      fieldName: "Имя",
+      fieldNameValue: "Смирнова Екатерина",
+      fieldEmail: "Почта",
+      fieldEmailValue: "smirnova@example.com",
+      fieldPhone: "Телефон",
+      fieldPhoneValue: "+7 900 123-45-67",
+      sectionDelivery: "Доставка",
+      fieldAddress: "Адрес",
+      fieldAddressValue: "Казань, ул. Баумана, 12",
+      fieldCarrier: "Служба",
+      fieldCarrierValue: "Своя курьерская",
+      fieldDelivered: "Доставлен",
+      fieldDeliveredValue: "5 августа 2026, 11:40",
+      sendReceiptButton: "Отправить чек",
+      sendReceiptToastTitle: "Чек отправлен",
+      sendReceiptToastDescription: "Письмо ушло на smirnova@example.com",
+      cancelOrderButton: "Отменить заказ",
+      cancelConfirmTitle: "Отменить заказ №4187?",
+      cancelConfirmDescription:
+        "Покупатель получит письмо об отмене, а деньги вернутся на карту в течение трёх дней.",
+      cancelConfirmLabel: "Отменить заказ",
+      cancelConfirmCancelLabel: "Оставить",
+      cancelToastTitle: "Заказ отменён",
+      cancelToastDescription: "Деньги вернутся покупателю в течение трёх дней",
+    },
+  },
+}

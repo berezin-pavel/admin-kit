@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { Eye, Pencil, Trash2 } from "lucide-react"
@@ -8,6 +8,7 @@ import { Eye, Pencil, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { notify } from "@/registry/admin-toaster/admin-toaster"
 import { ConfirmDialog } from "@/registry/confirm-dialog/confirm-dialog"
+import { localeRu } from "@/registry/locale-ru/locale-ru"
 import { PageList, type PageListFilter } from "@/registry/page-list/page-list"
 import { RowActions } from "@/registry/row-actions/row-actions"
 import { StatusBadge } from "@/registry/status-badge/status-badge"
@@ -18,49 +19,16 @@ import type {
 } from "@/registry/widget-table/widget-table"
 
 import {
-  demoOrderRows,
-  orderStatusLabel,
+  getDemoOrderRows,
+  orderStatusLabelByLocale,
   orderStatusTone,
   type OrderRow,
 } from "@/app/demo/data"
-
-const statusOptions = [
-  { value: "all", label: "All statuses" },
-  { value: "delivered", label: orderStatusLabel.delivered },
-  { value: "in-transit", label: orderStatusLabel["in-transit"] },
-  { value: "paid", label: orderStatusLabel.paid },
-  { value: "cancelled", label: orderStatusLabel.cancelled },
-]
+import { demoDictionary } from "@/app/demo/locale"
+import { useDemoLocale } from "@/app/demo/locale-store"
 
 const PAGE_SIZE_OPTIONS = [4, 8, 12] as const
 const DEFAULT_PAGE_SIZE = 4
-
-const sortOptions: readonly WidgetTableSortOption[] = [
-  {
-    label: "Number: descending",
-    sort: { columnId: "number", direction: "desc" },
-  },
-  {
-    label: "Number: ascending",
-    sort: { columnId: "number", direction: "asc" },
-  },
-  {
-    label: "Total: descending",
-    sort: { columnId: "total", direction: "desc" },
-  },
-  {
-    label: "Total: ascending",
-    sort: { columnId: "total", direction: "asc" },
-  },
-  {
-    label: "Newest first",
-    sort: { columnId: "createdAt", direction: "desc" },
-  },
-  {
-    label: "Oldest first",
-    sort: { columnId: "createdAt", direction: "asc" },
-  },
-]
 
 function parseTotal(total: string) {
   return Number(total.replace(/\D/g, ""))
@@ -89,14 +57,49 @@ function sortOrderRows(
 
 export function DemoOrders() {
   const router = useRouter()
+  const locale = useDemoLocale()
+  const strings = demoDictionary[locale].orders
+  const statusLabel = orderStatusLabelByLocale[locale]
+
   const [search, setSearch] = useState("")
   const [status, setStatus] = useState("all")
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE)
   const [sort, setSort] = useState<WidgetTableSort | undefined>(undefined)
-  const [rows, setRows] = useState<readonly OrderRow[]>(demoOrderRows)
+  const [deletedNumbers, setDeletedNumbers] = useState<ReadonlySet<string>>(
+    new Set()
+  )
   const [pendingOrder, setPendingOrder] = useState<OrderRow | null>(null)
   const [deleting, setDeleting] = useState(false)
+
+  const rows = useMemo(
+    () =>
+      getDemoOrderRows(locale).filter((row) => !deletedNumbers.has(row.number)),
+    [locale, deletedNumbers]
+  )
+
+  const statusOptions = [
+    { value: "all", label: strings.statusAll },
+    { value: "delivered", label: statusLabel.delivered },
+    { value: "in-transit", label: statusLabel["in-transit"] },
+    { value: "paid", label: statusLabel.paid },
+    { value: "cancelled", label: statusLabel.cancelled },
+  ]
+
+  const sortOptions: readonly WidgetTableSortOption[] = [
+    { label: strings.sortNumberDesc, sort: { columnId: "number", direction: "desc" } },
+    { label: strings.sortNumberAsc, sort: { columnId: "number", direction: "asc" } },
+    { label: strings.sortTotalDesc, sort: { columnId: "total", direction: "desc" } },
+    { label: strings.sortTotalAsc, sort: { columnId: "total", direction: "asc" } },
+    {
+      label: strings.sortNewestFirst,
+      sort: { columnId: "createdAt", direction: "desc" },
+    },
+    {
+      label: strings.sortOldestFirst,
+      sort: { columnId: "createdAt", direction: "asc" },
+    },
+  ]
 
   const query = search.trim().toLowerCase()
 
@@ -119,7 +122,7 @@ export function DemoOrders() {
   const columns: readonly WidgetTableColumn<OrderRow>[] = [
     {
       id: "number",
-      title: "Number",
+      title: strings.columnNumber,
       sortable: true,
       cell: (row) => (
         <Link href="/demo/order" className="font-medium hover:underline">
@@ -127,20 +130,20 @@ export function DemoOrders() {
         </Link>
       ),
     },
-    { id: "customer", title: "Customer", cell: (row) => row.customer },
-    { id: "product", title: "Product", cell: (row) => row.product },
+    { id: "customer", title: strings.columnCustomer, cell: (row) => row.customer },
+    { id: "product", title: strings.columnProduct, cell: (row) => row.product },
     {
       id: "status",
-      title: "Status",
+      title: strings.columnStatus,
       cell: (row) => (
         <StatusBadge tone={orderStatusTone[row.status]}>
-          {orderStatusLabel[row.status]}
+          {statusLabel[row.status]}
         </StatusBadge>
       ),
     },
     {
       id: "total",
-      title: "Total",
+      title: strings.columnTotal,
       align: "right",
       sortable: true,
       cell: (row) => row.total,
@@ -154,22 +157,22 @@ export function DemoOrders() {
           actions={[
             {
               id: "view",
-              label: "View order",
+              label: strings.viewOrderAction,
               icon: Eye,
               onSelect: () => router.push("/demo/order"),
             },
             {
               id: "edit",
-              label: "Edit order",
+              label: strings.editOrderAction,
               icon: Pencil,
               onSelect: () =>
-                notify.info("Coming soon", {
-                  description: "Order editing isn't ready yet",
+                notify.info(strings.editComingSoonTitle, {
+                  description: strings.editComingSoonDescription,
                 }),
             },
             {
               id: "delete",
-              label: "Delete order",
+              label: strings.deleteOrderAction,
               icon: Trash2,
               tone: "danger",
               onSelect: () => setPendingOrder(row),
@@ -181,10 +184,10 @@ export function DemoOrders() {
   ]
 
   const filters: readonly PageListFilter[] = [
-    { id: "search", label: "Search", kind: "search", value: search },
+    { id: "search", label: strings.searchFilterLabel, kind: "search", value: search },
     {
       id: "status",
-      label: "Status",
+      label: strings.statusFilterLabel,
       kind: "select",
       value: status,
       options: statusOptions,
@@ -199,13 +202,13 @@ export function DemoOrders() {
     setDeleting(true)
 
     window.setTimeout(() => {
-      setRows((previous) =>
-        previous.filter((row) => row.number !== pendingOrder.number)
+      setDeletedNumbers(
+        (previous) => new Set([...previous, pendingOrder.number])
       )
       setDeleting(false)
       setPendingOrder(null)
-      notify.success("Order deleted", {
-        description: `Order #${pendingOrder.number} removed from the list`,
+      notify.success(strings.deleteToastTitle, {
+        description: strings.deleteToastDescription(pendingOrder.number),
       })
     }, 700)
   }
@@ -213,18 +216,18 @@ export function DemoOrders() {
   return (
     <>
       <PageList
-        title="Orders"
-        description="All store orders from the last 30 days"
+        title={strings.title}
+        description={strings.description}
         actions={
           <Button
             size="sm"
             onClick={() =>
-              notify.info("Export started", {
-                description: "The file will arrive by email in a couple of minutes",
+              notify.info(strings.exportToastTitle, {
+                description: strings.exportToastDescription,
               })
             }
           >
-            Export to CSV
+            {strings.exportButton}
           </Button>
         }
         filters={filters}
@@ -257,6 +260,7 @@ export function DemoOrders() {
           setSort(nextSort)
           setPage(1)
         }}
+        tableLabels={locale === "ru" ? localeRu.widgetTable : undefined}
         sortOptions={sortOptions}
       />
       <ConfirmDialog
@@ -266,13 +270,14 @@ export function DemoOrders() {
             setPendingOrder(null)
           }
         }}
-        title="Delete order?"
+        title={strings.deleteConfirmTitle}
         description={
           pendingOrder
-            ? `Order #${pendingOrder.number} from ${pendingOrder.customer} will be deleted with no way to restore it.`
+            ? strings.deleteConfirmDescription(pendingOrder.number, pendingOrder.customer)
             : undefined
         }
-        confirmLabel="Delete"
+        confirmLabel={strings.deleteConfirmLabel}
+        cancelLabel={locale === "ru" ? localeRu.confirmDialog.cancelLabel : undefined}
         tone="danger"
         loading={deleting}
         onConfirm={removePendingOrder}

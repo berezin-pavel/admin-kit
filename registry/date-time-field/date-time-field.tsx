@@ -3,6 +3,7 @@
 import * as React from "react"
 import { CalendarIcon } from "lucide-react"
 import { format } from "date-fns"
+import type { Locale } from "date-fns"
 import { enUS } from "date-fns/locale"
 
 import { cn } from "@/lib/utils"
@@ -23,6 +24,8 @@ export interface DateTimeFieldProps {
   placeholder?: string
   disabled?: boolean
   className?: string
+  locale?: Locale
+  displayFormat?: string
 }
 
 function parseDateTimeValue(value: string): Date | undefined {
@@ -55,6 +58,8 @@ export function DateTimeField({
   placeholder = "Pick a date and time",
   disabled = false,
   className,
+  locale = enUS,
+  displayFormat = "MMMM d, yyyy HH:mm",
 }: DateTimeFieldProps) {
   const id = React.useId()
   const [open, setOpen] = React.useState(false)
@@ -84,13 +89,13 @@ export function DateTimeField({
         >
           <CalendarIcon />
           {selected
-            ? format(selected, "MMMM d, yyyy HH:mm", { locale: enUS })
+            ? format(selected, displayFormat, { locale })
             : placeholder}
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0">
           <Calendar
             mode="single"
-            locale={enUS}
+            locale={locale}
             selected={selected}
             onSelect={(date) => {
               if (!date) {

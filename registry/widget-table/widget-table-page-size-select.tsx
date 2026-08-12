@@ -12,16 +12,20 @@ export interface WidgetTablePageSizeSelectProps {
   pageSize: number
   pageSizeOptions: readonly number[]
   onPageSizeChange: (pageSize: number) => void
+  showLabel?: string
+  ariaLabel?: string
 }
 
 export function WidgetTablePageSizeSelect({
   pageSize,
   pageSizeOptions,
   onPageSizeChange,
+  showLabel = "Show",
+  ariaLabel = "Rows per page",
 }: WidgetTablePageSizeSelectProps) {
   return (
     <div className="flex items-center gap-2">
-      <span className="text-sm text-muted-foreground">Show</span>
+      <span className="text-sm text-muted-foreground">{showLabel}</span>
       <Select
         value={String(pageSize)}
         onValueChange={(value) => {
@@ -30,7 +34,7 @@ export function WidgetTablePageSizeSelect({
           }
         }}
       >
-        <SelectTrigger className="w-20" aria-label="Rows per page">
+        <SelectTrigger className="w-20" aria-label={ariaLabel}>
           <SelectValue>{pageSize}</SelectValue>
         </SelectTrigger>
         <SelectContent align="start" alignItemWithTrigger={false}>

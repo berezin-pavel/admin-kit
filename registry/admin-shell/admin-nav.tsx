@@ -24,6 +24,7 @@ export interface AdminNavProps {
   collapsed?: boolean
   responsive?: boolean
   className?: string
+  sectionsLabel?: string
 }
 
 const renderNavLink: AdminNavLinkRenderer = ({ href, className, children }) => (
@@ -39,6 +40,7 @@ export function AdminNav({
   collapsed = false,
   responsive = false,
   className,
+  sectionsLabel = "Sections",
 }: AdminNavProps) {
   const renderItem = renderLink ?? renderNavLink
   const isExpanded = !collapsed && !responsive
@@ -46,7 +48,7 @@ export function AdminNav({
 
   return (
     <nav
-      aria-label="Sections"
+      aria-label={sectionsLabel}
       className={cn(
         "flex flex-col gap-1 py-3",
         isExpanded ? "items-stretch px-3" : "items-center",

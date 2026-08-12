@@ -27,6 +27,7 @@ export interface WidgetChartProps {
   kind?: "line" | "bar"
   hint?: string
   empty?: ReactNode
+  emptyTitle?: string
   className?: string
 }
 
@@ -67,6 +68,7 @@ export function WidgetChart({
   kind = "line",
   hint,
   empty,
+  emptyTitle = "No data",
   className,
 }: WidgetChartProps) {
   const isEmpty = labels.length === 0 || series.length === 0
@@ -80,7 +82,7 @@ export function WidgetChart({
       </CardHeader>
       <CardContent className="flex flex-col gap-3">
         {isEmpty ? (
-          (empty ?? <StateEmpty title="No data" />)
+          (empty ?? <StateEmpty title={emptyTitle} />)
         ) : (
           <ChartContainer
             config={buildChartConfig(series)}

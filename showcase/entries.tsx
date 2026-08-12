@@ -5,6 +5,8 @@ import { confirmDialogEntry } from "./confirm-dialog"
 import { dateFieldEntry } from "./date-field"
 import { dateTimeFieldEntry } from "./date-time-field"
 import { hintEntry } from "./hint"
+import { languageToggleEntry } from "./language-toggle"
+import { localeRuEntry } from "./locale-ru"
 import { rowActionsEntry } from "./row-actions"
 import { sidebarToggleEntry } from "./sidebar-toggle"
 import { timeFieldEntry } from "./time-field"
@@ -31,6 +33,8 @@ export const showcaseEntries: readonly ShowcaseEntry[] = [
   adminShellEntry,
   themeToggleEntry,
   sidebarToggleEntry,
+  languageToggleEntry,
+  localeRuEntry,
   widgetMetricEntry,
   widgetTableEntry,
   pageEntityEntry,

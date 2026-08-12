@@ -19,6 +19,7 @@ export interface AdminMenuProps {
   footer?: ReactNode
   showOnDesktop?: boolean
   children: ReactNode
+  openMenuLabel?: string
 }
 
 export function AdminMenu({
@@ -26,6 +27,7 @@ export function AdminMenu({
   footer,
   showOnDesktop = false,
   children,
+  openMenuLabel = "Open navigation menu",
 }: AdminMenuProps) {
   const [open, setOpen] = useState(false)
 
@@ -37,7 +39,7 @@ export function AdminMenu({
             variant="ghost"
             size="icon"
             className={cn(!showOnDesktop && "md:hidden")}
-            aria-label="Open navigation menu"
+            aria-label={openMenuLabel}
           />
         }
       >

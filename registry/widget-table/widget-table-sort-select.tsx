@@ -14,6 +14,8 @@ export interface WidgetTableSortSelectProps {
   sortOptions: readonly WidgetTableSortOption[]
   sort?: WidgetTableSort
   onSortChange: (sort: WidgetTableSort | undefined) => void
+  noSortingLabel?: string
+  ariaLabel?: string
 }
 
 const NONE_VALUE = "none"
@@ -26,6 +28,8 @@ export function WidgetTableSortSelect({
   sortOptions,
   sort,
   onSortChange,
+  noSortingLabel = "No sorting",
+  ariaLabel = "Sorting",
 }: WidgetTableSortSelectProps) {
   const activeIndex = sort
     ? sortOptions.findIndex((option) => isSameSort(option.sort, sort))
@@ -48,11 +52,11 @@ export function WidgetTableSortSelect({
         }
       }}
     >
-      <SelectTrigger className="w-44" aria-label="Sort">
-        <SelectValue>{activeOption?.label ?? "No sorting"}</SelectValue>
+      <SelectTrigger className="w-44" aria-label={ariaLabel}>
+        <SelectValue>{activeOption?.label ?? noSortingLabel}</SelectValue>
       </SelectTrigger>
       <SelectContent align="start" alignItemWithTrigger={false}>
-        <SelectItem value={NONE_VALUE}>No sorting</SelectItem>
+        <SelectItem value={NONE_VALUE}>{noSortingLabel}</SelectItem>
         {sortOptions.map((option, index) => (
           <SelectItem key={index} value={String(index)}>
             {option.label}

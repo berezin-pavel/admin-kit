@@ -20,6 +20,11 @@ export const SHOWCASE_ENTRY_GROUPS: readonly ShowcaseGroupDefinition[] = [
     items: ["theme-toggle", "sidebar-toggle"],
   },
   {
+    id: "localization",
+    title: "Localization",
+    items: ["language-toggle", "locale-ru"],
+  },
+  {
     id: "widgets",
     title: "Widgets",
     items: [

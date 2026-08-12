@@ -8,6 +8,7 @@ import { StateOffline } from "@/registry/state-offline/state-offline"
 import {
   WidgetTable,
   type WidgetTableColumn,
+  type WidgetTableLabels,
   type WidgetTableSort,
   type WidgetTableSortOption,
 } from "@/registry/widget-table/widget-table"
@@ -42,6 +43,7 @@ export interface PageListProps<Row> {
   sort?: WidgetTableSort
   onSortChange?: (sort: WidgetTableSort | undefined) => void
   sortOptions?: readonly WidgetTableSortOption[]
+  tableLabels?: WidgetTableLabels
   status?: PageStatus
   className?: string
 }
@@ -72,6 +74,7 @@ export function PageList<Row>({
   sort,
   onSortChange,
   sortOptions,
+  tableLabels,
   status = "ready",
   className,
 }: PageListProps<Row>) {
@@ -119,6 +122,7 @@ export function PageList<Row>({
         sort={sort}
         onSortChange={onSortChange}
         sortOptions={sortOptions}
+        labels={tableLabels}
       />
     </div>
   )

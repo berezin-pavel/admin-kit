@@ -12,59 +12,84 @@ import {
 } from "@/registry/page-entity/page-entity"
 import { StatusBadge } from "@/registry/status-badge/status-badge"
 
-import { orderStatusLabel, orderStatusTone } from "@/app/demo/data"
+import { orderStatusLabelByLocale, orderStatusTone } from "@/app/demo/data"
+import { demoDictionary } from "@/app/demo/locale"
+import { useDemoLocale } from "@/app/demo/locale-store"
 
 export function DemoOrderEntity() {
   const [cancelling, setCancelling] = useState(false)
   const [confirmOpen, setConfirmOpen] = useState(false)
   const [cancelled, setCancelled] = useState(false)
+  const locale = useDemoLocale()
+  const strings = demoDictionary[locale].orderEntity
+  const statusLabel = orderStatusLabelByLocale[locale]
 
   const status = cancelled ? "cancelled" : "delivered"
 
   const sections: readonly PageEntitySection[] = [
     {
       id: "order",
-      title: "Order",
+      title: strings.sectionOrder,
       fields: [
         {
           id: "status",
-          label: "Status",
+          label: strings.fieldStatus,
           value: (
             <StatusBadge tone={orderStatusTone[status]}>
-              {orderStatusLabel[status]}
+              {statusLabel[status]}
             </StatusBadge>
           ),
         },
-        { id: "created", label: "Placed", value: "August 3, 2026, 2:12 PM" },
-        { id: "channel", label: "Channel", value: "Online storefront" },
+        {
+          id: "created",
+          label: strings.fieldPlaced,
+          value: strings.fieldPlacedValue,
+        },
+        {
+          id: "channel",
+          label: strings.fieldChannel,
+          value: strings.fieldChannelValue,
+        },
         {
           id: "total",
           label: (
             <span className="inline-flex items-center gap-1">
-              Total
-              <Hint text="Item total after discount, delivery is calculated separately" />
+              {strings.fieldTotal}
+              <Hint text={strings.fieldTotalHint} />
             </span>
           ),
-          value: "$2,340",
+          value: strings.fieldTotalValue,
         },
       ],
     },
     {
       id: "customer",
-      title: "Customer",
+      title: strings.sectionCustomer,
       fields: [
-        { id: "name", label: "Name", value: "Emily Carter" },
-        { id: "email", label: "Email", value: "emily.carter@example.com" },
-        { id: "phone", label: "Phone", value: "+1 512 555-0142" },
+        { id: "name", label: strings.fieldName, value: strings.fieldNameValue },
+        { id: "email", label: strings.fieldEmail, value: strings.fieldEmailValue },
+        { id: "phone", label: strings.fieldPhone, value: strings.fieldPhoneValue },
       ],
     },
     {
       id: "delivery",
-      title: "Delivery",
+      title: strings.sectionDelivery,
       fields: [
-        { id: "address", label: "Address", value: "Austin, TX, 214 Congress Ave" },
-        { id: "courier", label: "Carrier", value: "In-house courier" },
-        { id: "eta", label: "Delivered", value: "August 5, 2026, 11:40 AM" },
+        {
+          id: "address",
+          label: strings.fieldAddress,
+          value: strings.fieldAddressValue,
+        },
+        {
+          id: "courier",
+          label: strings.fieldCarrier,
+          value: strings.fieldCarrierValue,
+        },
+        {
+          id: "eta",
+          label: strings.fieldDelivered,
+          value: strings.fieldDeliveredValue,
+        },
       ],
     },
   ]
@@ -76,8 +101,8 @@ export function DemoOrderEntity() {
       setCancelled(true)
       setCancelling(false)
       setConfirmOpen(false)
-      notify.warning("Order cancelled", {
-        description: "The refund will reach the customer within three days",
+      notify.warning(strings.cancelToastTitle, {
+        description: strings.cancelToastDescription,
       })
     }, 700)
   }
@@ -85,20 +110,20 @@ export function DemoOrderEntity() {
   return (
     <>
       <PageEntity
-        title="Order #4187"
-        description="Nova sneakers, delivery in Austin"
+        title={strings.title}
+        description={strings.description}
         actions={
           <>
             <Button
               variant="outline"
               size="sm"
               onClick={() =>
-                notify.success("Receipt sent", {
-                  description: "The email went to emily.carter@example.com",
+                notify.success(strings.sendReceiptToastTitle, {
+                  description: strings.sendReceiptToastDescription,
                 })
               }
             >
-              Send receipt
+              {strings.sendReceiptButton}
             </Button>
             <Button
               variant="destructive"
@@ -106,7 +131,7 @@ export function DemoOrderEntity() {
               disabled={cancelled}
               onClick={() => setConfirmOpen(true)}
             >
-              Cancel order
+              {strings.cancelOrderButton}
             </Button>
           </>
         }
@@ -115,10 +140,10 @@ export function DemoOrderEntity() {
       <ConfirmDialog
         open={confirmOpen}
         onOpenChange={setConfirmOpen}
-        title="Cancel order #4187?"
-        description="The customer will get a cancellation email, and the refund will reach their card within three days."
-        confirmLabel="Cancel order"
-        cancelLabel="Keep it"
+        title={strings.cancelConfirmTitle}
+        description={strings.cancelConfirmDescription}
+        confirmLabel={strings.cancelConfirmLabel}
+        cancelLabel={strings.cancelConfirmCancelLabel}
         tone="danger"
         loading={cancelling}
         onConfirm={cancelOrder}
