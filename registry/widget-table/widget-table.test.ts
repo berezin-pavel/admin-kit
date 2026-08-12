@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest"
 
 import {
   formatPaginationRange,
+  getPageSelection,
   widgetTableLabelDefaults,
   type WidgetTableLabels,
   type WidgetTablePagination,
@@ -67,6 +68,32 @@ describe("formatPaginationRange", () => {
   })
 })
 
+describe("getPageSelection", () => {
+  it("returns none when no page key is selected", () => {
+    expect(getPageSelection([1, 2, 3], new Set())).toBe("none")
+    expect(getPageSelection([1, 2, 3], new Set([4, 5]))).toBe("none")
+  })
+
+  it("returns some when a subset of page keys is selected", () => {
+    expect(getPageSelection([1, 2, 3], new Set([2]))).toBe("some")
+    expect(getPageSelection([1, 2, 3], new Set([1, 4]))).toBe("some")
+  })
+
+  it("returns all when every page key is selected", () => {
+    expect(getPageSelection([1, 2, 3], new Set([1, 2, 3]))).toBe("all")
+    expect(getPageSelection([1, 2, 3], new Set([1, 2, 3, 4]))).toBe("all")
+  })
+
+  it("returns none for an empty page regardless of selection", () => {
+    expect(getPageSelection([], new Set())).toBe("none")
+    expect(getPageSelection([], new Set([1]))).toBe("none")
+  })
+
+  it("returns none for a non-empty page and an empty selection", () => {
+    expect(getPageSelection(["a", "b"], new Set())).toBe("none")
+  })
+})
+
 function resolveLabels(labels?: WidgetTableLabels) {
   return { ...widgetTableLabelDefaults, ...labels }
 }
@@ -82,6 +109,14 @@ describe("widget table labels merge", () => {
     expect(resolved.previousPage).toBe(widgetTableLabelDefaults.previousPage)
     expect(resolved.nextPage).toBe(widgetTableLabelDefaults.nextPage)
     expect(resolved.range).toBe(widgetTableLabelDefaults.range)
+    expect(resolved.selectRow).toBe(widgetTableLabelDefaults.selectRow)
+    expect(resolved.selectAllOnPage).toBe(
+      widgetTableLabelDefaults.selectAllOnPage
+    )
+    expect(resolved.selected).toBe(widgetTableLabelDefaults.selected)
+    expect(resolved.clearSelection).toBe(
+      widgetTableLabelDefaults.clearSelection
+    )
   })
 
   it("falls back to every default when labels is undefined", () => {
@@ -98,6 +133,10 @@ describe("widget table labels merge", () => {
       previousPage: "e",
       nextPage: "f",
       range: () => "g",
+      selectRow: "h",
+      selectAllOnPage: "i",
+      selected: () => "j",
+      clearSelection: "k",
     })
 
     expect(resolved.emptyTitle).toBe("a")
@@ -107,5 +146,9 @@ describe("widget table labels merge", () => {
     expect(resolved.previousPage).toBe("e")
     expect(resolved.nextPage).toBe("f")
     expect(resolved.range(0, 0, 0)).toBe("g")
+    expect(resolved.selectRow).toBe("h")
+    expect(resolved.selectAllOnPage).toBe("i")
+    expect(resolved.selected(0)).toBe("j")
+    expect(resolved.clearSelection).toBe("k")
   })
 })

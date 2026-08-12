@@ -9,6 +9,7 @@ import {
   WidgetTable,
   type WidgetTableColumn,
   type WidgetTableLabels,
+  type WidgetTableSelectionAction,
   type WidgetTableSort,
   type WidgetTableSortOption,
 } from "@/registry/widget-table/widget-table"
@@ -46,6 +47,9 @@ export interface PageListProps<Row> {
   tableLabels?: WidgetTableLabels
   status?: PageStatus
   className?: string
+  selectedKeys?: ReadonlySet<Key>
+  onSelectionChange?: (keys: ReadonlySet<Key>) => void
+  selectionActions?: readonly WidgetTableSelectionAction[]
 }
 
 function getStatusContent(status: PageStatus): ReactNode {
@@ -77,6 +81,9 @@ export function PageList<Row>({
   tableLabels,
   status = "ready",
   className,
+  selectedKeys,
+  onSelectionChange,
+  selectionActions,
 }: PageListProps<Row>) {
   return (
     <div className={cn("flex flex-col gap-6", className)}>
@@ -123,6 +130,9 @@ export function PageList<Row>({
         onSortChange={onSortChange}
         sortOptions={sortOptions}
         labels={tableLabels}
+        selectedKeys={selectedKeys}
+        onSelectionChange={onSelectionChange}
+        selectionActions={selectionActions}
       />
     </div>
   )

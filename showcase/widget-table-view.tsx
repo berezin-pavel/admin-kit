@@ -1,7 +1,8 @@
 "use client"
 
 import { useState } from "react"
-import { Eye, Pencil, Trash2 } from "lucide-react"
+import type { Key } from "react"
+import { Download, Eye, Pencil, Trash2 } from "lucide-react"
 
 import { Input } from "@/components/ui/input"
 import { notify } from "@/registry/admin-toaster/admin-toaster"
@@ -9,6 +10,7 @@ import { RowActions } from "@/registry/row-actions/row-actions"
 import {
   WidgetTable,
   type WidgetTableColumn,
+  type WidgetTableSelectionAction,
   type WidgetTableSort,
   type WidgetTableSortOption,
 } from "@/registry/widget-table/widget-table"
@@ -79,6 +81,7 @@ export interface WidgetTableShowcaseViewProps {
   withPageSizeOptions?: boolean
   withSortSelect?: boolean
   withRowActions?: boolean
+  withSelection?: boolean
 }
 
 export function WidgetTableShowcaseView({
@@ -89,11 +92,15 @@ export function WidgetTableShowcaseView({
   withPageSizeOptions = false,
   withSortSelect = false,
   withRowActions = false,
+  withSelection = false,
 }: WidgetTableShowcaseViewProps) {
   const [search, setSearch] = useState("")
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE)
   const [sort, setSort] = useState<WidgetTableSort | undefined>(undefined)
+  const [selectedKeys, setSelectedKeys] = useState<ReadonlySet<Key>>(
+    new Set()
+  )
 
   const baseColumns: readonly WidgetTableColumn<OrderRow>[] = [
     {
@@ -166,6 +173,22 @@ export function WidgetTableShowcaseView({
 
   const sortIsManaged = withSort || withSortSelect
 
+  const selectionActions: readonly WidgetTableSelectionAction[] = [
+    {
+      id: "export",
+      label: "Export",
+      icon: Download,
+      onSelect: () => undefined,
+    },
+    {
+      id: "delete",
+      label: "Delete",
+      icon: Trash2,
+      tone: "danger",
+      onSelect: () => setSelectedKeys(new Set()),
+    },
+  ]
+
   return (
     <WidgetTable
       title={title}
@@ -189,6 +212,9 @@ export function WidgetTableShowcaseView({
       sort={sortIsManaged ? sort : undefined}
       onSortChange={sortIsManaged ? setSort : undefined}
       sortOptions={withSortSelect ? SORT_OPTIONS : undefined}
+      selectedKeys={withSelection ? selectedKeys : undefined}
+      onSelectionChange={withSelection ? setSelectedKeys : undefined}
+      selectionActions={withSelection ? selectionActions : undefined}
       pagination={
         withPagination
           ? {

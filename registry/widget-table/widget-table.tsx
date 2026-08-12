@@ -1,5 +1,6 @@
-import type { Key, ReactNode } from "react"
+import type { ComponentType, Key, ReactNode } from "react"
 
+import { Checkbox } from "@/components/ui/checkbox"
 import {
   Card,
   CardContent,
@@ -20,6 +21,7 @@ import { StateEmpty } from "@/registry/state-empty/state-empty"
 
 import { WidgetTablePageSizeSelect } from "./widget-table-page-size-select"
 import { WidgetTablePaginationControls } from "./widget-table-pagination"
+import { WidgetTableSelectionBar } from "./widget-table-selection-bar"
 import { WidgetTableSortButton } from "./widget-table-sort-button"
 import { WidgetTableSortSelect } from "./widget-table-sort-select"
 
@@ -41,6 +43,14 @@ export interface WidgetTableSortOption {
   sort: WidgetTableSort
 }
 
+export interface WidgetTableSelectionAction {
+  id: string
+  label: string
+  icon?: ComponentType<{ className?: string }>
+  tone?: "default" | "danger"
+  onSelect: () => void
+}
+
 export interface WidgetTablePagination {
   page: number
   pageSize: number
@@ -58,6 +68,10 @@ export interface WidgetTableLabels {
   previousPage?: string
   nextPage?: string
   range?: (rangeStart: number, rangeEnd: number, total: number) => string
+  selectRow?: string
+  selectAllOnPage?: string
+  selected?: (count: number) => string
+  clearSelection?: string
 }
 
 export const widgetTableLabelDefaults: Required<WidgetTableLabels> = {
@@ -69,6 +83,10 @@ export const widgetTableLabelDefaults: Required<WidgetTableLabels> = {
   nextPage: "Next page",
   range: (rangeStart, rangeEnd, total) =>
     `${rangeStart}–${rangeEnd} of ${total}`,
+  selectRow: "Select row",
+  selectAllOnPage: "Select all on page",
+  selected: (count) => `${count} selected`,
+  clearSelection: "Clear selection",
 }
 
 export interface WidgetTableProps<Row> {
@@ -85,6 +103,26 @@ export interface WidgetTableProps<Row> {
   onSortChange?: (sort: WidgetTableSort | undefined) => void
   sortOptions?: readonly WidgetTableSortOption[]
   labels?: WidgetTableLabels
+  selectedKeys?: ReadonlySet<Key>
+  onSelectionChange?: (keys: ReadonlySet<Key>) => void
+  selectionActions?: readonly WidgetTableSelectionAction[]
+}
+
+export function getPageSelection(
+  pageKeys: readonly Key[],
+  selectedKeys: ReadonlySet<Key>
+): "none" | "some" | "all" {
+  if (pageKeys.length === 0) {
+    return "none"
+  }
+  const selectedCount = pageKeys.filter((key) => selectedKeys.has(key)).length
+  if (selectedCount === 0) {
+    return "none"
+  }
+  if (selectedCount === pageKeys.length) {
+    return "all"
+  }
+  return "some"
 }
 
 export function formatPaginationRange(
@@ -124,25 +162,48 @@ export function WidgetTable<Row>({
   onSortChange,
   sortOptions,
   labels,
+  selectedKeys,
+  onSelectionChange,
+  selectionActions,
 }: WidgetTableProps<Row>) {
   const resolvedLabels = { ...widgetTableLabelDefaults, ...labels }
   const hasSortSelect = Boolean(
     sortOptions && sortOptions.length > 0 && onSortChange
   )
   const hasServiceGroup = Boolean(pagination) || hasSortSelect
-  const hasHeader = Boolean(title || toolbar || hasServiceGroup)
+  const hasSelection = Boolean(selectedKeys && onSelectionChange)
+  const pageKeys = hasSelection
+    ? rows.map((row, index) => getRowKey?.(row, index) ?? index)
+    : []
+  const pageSelection = getPageSelection(pageKeys, selectedKeys ?? new Set())
+  const hasActiveSelection = hasSelection && (selectedKeys?.size ?? 0) > 0
+  const hasHeader = Boolean(
+    title || toolbar || hasServiceGroup || hasActiveSelection
+  )
 
   return (
     <Card className={className}>
       {hasHeader ? (
         <CardHeader className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex flex-wrap items-center gap-3">
-            {title ? (
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                {title}
-              </CardTitle>
-            ) : null}
-            {toolbar}
+            {hasActiveSelection && selectedKeys && onSelectionChange ? (
+              <WidgetTableSelectionBar
+                count={selectedKeys.size}
+                actions={selectionActions}
+                selectedLabel={resolvedLabels.selected}
+                clearLabel={resolvedLabels.clearSelection}
+                onClear={() => onSelectionChange(new Set())}
+              />
+            ) : (
+              <>
+                {title ? (
+                  <CardTitle className="text-sm font-medium text-muted-foreground">
+                    {title}
+                  </CardTitle>
+                ) : null}
+                {toolbar}
+              </>
+            )}
           </div>
           <div className="flex flex-wrap items-center gap-3">
             {pagination
@@ -182,6 +243,27 @@ export function WidgetTable<Row>({
           <Table>
             <TableHeader>
               <TableRow>
+                {hasSelection ? (
+                  <TableHead className="w-px">
+                    <Checkbox
+                      checked={pageSelection === "all"}
+                      indeterminate={pageSelection === "some"}
+                      aria-label={resolvedLabels.selectAllOnPage}
+                      onCheckedChange={(checked) => {
+                        if (!selectedKeys || !onSelectionChange) return
+                        const next = new Set(selectedKeys)
+                        for (const key of pageKeys) {
+                          if (checked) {
+                            next.add(key)
+                          } else {
+                            next.delete(key)
+                          }
+                        }
+                        onSelectionChange(next)
+                      }}
+                    />
+                  </TableHead>
+                ) : null}
                 {columns.map((column) => (
                   <TableHead
                     key={column.id}
@@ -212,20 +294,43 @@ export function WidgetTable<Row>({
               </TableRow>
             </TableHeader>
             <TableBody>
-              {rows.map((row, index) => (
-                <TableRow key={getRowKey?.(row, index) ?? index}>
-                  {columns.map((column) => (
-                    <TableCell
-                      key={column.id}
-                      className={cn(
-                        column.align === "right" && "text-right tabular-nums"
-                      )}
-                    >
-                      {column.cell(row)}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))}
+              {rows.map((row, index) => {
+                const rowKey = getRowKey?.(row, index) ?? index
+
+                return (
+                  <TableRow key={rowKey}>
+                    {hasSelection ? (
+                      <TableCell className="w-px">
+                        <Checkbox
+                          checked={selectedKeys?.has(rowKey) ?? false}
+                          aria-label={resolvedLabels.selectRow}
+                          onCheckedChange={(checked) => {
+                            if (!selectedKeys || !onSelectionChange) return
+                            const next = new Set(selectedKeys)
+                            if (checked) {
+                              next.add(rowKey)
+                            } else {
+                              next.delete(rowKey)
+                            }
+                            onSelectionChange(next)
+                          }}
+                        />
+                      </TableCell>
+                    ) : null}
+                    {columns.map((column) => (
+                      <TableCell
+                        key={column.id}
+                        className={cn(
+                          column.align === "right" &&
+                            "text-right tabular-nums"
+                        )}
+                      >
+                        {column.cell(row)}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                )
+              })}
             </TableBody>
           </Table>
         )}

@@ -10,6 +10,10 @@ export const localeRu = {
     nextPage: "Следующая страница",
     range: (rangeStart: number, rangeEnd: number, total: number) =>
       `${rangeStart}–${rangeEnd} из ${total}`,
+    selectRow: "Выбрать строку",
+    selectAllOnPage: "Выбрать всё на странице",
+    selected: (count: number) => `Выбрано: ${count}`,
+    clearSelection: "Снять выделение",
   },
   widgetList: { emptyTitle: "Данных нет" },
   widgetChart: { emptyTitle: "Данных нет" },

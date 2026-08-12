@@ -1,9 +1,10 @@
 "use client"
 
 import { useMemo, useState } from "react"
+import type { Key } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import { Eye, Pencil, Trash2 } from "lucide-react"
+import { Download, Eye, Pencil, Trash2 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { notify } from "@/registry/admin-toaster/admin-toaster"
@@ -14,6 +15,7 @@ import { RowActions } from "@/registry/row-actions/row-actions"
 import { StatusBadge } from "@/registry/status-badge/status-badge"
 import type {
   WidgetTableColumn,
+  WidgetTableSelectionAction,
   WidgetTableSort,
   WidgetTableSortOption,
 } from "@/registry/widget-table/widget-table"
@@ -71,6 +73,11 @@ export function DemoOrders() {
   )
   const [pendingOrder, setPendingOrder] = useState<OrderRow | null>(null)
   const [deleting, setDeleting] = useState(false)
+  const [selectedKeys, setSelectedKeys] = useState<ReadonlySet<Key>>(
+    new Set()
+  )
+  const [bulkDeleteOpen, setBulkDeleteOpen] = useState(false)
+  const [bulkDeleting, setBulkDeleting] = useState(false)
 
   const rows = useMemo(
     () =>
@@ -210,6 +217,41 @@ export function DemoOrders() {
     }, 700)
   }
 
+  const removeSelectedOrders = () => {
+    setBulkDeleting(true)
+
+    window.setTimeout(() => {
+      const count = selectedKeys.size
+
+      setDeletedNumbers(
+        (previous) => new Set([...previous, ...selectedKeys].map(String))
+      )
+      setSelectedKeys(new Set())
+      setBulkDeleting(false)
+      setBulkDeleteOpen(false)
+      notify.success(strings.selectionDeleteToastTitle, {
+        description: strings.selectionDeleteToastDescription(count),
+      })
+    }, 700)
+  }
+
+  const selectionActions: readonly WidgetTableSelectionAction[] = [
+    {
+      id: "export",
+      label: strings.selectionExportAction,
+      icon: Download,
+      onSelect: () =>
+        notify.info(strings.selectionExportToastTitle(selectedKeys.size)),
+    },
+    {
+      id: "delete",
+      label: strings.selectionDeleteAction,
+      icon: Trash2,
+      tone: "danger",
+      onSelect: () => setBulkDeleteOpen(true),
+    },
+  ]
+
   return (
     <>
       <PageList
@@ -259,6 +301,26 @@ export function DemoOrders() {
         }}
         tableLabels={locale === "ru" ? localeRu.widgetTable : undefined}
         sortOptions={sortOptions}
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+        selectionActions={selectionActions}
+      />
+      <ConfirmDialog
+        open={bulkDeleteOpen}
+        onOpenChange={(open) => {
+          if (!open) {
+            setBulkDeleteOpen(false)
+          }
+        }}
+        title={strings.selectionDeleteConfirmTitle}
+        description={strings.selectionDeleteConfirmDescription(
+          selectedKeys.size
+        )}
+        confirmLabel={strings.selectionDeleteConfirmLabel}
+        cancelLabel={locale === "ru" ? localeRu.confirmDialog.cancelLabel : undefined}
+        tone="danger"
+        loading={bulkDeleting}
+        onConfirm={removeSelectedOrders}
       />
       <ConfirmDialog
         open={pendingOrder !== null}

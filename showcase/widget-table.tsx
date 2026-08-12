@@ -193,5 +193,12 @@ export const widgetTableEntry: ShowcaseEntry = {
         <WidgetTableShowcaseView title="Recent orders" withRowActions />
       ),
     },
+    {
+      id: "with-row-selection",
+      name: "With row selection",
+      render: () => (
+        <WidgetTableShowcaseView title="Recent orders" withSelection />
+      ),
+    },
   ],
 }

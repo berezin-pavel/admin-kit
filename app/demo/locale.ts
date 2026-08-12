@@ -101,6 +101,14 @@ export interface DemoDictionary {
     deleteConfirmLabel: string
     deleteToastTitle: string
     deleteToastDescription: (orderNumber: string) => string
+    selectionExportAction: string
+    selectionExportToastTitle: (count: number) => string
+    selectionDeleteAction: string
+    selectionDeleteConfirmTitle: string
+    selectionDeleteConfirmDescription: (count: number) => string
+    selectionDeleteConfirmLabel: string
+    selectionDeleteToastTitle: string
+    selectionDeleteToastDescription: (count: number) => string
   }
   orderEntity: {
     title: string
@@ -263,6 +271,16 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       deleteToastTitle: "Order deleted",
       deleteToastDescription: (orderNumber) =>
         `Order #${orderNumber} removed from the list`,
+      selectionExportAction: "Export",
+      selectionExportToastTitle: (count) => `Exporting ${count} orders`,
+      selectionDeleteAction: "Delete",
+      selectionDeleteConfirmTitle: "Delete selected orders?",
+      selectionDeleteConfirmDescription: (count) =>
+        `${count} orders will be deleted with no way to restore them.`,
+      selectionDeleteConfirmLabel: "Delete",
+      selectionDeleteToastTitle: "Orders deleted",
+      selectionDeleteToastDescription: (count) =>
+        `${count} orders removed from the list`,
     },
     orderEntity: {
       title: "Order #4187",
@@ -421,6 +439,16 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       deleteConfirmLabel: "Удалить",
       deleteToastTitle: "Заказ удалён",
       deleteToastDescription: (orderNumber) => `Заказ №${orderNumber} убран из списка`,
+      selectionExportAction: "Экспорт",
+      selectionExportToastTitle: (count) => `Экспортируется заказов: ${count}`,
+      selectionDeleteAction: "Удалить",
+      selectionDeleteConfirmTitle: "Удалить выбранные заказы?",
+      selectionDeleteConfirmDescription: (count) =>
+        `Будет удалено заказов: ${count}, без возможности восстановить.`,
+      selectionDeleteConfirmLabel: "Удалить",
+      selectionDeleteToastTitle: "Заказы удалены",
+      selectionDeleteToastDescription: (count) =>
+        `Убрано из списка заказов: ${count}`,
     },
     orderEntity: {
       title: "Заказ №4187",
