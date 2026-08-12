@@ -1,14 +1,17 @@
 # Deferred to the next iteration
 
-## When the kit gets its own form inputs, drop the bare primitives
+## The showcase "Primitives" section is gone — closed harder than planned
 
-Decision recorded ahead of the forms iteration: once the kit ships its own
-text/number/select/checkbox fields, the bare shadcn form primitives (input,
-select, label and friends) stop being shown as standalone catalog entries —
-consumers should reach for the kit's fields, and the primitives remain mere
-`registryDependencies` that the CLI installs implicitly. The showcase
-"Primitives" section then shrinks to whatever still has no kit-level
-counterpart.
+The original decision said: once the kit ships its own form fields, primitives
+with kit-level counterparts lose their interactive demos. After the forms
+iteration the owner tightened it: the showcase shows only the kit's own parts,
+so the whole reference section was removed along with its demo components and
+`lib/registry-primitives.ts`. Primitives remain what they always were for
+consumers — bare-name `registryDependencies` installed by the CLI in the
+consumer's own style, never shipped from this repository. The side effect worth
+remembering: the section doubled as a drift watchdog (it warned when a
+`components/ui/` primitive had no dependent registry item); that check is gone
+with it.
 
 The naming inconsistency this table had tracked since the first review is closed: in `state-empty` the `action` prop was renamed to `actions`, so the actions slot is now named the same way across every item in the kit. The pages from `docs/brief.md` — a list with filters and an entity card — are also done: `page-list` and `page-entity` are in the registry. What follows is what got closed by a decision rather than by code, and what's still unresolved after this iteration.
 
@@ -28,7 +31,7 @@ The requirement on the slot's content has become an ordinary one for the kit as 
 
 `components/ui/pagination.tsx`, which shadcn generates, produces a mismatch between server and client: `PaginationLink` sets `data-slot="pagination-link"`, and the `Button` nested inside it overwrites it with `data-slot="button"` — React reports the mismatch during hydration.
 
-This doesn't affect us: `page-list` builds pagination directly from `Button` and doesn't use `PaginationLink`. The mismatch is visible in the showcase's "Primitives" section (`/#primitives`), where the primitive is shown exactly as shadcn ships it.
+This doesn't affect us: `page-list` builds pagination directly from `Button` and doesn't use `PaginationLink`. It used to be visible in the showcase's "Primitives" section; with that section removed, it no longer surfaces anywhere in this repository.
 
 It can't be fixed on our end: the consumer gets their own copy of the primitive from shadcn, our fix would never reach it, and our version would just drift from theirs. This is a question for shadcn, not for the kit.
 

@@ -7,7 +7,6 @@ import type { ShowcaseEntry } from "@/showcase/types"
 
 const REFERENCE_ITEMS: readonly ShowcaseNavItem[] = [
   { id: "tokens", title: "Theme tokens" },
-  { id: "primitives", title: "Primitives" },
 ]
 
 export function ShowcaseNav({

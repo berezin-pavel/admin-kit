@@ -3,7 +3,6 @@ import Link from "next/link"
 import { ShowcaseGallery } from "@/components/showcase-gallery"
 import { ShowcaseNav } from "@/components/showcase-nav"
 import { SHOWCASE_NAV_SENTINEL_ID } from "@/components/showcase-nav-body"
-import { ShowcasePrimitives } from "@/components/showcase-primitives"
 import { ShowcaseTokens } from "@/components/showcase-tokens"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { buttonVariants } from "@/components/ui/button"
@@ -36,7 +35,6 @@ export default function Page() {
         <div className="min-w-0 flex-1">
           <div className="flex flex-col gap-16">
             <ShowcaseTokens />
-            <ShowcasePrimitives />
             <ShowcaseGallery entries={showcaseEntries} />
           </div>
           <div
