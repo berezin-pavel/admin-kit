@@ -7,6 +7,7 @@ import { confirmDialogEntry } from "./confirm-dialog"
 import { dateFieldEntry } from "./date-field"
 import { dateRangeFieldEntry } from "./date-range-field"
 import { dateTimeFieldEntry } from "./date-time-field"
+import { fileFieldEntry } from "./file-field"
 import { hintEntry } from "./hint"
 import { languageToggleEntry } from "./language-toggle"
 import { localeRuEntry } from "./locale-ru"
@@ -14,6 +15,7 @@ import { numberFieldEntry } from "./number-field"
 import { rowActionsEntry } from "./row-actions"
 import { selectFieldEntry } from "./select-field"
 import { sidebarToggleEntry } from "./sidebar-toggle"
+import { tagsFieldEntry } from "./tags-field"
 import { textFieldEntry } from "./text-field"
 import { textareaFieldEntry } from "./textarea-field"
 import { timeFieldEntry } from "./time-field"
@@ -26,10 +28,13 @@ import {
 } from "./states-problem"
 import { themeToggleEntry } from "./theme-toggle"
 import type { ShowcaseEntry } from "./types"
+import { widgetActivityEntry } from "./widget-activity"
 import { widgetChartEntry } from "./widget-chart"
+import { widgetDonutEntry } from "./widget-donut"
 import { widgetListEntry } from "./widget-list"
 import { widgetMetricEntry } from "./widget-metric"
 import { widgetPlaceholderEntry } from "./widget-placeholder"
+import { widgetQuickActionsEntry } from "./widget-quick-actions"
 import { pageEntityEntry } from "./page-entity"
 import { pageFormEntry } from "./page-form"
 import { pageListEntry } from "./page-list"
@@ -47,6 +52,9 @@ export const showcaseEntries: readonly ShowcaseEntry[] = [
   localeRuEntry,
   widgetMetricEntry,
   widgetTableEntry,
+  widgetActivityEntry,
+  widgetDonutEntry,
+  widgetQuickActionsEntry,
   pageEntityEntry,
   pageListEntry,
   pageFormEntry,
@@ -65,6 +73,8 @@ export const showcaseEntries: readonly ShowcaseEntry[] = [
   textareaFieldEntry,
   selectFieldEntry,
   checkboxFieldEntry,
+  fileFieldEntry,
+  tagsFieldEntry,
   confirmDialogEntry,
   adminToasterEntry,
   widgetProgressEntry,

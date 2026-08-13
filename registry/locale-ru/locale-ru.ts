@@ -30,6 +30,16 @@ export const localeRu = {
   },
   widgetList: { emptyTitle: "Данных нет" },
   widgetChart: { emptyTitle: "Данных нет" },
+  widgetActivity: {
+    today: "Сегодня",
+    yesterday: "Вчера",
+    emptyTitle: "Активности нет",
+    dayFormat: "d MMMM",
+    timeFormat: "HH:mm",
+    locale: ru,
+  },
+  widgetDonut: { emptyTitle: "Данных нет" },
+  widgetProgress: { targetLabel: "Цель" },
   stateLoading: { label: "Загрузка" },
   stateError: { title: "Что-то пошло не так" },
   stateForbidden: { title: "Нет доступа" },
@@ -60,6 +70,15 @@ export const localeRu = {
   },
   colorField: { placeholder: "Выберите цвет", hexInputLabel: "HEX-код цвета" },
   selectField: { placeholder: "Выберите…" },
+  fileField: {
+    buttonLabel: "Выбрать файл",
+    noFileLabel: "Файл не выбран",
+    clearLabel: "Убрать файл",
+  },
+  tagsField: {
+    placeholder: "Добавить тег…",
+    removeLabel: (tag: string) => `Убрать ${tag}`,
+  },
   pageForm: { submitLabel: "Сохранить", cancelLabel: "Отмена" },
   sidebarToggle: { expand: "Развернуть сайдбар", collapse: "Свернуть сайдбар" },
   themeToggle: {

@@ -27,6 +27,18 @@ Now it's a single node: the collapsed view comes from styling the same tree, and
 
 The requirement on the slot's content has become an ordinary one for the kit as a result — **controlled from outside** — rather than the special caveat of "no state of its own." No need to revisit the topic.
 
+## Remount churn and a dangling focus ref in the `calendar` primitive — not ours
+
+`components/ui/calendar.tsx`, as shadcn ships it, defines `Root`, `Chevron` and `DayButton` as
+inline arrows inside the `components` object passed to DayPicker — their identity changes every
+render, so React remounts the whole calendar subtree whenever anything above it re-renders.
+Separately, `CalendarDayButton` creates a focus ref it never attaches, so arrow-key navigation
+moves DayPicker's internal focus while DOM focus stays put (affects `date-field` and
+`date-time-field` keyboarding). Same reasoning as the pagination mismatch above: the consumer
+gets their own copy of the primitive from shadcn, so we don't fork ours. `date-range-field`
+sidesteps the remount locally by passing its own referentially stable `Root` and `DayButton` —
+it needed that for its hover preview.
+
 ## Hydration mismatch in the `pagination` primitive — not ours
 
 `components/ui/pagination.tsx`, which shadcn generates, produces a mismatch between server and client: `PaginationLink` sets `data-slot="pagination-link"`, and the `Button` nested inside it overwrites it with `data-slot="button"` — React reports the mismatch during hydration.

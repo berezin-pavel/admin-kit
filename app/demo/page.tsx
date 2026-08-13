@@ -19,18 +19,23 @@ import {
 } from "@/registry/date-range-field/date-range-field"
 import { localeRu } from "@/registry/locale-ru/locale-ru"
 import { PageHeader } from "@/registry/page-header/page-header"
+import { WidgetActivity } from "@/registry/widget-activity/widget-activity"
 import { WidgetChart } from "@/registry/widget-chart/widget-chart"
+import { WidgetDonut } from "@/registry/widget-donut/widget-donut"
 import { WidgetList } from "@/registry/widget-list/widget-list"
 import { WidgetMetric } from "@/registry/widget-metric/widget-metric"
-import { WidgetPlaceholder } from "@/registry/widget-placeholder/widget-placeholder"
+import { WidgetProgress } from "@/registry/widget-progress/widget-progress"
 
 import {
   formatDemoCurrency,
   formatDemoNumber,
+  getDemoActivityEntries,
   getDemoDailyMetrics,
   getDemoMetricsInRange,
   getDemoMonths,
+  getDemoMonthlyRevenueGoal,
   getDemoNewCustomersSeries,
+  getDemoOrderStatusSlices,
   getDemoOrdersByChannelSeries,
   getDemoPreviousRange,
   getDemoProductItems,
@@ -84,14 +89,24 @@ export default function DemoPage() {
   const emptyTitle = locale === "ru" ? localeRu.widgetList.emptyTitle : undefined
   const chartEmptyTitle =
     locale === "ru" ? localeRu.widgetChart.emptyTitle : undefined
+  const donutEmptyTitle =
+    locale === "ru" ? localeRu.widgetDonut.emptyTitle : undefined
+  const activityLabels = locale === "ru" ? localeRu.widgetActivity : undefined
+  const targetLabel =
+    locale === "ru" ? localeRu.widgetProgress.targetLabel : undefined
 
   const [rangeValue, setRangeValue] = useState(getDefaultOverviewRangeValue)
   const dailyMetrics = useMemo(() => getDemoDailyMetrics(), [])
   const range = useMemo(() => parseDateRangeValue(rangeValue), [rangeValue])
 
-  const summary = useMemo(
-    () => summarizeDemoMetrics(getDemoMetricsInRange(dailyMetrics, range)),
+  const periodMetrics = useMemo(
+    () => getDemoMetricsInRange(dailyMetrics, range),
     [dailyMetrics, range]
+  )
+
+  const summary = useMemo(
+    () => summarizeDemoMetrics(periodMetrics),
+    [periodMetrics]
   )
   const previousSummary = useMemo(() => {
     if (!range) {
@@ -104,8 +119,37 @@ export default function DemoPage() {
   }, [dailyMetrics, range])
 
   const revenueChart = useMemo(
-    () => getDemoRevenueChartData(getDemoMetricsInRange(dailyMetrics, range), locale),
-    [dailyMetrics, range, locale]
+    () => getDemoRevenueChartData(periodMetrics, locale),
+    [periodMetrics, locale]
+  )
+
+  const ordersTrend = useMemo(
+    () => periodMetrics.map((metric) => metric.orders),
+    [periodMetrics]
+  )
+  const revenueTrend = useMemo(
+    () => periodMetrics.map((metric) => metric.revenue),
+    [periodMetrics]
+  )
+  const averageOrderTrend = useMemo(
+    () =>
+      periodMetrics.map((metric) =>
+        metric.orders > 0 ? Math.round(metric.revenue / metric.orders) : 0
+      ),
+    [periodMetrics]
+  )
+
+  const donutSlices = useMemo(
+    () => getDemoOrderStatusSlices(locale, range),
+    [locale, range]
+  )
+  const activityEntries = useMemo(
+    () => getDemoActivityEntries(locale),
+    [locale]
+  )
+  const monthlyGoal = useMemo(
+    () => getDemoMonthlyRevenueGoal(dailyMetrics),
+    [dailyMetrics]
   )
 
   return (
@@ -138,6 +182,7 @@ export default function DemoPage() {
               ? buildDemoMetricTrend(summary.orderCount, previousSummary.orderCount)
               : undefined
           }
+          trendValues={ordersTrend}
           hint={strings.metricHint}
         />
         <WidgetMetric
@@ -148,6 +193,7 @@ export default function DemoPage() {
               ? buildDemoMetricTrend(summary.revenue, previousSummary.revenue)
               : undefined
           }
+          trendValues={revenueTrend}
           hint={strings.metricHint}
         />
         <WidgetMetric
@@ -161,6 +207,7 @@ export default function DemoPage() {
                 )
               : undefined
           }
+          trendValues={averageOrderTrend}
           hint={strings.metricHint}
         />
       </div>
@@ -194,11 +241,32 @@ export default function DemoPage() {
             items={getDemoProductItems(locale)}
             emptyTitle={emptyTitle}
           />
-          <WidgetPlaceholder
-            title={strings.placeholderTitle}
-            hint={strings.placeholderHint}
+          <WidgetDonut
+            title={strings.donutTitle}
+            hint={strings.metricHint}
+            slices={donutSlices}
+            emptyTitle={donutEmptyTitle}
           />
         </div>
+      </div>
+      <div className="grid gap-4 md:grid-cols-2">
+        <WidgetActivity
+          title={strings.activityTitle}
+          entries={activityEntries}
+          labels={activityLabels}
+          locale={locale === "ru" ? localeRu.widgetActivity.locale : undefined}
+        />
+        <WidgetProgress
+          title={strings.progressTitle}
+          value={monthlyGoal.value}
+          max={monthlyGoal.max}
+          target={monthlyGoal.target}
+          targetLabel={targetLabel}
+          hint={strings.progressHint(
+            formatDemoCurrency(monthlyGoal.value, locale),
+            formatDemoCurrency(monthlyGoal.max, locale)
+          )}
+        />
       </div>
 
       <Card>

@@ -1,4 +1,7 @@
+"use client"
+
 import { TrendingDown, TrendingUp } from "lucide-react"
+import { Line, LineChart, ResponsiveContainer } from "recharts"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
@@ -15,6 +18,7 @@ export interface WidgetMetricProps {
     value: string
     tone?: MetricTone
   }
+  trendValues?: readonly number[]
   className?: string
 }
 
@@ -23,6 +27,7 @@ export function WidgetMetric({
   value,
   hint,
   trend,
+  trendValues,
   className,
 }: WidgetMetricProps) {
   const TrendIcon = trend?.direction === "down" ? TrendingDown : TrendingUp
@@ -55,6 +60,22 @@ export function WidgetMetric({
         </div>
         {hint ? (
           <span className="text-sm text-muted-foreground">{hint}</span>
+        ) : null}
+        {trendValues && trendValues.length >= 2 ? (
+          <div className="h-10 w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={trendValues.map((point) => ({ point }))}>
+                <Line
+                  type="monotone"
+                  dataKey="point"
+                  stroke="var(--color-chart-1)"
+                  strokeWidth={2}
+                  dot={false}
+                  isAnimationActive={false}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
         ) : null}
       </CardContent>
     </Card>

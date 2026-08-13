@@ -18,8 +18,10 @@ export interface DemoDictionary {
     ordersByChannelChartTitle: string
     newCustomersChartTitle: string
     productsTitle: string
-    placeholderTitle: string
-    placeholderHint: string
+    donutTitle: string
+    activityTitle: string
+    progressTitle: string
+    progressHint: (value: string, max: string) => string
     formFieldsCardTitle: string
     feedbackCardTitle: string
   }
@@ -160,6 +162,9 @@ export interface DemoDictionary {
     paidLabel: string
     commentLabel: string
     commentPlaceholder: string
+    tagsLabel: string
+    tagsSuggestions: readonly string[]
+    attachmentLabel: string
     saveToastTitle: string
     saveToastDescription: string
   }
@@ -193,8 +198,10 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       ordersByChannelChartTitle: "Orders by channel",
       newCustomersChartTitle: "New customers by month",
       productsTitle: "Products",
-      placeholderTitle: "Conversion widget",
-      placeholderHint: "Connect analytics to add it here",
+      donutTitle: "Orders by status",
+      activityTitle: "Recent activity",
+      progressTitle: "Monthly revenue goal",
+      progressHint: (value, max) => `${value} of ${max}`,
       formFieldsCardTitle: "Form fields",
       feedbackCardTitle: "Feedback and hints",
     },
@@ -344,6 +351,15 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       paidLabel: "Paid",
       commentLabel: "Comment",
       commentPlaceholder: "Add a note for the fulfillment team",
+      tagsLabel: "Tags",
+      tagsSuggestions: [
+        "Gift",
+        "Priority",
+        "Fragile",
+        "Wholesale",
+        "Repeat customer",
+      ],
+      attachmentLabel: "Attachment",
       saveToastTitle: "Order saved",
       saveToastDescription: "Order #4187 updated",
     },
@@ -375,8 +391,10 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       ordersByChannelChartTitle: "Заказы по каналам",
       newCustomersChartTitle: "Новые клиенты по месяцам",
       productsTitle: "Товары",
-      placeholderTitle: "Виджет конверсии",
-      placeholderHint: "Подключите аналитику, чтобы добавить сюда",
+      donutTitle: "Заказы по статусам",
+      activityTitle: "Последняя активность",
+      progressTitle: "Цель по выручке за месяц",
+      progressHint: (value, max) => `${value} из ${max}`,
       formFieldsCardTitle: "Поля формы",
       feedbackCardTitle: "Обратная связь и подсказки",
     },
@@ -523,6 +541,15 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       paidLabel: "Оплачен",
       commentLabel: "Комментарий",
       commentPlaceholder: "Добавьте заметку для сборщиков заказа",
+      tagsLabel: "Теги",
+      tagsSuggestions: [
+        "Подарок",
+        "Срочно",
+        "Хрупкое",
+        "Опт",
+        "Постоянный клиент",
+      ],
+      attachmentLabel: "Вложение",
       saveToastTitle: "Заказ сохранён",
       saveToastDescription: "Заказ №4187 обновлён",
     },

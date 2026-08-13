@@ -28,6 +28,8 @@ export interface UserMenuProps {
   avatarUrl?: string
   items: readonly UserMenuItem[]
   label?: string
+  side?: "top" | "bottom"
+  align?: "start" | "end"
   className?: string
 }
 
@@ -47,6 +49,8 @@ export function UserMenu({
   avatarUrl,
   items,
   label = "Open user menu",
+  side = "top",
+  align = "start",
   className,
 }: UserMenuProps) {
   return (
@@ -72,7 +76,7 @@ export function UserMenu({
           </span>
         )}
       </DropdownMenuTrigger>
-      <DropdownMenuContent side="top" align="start">
+      <DropdownMenuContent side={side} align={align}>
         <DropdownMenuGroup>
           <DropdownMenuLabel className="flex flex-col gap-0.5 px-1.5 py-1.5">
             <span className="font-medium text-popover-foreground">{name}</span>

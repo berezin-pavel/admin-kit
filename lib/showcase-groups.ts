@@ -33,6 +33,9 @@ export const SHOWCASE_ENTRY_GROUPS: readonly ShowcaseGroupDefinition[] = [
       "widget-progress",
       "widget-chart",
       "widget-list",
+      "widget-activity",
+      "widget-donut",
+      "widget-quick-actions",
       "widget-placeholder",
     ],
   },
@@ -55,6 +58,8 @@ export const SHOWCASE_ENTRY_GROUPS: readonly ShowcaseGroupDefinition[] = [
       "date-range-field",
       "time-field",
       "color-field",
+      "file-field",
+      "tags-field",
     ],
   },
   {

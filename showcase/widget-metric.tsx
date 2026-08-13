@@ -57,5 +57,33 @@ export const widgetMetricEntry: ShowcaseEntry = {
         />
       ),
     },
+    {
+      id: "sparkline",
+      name: "With a sparkline",
+      render: () => (
+        <WidgetMetric
+          title="Revenue"
+          value="$18,420"
+          trendValues={[
+            820, 932, 901, 1204, 1390, 1280, 1340, 1450, 1510, 1602, 1780,
+            2040,
+          ]}
+        />
+      ),
+    },
+    {
+      id: "trend-and-sparkline",
+      name: "Trend and sparkline together",
+      render: () => (
+        <WidgetMetric
+          title="Orders"
+          value="312"
+          trend={{ direction: "up", value: "+12%" }}
+          trendValues={[
+            210, 224, 218, 240, 255, 249, 262, 270, 281, 295, 301, 312,
+          ]}
+        />
+      ),
+    },
   ],
 }

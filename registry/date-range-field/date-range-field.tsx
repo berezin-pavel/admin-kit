@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { CalendarIcon } from "lucide-react"
-import { format } from "date-fns"
+import { format, isSameDay } from "date-fns"
 import type { Locale } from "date-fns"
 import { enUS } from "date-fns/locale"
 import {
@@ -20,7 +20,7 @@ import {
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
+import { Calendar, CalendarDayButton } from "@/components/ui/calendar"
 import { Label } from "@/components/ui/label"
 import {
   Popover,
@@ -102,6 +102,42 @@ export function formatDateRangeValue(range: DateRange): string {
   return `${formatDatePart(range.from)}..${formatDatePart(range.to)}`
 }
 
+export function orderDateRange(anchor: Date, target: Date): DateRange {
+  return target < anchor
+    ? { from: target, to: anchor }
+    : { from: anchor, to: target }
+}
+
+export function previewDateRange(
+  anchor: Date | undefined,
+  hovered: Date | undefined,
+  committed: DateRange | undefined
+): DateRange | undefined {
+  if (!anchor) {
+    return committed
+  }
+
+  return orderDateRange(anchor, hovered ?? anchor)
+}
+
+function isKeyboardActivation(event: React.MouseEvent | React.KeyboardEvent) {
+  return event.detail === 0
+}
+
+type CalendarComponents = React.ComponentProps<typeof Calendar>["components"]
+
+interface DayPress {
+  day: Date
+  startedHere: boolean
+  moved: boolean
+}
+
+interface DayGesture {
+  press: (day: Date, event: React.PointerEvent<HTMLButtonElement>) => void
+  track: (day: Date) => void
+  release: (day: Date) => void
+}
+
 export const defaultDateRangePresets: readonly DateRangePreset[] = [
   {
     id: "today",
@@ -180,12 +216,160 @@ export function DateRangeField({
   const errorId = `${id}-error`
   const hintId = `${id}-hint`
   const [open, setOpen] = React.useState(false)
+  const [anchor, setAnchor] = React.useState<Date | undefined>(undefined)
+  const [hovered, setHovered] = React.useState<Date | undefined>(undefined)
+  const [dragging, setDragging] = React.useState(false)
+  const pressRef = React.useRef<DayPress | null>(null)
+  const gestureRef = React.useRef<DayGesture | null>(null)
   const selected = parseDateRangeValue(value)
+  const preview = previewDateRange(anchor, hovered, selected)
+
+  function clearSelection() {
+    pressRef.current = null
+    setAnchor(undefined)
+    setHovered(undefined)
+    setDragging(false)
+  }
+
+  function commitRange(range: DateRange) {
+    clearSelection()
+    setOpen(false)
+    onChange(formatDateRangeValue(range))
+  }
+
+  function selectDay(day: Date) {
+    if (!anchor) {
+      setAnchor(day)
+      setHovered(day)
+      return
+    }
+
+    commitRange(orderDateRange(anchor, day))
+  }
+
+  const gesture: DayGesture = {
+    press: (day, event) => {
+      if (pressRef.current) {
+        return
+      }
+
+      if (event.pointerType === "mouse" && event.button !== 0) {
+        return
+      }
+
+      if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+        event.currentTarget.releasePointerCapture(event.pointerId)
+      }
+
+      pressRef.current = { day, startedHere: !anchor, moved: false }
+
+      if (!anchor) {
+        setAnchor(day)
+      }
+
+      setHovered(day)
+      setDragging(true)
+    },
+    track: (day) => {
+      const press = pressRef.current
+
+      if (press && !isSameDay(press.day, day)) {
+        press.moved = true
+      }
+
+      setHovered(day)
+    },
+    release: (day) => {
+      const press = pressRef.current
+
+      if (!press) {
+        return
+      }
+
+      pressRef.current = null
+      setDragging(false)
+
+      const from = press.startedHere ? press.day : anchor
+
+      if (from && (press.moved || !press.startedHere)) {
+        commitRange(orderDateRange(from, day))
+      }
+    },
+  }
+
+  React.useEffect(() => {
+    gestureRef.current = gesture
+  })
+
+  React.useEffect(() => {
+    if (!dragging) {
+      return
+    }
+
+    function cancelPress() {
+      const press = pressRef.current
+
+      if (!press) {
+        return
+      }
+
+      pressRef.current = null
+      setDragging(false)
+
+      if (press.startedHere) {
+        setAnchor(undefined)
+        setHovered(undefined)
+      }
+    }
+
+    window.addEventListener("pointerup", cancelPress)
+    window.addEventListener("pointercancel", cancelPress)
+
+    return () => {
+      window.removeEventListener("pointerup", cancelPress)
+      window.removeEventListener("pointercancel", cancelPress)
+    }
+  }, [dragging])
+
+  const calendarComponents = React.useMemo<CalendarComponents>(
+    () => ({
+      Root: ({ className: rootClassName, rootRef, ...rootProps }) => (
+        <div
+          data-slot="calendar"
+          ref={rootRef}
+          className={rootClassName}
+          {...rootProps}
+        />
+      ),
+      DayButton: (dayProps) => (
+        <CalendarDayButton
+          {...dayProps}
+          locale={locale}
+          className={cn(dayProps.className, "touch-none")}
+          onPointerDown={(event) =>
+            gestureRef.current?.press(dayProps.day.date, event)
+          }
+          onPointerEnter={() => gestureRef.current?.track(dayProps.day.date)}
+          onPointerUp={() => gestureRef.current?.release(dayProps.day.date)}
+        />
+      ),
+    }),
+    [locale]
+  )
 
   return (
     <div className={cn("flex flex-col gap-1.5", className)}>
       {label ? <Label htmlFor={id}>{label}</Label> : null}
-      <Popover open={open} onOpenChange={setOpen}>
+      <Popover
+        open={open}
+        onOpenChange={(next) => {
+          if (!next) {
+            clearSelection()
+          }
+
+          setOpen(next)
+        }}
+      >
         <PopoverTrigger
           id={id}
           disabled={disabled}
@@ -226,32 +410,40 @@ export function DateRangeField({
                       "justify-start text-sm font-normal",
                       active && "bg-accent text-accent-foreground"
                     )}
-                    onClick={() => {
-                      onChange(formatDateRangeValue(presetRange))
-                      setOpen(false)
-                    }}
+                    onClick={() => commitRange(presetRange)}
                   >
                     {preset.label}
                   </Button>
                 )
               })}
             </div>
-            <Calendar
-              mode="range"
-              locale={locale}
-              numberOfMonths={2}
-              selected={selected}
-              onSelect={(range) => {
-                if (!range?.from || !range?.to) {
-                  return
+            <div
+              onKeyDown={(event) => {
+                if (event.key === "Escape") {
+                  clearSelection()
                 }
-
-                onChange(
-                  formatDateRangeValue({ from: range.from, to: range.to })
-                )
-                setOpen(false)
               }}
-            />
+              onPointerLeave={() => {
+                if (!pressRef.current) {
+                  setHovered(undefined)
+                }
+              }}
+            >
+              <Calendar
+                mode="range"
+                locale={locale}
+                numberOfMonths={2}
+                components={calendarComponents}
+                selected={preview}
+                onSelect={(_range, day, _modifiers, event) => {
+                  if (!isKeyboardActivation(event)) {
+                    return
+                  }
+
+                  selectDay(day)
+                }}
+              />
+            </div>
           </div>
         </PopoverContent>
       </Popover>

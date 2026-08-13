@@ -58,12 +58,15 @@ as they were.
 | `theme-toggle`       | `registry:component` | A theme-switch button that doesn't store the theme itself: the `isDark` state and the `onToggle` handler arrive as props. Fits the shell's `sidebarFooter` slot or anywhere else on the page                                                                                                                                                                          |
 | `sidebar-toggle`     | `registry:component` | A button that collapses the shell's sidebar into the icon rail, built the same way as `theme-toggle`: `collapsed` and `onToggle` arrive as props. Visible only on a wide screen — on a narrow one the sidebar is already an icon rail with a burger menu. Its place is the `sidebarFooter` slot next to the theme toggle                                             |
 | `language-toggle`    | `registry:component` | A locale-switch button built the same way as `theme-toggle`: `locale`, `locales`, and `onLocaleChange` arrive as props. Shows the current locale's short label, cycling to the next one in the list on click. Its place is the `sidebarFooter` slot next to the theme toggle                                                                                        |
-| `user-menu`          | `registry:component` | An avatar icon button for the `sidebarFooter` slot that opens a dropdown with the user's name, email, and a list of `items` (icon, label, and a `danger` tone for actions like sign-out). The fallback avatar shows initials derived from `name`; `avatarUrl` swaps in a real image. The dropdown's open state lives in the primitive, the same as the kit's other popups |
+| `user-menu`          | `registry:component` | An avatar icon button that opens a dropdown with the user's name, email, and a list of `items` (icon, label, and a `danger` tone for actions like sign-out). Without `avatarUrl` the trigger shows bare initials in the toggles' lettering. Recommended spot: the shell header's `actions` slot, top right, with `side="bottom"` `align="end"`; in a headerless shell it fits `sidebarFooter` with the default `side="top"` |
 | `locale-ru`          | `registry:component` | A Russian dictionary: one `localeRu` const sliced into the exact shapes the other items' `labels`/`locale` props expect, so a slice passes straight into a prop. Bundles `date-fns`'s `ru` locale for the date fields                                                                                                                                                 |
-| `widget-metric`      | `registry:component` | A single-number card for a dashboard: a title, a value, optional trend (an arrow with its own separate color), and a caption                                                                                                                                                                                                                                          |
+| `widget-metric`      | `registry:component` | A single-number card for a dashboard: a title, a value, optional trend (an arrow with its own separate color), and a caption; `trendValues`, given two or more points, adds a small sparkline under the caption                                                                                                                                                      |
 | `widget-table`       | `registry:component` | A self-contained table card: the heading is optional, the header has a `toolbar` slot for filters, and the footer has a record count, pagination, and a page-size picker. A column with `sortable` gets a sort button and `aria-sort`; row order and slicing are set by the data owner, the table only reports the choice via `onSortChange` and `onPageChange`. Passing both `selectedKeys` and `onSelectionChange` adds a checkbox column — the header checkbox selects or clears the current page only — and swaps the header's left side for a selection bar with an N-selected count and `selectionActions`      |
 | `widget-chart`       | `registry:component` | A chart card: a shared `labels` axis and a `series` list each with its own `values`; the `kind` prop switches between a line and bars; series colors cycle through the `chart-1`…`chart-5` tokens, and a legend appears once there are two or more series; without `labels` or `series` it shows `state-empty`                                                       |
 | `widget-list`        | `registry:component` | A list of rows: a name, an optional explanation, optional content on the right, and an icon; without rows and its own `empty`, it shows `state-empty`                                                                                                                                                                                                                  |
+| `widget-activity`    | `registry:component` | A recent-activity feed card: entries grouped by calendar day, with the group header reading "Today"/"Yesterday" relative to the real current date and a `dayFormat` date otherwise; entries keep their given order inside a group. Without entries it shows `state-empty`                                                                                            |
+| `widget-donut`       | `registry:component` | A donut-chart card: labeled slices drawn as a ring plus a legend list (color dot, label, `valueFormat(value, share)` right-aligned — a rounded percentage by default). Colors cycle through the `chart-1`…`chart-5` tokens; with no slices, or a zero total, it shows `state-empty`                                                                                  |
+| `widget-quick-actions` | `registry:component` | A grid of shortcut buttons — `id`, `label`, an optional icon, `onSelect` — with `columns` switching between two (default) and three. No actions is a consumer mistake, not a data state, so it doesn't fall back to `state-empty`                                                                                                                                    |
 | `widget-placeholder` | `registry:component` | A dashed-border placeholder in the work area where a widget hasn't been chosen yet — not about missing data, that's what `state-empty` is for                                                                                                                                                                                                                          |
 | `state-loading`      | `registry:component` | A skeleton in place of content while data is loading                                                                                                                                                                                                                                                                                                                    |
 | `state-empty`        | `registry:component` | A screen in place of content when there's no data: a title, an explanation, an actions slot; no icon — empty data is normal                                                                                                                                                                                                                                            |
@@ -85,26 +88,37 @@ as they were.
 | `textarea-field`     | `registry:component` | A multi-line text input with a `rows` prop, sharing the field anatomy: label, hint, error                                                                                                                                                                                                                                                                              |
 | `select-field`       | `registry:component` | A single-choice select over `options` value/label pairs; an empty value shows the placeholder, and the popup is pinned to the trigger like the kit's other selects                                                                                                                                                                                                     |
 | `checkbox-field`     | `registry:component` | A boolean checkbox with its label to the right and hint/error below the pair; controlled via `checked`/`onChange`                                                                                                                                                                                                                                                      |
+| `file-field`         | `registry:component` | A file picker with the field anatomy — label, hint, error — but a deliberate exception to the string-value convention: `value` is `File \| null`, since a `File` can't round-trip through a string the way the others do. Drag-and-drop onto the zone or the native picker set the file; the name and size (`formatFileSize`) or `noFileLabel` show next to it        |
+| `tags-field`         | `registry:component` | A multi-value tag input: `value` is a string array, `onChange` replaces it wholesale. Enter or a comma commits the trimmed input as a new tag, Backspace on an empty input drops the last one, and each tag is a `Badge` with its own remove button. `suggestions` filters to matches in a popup as you type                                                          |
 | `page-form`          | `registry:component` | A create/edit record page: a heading, sections of consumer-laid-out fields inside a real `form`, and a footer with Cancel and Save. `submitting` disables the buttons and sets `aria-busy`; the `status` prop swaps sections for a state screen while the heading stays                                                                                                 |
 | `confirm-dialog`     | `registry:component` | A controlled confirmation modal: `open` and `onOpenChange` are held by the consumer, `tone="danger"` colors the confirm button, `loading` disables the buttons and blocks closing while the operation is in progress                                                                                                                                                   |
 | `admin-toaster`      | `registry:component` | Toasts about an operation's outcome: `AdminToaster` is placed once, and they're shown by calling `notify.info`, `notify.success`, `notify.warning`, `notify.danger` from anywhere, including code outside React                                                                                                                                                        |
-| `widget-progress`    | `registry:component` | A dashboard progress-bar card: the share as a percentage of `max` (100 by default), an out-of-range value doesn't break the layout                                                                                                                                                                                                                                      |
+| `widget-progress`    | `registry:component` | A dashboard progress-bar card: the share as a percentage of `max` (100 by default), an out-of-range value doesn't break the layout; an optional `target` draws a tick mark on the bar and a right-aligned `targetLabel` caption                                                                                                                                       |
 | `page-list`          | `registry:component` | A list page: a section heading outside and a `widget-table` card below it — filters in its header, pagination and a page-size picker in the footer. Every value is controlled, and pagination isn't rendered without `total`. A filter is `search`, `select`, or `date-range` (rendered via `date-range-field`). The `status` prop swaps the card's body for a state, while the heading and filters stay available. `selectedKeys`, `onSelectionChange`, and `selectionActions` forward straight through to `widget-table`, the same way sorting and pagination do                                     |
 
-`widget-table`, `widget-chart`, and `widget-list` — the widgets with
-data — show `state-empty` themselves when there's no data: no rows, no
-series, or no list items, and the `empty` prop wasn't passed. There's no
-need to wrap them in a state from outside. In `widget-chart` the length of
-each series' `values` should match the length of `labels` — this isn't
-checked by types; on a mismatch, the missing points simply aren't drawn.
+`widget-table`, `widget-chart`, `widget-list`, `widget-activity`, and
+`widget-donut` — the widgets with data — show `state-empty` themselves
+when there's no data: no rows, no series, no list items, no entries, or
+slices that total zero, and the `empty`/`labels.emptyTitle` prop wasn't
+passed. There's no need to wrap them in a state from outside.
+`widget-quick-actions` is the one exception among the dashboard widgets:
+no actions is a consumer mistake, not a data state, so it renders the
+titled card with an empty grid instead of falling back to `state-empty`.
+In `widget-chart` the length of each series' `values` should match the
+length of `labels` — this isn't checked by types; on a mismatch, the
+missing points simply aren't drawn.
 
-`widget-chart` is noticeably heavier than the rest: it pulls in
-`recharts`, adding 354 KB to the consumer's bundle (measured on a clean
-Vite project: 227 KB without the chart versus 581 KB with it,
-uncompressed). It's the only item with a heavy dependency: eight others
-pull in `lucide-react` for icons, and the remaining ten don't pull in a
-single npm package. If a dashboard needs just one chart and not right
-away, it's worth loading it dynamically.
+`widget-chart` and `widget-donut` pull in `recharts`, the kit's one heavy
+dependency — measured on a clean Vite project, it adds 354 KB to the
+bundle (227 KB without it, 581 KB with, uncompressed). `widget-metric`
+pulls in the same package too: `trendValues` is optional, but the
+`recharts` import is static, so installing `widget-metric` carries the
+same weight even for a consumer that never passes the prop. The rest of
+the kit is lighter — most items pull in only `lucide-react` for icons or
+`date-fns` for locale-aware date parsing (`widget-activity` among them),
+and a good number don't pull in a single npm package. If a dashboard
+needs a chart-based widget and not right away, it's worth loading it
+dynamically.
 
 `page-list` and `page-entity` decide for themselves what to show based on
 the `status` prop: `loading`, `error`, `forbidden`, and `offline` swap the
@@ -204,31 +218,37 @@ wording it replaced. Most of these props are grouped under a single
 `noSorting`, `sorting`, `previousPage`, `nextPage`, `range`, `selectRow`,
 `selectAllOnPage`, `selected`, `clearSelection`),
 `sidebar-toggle`'s `labels` (`expand`, `collapse`), `theme-toggle`'s
-`labels` (`toLight`, `toDark`), and `admin-shell`'s `labels` (`openMenu`,
-`sections`). `user-menu` and `breadcrumbs` each carry a single string as a
+`labels` (`toLight`, `toDark`), `admin-shell`'s `labels` (`openMenu`,
+`sections`), and `widget-activity`'s `labels` (`today`, `yesterday`,
+`emptyTitle`). `user-menu` and `breadcrumbs` each carry a single string as a
 flat `label` prop rather than a `labels` object — the `aria-label` on the
 avatar trigger and on the `nav`, defaulting to "Open user menu" and
 "Breadcrumb". A handful of items already had a dedicated prop for their one
-string before this convention existed — `widget-list` and `widget-chart`
-take `emptyTitle` directly, `state-loading` takes `label`, `color-field`
-takes `placeholder` and `hexInputLabel` — and stayed flat rather than being
-wrapped in a single-key object. `date-field`, `date-time-field`, and
-`date-range-field` also gained `locale` (a `date-fns` `Locale`, `enUS` by
-default) and `displayFormat`, so the calendar and the formatted date can
-move off English without a wrapper; `date-range-field` additionally takes
-`presets`, an array the consumer can swap wholesale to relabel or
-recompute the preset column. The form fields carry the same convention:
-`select-field`'s `placeholder` defaults to "Select…", `page-form`'s
-`submitLabel` and `cancelLabel` default to "Save" and "Cancel", and the
-field-level `label`, `hint` and `error` texts are always the consumer's
-own strings. Every one of these props is optional: an item installed
-with no `labels` and no locale renders exactly as before.
+string before this convention existed — `widget-list`, `widget-chart`, and
+`widget-donut` take `emptyTitle` directly, `state-loading` takes `label`,
+`color-field` takes `placeholder` and `hexInputLabel`, `widget-progress`
+takes `targetLabel`, `file-field` takes `buttonLabel`/`noFileLabel`/
+`clearLabel`, and `tags-field` takes `placeholder` and a function prop
+`removeLabel(tag)` — and stayed flat rather than being wrapped in a
+single-key object. `date-field`, `date-time-field`, `date-range-field`, and
+`widget-activity` also take `locale` (a `date-fns` `Locale`, `enUS` by
+default) and a format string (`displayFormat` on the date fields,
+`dayFormat`/`timeFormat` on `widget-activity`), so the calendar and the
+formatted dates can move off English without a wrapper; `date-range-field`
+additionally takes `presets`, an array the consumer can swap wholesale to
+relabel or recompute the preset column. The form fields carry the same
+convention: `select-field`'s `placeholder` defaults to "Select…",
+`page-form`'s `submitLabel` and `cancelLabel` default to "Save" and
+"Cancel", and the field-level `label`, `hint` and `error` texts are always
+the consumer's own strings. Every one of these props is optional: an item
+installed with no `labels` and no locale renders exactly as before.
 
 `locale-ru` is a Russian dictionary for the whole set: a single
 `localeRu` const, sliced into the exact shape each prop above expects, so
 a slice passes straight in — `<WidgetTable labels={localeRu.widgetTable} />`,
 `<DateField locale={localeRu.dateField.locale} displayFormat={localeRu.dateField.displayFormat} />`.
-It bundles `date-fns`'s `ru` locale for the three date fields, and
+It bundles `date-fns`'s `ru` locale for the three date fields and
+`widget-activity`, and
 `localeRu.dateRangeField.presets` reuses `date-range-field`'s own default
 presets — same ids, same range math — mapped over to swap in Russian
 labels, so the two can't drift apart. It's a static

@@ -3,7 +3,9 @@ import { describe, expect, it } from "vitest"
 import {
   defaultDateRangePresets,
   formatDateRangeValue,
+  orderDateRange,
   parseDateRangeValue,
+  previewDateRange,
 } from "./date-range-field"
 
 describe("parseDateRangeValue / formatDateRangeValue round trip", () => {
@@ -54,6 +56,65 @@ describe("parseDateRangeValue with invalid input", () => {
   it("accepts a range spanning a leap day", () => {
     const parsed = parseDateRangeValue("2028-02-27..2028-02-29")
     expect(parsed?.to.getDate()).toBe(29)
+  })
+})
+
+describe("orderDateRange", () => {
+  const anchor = new Date(2026, 7, 12)
+
+  it("keeps a forward drag as is", () => {
+    const range = orderDateRange(anchor, new Date(2026, 7, 20))
+    expect(formatDateRangeValue(range)).toBe("2026-08-12..2026-08-20")
+  })
+
+  it("flips a backward drag", () => {
+    const range = orderDateRange(anchor, new Date(2026, 7, 3))
+    expect(formatDateRangeValue(range)).toBe("2026-08-03..2026-08-12")
+  })
+
+  it("makes a single-day range when the drag ends where it started", () => {
+    const range = orderDateRange(anchor, new Date(2026, 7, 12))
+    expect(formatDateRangeValue(range)).toBe("2026-08-12..2026-08-12")
+  })
+
+  it("flips across a month boundary", () => {
+    const range = orderDateRange(anchor, new Date(2026, 6, 29))
+    expect(formatDateRangeValue(range)).toBe("2026-07-29..2026-08-12")
+  })
+})
+
+describe("previewDateRange", () => {
+  const committed = parseDateRangeValue("2026-01-01..2026-01-31")
+  const anchor = new Date(2026, 7, 12)
+
+  it("shows the committed range while nothing is being picked", () => {
+    expect(previewDateRange(undefined, undefined, committed)).toBe(committed)
+  })
+
+  it("ignores the hovered day while nothing is being picked", () => {
+    expect(previewDateRange(undefined, new Date(2026, 7, 20), committed)).toBe(
+      committed
+    )
+  })
+
+  it("previews the range from the anchor to the hovered day", () => {
+    const range = previewDateRange(anchor, new Date(2026, 7, 20), committed)
+    expect(formatDateRangeValue(range!)).toBe("2026-08-12..2026-08-20")
+  })
+
+  it("previews a backward hover in calendar order", () => {
+    const range = previewDateRange(anchor, new Date(2026, 7, 3), committed)
+    expect(formatDateRangeValue(range!)).toBe("2026-08-03..2026-08-12")
+  })
+
+  it("previews the anchor alone while nothing is hovered", () => {
+    const range = previewDateRange(anchor, undefined, committed)
+    expect(formatDateRangeValue(range!)).toBe("2026-08-12..2026-08-12")
+  })
+
+  it("hides an empty committed range behind the preview", () => {
+    const range = previewDateRange(anchor, new Date(2026, 7, 13), undefined)
+    expect(formatDateRangeValue(range!)).toBe("2026-08-12..2026-08-13")
   })
 })
 

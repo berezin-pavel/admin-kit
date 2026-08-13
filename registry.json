@@ -191,7 +191,7 @@
       "name": "user-menu",
       "type": "registry:component",
       "title": "User menu",
-      "description": "An avatar icon button for the shell's sidebarFooter slot that opens a dropdown with the signed-in user's name, email, and a list of actions — profile, sign out, and similar. The fallback avatar shows initials derived from name (the first letters of its first two words, uppercase); avatarUrl swaps in a real image. An item's tone=\"danger\" colors it with the destructive color, matching row-actions. The dropdown's open state lives in the primitive, same as every other popup in the kit — that's transient UI state, not the persistent state the sidebarFooter contract warns about, so it doesn't break the slot's multi-instance mounting.",
+      "description": "An avatar icon button opening a dropdown with the user's name, email, and a list of items (icon, label, and a danger tone for actions like sign-out). Without avatarUrl the trigger shows bare initials in the same lettering as the kit's toggles. The recommended spot is the top-right corner — the shell header's actions slot — with side=\"bottom\" align=\"end\"; in a headerless shell it fits the sidebarFooter with the default side=\"top\". The dropdown's open state lives in the primitive, the same as the kit's other popups.",
       "registryDependencies": [
         "avatar",
         "dropdown-menu",
@@ -227,7 +227,7 @@
       "name": "locale-ru",
       "type": "registry:component",
       "title": "Russian locale pack",
-      "description": "A Russian dictionary for the kit's items: a single const, localeRu, sliced into the exact shapes the other items' labels and locale props expect, so a slice spreads or passes straight into a prop — labels={localeRu.widgetTable}, locale={localeRu.dateField.locale}. Covers widget-table, widget-list, widget-chart, state-loading, state-error, state-forbidden, state-offline, widget-placeholder, confirm-dialog, date-field, date-time-field, date-range-field, color-field, sidebar-toggle, theme-toggle, admin-shell, language-toggle, user-menu, and breadcrumbs, and bundles date-fns's ru locale for the date fields. The dateRangeField slice reuses date-range-field's default presets' ids and range math and only swaps in Russian labels, so the two never drift apart. Not a runtime i18n solution — it's a static dictionary, and switching locale at runtime is on the consumer.",
+      "description": "A Russian dictionary for the kit's items: a single const, localeRu, sliced into the exact shapes the other items' labels and locale props expect, so a slice spreads or passes straight into a prop — labels={localeRu.widgetTable}, locale={localeRu.dateField.locale}. Covers widget-table, widget-list, widget-chart, widget-activity, widget-donut, widget-progress, state-loading, state-error, state-forbidden, state-offline, widget-placeholder, confirm-dialog, date-field, date-time-field, date-range-field, color-field, file-field, tags-field, sidebar-toggle, theme-toggle, admin-shell, language-toggle, user-menu, and breadcrumbs, and bundles date-fns's ru locale for the date fields and widget-activity. The dateRangeField slice reuses date-range-field's default presets' ids and range math and only swaps in Russian labels, so the two never drift apart. Not a runtime i18n solution — it's a static dictionary, and switching locale at runtime is on the consumer.",
       "registryDependencies": [
         "berezin-pavel/admin-kit/date-range-field"
       ],
@@ -247,13 +247,14 @@
       "name": "widget-metric",
       "type": "registry:component",
       "title": "Metric widget",
-      "description": "A single-number card for a dashboard: title, value, an optional trend with an arrow, and a caption. direction sets the arrow, and a separate tone prop sets the color (derived from direction by default). Data is passed as props. Requires the admin-theme theme.",
+      "description": "A single-number card for a dashboard: title, value, an optional trend with an arrow, and a caption. direction sets the arrow, and a separate tone prop sets the color (derived from direction by default). trendValues, given two or more points, draws a small line chart under the caption — leave it out and the card renders byte-identical to before. Data is passed as props. Requires the admin-theme theme.",
       "registryDependencies": [
         "card",
         "berezin-pavel/admin-kit/admin-theme"
       ],
       "dependencies": [
-        "lucide-react"
+        "lucide-react",
+        "recharts"
       ],
       "files": [
         {
@@ -658,7 +659,7 @@
       "name": "date-range-field",
       "type": "registry:component",
       "title": "Date range field",
-      "description": "A range picker: a trigger button showing the two dates joined by an en dash, and a popover with a preset column on the left and a two-month range calendar on the right. The value is a single YYYY-MM-DD..YYYY-MM-DD string — the \"..\" separator keeps a range a single PageListFilter-compatible string — and an empty string means \"nothing selected\"; parsing is calendar-strict like date-field and rejects a from later than to. Controlled: the consumer holds value and onChange. Presets (Today, Yesterday, This week, This month, This year, Last week, Last month, Last year by default, overridable via the presets prop) compute their range from an explicit today argument, so \"this week\" and the rest stay deterministic in tests; weeks start on Monday regardless of locale, matching the calendar primitive. Clicking a preset commits and closes the popover immediately; picking a range on the calendar commits only once both ends are chosen — a lone start date stays inside the popup and never reaches onChange. page-list wires this in as its date-range filter kind.",
+      "description": "A range picker: a trigger button showing the two dates joined by an en dash, and a popover with a preset column on the left and a two-month range calendar on the right. The value is a single YYYY-MM-DD..YYYY-MM-DD string — the \"..\" separator keeps a range a single PageListFilter-compatible string — and an empty string means \"nothing selected\"; parsing is calendar-strict like date-field and rejects a from later than to. Controlled: the consumer holds value and onChange. Presets (Today, Yesterday, This week, This month, This year, Last week, Last month, Last year by default, overridable via the presets prop) compute their range from an explicit today argument, so \"this week\" and the rest stay deterministic in tests; weeks start on Monday regardless of locale, matching the calendar primitive. Clicking a preset commits and closes the popover immediately; picking a range on the calendar commits only once both ends are chosen — a lone start date stays inside the popup and never reaches onChange. page-list wires this in as its date-range filter kind. A range can also be selected in one gesture — press a day and drag across the calendar with the mouse or a finger; two separate clicks with a live hover preview work as well, and a lone start date stays inside the popover's own state.",
       "registryDependencies": [
         "button",
         "calendar",
@@ -805,6 +806,48 @@
     },
     {
       "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "file-field",
+      "type": "registry:component",
+      "title": "File field",
+      "description": "A file picker built like the kit's other fields — label, hint, error — with one deliberate exception: value is File | null and onChange takes a File | null, not a string. A File can't be serialized into a string the way every other field's value is, and faking it with an object URL would leak the reference; checkbox-field's boolean is the kit's other exception to the string convention. accept restricts the file type the same way the native attribute does. The drop zone accepts a dragged file and highlights on dragover, buttonLabel opens the native picker, and the selected name and size (formatFileSize, exported and tested for B/KB/MB) show next to it, or noFileLabel when nothing's chosen; a ghost X button clears the selection. The native input stays in the DOM, visually hidden rather than display:none, so Tab and Enter/Space still reach and drive it.",
+      "registryDependencies": [
+        "button",
+        "label"
+      ],
+      "dependencies": [
+        "lucide-react"
+      ],
+      "files": [
+        {
+          "path": "registry/file-field/file-field.tsx",
+          "type": "registry:component",
+          "target": "@components/admin/file-field.tsx"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "tags-field",
+      "type": "registry:component",
+      "title": "Tags field",
+      "description": "A multi-value tag input: value is a string array and onChange replaces it wholesale, the same convention as every other controlled field. Enter or a comma commits the trimmed input as a new tag, ignoring an empty or duplicate one (case-sensitive as typed); Backspace on an empty input drops the last tag. Each tag renders as a Badge with its own X to remove it — removeLabel sets that button's aria-label, defaulting to `Remove ${tag}`. suggestions, when given, filters to matches as you type, excludes tags already added, and lists them in a small popup under the input. Exports addTag(tags, raw), the pure commit logic, for testing or reuse.",
+      "registryDependencies": [
+        "label",
+        "badge"
+      ],
+      "dependencies": [
+        "lucide-react"
+      ],
+      "files": [
+        {
+          "path": "registry/tags-field/tags-field.tsx",
+          "type": "registry:component",
+          "target": "@components/admin/tags-field.tsx"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
       "name": "page-form",
       "type": "registry:component",
       "title": "Form page",
@@ -834,7 +877,7 @@
       "name": "widget-progress",
       "title": "Progress widget",
       "type": "registry:component",
-      "description": "A progress-bar card for a dashboard: warehouse fill level, plan completion, quota usage. Next to the bar is a percentage share computed against max (100 by default). A value outside the range doesn't break the layout: a negative one counts as zero, one above max counts as the maximum. Requires the admin-theme theme.",
+      "description": "A progress-bar card for a dashboard: warehouse fill level, plan completion, quota usage. Next to the bar is a percentage share computed against max (100 by default). A value outside the range doesn't break the layout: a negative one counts as zero, one above max counts as the maximum. An optional target draws a tick mark on the bar at target/max and a right-aligned targetLabel caption (\"Goal\" by default) — target is clamped into [0, max] the same way value is. Requires the admin-theme theme.",
       "registryDependencies": [
         "card",
         "progress",
@@ -845,6 +888,70 @@
           "path": "registry/widget-progress/widget-progress.tsx",
           "type": "registry:component",
           "target": "@components/admin/widget-progress.tsx"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "widget-activity",
+      "type": "registry:component",
+      "title": "Activity widget",
+      "description": "A recent-activity feed card for a dashboard: entries carry a title, an optional secondary meta line, an optional icon, and a YYYY-MM-DDTHH:mm timestamp — the same string family date-time-field uses, parsed the same strict way. Entries are grouped by calendar day; the group header reads labels.today or labels.yesterday relative to the actual current date, and dayFormat (a date-fns pattern) for anything older. Within a group, entries keep the order they're given — the item never resorts them. With no entries it shows state-empty. Requires the admin-theme theme.",
+      "registryDependencies": [
+        "card",
+        "berezin-pavel/admin-kit/admin-theme",
+        "berezin-pavel/admin-kit/state-empty"
+      ],
+      "dependencies": [
+        "date-fns"
+      ],
+      "files": [
+        {
+          "path": "registry/widget-activity/widget-activity.tsx",
+          "type": "registry:component",
+          "target": "@components/admin/widget-activity.tsx"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "widget-donut",
+      "type": "registry:component",
+      "title": "Donut widget",
+      "description": "A donut-chart card for a dashboard: a list of labeled slices, each drawn as a ring segment and as a row in the legend beside it — a color dot, the label, and valueFormat(value, share) right-aligned, where share is value divided by the total (the default renders it as a rounded percentage). Colors cycle through the chart-1…chart-5 tokens in order. With no slices, or slices that total zero, it shows state-empty. Requires the admin-theme theme.",
+      "registryDependencies": [
+        "card",
+        "chart",
+        "berezin-pavel/admin-kit/admin-theme",
+        "berezin-pavel/admin-kit/state-empty"
+      ],
+      "dependencies": [
+        "recharts"
+      ],
+      "files": [
+        {
+          "path": "registry/widget-donut/widget-donut.tsx",
+          "type": "registry:component",
+          "target": "@components/admin/widget-donut.tsx"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "widget-quick-actions",
+      "type": "registry:component",
+      "title": "Quick actions widget",
+      "description": "A grid of shortcut buttons for a dashboard: id, label, an optional icon component, and an onSelect handler per action. columns switches the grid between two (default) and three columns. With no actions it renders the titled card with an empty grid — that's a consumer mistake, not a data state, so it doesn't fall back to state-empty. Requires the admin-theme theme.",
+      "registryDependencies": [
+        "card",
+        "button",
+        "berezin-pavel/admin-kit/admin-theme"
+      ],
+      "files": [
+        {
+          "path": "registry/widget-quick-actions/widget-quick-actions.tsx",
+          "type": "registry:component",
+          "target": "@components/admin/widget-quick-actions.tsx"
         }
       ]
     },

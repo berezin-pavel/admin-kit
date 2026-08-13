@@ -2,12 +2,16 @@ import type { ComponentType } from "react"
 import {
   Backpack,
   Coffee,
+  CreditCard,
   Headphones,
   LayoutDashboard,
   Package,
+  PackageCheck,
   Shirt,
   ShoppingCart,
   SportShoe,
+  Truck,
+  XCircle,
 } from "lucide-react"
 import { format } from "date-fns"
 import type { Locale } from "date-fns"
@@ -18,7 +22,9 @@ import type { AdminNavItem } from "@/registry/admin-shell/admin-shell"
 import type { DateRange } from "@/registry/date-range-field/date-range-field"
 import type { SelectFieldOption } from "@/registry/select-field/select-field"
 import type { StatusTone } from "@/registry/status-badge/status-badge"
+import type { WidgetActivityEntry } from "@/registry/widget-activity/widget-activity"
 import type { WidgetChartSeries } from "@/registry/widget-chart/widget-chart"
+import type { WidgetDonutSlice } from "@/registry/widget-donut/widget-donut"
 import type { WidgetListItem } from "@/registry/widget-list/widget-list"
 import type { WidgetTableColumn } from "@/registry/widget-table/widget-table"
 
@@ -194,6 +200,46 @@ export function getDemoPreviousRange(range: DateRange): DateRange {
   from.setDate(from.getDate() - (spanDays - 1))
 
   return { from, to }
+}
+
+export interface DemoMonthlyGoal {
+  value: number
+  max: number
+  target: number
+}
+
+export function getDemoMonthlyRevenueGoal(
+  metrics: readonly DemoDailyMetric[],
+  today: Date = new Date()
+): DemoMonthlyGoal {
+  const monthStart = new Date(today.getFullYear(), today.getMonth(), 1)
+  const previousMonthStart = new Date(
+    today.getFullYear(),
+    today.getMonth() - 1,
+    1
+  )
+
+  const monthToDateRevenue = metrics
+    .filter(
+      (metric) =>
+        metric.date.getTime() >= monthStart.getTime() &&
+        metric.date.getTime() <= today.getTime()
+    )
+    .reduce((sum, metric) => sum + metric.revenue, 0)
+
+  const previousMonthRevenue = metrics
+    .filter(
+      (metric) =>
+        metric.date.getTime() >= previousMonthStart.getTime() &&
+        metric.date.getTime() < monthStart.getTime()
+    )
+    .reduce((sum, metric) => sum + metric.revenue, 0)
+
+  const target =
+    previousMonthRevenue > 0 ? previousMonthRevenue : monthToDateRevenue
+  const max = Math.max(Math.round(target * 1.2), monthToDateRevenue)
+
+  return { value: monthToDateRevenue, max, target }
 }
 
 const CHART_DATE_LOCALE: Record<DemoLocale, Locale> = { en: enUS, ru }
@@ -453,6 +499,87 @@ export function getDemoOrderRows(locale: DemoLocale): readonly OrderRow[] {
   return Array.from({ length: ORDER_COUNT }, (_, index) =>
     buildOrderRow(index, locale)
   )
+}
+
+export function getDemoOrderStatusSlices(
+  locale: DemoLocale,
+  range: DateRange | undefined
+): readonly WidgetDonutSlice[] {
+  const rows = range
+    ? getDemoOrderRows(locale).filter((row) => isDateWithinRange(row.createdAt, range))
+    : []
+  const statusLabel = orderStatusLabelByLocale[locale]
+
+  return ORDER_STATUS_CYCLE.map((status) => ({
+    id: status,
+    label: statusLabel[status],
+    value: rows.filter((row) => row.status === status).length,
+  })).filter((slice) => slice.value > 0)
+}
+
+const ACTIVITY_ACTION_LABEL: Record<DemoLocale, Record<OrderStatus, string>> = {
+  en: {
+    delivered: "delivered",
+    "in-transit": "shipped",
+    paid: "paid",
+    cancelled: "cancelled",
+  },
+  ru: {
+    delivered: "доставлен",
+    "in-transit": "отправлен",
+    paid: "оплачен",
+    cancelled: "отменён",
+  },
+}
+
+const ACTIVITY_TITLE: Record<
+  DemoLocale,
+  (orderNumber: string, action: string) => string
+> = {
+  en: (orderNumber, action) => `Order #${orderNumber} ${action}`,
+  ru: (orderNumber, action) => `Заказ №${orderNumber} ${action}`,
+}
+
+const ACTIVITY_ICON_BY_STATUS: Record<
+  OrderStatus,
+  ComponentType<{ className?: string }>
+> = {
+  delivered: PackageCheck,
+  "in-transit": Truck,
+  paid: CreditCard,
+  cancelled: XCircle,
+}
+
+const ACTIVITY_ENTRY_COUNT = 8
+const ACTIVITY_STEP_HOURS = 7
+
+function formatActivityTimestamp(date: Date): string {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, "0")
+  const day = String(date.getDate()).padStart(2, "0")
+  const hours = String(date.getHours()).padStart(2, "0")
+  const minutes = String(date.getMinutes()).padStart(2, "0")
+
+  return `${year}-${month}-${day}T${hours}:${minutes}`
+}
+
+export function getDemoActivityEntries(
+  locale: DemoLocale,
+  today: Date = new Date()
+): readonly WidgetActivityEntry[] {
+  const rows = getDemoOrderRows(locale).slice(0, ACTIVITY_ENTRY_COUNT)
+  const actionLabel = ACTIVITY_ACTION_LABEL[locale]
+  const title = ACTIVITY_TITLE[locale]
+
+  return rows.map((row, index) => ({
+    id: row.number,
+    title: title(row.number, actionLabel[row.status]),
+    meta: row.customer,
+    icon: ACTIVITY_ICON_BY_STATUS[row.status],
+    timestamp: formatActivityTimestamp(
+      new Date(today.getTime() - index * ACTIVITY_STEP_HOURS * 3_600_000)
+    ),
+  }))
 }
 
 const PRODUCT_IDS = [

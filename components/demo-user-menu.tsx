@@ -36,6 +36,8 @@ export function DemoUserMenu() {
         },
       ]}
       label={locale === "ru" ? localeRu.userMenu.label : undefined}
+      side="bottom"
+      align="end"
     />
   )
 }

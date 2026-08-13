@@ -49,5 +49,31 @@ export const widgetProgressEntry: ShowcaseEntry = {
         />
       ),
     },
+    {
+      id: "with-target",
+      name: "With a target",
+      render: () => (
+        <WidgetProgress
+          title="Monthly revenue"
+          value={340}
+          max={500}
+          target={420}
+          hint="$34,000 of $50,000"
+        />
+      ),
+    },
+    {
+      id: "target-custom-label",
+      name: "Custom target label",
+      render: () => (
+        <WidgetProgress
+          title="Support tickets closed"
+          value={62}
+          max={100}
+          target={80}
+          targetLabel="Team goal"
+        />
+      ),
+    },
   ],
 }
