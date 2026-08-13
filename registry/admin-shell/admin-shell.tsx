@@ -24,7 +24,6 @@ type AdminShellBaseProps = {
   renderLink?: AdminNavLinkRenderer
   sidebarFooter?: ReactNode
   collapsed?: boolean
-  sidebarVariant?: "flush" | "card"
   children?: ReactNode
   className?: string
   labels?: AdminShellLabels
@@ -40,7 +39,6 @@ export function AdminShell({
   renderLink,
   sidebarFooter,
   collapsed = false,
-  sidebarVariant = "card",
   header = true,
   actions,
   children,
@@ -48,7 +46,6 @@ export function AdminShell({
   labels,
 }: AdminShellProps) {
   const section = nav.find((item) => item.href === activeHref)?.title ?? appName
-  const isCard = sidebarVariant === "card"
   const openMenuLabel = labels?.openMenu ?? "Open navigation menu"
   const sectionsLabel = labels?.sections ?? "Sections"
 
@@ -71,18 +68,14 @@ export function AdminShell({
   return (
     <div
       className={cn(
-        "flex h-svh bg-background text-foreground",
-        isCard && "gap-2 p-2 md:gap-4 md:p-4",
+        "flex h-svh gap-2 bg-background p-2 text-foreground md:gap-4 md:p-4",
         className
       )}
     >
       <aside
         className={cn(
-          "flex w-14 shrink-0 flex-col overflow-hidden",
-          !collapsed && "md:w-60",
-          isCard
-            ? "rounded-xl bg-card ring-1 ring-foreground/10"
-            : "border-r border-sidebar-border bg-sidebar"
+          "flex w-14 shrink-0 flex-col overflow-hidden rounded-xl bg-card ring-1 ring-foreground/10",
+          !collapsed && "md:w-60"
         )}
       >
         {header === false ? (

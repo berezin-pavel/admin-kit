@@ -1,4 +1,4 @@
-import { LayoutDashboard, ShoppingCart, UserRound } from "lucide-react"
+import { LayoutDashboard, ShoppingCart } from "lucide-react"
 import Link from "next/link"
 
 import { Button } from "@/components/ui/button"
@@ -13,6 +13,7 @@ import {
   type WidgetTableColumn,
 } from "@/registry/widget-table/widget-table"
 
+import { AdminShellFooterView } from "./admin-shell-footer-view"
 import type { ShowcaseEntry } from "./types"
 
 const nav: readonly AdminNavItem[] = [
@@ -53,7 +54,7 @@ export const adminShellEntry: ShowcaseEntry = {
   item: "admin-shell",
   title: "Admin shell",
   description:
-    "The persistent frame of the admin panel: an optional header, a side navigation, and a work area. On a wide screen it's a sidebar with the app name; on a narrow one it's a strip of icons and a burger that opens a panel with labels. The controlled collapsed prop shrinks the sidebar on a wide screen to that same icon strip, where the burger also appears. The sidebarVariant prop switches the sidebar's look between card (default: a panel with padding, rounding, and a border like Card) and flush (pinned to the screen edge). The header prop can remove the header entirely: on a narrow screen without a header, the burger moves to the top of the icon strip. The sidebarFooter prop is a slot at the bottom of the sidebar and the icon strip for a theme toggle, sidebar toggle, user menu, or build version. Nav items and the active section are set by props, and the link renderer can be swapped for your own router.",
+    "The persistent frame of the admin panel: an optional header, a side navigation, and a work area. On a wide screen it's a sidebar with the app name; on a narrow one it's a strip of icons and a burger that opens a panel with labels. The controlled collapsed prop shrinks the sidebar on a wide screen to that same icon strip, where the burger also appears. The sidebar is drawn as a card — a panel with padding, rounding, and a border. The header prop can remove the header entirely: on a narrow screen without a header, the burger moves to the top of the icon strip. The sidebarFooter prop is a slot at the bottom of the sidebar and the icon strip for a theme toggle, sidebar toggle, user menu, or build version. Nav items and the active section are set by props, and the link renderer can be swapped for your own router.",
   views: [
     {
       id: "empty",
@@ -130,57 +131,26 @@ export const adminShellEntry: ShowcaseEntry = {
       id: "mobile-menu-footer",
       name: "sidebarFooter slot in the burger panel (open on a narrow screen)",
       render: () => (
-        <AdminShell
-          appName="My Store"
-          nav={nav}
-          activeHref="/orders"
-          header={false}
-          sidebarFooter={
-            <div className="flex items-center gap-2">
-              <Button
-                variant="ghost"
-                size="icon-sm"
-                aria-label="User menu"
-              >
-                <UserRound className="size-4" />
-              </Button>
-              <span className="hidden text-xs text-muted-foreground md:inline">
-                Bennett A.
-              </span>
-            </div>
-          }
-        >
+        <AdminShellFooterView header={false}>
           <div className="text-sm text-muted-foreground">
             On a narrow screen the burger opens a panel with all the
             navigation and the same sidebarFooter at the bottom — not just
             the icon strip.
           </div>
-        </AdminShell>
+        </AdminShellFooterView>
       ),
     },
     {
       id: "sidebar-footer",
       name: "With a slot at the bottom of the sidebar",
       render: () => (
-        <AdminShell
-          appName="My Store"
-          nav={nav}
-          activeHref="/orders"
-          sidebarFooter={
-            <div className="flex items-center gap-2">
-              <Button
-                variant="ghost"
-                size="icon-sm"
-                aria-label="User menu"
-              >
-                <UserRound className="size-4" />
-              </Button>
-              <span className="hidden text-xs text-muted-foreground md:inline">
-                v0.3.0
-              </span>
-            </div>
-          }
-        />
+        <AdminShellFooterView>
+          <div className="text-sm text-muted-foreground">
+            The footer holds the kit&apos;s own controls — the sidebar,
+            theme and language toggles and the user menu — every one of
+            them controlled from the outside.
+          </div>
+        </AdminShellFooterView>
       ),
     },
     {
@@ -196,42 +166,6 @@ export const adminShellEntry: ShowcaseEntry = {
           <div className="text-sm text-muted-foreground">
             The controlled collapsed prop shrinks the sidebar on a wide
             screen to the same icon strip as on a narrow one.
-          </div>
-        </AdminShell>
-      ),
-    },
-    {
-      id: "sidebar-flush",
-      name: "Flush sidebar variant",
-      render: () => (
-        <AdminShell
-          appName="My Store"
-          nav={nav}
-          activeHref="/orders"
-          sidebarVariant="flush"
-        >
-          <div className="text-sm text-muted-foreground">
-            The sidebar is pinned to the screen edge and set off by a
-            border, with no padding or rounding. By default the shell draws
-            it as a card — this view shows the second variant.
-          </div>
-        </AdminShell>
-      ),
-    },
-    {
-      id: "sidebar-flush-collapsed",
-      name: "Flush variant with a collapsed sidebar",
-      render: () => (
-        <AdminShell
-          appName="My Store"
-          nav={nav}
-          activeHref="/orders"
-          collapsed
-          sidebarVariant="flush"
-        >
-          <div className="text-sm text-muted-foreground">
-            collapsed and sidebarVariant are independent: an icon strip
-            pinned to the edge.
           </div>
         </AdminShell>
       ),

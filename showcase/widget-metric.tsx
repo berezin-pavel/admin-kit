@@ -1,5 +1,7 @@
 import { WidgetMetric } from "@/registry/widget-metric/widget-metric"
 
+import { WidgetMetricSparklineTooltipView } from "./widget-metric-sparkline-view"
+
 import type { ShowcaseEntry } from "./types"
 
 export const widgetMetricEntry: ShowcaseEntry = {
@@ -70,6 +72,11 @@ export const widgetMetricEntry: ShowcaseEntry = {
           ]}
         />
       ),
+    },
+    {
+      id: "sparkline-tooltip",
+      name: "Sparkline with hover values",
+      render: () => <WidgetMetricSparklineTooltipView />,
     },
     {
       id: "trend-and-sparkline",

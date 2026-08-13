@@ -26,6 +26,7 @@ export interface WidgetChartProps {
   series: readonly WidgetChartSeries[]
   kind?: "line" | "bar"
   hint?: string
+  toolbar?: ReactNode
   empty?: ReactNode
   emptyTitle?: string
   className?: string
@@ -67,6 +68,7 @@ export function WidgetChart({
   series,
   kind = "line",
   hint,
+  toolbar,
   empty,
   emptyTitle = "No data",
   className,
@@ -75,10 +77,13 @@ export function WidgetChart({
 
   return (
     <Card className={className}>
-      <CardHeader>
+      <CardHeader className="flex flex-wrap items-center justify-between gap-4">
         <CardTitle className="text-sm font-medium text-muted-foreground">
           {title}
         </CardTitle>
+        {toolbar ? (
+          <div className="flex items-center gap-2">{toolbar}</div>
+        ) : null}
       </CardHeader>
       <CardContent className="flex flex-col gap-3">
         {isEmpty ? (

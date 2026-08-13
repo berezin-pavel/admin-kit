@@ -110,6 +110,9 @@ export function WidgetDonut({
                   nameKey="label"
                   innerRadius="60%"
                   outerRadius="80%"
+                  startAngle={90}
+                  endAngle={450}
+                  isAnimationActive={false}
                   strokeWidth={2}
                 >
                   {shares.map((slice) => (

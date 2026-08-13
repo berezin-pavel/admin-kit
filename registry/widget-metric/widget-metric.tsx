@@ -1,7 +1,7 @@
 "use client"
 
 import { TrendingDown, TrendingUp } from "lucide-react"
-import { Line, LineChart, ResponsiveContainer } from "recharts"
+import { Line, LineChart, ResponsiveContainer, Tooltip } from "recharts"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
@@ -19,6 +19,7 @@ export interface WidgetMetricProps {
     tone?: MetricTone
   }
   trendValues?: readonly number[]
+  trendTooltipFormat?: (value: number) => string
   className?: string
 }
 
@@ -28,6 +29,7 @@ export function WidgetMetric({
   hint,
   trend,
   trendValues,
+  trendTooltipFormat = String,
   className,
 }: WidgetMetricProps) {
   const TrendIcon = trend?.direction === "down" ? TrendingDown : TrendingUp
@@ -65,6 +67,17 @@ export function WidgetMetric({
           <div className="h-10 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={trendValues.map((point) => ({ point }))}>
+                <Tooltip
+                  isAnimationActive={false}
+                  cursor={{ stroke: "var(--color-border)" }}
+                  content={({ active, payload }) =>
+                    active && payload?.length ? (
+                      <div className="rounded-md border border-border bg-popover px-2 py-1 text-xs text-popover-foreground shadow-md">
+                        {trendTooltipFormat(Number(payload[0].value))}
+                      </div>
+                    ) : null
+                  }
+                />
                 <Line
                   type="monotone"
                   dataKey="point"

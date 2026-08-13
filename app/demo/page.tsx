@@ -154,25 +154,7 @@ export default function DemoPage() {
 
   return (
     <div className="flex flex-col gap-4">
-      <PageHeader
-        title={strings.title}
-        actions={
-          <DateRangeField
-            value={rangeValue}
-            onChange={setRangeValue}
-            locale={locale === "ru" ? localeRu.dateRangeField.locale : undefined}
-            displayFormat={
-              locale === "ru" ? localeRu.dateRangeField.displayFormat : undefined
-            }
-            placeholder={
-              locale === "ru" ? localeRu.dateRangeField.placeholder : undefined
-            }
-            presets={
-              locale === "ru" ? localeRu.dateRangeField.presets : undefined
-            }
-          />
-        }
-      />
+      <PageHeader title={strings.title} />
       <div className="grid gap-4 sm:grid-cols-3">
         <WidgetMetric
           title={strings.metricOrdersTitle}
@@ -183,6 +165,7 @@ export default function DemoPage() {
               : undefined
           }
           trendValues={ordersTrend}
+          trendTooltipFormat={(value) => formatDemoNumber(value, locale)}
           hint={strings.metricHint}
         />
         <WidgetMetric
@@ -194,6 +177,7 @@ export default function DemoPage() {
               : undefined
           }
           trendValues={revenueTrend}
+          trendTooltipFormat={(value) => formatDemoCurrency(value, locale)}
           hint={strings.metricHint}
         />
         <WidgetMetric
@@ -208,6 +192,7 @@ export default function DemoPage() {
               : undefined
           }
           trendValues={averageOrderTrend}
+          trendTooltipFormat={(value) => formatDemoCurrency(value, locale)}
           hint={strings.metricHint}
         />
       </div>
@@ -217,6 +202,23 @@ export default function DemoPage() {
         series={revenueChart.series}
         hint={strings.financeChartHint}
         emptyTitle={chartEmptyTitle}
+        toolbar={
+          <DateRangeField
+            value={rangeValue}
+            onChange={setRangeValue}
+            className="w-64"
+            locale={locale === "ru" ? localeRu.dateRangeField.locale : undefined}
+            displayFormat={
+              locale === "ru" ? localeRu.dateRangeField.displayFormat : undefined
+            }
+            placeholder={
+              locale === "ru" ? localeRu.dateRangeField.placeholder : undefined
+            }
+            presets={
+              locale === "ru" ? localeRu.dateRangeField.presets : undefined
+            }
+          />
+        }
       />
       <div className="grid gap-4 md:grid-cols-2">
         <WidgetChart

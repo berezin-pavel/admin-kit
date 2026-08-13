@@ -130,6 +130,7 @@ export interface DemoDailyMetric {
   date: Date
   orders: number
   revenue: number
+  expenses: number
 }
 
 const DAILY_HISTORY_DAYS = 365
@@ -144,12 +145,23 @@ function computeDailyAverageOrderValue(dayOffset: number): number {
   return 900 + cycle * 18
 }
 
+function computeDailyExpenseShare(dayOffset: number): number {
+  const cycle = (dayOffset * 13 + 5) % 20
+  return 0.55 + cycle / 100
+}
+
 function buildDailyMetric(anchor: Date, dayOffset: number): DemoDailyMetric {
   const date = new Date(anchor)
   date.setDate(date.getDate() - dayOffset)
   const orders = computeDailyOrderCount(dayOffset)
+  const revenue = orders * computeDailyAverageOrderValue(dayOffset)
 
-  return { date, orders, revenue: orders * computeDailyAverageOrderValue(dayOffset) }
+  return {
+    date,
+    orders,
+    revenue,
+    expenses: Math.round(revenue * computeDailyExpenseShare(dayOffset)),
+  }
 }
 
 export function getDemoDailyMetrics(
@@ -244,9 +256,12 @@ export function getDemoMonthlyRevenueGoal(
 
 const CHART_DATE_LOCALE: Record<DemoLocale, Locale> = { en: enUS, ru }
 
-const DAILY_REVENUE_SERIES_LABEL: Record<DemoLocale, string> = {
-  en: "Revenue",
-  ru: "Выручка",
+const DAILY_FINANCE_SERIES_LABELS: Record<
+  DemoLocale,
+  { revenue: string; expenses: string; profit: string }
+> = {
+  en: { revenue: "Revenue", expenses: "Expenses", profit: "Profit" },
+  ru: { revenue: "Выручка", expenses: "Расходы", profit: "Прибыль" },
 }
 
 export function getDemoRevenueChartData(
@@ -262,8 +277,18 @@ export function getDemoRevenueChartData(
     series: [
       {
         id: "revenue",
-        label: DAILY_REVENUE_SERIES_LABEL[locale],
+        label: DAILY_FINANCE_SERIES_LABELS[locale].revenue,
         values: metrics.map((metric) => metric.revenue),
+      },
+      {
+        id: "expenses",
+        label: DAILY_FINANCE_SERIES_LABELS[locale].expenses,
+        values: metrics.map((metric) => metric.expenses),
+      },
+      {
+        id: "profit",
+        label: DAILY_FINANCE_SERIES_LABELS[locale].profit,
+        values: metrics.map((metric) => metric.revenue - metric.expenses),
       },
     ],
   }

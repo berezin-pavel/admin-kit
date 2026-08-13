@@ -3,6 +3,7 @@ import {
   type WidgetChartSeries,
 } from "@/registry/widget-chart/widget-chart"
 
+import { WidgetChartToolbarView } from "./widget-chart-toolbar-view"
 import type { ShowcaseEntry } from "./types"
 
 const months = [
@@ -146,6 +147,11 @@ export const widgetChartEntry: ShowcaseEntry = {
           series={regionSeries}
         />
       ),
+    },
+    {
+      id: "with-toolbar",
+      name: "With a period picker in the toolbar",
+      render: () => <WidgetChartToolbarView />,
     },
     {
       id: "empty",
