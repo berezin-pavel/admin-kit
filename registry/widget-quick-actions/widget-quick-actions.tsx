@@ -48,11 +48,11 @@ export function WidgetQuickActions({
                 key={action.id}
                 type="button"
                 variant="outline"
-                className="w-full justify-start"
+                className="w-full min-w-0 justify-start"
                 onClick={action.onSelect}
               >
-                {Icon ? <Icon /> : null}
-                {action.label}
+                {Icon ? <Icon className="shrink-0" /> : null}
+                <span className="truncate">{action.label}</span>
               </Button>
             )
           })}

@@ -53,7 +53,9 @@ export function WidgetTableSortSelect({
       }}
     >
       <SelectTrigger className="w-44" aria-label={ariaLabel}>
-        <SelectValue>{activeOption?.label ?? noSortingLabel}</SelectValue>
+        <SelectValue>
+          <span className="truncate">{activeOption?.label ?? noSortingLabel}</span>
+        </SelectValue>
       </SelectTrigger>
       <SelectContent align="start" alignItemWithTrigger={false}>
         <SelectItem value={NONE_VALUE}>{noSortingLabel}</SelectItem>
