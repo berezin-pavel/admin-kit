@@ -61,7 +61,11 @@ export function SelectField({
         >
           <SelectValue>{selectedLabel ?? placeholder}</SelectValue>
         </SelectTrigger>
-        <SelectContent align="start" alignItemWithTrigger={false}>
+        <SelectContent
+          align="start"
+          alignItemWithTrigger={false}
+          className="w-auto min-w-(--anchor-width)"
+        >
           {options.map((option) => (
             <SelectItem key={option.value} value={option.value}>
               {option.label}

@@ -33,7 +33,11 @@ export function WidgetTablePageSizeSelect({
       <SelectTrigger className="w-20" aria-label={ariaLabel}>
         <SelectValue>{pageSize}</SelectValue>
       </SelectTrigger>
-      <SelectContent align="start" alignItemWithTrigger={false}>
+      <SelectContent
+        align="start"
+        alignItemWithTrigger={false}
+        className="w-auto min-w-(--anchor-width)"
+      >
         {pageSizeOptions.map((size) => (
           <SelectItem key={size} value={String(size)}>
             {size}

@@ -74,7 +74,11 @@ export function PageListFilters({
                     )?.label ?? filter.value}
                   </SelectValue>
                 </SelectTrigger>
-                <SelectContent align="start" alignItemWithTrigger={false}>
+                <SelectContent
+                  align="start"
+                  alignItemWithTrigger={false}
+                  className="w-auto min-w-(--anchor-width)"
+                >
                   {filter.options?.map((option) => (
                     <SelectItem key={option.value} value={option.value}>
                       {option.label}

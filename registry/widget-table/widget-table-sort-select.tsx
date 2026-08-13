@@ -54,10 +54,16 @@ export function WidgetTableSortSelect({
     >
       <SelectTrigger className="w-44" aria-label={ariaLabel}>
         <SelectValue>
-          <span className="truncate">{activeOption?.label ?? noSortingLabel}</span>
+          <span className="truncate">
+            {activeOption?.label ?? noSortingLabel}
+          </span>
         </SelectValue>
       </SelectTrigger>
-      <SelectContent align="start" alignItemWithTrigger={false}>
+      <SelectContent
+        align="start"
+        alignItemWithTrigger={false}
+        className="w-auto min-w-(--anchor-width)"
+      >
         <SelectItem value={NONE_VALUE}>{noSortingLabel}</SelectItem>
         {sortOptions.map((option, index) => (
           <SelectItem key={index} value={String(index)}>
