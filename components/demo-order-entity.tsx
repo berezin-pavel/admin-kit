@@ -6,6 +6,10 @@ import { Button } from "@/components/ui/button"
 import { DemoOrderBreadcrumbs } from "@/components/demo-order-breadcrumbs"
 import { notify } from "@/registry/admin-toaster/admin-toaster"
 import { ConfirmDialog } from "@/registry/confirm-dialog/confirm-dialog"
+import { FormDialog } from "@/registry/form-dialog/form-dialog"
+import { localeRu } from "@/registry/locale-ru/locale-ru"
+import { NumberField } from "@/registry/number-field/number-field"
+import { SelectField } from "@/registry/select-field/select-field"
 import { Hint } from "@/registry/hint/hint"
 import {
   PageEntity,
@@ -13,7 +17,11 @@ import {
 } from "@/registry/page-entity/page-entity"
 import { StatusBadge } from "@/registry/status-badge/status-badge"
 
-import { orderStatusLabelByLocale, orderStatusTone } from "@/app/demo/data"
+import {
+  formatDemoCurrency,
+  orderStatusLabelByLocale,
+  orderStatusTone,
+} from "@/app/demo/data"
 import { demoDictionary } from "@/app/demo/locale"
 import { useDemoLocale } from "@/app/demo/locale-store"
 
@@ -21,6 +29,12 @@ export function DemoOrderEntity() {
   const [cancelling, setCancelling] = useState(false)
   const [confirmOpen, setConfirmOpen] = useState(false)
   const [cancelled, setCancelled] = useState(false)
+  const [editOpen, setEditOpen] = useState(false)
+  const [saving, setSaving] = useState(false)
+  const [total, setTotal] = useState("2340")
+  const [channel, setChannel] = useState("online")
+  const [draftTotal, setDraftTotal] = useState(total)
+  const [draftChannel, setDraftChannel] = useState(channel)
   const locale = useDemoLocale()
   const strings = demoDictionary[locale].orderEntity
   const statusLabel = orderStatusLabelByLocale[locale]
@@ -49,7 +63,10 @@ export function DemoOrderEntity() {
         {
           id: "channel",
           label: strings.fieldChannel,
-          value: strings.fieldChannelValue,
+          value:
+            strings.editChannelOptions.find(
+              (option) => option.value === channel
+            )?.label ?? strings.fieldChannelValue,
         },
         {
           id: "total",
@@ -59,7 +76,7 @@ export function DemoOrderEntity() {
               <Hint text={strings.fieldTotalHint} />
             </span>
           ),
-          value: strings.fieldTotalValue,
+          value: formatDemoCurrency(Number(total) || 0, locale),
         },
       ],
     },
@@ -119,6 +136,17 @@ export function DemoOrderEntity() {
             <Button
               variant="outline"
               size="sm"
+              onClick={() => {
+                setDraftTotal(total)
+                setDraftChannel(channel)
+                setEditOpen(true)
+              }}
+            >
+              {strings.editButton}
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
               onClick={() =>
                 notify.success(strings.sendReceiptToastTitle, {
                   description: strings.sendReceiptToastDescription,
@@ -139,6 +167,46 @@ export function DemoOrderEntity() {
         }
         sections={sections}
       />
+      <FormDialog
+        open={editOpen}
+        onOpenChange={setEditOpen}
+        title={strings.editDialogTitle}
+        description={strings.editDialogDescription}
+        submitting={saving}
+        submitLabel={
+          locale === "ru" ? localeRu.formDialog.submitLabel : undefined
+        }
+        cancelLabel={
+          locale === "ru" ? localeRu.formDialog.cancelLabel : undefined
+        }
+        onSubmit={() => {
+          setSaving(true)
+
+          window.setTimeout(() => {
+            setTotal(draftTotal)
+            setChannel(draftChannel)
+            setSaving(false)
+            setEditOpen(false)
+            notify.success(strings.editToastTitle)
+          }, 700)
+        }}
+      >
+        <NumberField
+          label={strings.editTotalLabel}
+          value={draftTotal}
+          onChange={setDraftTotal}
+          min={0}
+        />
+        <SelectField
+          label={strings.editChannelLabel}
+          value={draftChannel}
+          onChange={setDraftChannel}
+          options={strings.editChannelOptions}
+          placeholder={
+            locale === "ru" ? localeRu.selectField.placeholder : undefined
+          }
+        />
+      </FormDialog>
       <ConfirmDialog
         open={confirmOpen}
         onOpenChange={setConfirmOpen}

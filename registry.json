@@ -569,6 +569,23 @@
     },
     {
       "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "form-dialog",
+      "type": "registry:component",
+      "title": "Form dialog",
+      "description": "A modal with a real form for quick edits: a title, an optional description, consumer-laid-out fields as children, and a footer with Cancel and Save. Save submits the form element, submitting disables both buttons, sets aria-busy and blocks closing by Escape or an outside click while the operation is in progress — the same guard confirm-dialog uses. Controlled: the consumer holds open, onOpenChange and the field state; submitLabel and cancelLabel localize the buttons. For a full create/edit page use page-form instead.",
+      "registryDependencies": [
+        "button",
+        "dialog"
+      ],
+      "files": [
+        {
+          "path": "registry/form-dialog/form-dialog.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
       "name": "hint",
       "type": "registry:component",
       "title": "Hint",

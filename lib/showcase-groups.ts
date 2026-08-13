@@ -65,7 +65,7 @@ export const SHOWCASE_ENTRY_GROUPS: readonly ShowcaseGroupDefinition[] = [
   {
     id: "feedback",
     title: "Feedback",
-    items: ["confirm-dialog", "admin-toaster"],
+    items: ["confirm-dialog", "form-dialog", "admin-toaster"],
   },
   {
     id: "pages",

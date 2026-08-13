@@ -134,6 +134,13 @@ export interface DemoDictionary {
     fieldTotal: string
     fieldTotalHint: string
     fieldTotalValue: string
+    editButton: string
+    editDialogTitle: string
+    editDialogDescription: string
+    editTotalLabel: string
+    editChannelLabel: string
+    editChannelOptions: readonly { value: string; label: string }[]
+    editToastTitle: string
     sectionCustomer: string
     fieldName: string
     fieldNameValue: string
@@ -336,6 +343,16 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       fieldTotal: "Total",
       fieldTotalHint: "Item total after discount, delivery is calculated separately",
       fieldTotalValue: "$2,340",
+      editButton: "Edit",
+      editDialogTitle: "Edit order",
+      editDialogDescription: "Quick edits without leaving the page",
+      editTotalLabel: "Total",
+      editChannelLabel: "Channel",
+      editChannelOptions: [
+        { value: "online", label: "Online store" },
+        { value: "retail", label: "Retail" },
+      ],
+      editToastTitle: "Order updated",
       sectionCustomer: "Customer",
       fieldName: "Name",
       fieldNameValue: "Emily Carter",
@@ -540,6 +557,16 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       fieldTotal: "Сумма",
       fieldTotalHint: "Сумма товаров со скидкой, доставка считается отдельно",
       fieldTotalValue: "₽ 2 340",
+      editButton: "Редактировать",
+      editDialogTitle: "Редактирование заказа",
+      editDialogDescription: "Быстрые правки, не уходя со страницы",
+      editTotalLabel: "Сумма",
+      editChannelLabel: "Канал",
+      editChannelOptions: [
+        { value: "online", label: "Онлайн-магазин" },
+        { value: "retail", label: "Розница" },
+      ],
+      editToastTitle: "Заказ обновлён",
       sectionCustomer: "Покупатель",
       fieldName: "Имя",
       fieldNameValue: "Смирнова Екатерина",

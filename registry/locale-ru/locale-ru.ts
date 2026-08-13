@@ -80,6 +80,7 @@ export const localeRu = {
     removeLabel: (tag: string) => `Убрать ${tag}`,
   },
   pageForm: { submitLabel: "Сохранить", cancelLabel: "Отмена" },
+  formDialog: { submitLabel: "Сохранить", cancelLabel: "Отмена" },
   sidebarToggle: { expand: "Развернуть сайдбар", collapse: "Свернуть сайдбар" },
   themeToggle: {
     toLight: "Переключить на светлую тему",

@@ -7,6 +7,7 @@ import {
   LayoutDashboard,
   Package,
   PackageCheck,
+  Pencil,
   Shirt,
   ShoppingCart,
   SportShoe,
@@ -75,10 +76,20 @@ export const orderStatusLabelByLocale: Record<
 
 const NAV_TITLES: Record<
   DemoLocale,
-  { overview: string; orders: string; order: string }
+  { overview: string; orders: string; order: string; orderEdit: string }
 > = {
-  en: { overview: "Overview", orders: "Orders", order: "Order #4187" },
-  ru: { overview: "Обзор", orders: "Заказы", order: "Заказ №4187" },
+  en: {
+    overview: "Overview",
+    orders: "Orders",
+    order: "Order #4187",
+    orderEdit: "Edit order",
+  },
+  ru: {
+    overview: "Обзор",
+    orders: "Заказы",
+    order: "Заказ №4187",
+    orderEdit: "Редактирование заказа",
+  },
 }
 
 export function getDemoNav(locale: DemoLocale): readonly AdminNavItem[] {
@@ -88,6 +99,7 @@ export function getDemoNav(locale: DemoLocale): readonly AdminNavItem[] {
     { href: "/demo", title: titles.overview, icon: LayoutDashboard },
     { href: "/demo/orders", title: titles.orders, icon: ShoppingCart },
     { href: "/demo/order", title: titles.order, icon: Package },
+    { href: "/demo/order/edit", title: titles.orderEdit, icon: Pencil },
   ]
 }
 

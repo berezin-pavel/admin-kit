@@ -4,6 +4,7 @@ import { breadcrumbsEntry } from "./breadcrumbs"
 import { checkboxFieldEntry } from "./checkbox-field"
 import { colorFieldEntry } from "./color-field"
 import { confirmDialogEntry } from "./confirm-dialog"
+import { formDialogEntry } from "./form-dialog"
 import { dateFieldEntry } from "./date-field"
 import { dateRangeFieldEntry } from "./date-range-field"
 import { dateTimeFieldEntry } from "./date-time-field"
@@ -76,6 +77,7 @@ export const showcaseEntries: readonly ShowcaseEntry[] = [
   fileFieldEntry,
   tagsFieldEntry,
   confirmDialogEntry,
+  formDialogEntry,
   adminToasterEntry,
   widgetProgressEntry,
   widgetChartEntry,
