@@ -244,7 +244,7 @@ export function WidgetTable<Row>({
             <TableHeader>
               <TableRow>
                 {hasSelection ? (
-                  <TableHead className="w-px">
+                  <TableHead className="w-px [&:has([role=checkbox])]:pr-4">
                     <Checkbox
                       checked={pageSelection === "all"}
                       indeterminate={pageSelection === "some"}
@@ -300,7 +300,7 @@ export function WidgetTable<Row>({
                 return (
                   <TableRow key={rowKey}>
                     {hasSelection ? (
-                      <TableCell className="w-px">
+                      <TableCell className="w-px [&:has([role=checkbox])]:pr-4">
                         <Checkbox
                           checked={selectedKeys?.has(rowKey) ?? false}
                           aria-label={resolvedLabels.selectRow}

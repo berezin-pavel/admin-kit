@@ -3,6 +3,10 @@ import {
   Backpack,
   Coffee,
   CreditCard,
+  Crown,
+  Droplet,
+  Keyboard,
+  Layers,
   Headphones,
   LayoutDashboard,
   Package,
@@ -266,6 +270,28 @@ export function getDemoMonthlyRevenueGoal(
   return { value: monthToDateRevenue, max, target }
 }
 
+export type DemoGoalTone = "success" | "warning" | "danger"
+
+export function getDemoGoalTone(
+  goal: DemoMonthlyGoal,
+  today: Date = new Date()
+): DemoGoalTone {
+  const daysInMonth = new Date(
+    today.getFullYear(),
+    today.getMonth() + 1,
+    0
+  ).getDate()
+  const expectedByToday = goal.target * (today.getDate() / daysInMonth)
+
+  if (goal.value >= expectedByToday) {
+    return "success"
+  }
+  if (goal.value >= expectedByToday * 0.7) {
+    return "warning"
+  }
+  return "danger"
+}
+
 export function getDemoMonthlyOrdersGoal(
   metrics: readonly DemoDailyMetric[],
   today: Date = new Date()
@@ -484,28 +510,32 @@ const ORDER_CUSTOMERS: Record<DemoLocale, readonly string[]> = {
 
 const ORDER_PRODUCTS: Record<DemoLocale, readonly string[]> = {
   en: [
+    "Cap",
     "Nova Sneakers",
     "Pulse Headphones",
     "City Backpack",
     "Basic Hoodie",
     "Loop Travel Mug",
-    "Trail Cap",
-    "Rainy Umbrella",
-    "Cozy Blanket",
+    "Ember Scented Candle",
+    "Trail Running Cap with Reflective Trim",
+    "Mechanic Pro Low-Profile Wireless Keyboard",
+    "Expedition Insulated Travel Bottle 1.2L",
+    "Aurora Ultra-Soft Oversized Knit Throw Blanket for Reading Nooks",
     "Weekend Bag",
-    "Ember Candle",
   ],
   ru: [
+    "Кепка",
     "Кроссовки Nova",
     "Наушники Pulse",
     "Рюкзак City",
     "Худи Basic",
     "Термокружка Loop",
-    "Кепка Trail",
-    "Зонт Rainy",
-    "Плед Cozy",
+    "Ароматическая свеча Ember",
+    "Беговая кепка Trail со светоотражающей окантовкой",
+    "Механическая беспроводная клавиатура Mechanic Pro Low-Profile",
+    "Термобутылка Expedition с двойными стенками 1,2 л",
+    "Сверхмягкий большой вязаный плед Aurora для уютного чтения",
     "Сумка Weekend",
-    "Свеча Ember",
   ],
 }
 
@@ -659,6 +689,10 @@ const PRODUCT_IDS = [
   "backpack-city",
   "hoodie-basic",
   "mug-loop",
+  "cap-plain",
+  "keyboard-mechanic",
+  "bottle-expedition",
+  "blanket-aurora",
 ] as const
 
 const PRODUCT_ICONS: readonly ComponentType<{ className?: string }>[] = [
@@ -667,6 +701,10 @@ const PRODUCT_ICONS: readonly ComponentType<{ className?: string }>[] = [
   Backpack,
   Shirt,
   Coffee,
+  Crown,
+  Keyboard,
+  Droplet,
+  Layers,
 ]
 
 interface DemoProductCopy {
@@ -682,6 +720,22 @@ const PRODUCT_COPY: Record<DemoLocale, readonly DemoProductCopy[]> = {
     { title: "City Backpack", description: "Accessories", meta: "51 sales" },
     { title: "Basic Hoodie", description: "Apparel", meta: "43 sales" },
     { title: "Loop Travel Mug", description: "Accessories", meta: "38 sales" },
+    { title: "Cap", description: "Apparel", meta: "31 sales" },
+    {
+      title: "Mechanic Pro Low-Profile Wireless Keyboard",
+      description: "Electronics",
+      meta: "27 sales",
+    },
+    {
+      title: "Expedition Insulated Travel Bottle 1.2L",
+      description: "Sports and outdoors, drinkware",
+      meta: "19 sales",
+    },
+    {
+      title: "Aurora Ultra-Soft Oversized Knit Throw Blanket for Reading Nooks",
+      description: "Home textiles, blankets and throws for the living room",
+      meta: "12 sales",
+    },
   ],
   ru: [
     { title: "Кроссовки Nova", description: "Обувь", meta: "86 продаж" },
@@ -689,6 +743,22 @@ const PRODUCT_COPY: Record<DemoLocale, readonly DemoProductCopy[]> = {
     { title: "Рюкзак City", description: "Аксессуары", meta: "51 продажа" },
     { title: "Худи Basic", description: "Одежда", meta: "43 продажи" },
     { title: "Термокружка Loop", description: "Аксессуары", meta: "38 продаж" },
+    { title: "Кепка", description: "Одежда", meta: "31 продажа" },
+    {
+      title: "Механическая беспроводная клавиатура Mechanic Pro Low-Profile",
+      description: "Электроника",
+      meta: "27 продаж",
+    },
+    {
+      title: "Термобутылка Expedition с двойными стенками 1,2 л",
+      description: "Спорт и туризм, посуда для напитков",
+      meta: "19 продаж",
+    },
+    {
+      title: "Сверхмягкий большой вязаный плед Aurora для уютного чтения",
+      description: "Домашний текстиль, пледы и покрывала для гостиной",
+      meta: "12 продаж",
+    },
   ],
 }
 

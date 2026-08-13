@@ -1,5 +1,15 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
+import { cn } from "@/lib/utils"
+
+export type WidgetProgressTone = "default" | "success" | "warning" | "danger"
+
+const toneClassName: Record<WidgetProgressTone, string | undefined> = {
+  default: undefined,
+  success: "[&_[data-slot=progress-indicator]]:bg-success",
+  warning: "[&_[data-slot=progress-indicator]]:bg-warning",
+  danger: "[&_[data-slot=progress-indicator]]:bg-destructive",
+}
 
 export interface WidgetProgressProps {
   title: string
@@ -7,6 +17,7 @@ export interface WidgetProgressProps {
   max?: number
   target?: number
   targetLabel?: string
+  tone?: WidgetProgressTone
   hint?: string
   className?: string
 }
@@ -17,6 +28,7 @@ export function WidgetProgress({
   max = 100,
   target,
   targetLabel = "Goal",
+  tone = "default",
   hint,
   className,
 }: WidgetProgressProps) {
@@ -36,7 +48,11 @@ export function WidgetProgress({
       </CardHeader>
       <CardContent className="flex flex-col gap-2">
         <div className="relative">
-          <Progress value={clampedValue} max={max}>
+          <Progress
+            value={clampedValue}
+            max={max}
+            className={cn(toneClassName[tone])}
+          >
             <span className="text-2xl font-semibold tabular-nums">
               {percent}%
             </span>

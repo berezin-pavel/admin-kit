@@ -894,7 +894,7 @@
       "name": "widget-progress",
       "title": "Progress widget",
       "type": "registry:component",
-      "description": "A progress-bar card for a dashboard: warehouse fill level, plan completion, quota usage. Next to the bar is a percentage share computed against max (100 by default). A value outside the range doesn't break the layout: a negative one counts as zero, one above max counts as the maximum. An optional target draws a tick mark on the bar at target/max and a right-aligned targetLabel caption (\"Goal\" by default) — target is clamped into [0, max] the same way value is. Requires the admin-theme theme.",
+      "description": "A progress-bar card for a dashboard: warehouse fill level, plan completion, quota usage. Next to the bar is a percentage share computed against max (100 by default). A value outside the range doesn't break the layout: a negative one counts as zero, one above max counts as the maximum. An optional target draws a tick mark on the bar at target/max and a right-aligned targetLabel caption (\"Goal\" by default) — target is clamped into [0, max] the same way value is. Requires the admin-theme theme. The tone prop recolors the bar (default/success/warning/danger theme tokens) so a goal that is behind schedule reads at a glance; the consumer decides the thresholds.",
       "registryDependencies": [
         "card",
         "progress",

@@ -27,6 +27,7 @@ import {
   getDemoDailyMetrics,
   getDemoMetricsInRange,
   getDemoMonths,
+  getDemoGoalTone,
   getDemoMonthlyOrdersGoal,
   getDemoMonthlyRevenueGoal,
   getDemoNewCustomersSeries,
@@ -211,6 +212,7 @@ export default function DemoPage() {
           max={monthlyGoal.max}
           target={monthlyGoal.target}
           targetLabel={targetLabel}
+          tone={getDemoGoalTone(monthlyGoal)}
           hint={strings.progressHint(
             formatDemoCurrency(monthlyGoal.value, locale),
             formatDemoCurrency(monthlyGoal.max, locale)
@@ -222,6 +224,7 @@ export default function DemoPage() {
           max={monthlyOrdersGoal.max}
           target={monthlyOrdersGoal.target}
           targetLabel={targetLabel}
+          tone={getDemoGoalTone(monthlyOrdersGoal)}
           hint={strings.progressOrdersHint(
             formatDemoNumber(monthlyOrdersGoal.value, locale),
             formatDemoNumber(monthlyOrdersGoal.max, locale)

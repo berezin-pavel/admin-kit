@@ -63,6 +63,38 @@ export const widgetProgressEntry: ShowcaseEntry = {
       ),
     },
     {
+      id: "tones",
+      name: "Threshold tones",
+      render: () => (
+        <div className="flex flex-col gap-4">
+          <WidgetProgress
+            title="Ahead of plan"
+            value={480}
+            max={500}
+            target={420}
+            tone="success"
+            hint="on track for the month"
+          />
+          <WidgetProgress
+            title="Slightly behind"
+            value={300}
+            max={500}
+            target={420}
+            tone="warning"
+            hint="catching up is still realistic"
+          />
+          <WidgetProgress
+            title="Falling behind"
+            value={120}
+            max={500}
+            target={420}
+            tone="danger"
+            hint="needs attention"
+          />
+        </div>
+      ),
+    },
+    {
       id: "target-custom-label",
       name: "Custom target label",
       render: () => (
