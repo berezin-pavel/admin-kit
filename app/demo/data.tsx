@@ -254,6 +254,40 @@ export function getDemoMonthlyRevenueGoal(
   return { value: monthToDateRevenue, max, target }
 }
 
+export function getDemoMonthlyOrdersGoal(
+  metrics: readonly DemoDailyMetric[],
+  today: Date = new Date()
+): DemoMonthlyGoal {
+  const monthStart = new Date(today.getFullYear(), today.getMonth(), 1)
+  const previousMonthStart = new Date(
+    today.getFullYear(),
+    today.getMonth() - 1,
+    1
+  )
+
+  const monthToDateOrders = metrics
+    .filter(
+      (metric) =>
+        metric.date.getTime() >= monthStart.getTime() &&
+        metric.date.getTime() <= today.getTime()
+    )
+    .reduce((sum, metric) => sum + metric.orders, 0)
+
+  const previousMonthOrders = metrics
+    .filter(
+      (metric) =>
+        metric.date.getTime() >= previousMonthStart.getTime() &&
+        metric.date.getTime() < monthStart.getTime()
+    )
+    .reduce((sum, metric) => sum + metric.orders, 0)
+
+  const target =
+    previousMonthOrders > 0 ? previousMonthOrders : monthToDateOrders
+  const max = Math.max(Math.round(target * 1.2), monthToDateOrders)
+
+  return { value: monthToDateOrders, max, target }
+}
+
 const CHART_DATE_LOCALE: Record<DemoLocale, Locale> = { en: enUS, ru }
 
 const DAILY_FINANCE_SERIES_LABELS: Record<

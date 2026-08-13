@@ -2,15 +2,7 @@
 
 import { useMemo, useState } from "react"
 
-import { DemoColorField } from "@/components/demo-color-field"
-import { DemoConfirmDialog } from "@/components/demo-confirm-dialog"
-import { DemoDateField } from "@/components/demo-date-field"
-import { DemoDateTimeField } from "@/components/demo-date-time-field"
-import { DemoHint } from "@/components/demo-hint"
 import { DemoStandaloneTable } from "@/components/demo-standalone-table"
-import { DemoTimeField } from "@/components/demo-time-field"
-import { DemoToaster } from "@/components/demo-toaster"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
   DateRangeField,
   defaultDateRangePresets,
@@ -24,6 +16,9 @@ import { WidgetDonut } from "@/registry/widget-donut/widget-donut"
 import { WidgetList } from "@/registry/widget-list/widget-list"
 import { WidgetMetric } from "@/registry/widget-metric/widget-metric"
 import { WidgetProgress } from "@/registry/widget-progress/widget-progress"
+import { WidgetQuickActions } from "@/registry/widget-quick-actions/widget-quick-actions"
+import { notify } from "@/registry/admin-toaster/admin-toaster"
+import { Download, FileChartColumn, Plus, UserPlus } from "lucide-react"
 
 import {
   formatDemoCurrency,
@@ -32,6 +27,7 @@ import {
   getDemoDailyMetrics,
   getDemoMetricsInRange,
   getDemoMonths,
+  getDemoMonthlyOrdersGoal,
   getDemoMonthlyRevenueGoal,
   getDemoNewCustomersSeries,
   getDemoOrderStatusSlices,
@@ -150,6 +146,20 @@ export default function DemoPage() {
     () => getDemoMonthlyRevenueGoal(dailyMetrics),
     [dailyMetrics]
   )
+  const monthlyOrdersGoal = useMemo(
+    () => getDemoMonthlyOrdersGoal(dailyMetrics),
+    [dailyMetrics]
+  )
+
+  const quickActions = [
+    { id: "create-order", label: strings.quickActionLabels.createOrder, icon: Plus },
+    { id: "export-csv", label: strings.quickActionLabels.exportCsv, icon: Download },
+    { id: "invite-user", label: strings.quickActionLabels.inviteUser, icon: UserPlus },
+    { id: "open-reports", label: strings.quickActionLabels.openReports, icon: FileChartColumn },
+  ].map((action) => ({
+    ...action,
+    onSelect: () => notify.info(strings.quickActionToastTitle(action.label)),
+  }))
 
   return (
     <div className="flex flex-col gap-4">
@@ -192,6 +202,34 @@ export default function DemoPage() {
           trendValues={averageOrderTrend}
           trendTooltipFormat={(value) => formatDemoCurrency(value, locale)}
           hint={strings.metricHint}
+        />
+      </div>
+      <div className="grid gap-4 md:grid-cols-3">
+        <WidgetProgress
+          title={strings.progressTitle}
+          value={monthlyGoal.value}
+          max={monthlyGoal.max}
+          target={monthlyGoal.target}
+          targetLabel={targetLabel}
+          hint={strings.progressHint(
+            formatDemoCurrency(monthlyGoal.value, locale),
+            formatDemoCurrency(monthlyGoal.max, locale)
+          )}
+        />
+        <WidgetProgress
+          title={strings.progressOrdersTitle}
+          value={monthlyOrdersGoal.value}
+          max={monthlyOrdersGoal.max}
+          target={monthlyOrdersGoal.target}
+          targetLabel={targetLabel}
+          hint={strings.progressOrdersHint(
+            formatDemoNumber(monthlyOrdersGoal.value, locale),
+            formatDemoNumber(monthlyOrdersGoal.max, locale)
+          )}
+        />
+        <WidgetQuickActions
+          title={strings.quickActionsTitle}
+          actions={quickActions}
         />
       </div>
       <WidgetChart
@@ -249,48 +287,12 @@ export default function DemoPage() {
           />
         </div>
       </div>
-      <div className="grid gap-4 md:grid-cols-2">
-        <WidgetActivity
-          title={strings.activityTitle}
-          entries={activityEntries}
-          labels={activityLabels}
-          locale={locale === "ru" ? localeRu.widgetActivity.locale : undefined}
-        />
-        <WidgetProgress
-          title={strings.progressTitle}
-          value={monthlyGoal.value}
-          max={monthlyGoal.max}
-          target={monthlyGoal.target}
-          targetLabel={targetLabel}
-          hint={strings.progressHint(
-            formatDemoCurrency(monthlyGoal.value, locale),
-            formatDemoCurrency(monthlyGoal.max, locale)
-          )}
-        />
-      </div>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>{strings.formFieldsCardTitle}</CardTitle>
-        </CardHeader>
-        <CardContent className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <DemoDateField />
-          <DemoDateTimeField />
-          <DemoTimeField />
-          <DemoColorField />
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>{strings.feedbackCardTitle}</CardTitle>
-        </CardHeader>
-        <CardContent className="flex flex-col gap-6">
-          <DemoToaster />
-          <DemoConfirmDialog />
-          <DemoHint />
-        </CardContent>
-      </Card>
+      <WidgetActivity
+        title={strings.activityTitle}
+        entries={activityEntries}
+        labels={activityLabels}
+        locale={locale === "ru" ? localeRu.widgetActivity.locale : undefined}
+      />
     </div>
   )
 }

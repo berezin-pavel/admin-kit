@@ -6,7 +6,9 @@ import { useRouter } from "next/navigation"
 import { DemoOrderBreadcrumbs } from "@/components/demo-order-breadcrumbs"
 import { notify } from "@/registry/admin-toaster/admin-toaster"
 import { CheckboxField } from "@/registry/checkbox-field/checkbox-field"
+import { ColorField } from "@/registry/color-field/color-field"
 import { DateField } from "@/registry/date-field/date-field"
+import { DateTimeField } from "@/registry/date-time-field/date-time-field"
 import { FileField } from "@/registry/file-field/file-field"
 import { localeRu } from "@/registry/locale-ru/locale-ru"
 import { NumberField } from "@/registry/number-field/number-field"
@@ -15,6 +17,7 @@ import { SelectField } from "@/registry/select-field/select-field"
 import { TagsField } from "@/registry/tags-field/tags-field"
 import { TextField } from "@/registry/text-field/text-field"
 import { TextareaField } from "@/registry/textarea-field/textarea-field"
+import { TimeField } from "@/registry/time-field/time-field"
 
 import { getDemoProductOptions } from "@/app/demo/data"
 import { demoDictionary } from "@/app/demo/locale"
@@ -27,6 +30,9 @@ const INITIAL_DATE = "2026-08-03"
 const INITIAL_PAID = true
 const INITIAL_COMMENT = "Gift wrap requested, deliver after 6pm."
 const INITIAL_TAGS: readonly string[] = ["Gift", "Priority"]
+const INITIAL_PICKUP = "2026-08-14T11:00"
+const INITIAL_DELIVERY_TIME = "11:30"
+const INITIAL_LABEL_COLOR = "#f97316"
 
 export function DemoOrderEdit() {
   const router = useRouter()
@@ -42,6 +48,10 @@ export function DemoOrderEdit() {
   const [comment, setComment] = useState(INITIAL_COMMENT)
   const [tags, setTags] = useState<readonly string[]>(INITIAL_TAGS)
   const [attachment, setAttachment] = useState<File | null>(null)
+  const [pickup, setPickup] = useState(INITIAL_PICKUP)
+  const [deliveryTime, setDeliveryTime] = useState(INITIAL_DELIVERY_TIME)
+  const [labelColor, setLabelColor] = useState(INITIAL_LABEL_COLOR)
+  const [supplierDiscount, setSupplierDiscount] = useState("")
   const [submitting, setSubmitting] = useState(false)
 
   return (
@@ -97,6 +107,59 @@ export function DemoOrderEdit() {
                   onChange={setComment}
                   placeholder={strings.commentPlaceholder}
                 />
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <DateTimeField
+                    label={strings.pickupLabel}
+                    value={pickup}
+                    onChange={setPickup}
+                    locale={
+                      locale === "ru"
+                        ? localeRu.dateTimeField.locale
+                        : undefined
+                    }
+                    displayFormat={
+                      locale === "ru"
+                        ? localeRu.dateTimeField.displayFormat
+                        : undefined
+                    }
+                    placeholder={
+                      locale === "ru"
+                        ? localeRu.dateTimeField.placeholder
+                        : undefined
+                    }
+                  />
+                  <TimeField
+                    label={strings.deliveryTimeLabel}
+                    value={deliveryTime}
+                    onChange={setDeliveryTime}
+                  />
+                </div>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <ColorField
+                    label={strings.labelColorLabel}
+                    value={labelColor}
+                    onChange={setLabelColor}
+                    placeholder={
+                      locale === "ru"
+                        ? localeRu.colorField.placeholder
+                        : undefined
+                    }
+                    hexInputLabel={
+                      locale === "ru"
+                        ? localeRu.colorField.hexInputLabel
+                        : undefined
+                    }
+                  />
+                  <NumberField
+                    label={strings.supplierDiscountLabel}
+                    value={supplierDiscount}
+                    onChange={setSupplierDiscount}
+                    hint={strings.supplierDiscountHint}
+                    placeholder={strings.supplierDiscountPlaceholder}
+                    min={0}
+                    max={100}
+                  />
+                </div>
                 <TagsField
                   label={strings.tagsLabel}
                   value={tags}

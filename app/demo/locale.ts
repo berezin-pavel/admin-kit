@@ -21,9 +21,17 @@ export interface DemoDictionary {
     donutTitle: string
     activityTitle: string
     progressTitle: string
+    progressOrdersTitle: string
     progressHint: (value: string, max: string) => string
-    formFieldsCardTitle: string
-    feedbackCardTitle: string
+    progressOrdersHint: (value: string, max: string) => string
+    quickActionsTitle: string
+    quickActionLabels: {
+      createOrder: string
+      exportCsv: string
+      inviteUser: string
+      openReports: string
+    }
+    quickActionToastTitle: (label: string) => string
   }
   standaloneTable: {
     title: string
@@ -165,6 +173,12 @@ export interface DemoDictionary {
     tagsLabel: string
     tagsSuggestions: readonly string[]
     attachmentLabel: string
+    pickupLabel: string
+    deliveryTimeLabel: string
+    labelColorLabel: string
+    supplierDiscountLabel: string
+    supplierDiscountHint: string
+    supplierDiscountPlaceholder: string
     saveToastTitle: string
     saveToastDescription: string
   }
@@ -201,9 +215,17 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       donutTitle: "Orders by status",
       activityTitle: "Recent activity",
       progressTitle: "Monthly revenue goal",
+      progressOrdersTitle: "Monthly orders goal",
       progressHint: (value, max) => `${value} of ${max}`,
-      formFieldsCardTitle: "Form fields",
-      feedbackCardTitle: "Feedback and hints",
+      progressOrdersHint: (value, max) => `${value} of ${max} orders`,
+      quickActionsTitle: "Quick actions",
+      quickActionLabels: {
+        createOrder: "Create order",
+        exportCsv: "Export to CSV",
+        inviteUser: "Invite user",
+        openReports: "Open reports",
+      },
+      quickActionToastTitle: (label) => `${label} — demo action`,
     },
     standaloneTable: {
       title: "Recent orders",
@@ -360,6 +382,12 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
         "Repeat customer",
       ],
       attachmentLabel: "Attachment",
+      pickupLabel: "Pickup",
+      deliveryTimeLabel: "Delivery time",
+      labelColorLabel: "Category label color",
+      supplierDiscountLabel: "Supplier discount",
+      supplierDiscountHint: "Applied to purchase prices in reports",
+      supplierDiscountPlaceholder: "For example, 12",
       saveToastTitle: "Order saved",
       saveToastDescription: "Order #4187 updated",
     },
@@ -394,9 +422,17 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       donutTitle: "Заказы по статусам",
       activityTitle: "Последняя активность",
       progressTitle: "Цель по выручке за месяц",
+      progressOrdersTitle: "Цель по заказам за месяц",
       progressHint: (value, max) => `${value} из ${max}`,
-      formFieldsCardTitle: "Поля формы",
-      feedbackCardTitle: "Обратная связь и подсказки",
+      progressOrdersHint: (value, max) => `${value} из ${max} заказов`,
+      quickActionsTitle: "Быстрые действия",
+      quickActionLabels: {
+        createOrder: "Создать заказ",
+        exportCsv: "Выгрузить в CSV",
+        inviteUser: "Пригласить пользователя",
+        openReports: "Открыть отчёты",
+      },
+      quickActionToastTitle: (label) => `${label} — демо-действие`,
     },
     standaloneTable: {
       title: "Последние заказы",
@@ -550,6 +586,12 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
         "Постоянный клиент",
       ],
       attachmentLabel: "Вложение",
+      pickupLabel: "Забрать заказ",
+      deliveryTimeLabel: "Время доставки",
+      labelColorLabel: "Цвет метки категории",
+      supplierDiscountLabel: "Скидка поставщика",
+      supplierDiscountHint: "Применяется к закупочным ценам в отчётах",
+      supplierDiscountPlaceholder: "Например, 12",
       saveToastTitle: "Заказ сохранён",
       saveToastDescription: "Заказ №4187 обновлён",
     },
