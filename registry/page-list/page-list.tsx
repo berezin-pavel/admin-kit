@@ -1,6 +1,7 @@
 import type { Key, ReactNode } from "react"
 
 import { cn } from "@/lib/utils"
+import type { DateRangeFieldProps } from "@/registry/date-range-field/date-range-field"
 import { StateError } from "@/registry/state-error/state-error"
 import { StateForbidden } from "@/registry/state-forbidden/state-forbidden"
 import { StateLoading } from "@/registry/state-loading/state-loading"
@@ -19,9 +20,13 @@ import { PageListFilters } from "./page-list-filters"
 export interface PageListFilter {
   id: string
   label: string
-  kind: "search" | "select"
+  kind: "search" | "select" | "date-range"
   value: string
   options?: readonly { value: string; label: string }[]
+  dateRange?: Pick<
+    DateRangeFieldProps,
+    "locale" | "displayFormat" | "presets"
+  >
 }
 
 export type PageStatus = "ready" | "loading" | "error" | "forbidden" | "offline"

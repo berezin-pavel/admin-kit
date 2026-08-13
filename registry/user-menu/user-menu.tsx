@@ -61,10 +61,16 @@ export function UserMenu({
           />
         }
       >
-        <Avatar size="sm">
-          {avatarUrl ? <AvatarImage src={avatarUrl} alt="" /> : null}
-          <AvatarFallback>{getUserMenuInitials(name)}</AvatarFallback>
-        </Avatar>
+        {avatarUrl ? (
+          <Avatar size="sm">
+            <AvatarImage src={avatarUrl} alt="" />
+            <AvatarFallback>{getUserMenuInitials(name)}</AvatarFallback>
+          </Avatar>
+        ) : (
+          <span className="text-[10px] font-semibold tracking-wide">
+            {getUserMenuInitials(name)}
+          </span>
+        )}
       </DropdownMenuTrigger>
       <DropdownMenuContent side="top" align="start">
         <DropdownMenuGroup>

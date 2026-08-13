@@ -52,6 +52,7 @@ export const SHOWCASE_ENTRY_GROUPS: readonly ShowcaseGroupDefinition[] = [
       "checkbox-field",
       "date-field",
       "date-time-field",
+      "date-range-field",
       "time-field",
       "color-field",
     ],

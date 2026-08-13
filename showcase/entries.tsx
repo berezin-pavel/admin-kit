@@ -5,6 +5,7 @@ import { checkboxFieldEntry } from "./checkbox-field"
 import { colorFieldEntry } from "./color-field"
 import { confirmDialogEntry } from "./confirm-dialog"
 import { dateFieldEntry } from "./date-field"
+import { dateRangeFieldEntry } from "./date-range-field"
 import { dateTimeFieldEntry } from "./date-time-field"
 import { hintEntry } from "./hint"
 import { languageToggleEntry } from "./language-toggle"
@@ -55,6 +56,7 @@ export const showcaseEntries: readonly ShowcaseEntry[] = [
   rowActionsEntry,
   breadcrumbsEntry,
   dateFieldEntry,
+  dateRangeFieldEntry,
   dateTimeFieldEntry,
   timeFieldEntry,
   colorFieldEntry,

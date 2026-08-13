@@ -2,6 +2,7 @@
 
 import { Search } from "lucide-react"
 
+import { DateRangeField } from "@/registry/date-range-field/date-range-field"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import {
@@ -27,6 +28,19 @@ export function PageListFilters({
     <div className="flex flex-wrap items-center gap-2">
       {filters.map((filter) => {
         const controlId = `page-list-filter-${filter.id}`
+
+        if (filter.kind === "date-range") {
+          return (
+            <DateRangeField
+              key={filter.id}
+              value={filter.value}
+              onChange={(value) => onFilterChange?.(filter.id, value)}
+              placeholder={filter.label}
+              className="w-64"
+              {...filter.dateRange}
+            />
+          )
+        }
 
         return (
           <div key={filter.id} className="flex items-center gap-2">

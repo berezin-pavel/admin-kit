@@ -8,6 +8,7 @@ export interface DemoDictionary {
     order: string
   }
   overview: {
+    title: string
     metricOrdersTitle: string
     metricRevenueTitle: string
     metricAverageOrderTitle: string
@@ -81,6 +82,7 @@ export interface DemoDictionary {
     exportToastDescription: string
     searchFilterLabel: string
     statusFilterLabel: string
+    dateRangeFilterLabel: string
     statusAll: string
     columnNumber: string
     columnCustomer: string
@@ -181,12 +183,13 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       order: "Order #4187",
     },
     overview: {
+      title: "Overview",
       metricOrdersTitle: "Orders",
       metricRevenueTitle: "Revenue",
       metricAverageOrderTitle: "Average order",
-      metricHint: "over the last 30 days",
-      financeChartTitle: "Revenue, expenses, and profit by month",
-      financeChartHint: "in thousands of dollars",
+      metricHint: "for the selected period",
+      financeChartTitle: "Revenue by day",
+      financeChartHint: "for the selected period",
       ordersByChannelChartTitle: "Orders by channel",
       newCustomersChartTitle: "New customers by month",
       productsTitle: "Products",
@@ -258,6 +261,7 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       exportToastDescription: "The file will arrive by email in a couple of minutes",
       searchFilterLabel: "Search",
       statusFilterLabel: "Status",
+      dateRangeFilterLabel: "Order date",
       statusAll: "All statuses",
       columnNumber: "Number",
       columnCustomer: "Customer",
@@ -361,12 +365,13 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       order: "Заказ №4187",
     },
     overview: {
+      title: "Обзор",
       metricOrdersTitle: "Заказы",
       metricRevenueTitle: "Выручка",
       metricAverageOrderTitle: "Средний чек",
-      metricHint: "за последние 30 дней",
-      financeChartTitle: "Выручка, расходы и прибыль по месяцам",
-      financeChartHint: "в тысячах рублей",
+      metricHint: "за выбранный период",
+      financeChartTitle: "Выручка по дням",
+      financeChartHint: "за выбранный период",
       ordersByChannelChartTitle: "Заказы по каналам",
       newCustomersChartTitle: "Новые клиенты по месяцам",
       productsTitle: "Товары",
@@ -436,6 +441,7 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       exportToastDescription: "Файл придёт на почту через пару минут",
       searchFilterLabel: "Поиск",
       statusFilterLabel: "Статус",
+      dateRangeFilterLabel: "Дата заказа",
       statusAll: "Все статусы",
       columnNumber: "Номер",
       columnCustomer: "Покупатель",

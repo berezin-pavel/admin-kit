@@ -77,6 +77,7 @@ as they were.
 | `hint`               | `registry:component` | A tooltip hint next to a field label, column header, or metric: without `children` a question-mark icon, with `children` a wrapper around your own element; opens on hover and from the keyboard                                                                                                                                                                      |
 | `date-field`         | `registry:component` | A date-picker field: a calendar in a popover, with the value a `YYYY-MM-DD` string with no `Date` object or time zone, so it doesn't drift by a day on serialization                                                                                                                                                                                                    |
 | `date-time-field`    | `registry:component` | A date-and-time field: the value is a `YYYY-MM-DDTHH:mm` string; changing the date keeps the time, changing the time keeps the date, and the popover doesn't close on date selection                                                                                                                                                                                   |
+| `date-range-field`   | `registry:component` | A range-picker field: the value is a `YYYY-MM-DD..YYYY-MM-DD` string; the popover has a preset column (Today, Yesterday, This week, This month, This year, Last week, Last month, Last year by default) next to a two-month range calendar. Presets take an explicit `today` argument so their ranges are deterministic. `page-list` wires it in as its `date-range` filter kind |
 | `time-field`         | `registry:component` | A time field on a native `input type=time`: value `HH:mm`, `step` in minutes (5 by default), `min` and `max` bound the selection                                                                                                                                                                                                                                        |
 | `color-field`        | `registry:component` | A color-picker field for a label, category, or kanban column: the value is HEX `#rrggbb`, with a `presets` palette in the popover, a native picker, and manual HEX entry                                                                                                                                                                                                |
 | `text-field`         | `registry:component` | A single-line text input; the `type` prop switches between text, email, password, url and tel. Like every field: label, hint and an `error` that replaces the hint and sets `aria-invalid`                                                                                                                                                                              |
@@ -88,7 +89,7 @@ as they were.
 | `confirm-dialog`     | `registry:component` | A controlled confirmation modal: `open` and `onOpenChange` are held by the consumer, `tone="danger"` colors the confirm button, `loading` disables the buttons and blocks closing while the operation is in progress                                                                                                                                                   |
 | `admin-toaster`      | `registry:component` | Toasts about an operation's outcome: `AdminToaster` is placed once, and they're shown by calling `notify.info`, `notify.success`, `notify.warning`, `notify.danger` from anywhere, including code outside React                                                                                                                                                        |
 | `widget-progress`    | `registry:component` | A dashboard progress-bar card: the share as a percentage of `max` (100 by default), an out-of-range value doesn't break the layout                                                                                                                                                                                                                                      |
-| `page-list`          | `registry:component` | A list page: a section heading outside and a `widget-table` card below it — filters in its header, pagination and a page-size picker in the footer. Every value is controlled, and pagination isn't rendered without `total`. The `status` prop swaps the card's body for a state, while the heading and filters stay available. `selectedKeys`, `onSelectionChange`, and `selectionActions` forward straight through to `widget-table`, the same way sorting and pagination do                                     |
+| `page-list`          | `registry:component` | A list page: a section heading outside and a `widget-table` card below it — filters in its header, pagination and a page-size picker in the footer. Every value is controlled, and pagination isn't rendered without `total`. A filter is `search`, `select`, or `date-range` (rendered via `date-range-field`). The `status` prop swaps the card's body for a state, while the heading and filters stay available. `selectedKeys`, `onSelectionChange`, and `selectionActions` forward straight through to `widget-table`, the same way sorting and pagination do                                     |
 
 `widget-table`, `widget-chart`, and `widget-list` — the widgets with
 data — show `state-empty` themselves when there's no data: no rows, no
@@ -211,10 +212,12 @@ avatar trigger and on the `nav`, defaulting to "Open user menu" and
 string before this convention existed — `widget-list` and `widget-chart`
 take `emptyTitle` directly, `state-loading` takes `label`, `color-field`
 takes `placeholder` and `hexInputLabel` — and stayed flat rather than being
-wrapped in a single-key object. `date-field` and `date-time-field` also
-gained `locale` (a `date-fns` `Locale`, `enUS` by default) and
-`displayFormat`, so the calendar and the formatted date can move off
-English without a wrapper. The form fields carry the same convention:
+wrapped in a single-key object. `date-field`, `date-time-field`, and
+`date-range-field` also gained `locale` (a `date-fns` `Locale`, `enUS` by
+default) and `displayFormat`, so the calendar and the formatted date can
+move off English without a wrapper; `date-range-field` additionally takes
+`presets`, an array the consumer can swap wholesale to relabel or
+recompute the preset column. The form fields carry the same convention:
 `select-field`'s `placeholder` defaults to "Select…", `page-form`'s
 `submitLabel` and `cancelLabel` default to "Save" and "Cancel", and the
 field-level `label`, `hint` and `error` texts are always the consumer's
@@ -225,7 +228,10 @@ with no `labels` and no locale renders exactly as before.
 `localeRu` const, sliced into the exact shape each prop above expects, so
 a slice passes straight in — `<WidgetTable labels={localeRu.widgetTable} />`,
 `<DateField locale={localeRu.dateField.locale} displayFormat={localeRu.dateField.displayFormat} />`.
-It bundles `date-fns`'s `ru` locale for the two date fields. It's a static
+It bundles `date-fns`'s `ru` locale for the three date fields, and
+`localeRu.dateRangeField.presets` reuses `date-range-field`'s own default
+presets — same ids, same range math — mapped over to swap in Russian
+labels, so the two can't drift apart. It's a static
 object, not a runtime i18n system: it doesn't watch a locale setting or
 re-render anything itself, it just holds the words. Install it like any
 other item:

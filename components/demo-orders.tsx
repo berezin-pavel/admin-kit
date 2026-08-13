@@ -9,6 +9,7 @@ import { Download, Eye, Pencil, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { notify } from "@/registry/admin-toaster/admin-toaster"
 import { ConfirmDialog } from "@/registry/confirm-dialog/confirm-dialog"
+import { parseDateRangeValue } from "@/registry/date-range-field/date-range-field"
 import { localeRu } from "@/registry/locale-ru/locale-ru"
 import { PageList, type PageListFilter } from "@/registry/page-list/page-list"
 import { RowActions } from "@/registry/row-actions/row-actions"
@@ -65,6 +66,7 @@ export function DemoOrders() {
 
   const [search, setSearch] = useState("")
   const [status, setStatus] = useState("all")
+  const [dateRange, setDateRange] = useState("")
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE)
   const [sort, setSort] = useState<WidgetTableSort | undefined>(undefined)
@@ -109,6 +111,7 @@ export function DemoOrders() {
   ]
 
   const query = search.trim().toLowerCase()
+  const createdAtRange = parseDateRangeValue(dateRange)
 
   const filtered = rows.filter((row) => {
     const byStatus = status === "all" || row.status === status
@@ -117,8 +120,12 @@ export function DemoOrders() {
       row.number.includes(query) ||
       row.customer.toLowerCase().includes(query) ||
       row.product.toLowerCase().includes(query)
+    const byDateRange =
+      !createdAtRange ||
+      (row.createdAt.getTime() >= createdAtRange.from.getTime() &&
+        row.createdAt.getTime() <= createdAtRange.to.getTime())
 
-    return byStatus && byQuery
+    return byStatus && byQuery && byDateRange
   })
 
   const matched = sortOrderRows(filtered, sort)
@@ -195,6 +202,20 @@ export function DemoOrders() {
       kind: "select",
       value: status,
       options: statusOptions,
+    },
+    {
+      id: "createdAt",
+      label: strings.dateRangeFilterLabel,
+      kind: "date-range",
+      value: dateRange,
+      dateRange:
+        locale === "ru"
+          ? {
+              locale: localeRu.dateRangeField.locale,
+              displayFormat: localeRu.dateRangeField.displayFormat,
+              presets: localeRu.dateRangeField.presets,
+            }
+          : undefined,
     },
   ]
 
@@ -273,8 +294,10 @@ export function DemoOrders() {
         onFilterChange={(id, value) => {
           if (id === "search") {
             setSearch(value)
-          } else {
+          } else if (id === "status") {
             setStatus(value)
+          } else {
+            setDateRange(value)
           }
 
           setPage(1)

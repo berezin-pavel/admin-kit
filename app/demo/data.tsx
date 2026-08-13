@@ -9,9 +9,13 @@ import {
   ShoppingCart,
   SportShoe,
 } from "lucide-react"
+import { format } from "date-fns"
+import type { Locale } from "date-fns"
+import { enUS, ru } from "date-fns/locale"
 
 import { cn } from "@/lib/utils"
 import type { AdminNavItem } from "@/registry/admin-shell/admin-shell"
+import type { DateRange } from "@/registry/date-range-field/date-range-field"
 import type { SelectFieldOption } from "@/registry/select-field/select-field"
 import type { StatusTone } from "@/registry/status-badge/status-badge"
 import type { WidgetChartSeries } from "@/registry/widget-chart/widget-chart"
@@ -116,34 +120,107 @@ export function getDemoMonths(locale: DemoLocale): readonly string[] {
   return MONTHS[locale]
 }
 
-const FINANCE_SERIES_LABELS: Record<
-  DemoLocale,
-  { revenue: string; expenses: string; profit: string }
-> = {
-  en: { revenue: "Revenue", expenses: "Expenses", profit: "Profit" },
-  ru: { revenue: "Выручка", expenses: "Расходы", profit: "Прибыль" },
+export interface DemoDailyMetric {
+  date: Date
+  orders: number
+  revenue: number
 }
 
-const FINANCE_SERIES_VALUES = {
-  revenue: [298, 312, 356, 379, 402, 431, 458, 486, 512, 549, 601, 668],
-  expenses: [210, 205, 230, 235, 245, 255, 260, 270, 275, 285, 300, 320],
-  profit: [88, 107, 126, 144, 157, 176, 198, 216, 237, 264, 301, 348],
+const DAILY_HISTORY_DAYS = 365
+
+function computeDailyOrderCount(dayOffset: number): number {
+  const cycle = (dayOffset * 7 + 11) % 24
+  return 8 + cycle
 }
 
-export function getDemoFinanceSeries(
+function computeDailyAverageOrderValue(dayOffset: number): number {
+  const cycle = (dayOffset * 17 + 9) % 40
+  return 900 + cycle * 18
+}
+
+function buildDailyMetric(anchor: Date, dayOffset: number): DemoDailyMetric {
+  const date = new Date(anchor)
+  date.setDate(date.getDate() - dayOffset)
+  const orders = computeDailyOrderCount(dayOffset)
+
+  return { date, orders, revenue: orders * computeDailyAverageOrderValue(dayOffset) }
+}
+
+export function getDemoDailyMetrics(
+  today: Date = new Date()
+): readonly DemoDailyMetric[] {
+  const anchor = new Date(today.getFullYear(), today.getMonth(), today.getDate())
+
+  return Array.from({ length: DAILY_HISTORY_DAYS }, (_, dayOffset) =>
+    buildDailyMetric(anchor, dayOffset)
+  ).reverse()
+}
+
+function isDateWithinRange(date: Date, range: DateRange): boolean {
+  return (
+    date.getTime() >= range.from.getTime() && date.getTime() <= range.to.getTime()
+  )
+}
+
+export function getDemoMetricsInRange(
+  metrics: readonly DemoDailyMetric[],
+  range: DateRange | undefined
+): readonly DemoDailyMetric[] {
+  return range ? metrics.filter((metric) => isDateWithinRange(metric.date, range)) : []
+}
+
+export interface DemoRangeSummary {
+  orderCount: number
+  revenue: number
+  averageOrder: number
+}
+
+export function summarizeDemoMetrics(
+  metrics: readonly DemoDailyMetric[]
+): DemoRangeSummary {
+  const orderCount = metrics.reduce((sum, metric) => sum + metric.orders, 0)
+  const revenue = metrics.reduce((sum, metric) => sum + metric.revenue, 0)
+  const averageOrder = orderCount > 0 ? Math.round(revenue / orderCount) : 0
+
+  return { orderCount, revenue, averageOrder }
+}
+
+export function getDemoPreviousRange(range: DateRange): DateRange {
+  const spanDays =
+    Math.round((range.to.getTime() - range.from.getTime()) / 86_400_000) + 1
+  const to = new Date(range.from)
+  to.setDate(to.getDate() - 1)
+  const from = new Date(to)
+  from.setDate(from.getDate() - (spanDays - 1))
+
+  return { from, to }
+}
+
+const CHART_DATE_LOCALE: Record<DemoLocale, Locale> = { en: enUS, ru }
+
+const DAILY_REVENUE_SERIES_LABEL: Record<DemoLocale, string> = {
+  en: "Revenue",
+  ru: "Выручка",
+}
+
+export function getDemoRevenueChartData(
+  metrics: readonly DemoDailyMetric[],
   locale: DemoLocale
-): readonly WidgetChartSeries[] {
-  const labels = FINANCE_SERIES_LABELS[locale]
+): { labels: readonly string[]; series: readonly WidgetChartSeries[] } {
+  const dateLocale = CHART_DATE_LOCALE[locale]
 
-  return [
-    { id: "revenue", label: labels.revenue, values: FINANCE_SERIES_VALUES.revenue },
-    {
-      id: "expenses",
-      label: labels.expenses,
-      values: FINANCE_SERIES_VALUES.expenses,
-    },
-    { id: "profit", label: labels.profit, values: FINANCE_SERIES_VALUES.profit },
-  ]
+  return {
+    labels: metrics.map((metric) =>
+      format(metric.date, "d MMM", { locale: dateLocale })
+    ),
+    series: [
+      {
+        id: "revenue",
+        label: DAILY_REVENUE_SERIES_LABEL[locale],
+        values: metrics.map((metric) => metric.revenue),
+      },
+    ],
+  }
 }
 
 const ORDERS_BY_CHANNEL_LABELS: Record<
@@ -333,6 +410,14 @@ function formatThousands(value: number, separator: string): string {
 const CURRENCY_FORMAT: Record<DemoLocale, (amount: number) => string> = {
   en: (amount) => `$${formatThousands(amount, ",")}`,
   ru: (amount) => `₽ ${formatThousands(amount, " ")}`,
+}
+
+export function formatDemoCurrency(amount: number, locale: DemoLocale): string {
+  return CURRENCY_FORMAT[locale](amount)
+}
+
+export function formatDemoNumber(value: number, locale: DemoLocale): string {
+  return formatThousands(value, locale === "ru" ? " " : ",")
 }
 
 function computeOrderAmount(index: number): number {

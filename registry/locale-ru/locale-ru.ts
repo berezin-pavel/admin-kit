@@ -1,5 +1,18 @@
 import { ru } from "date-fns/locale"
 
+import { defaultDateRangePresets } from "@/registry/date-range-field/date-range-field"
+
+const dateRangePresetLabelsRu: Record<string, string> = {
+  today: "Сегодня",
+  yesterday: "Вчера",
+  "this-week": "Эта неделя",
+  "this-month": "Этот месяц",
+  "this-year": "Этот год",
+  "last-week": "Прошлая неделя",
+  "last-month": "Прошлый месяц",
+  "last-year": "Прошлый год",
+}
+
 export const localeRu = {
   widgetTable: {
     emptyTitle: "Данных нет",
@@ -35,6 +48,15 @@ export const localeRu = {
     placeholder: "Выберите дату и время",
     displayFormat: "d MMMM yyyy, HH:mm",
     locale: ru,
+  },
+  dateRangeField: {
+    placeholder: "Выберите период",
+    displayFormat: "dd.MM.yy",
+    locale: ru,
+    presets: defaultDateRangePresets.map((preset) => ({
+      ...preset,
+      label: dateRangePresetLabelsRu[preset.id] ?? preset.label,
+    })),
   },
   colorField: { placeholder: "Выберите цвет", hexInputLabel: "HEX-код цвета" },
   selectField: { placeholder: "Выберите…" },

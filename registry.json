@@ -227,7 +227,10 @@
       "name": "locale-ru",
       "type": "registry:component",
       "title": "Russian locale pack",
-      "description": "A Russian dictionary for the kit's items: a single const, localeRu, sliced into the exact shapes the other items' labels and locale props expect, so a slice spreads or passes straight into a prop — labels={localeRu.widgetTable}, locale={localeRu.dateField.locale}. Covers widget-table, widget-list, widget-chart, state-loading, state-error, state-forbidden, state-offline, widget-placeholder, confirm-dialog, date-field, date-time-field, color-field, sidebar-toggle, theme-toggle, admin-shell, language-toggle, user-menu, and breadcrumbs, and bundles date-fns's ru locale for the date fields. Not a runtime i18n solution — it's a static dictionary, and switching locale at runtime is on the consumer.",
+      "description": "A Russian dictionary for the kit's items: a single const, localeRu, sliced into the exact shapes the other items' labels and locale props expect, so a slice spreads or passes straight into a prop — labels={localeRu.widgetTable}, locale={localeRu.dateField.locale}. Covers widget-table, widget-list, widget-chart, state-loading, state-error, state-forbidden, state-offline, widget-placeholder, confirm-dialog, date-field, date-time-field, date-range-field, color-field, sidebar-toggle, theme-toggle, admin-shell, language-toggle, user-menu, and breadcrumbs, and bundles date-fns's ru locale for the date fields. The dateRangeField slice reuses date-range-field's default presets' ids and range math and only swaps in Russian labels, so the two never drift apart. Not a runtime i18n solution — it's a static dictionary, and switching locale at runtime is on the consumer.",
+      "registryDependencies": [
+        "berezin-pavel/admin-kit/date-range-field"
+      ],
       "dependencies": [
         "date-fns"
       ],
@@ -652,6 +655,30 @@
     },
     {
       "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "date-range-field",
+      "type": "registry:component",
+      "title": "Date range field",
+      "description": "A range picker: a trigger button showing the two dates joined by an en dash, and a popover with a preset column on the left and a two-month range calendar on the right. The value is a single YYYY-MM-DD..YYYY-MM-DD string — the \"..\" separator keeps a range a single PageListFilter-compatible string — and an empty string means \"nothing selected\"; parsing is calendar-strict like date-field and rejects a from later than to. Controlled: the consumer holds value and onChange. Presets (Today, Yesterday, This week, This month, This year, Last week, Last month, Last year by default, overridable via the presets prop) compute their range from an explicit today argument, so \"this week\" and the rest stay deterministic in tests; weeks start on Monday regardless of locale, matching the calendar primitive. Clicking a preset commits and closes the popover immediately; picking a range on the calendar commits only once both ends are chosen — a lone start date stays inside the popup and never reaches onChange. page-list wires this in as its date-range filter kind.",
+      "registryDependencies": [
+        "button",
+        "calendar",
+        "label",
+        "popover"
+      ],
+      "dependencies": [
+        "date-fns",
+        "lucide-react"
+      ],
+      "files": [
+        {
+          "path": "registry/date-range-field/date-range-field.tsx",
+          "type": "registry:component",
+          "target": "@components/admin/date-range-field.tsx"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
       "name": "time-field",
       "type": "registry:component",
       "title": "Time field",
@@ -826,9 +853,10 @@
       "name": "page-list",
       "type": "registry:component",
       "title": "List page",
-      "description": "A list page: a section title, optional actions, a filter bar, a table, and pagination underneath it. Everything is controlled: the page stores neither the current page number nor the filter values, it receives them as props and reports changes via onFilterChange and onPageChange. The status prop picks the body's content: loading, error, forbidden, and offline swap in the matching state, ready shows the table; the title and filters stay visible under any status, so the request can be retried with a different filter. Pagination is built from page, pageSize, and total, and isn't rendered at all if total isn't passed. A filter is either a text search or a dropdown list. Row selection forwards straight through to widget-table, the same way sorting and pagination do: pass selectedKeys, onSelectionChange, and selectionActions and the underlying table renders the checkbox column and selection bar. Requires the admin-theme theme.",
+      "description": "A list page: a section title, optional actions, a filter bar, a table, and pagination underneath it. Everything is controlled: the page stores neither the current page number nor the filter values, it receives them as props and reports changes via onFilterChange and onPageChange. The status prop picks the body's content: loading, error, forbidden, and offline swap in the matching state, ready shows the table; the title and filters stay visible under any status, so the request can be retried with a different filter. Pagination is built from page, pageSize, and total, and isn't rendered at all if total isn't passed. A filter is a text search, a dropdown list, or a date-range picker (rendered via date-range-field, its value passed through as-is and reported the same way as the other kinds). Row selection forwards straight through to widget-table, the same way sorting and pagination do: pass selectedKeys, onSelectionChange, and selectionActions and the underlying table renders the checkbox column and selection bar. Requires the admin-theme theme.",
       "registryDependencies": [
         "berezin-pavel/admin-kit/admin-theme",
+        "berezin-pavel/admin-kit/date-range-field",
         "berezin-pavel/admin-kit/state-error",
         "berezin-pavel/admin-kit/state-forbidden",
         "berezin-pavel/admin-kit/state-loading",
