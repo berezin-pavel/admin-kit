@@ -46,26 +46,31 @@ export function AdminShellFooterView({
         locales={locales}
         onLocaleChange={setLocale}
       />
-      <UserMenu
-        name="Alex Morgan"
-        email="alex@example.com"
-        items={[
-          {
-            id: "profile",
-            label: "Profile",
-            icon: User,
-            onSelect: () => notify.info("Opened profile"),
-          },
-          {
-            id: "sign-out",
-            label: "Sign out",
-            icon: LogOut,
-            tone: "danger",
-            onSelect: () => notify.info("Signed out"),
-          },
-        ]}
-      />
     </>
+  )
+
+  const userMenu = (
+    <UserMenu
+      name="Alex Morgan"
+      email="alex@example.com"
+      side="bottom"
+      align="start"
+      items={[
+        {
+          id: "profile",
+          label: "Profile",
+          icon: User,
+          onSelect: () => notify.info("Opened profile"),
+        },
+        {
+          id: "sign-out",
+          label: "Sign out",
+          icon: LogOut,
+          tone: "danger",
+          onSelect: () => notify.info("Signed out"),
+        },
+      ]}
+    />
   )
 
   return header ? (
@@ -74,6 +79,7 @@ export function AdminShellFooterView({
       nav={nav}
       activeHref="/orders"
       collapsed={collapsed}
+      sidebarActions={userMenu}
       sidebarFooter={footer}
     >
       {children}
@@ -86,6 +92,7 @@ export function AdminShellFooterView({
       activeHref="/orders"
       header={false}
       collapsed={collapsed}
+      sidebarActions={userMenu}
       sidebarFooter={footer}
     >
       {children}

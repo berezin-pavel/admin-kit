@@ -23,6 +23,7 @@ type AdminShellBaseProps = {
   activeHref: string
   renderLink?: AdminNavLinkRenderer
   sidebarFooter?: ReactNode
+  sidebarActions?: ReactNode
   collapsed?: boolean
   children?: ReactNode
   className?: string
@@ -38,6 +39,7 @@ export function AdminShell({
   activeHref,
   renderLink,
   sidebarFooter,
+  sidebarActions,
   collapsed = false,
   header = true,
   actions,
@@ -52,6 +54,7 @@ export function AdminShell({
   const menu = (
     <AdminMenu
       appName={appName}
+      actions={sidebarActions}
       footer={sidebarFooter}
       showOnDesktop={collapsed}
       openMenuLabel={openMenuLabel}
@@ -90,12 +93,25 @@ export function AdminShell({
         ) : null}
         <div
           className={cn(
-            "hidden h-14 shrink-0 items-center px-6 text-sm font-semibold",
+            "hidden h-14 shrink-0 items-center justify-between gap-2 px-6 text-sm font-semibold",
             !collapsed && "md:flex"
           )}
         >
           {appName}
+          {sidebarActions ? (
+            <div className="flex items-center gap-1">{sidebarActions}</div>
+          ) : null}
         </div>
+        {sidebarActions ? (
+          <div
+            className={cn(
+              "flex shrink-0 flex-col items-center gap-2 p-3",
+              !collapsed && "md:hidden"
+            )}
+          >
+            {sidebarActions}
+          </div>
+        ) : null}
         <AdminNav
           nav={nav}
           activeHref={activeHref}

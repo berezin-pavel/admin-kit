@@ -18,7 +18,6 @@ import {
   parseDateRangeValue,
 } from "@/registry/date-range-field/date-range-field"
 import { localeRu } from "@/registry/locale-ru/locale-ru"
-import { PageHeader } from "@/registry/page-header/page-header"
 import { WidgetActivity } from "@/registry/widget-activity/widget-activity"
 import { WidgetChart } from "@/registry/widget-chart/widget-chart"
 import { WidgetDonut } from "@/registry/widget-donut/widget-donut"
@@ -154,7 +153,6 @@ export default function DemoPage() {
 
   return (
     <div className="flex flex-col gap-4">
-      <PageHeader title={strings.title} />
       <div className="grid gap-4 sm:grid-cols-3">
         <WidgetMetric
           title={strings.metricOrdersTitle}

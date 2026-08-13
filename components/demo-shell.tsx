@@ -39,7 +39,8 @@ export function DemoShell({ children }: { children: ReactNode }) {
       nav={getDemoNav(locale)}
       activeHref={pathname}
       renderLink={renderDemoLink}
-      actions={<DemoUserMenu />}
+      header={false}
+      sidebarActions={<DemoUserMenu />}
       collapsed={collapsed}
       labels={locale === "ru" ? localeRu.adminShell : undefined}
       sidebarFooter={
