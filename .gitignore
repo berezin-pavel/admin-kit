@@ -5,6 +5,8 @@ build/
 out/
 coverage/
 .dev/
+test-results/
+playwright-report/
 
 .env
 .env.local
