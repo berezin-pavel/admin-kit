@@ -79,7 +79,7 @@ export function PageAuthAside() {
       <p className="text-2xl font-semibold tracking-tight">
         Run the whole storefront from one screen.
       </p>
-      <p className="text-sm text-muted-foreground">
+      <p className="text-sm text-foreground/80">
         Orders, inventory, and customers stay in sync the moment they change
         — no refresh, no second tab.
       </p>

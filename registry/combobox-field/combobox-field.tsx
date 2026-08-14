@@ -4,6 +4,8 @@ import * as React from "react"
 
 import { cn } from "@/lib/utils"
 import { Label } from "@/components/ui/label"
+import { XIcon } from "lucide-react"
+
 import {
   Combobox,
   ComboboxCollection,
@@ -14,7 +16,12 @@ import {
   ComboboxItem,
   ComboboxLabel,
   ComboboxList,
+  ComboboxTrigger,
 } from "@/components/ui/combobox"
+import {
+  InputGroupAddon,
+  InputGroupButton,
+} from "@/components/ui/input-group"
 
 export interface ComboboxFieldOption {
   value: string
@@ -28,6 +35,8 @@ export interface ComboboxFieldProps {
   options: readonly ComboboxFieldOption[]
   placeholder?: string
   emptyLabel?: string
+  openLabel?: string
+  clearLabel?: string
   label?: string
   hint?: string
   error?: string
@@ -92,6 +101,8 @@ export function ComboboxField({
   options,
   placeholder = "Search…",
   emptyLabel = "Nothing found",
+  openLabel = "Open the list",
+  clearLabel = "Clear the selection",
   label,
   hint,
   error,
@@ -131,11 +142,33 @@ export function ComboboxField({
           id={id}
           placeholder={placeholder}
           disabled={disabled}
-          showClear
+          showTrigger={false}
           className="w-full"
           aria-invalid={error ? true : undefined}
           aria-describedby={error ? errorId : hint ? hintId : undefined}
-        />
+        >
+          <InputGroupAddon align="inline-end">
+            {value ? (
+              <InputGroupButton
+                size="icon-xs"
+                variant="ghost"
+                disabled={disabled}
+                aria-label={clearLabel}
+                onClick={() => onChange("")}
+              >
+                <XIcon />
+              </InputGroupButton>
+            ) : (
+              <InputGroupButton
+                size="icon-xs"
+                variant="ghost"
+                disabled={disabled}
+                aria-label={openLabel}
+                render={<ComboboxTrigger />}
+              />
+            )}
+          </InputGroupAddon>
+        </ComboboxInput>
         <ComboboxContent>
           <ComboboxEmpty>{emptyLabel}</ComboboxEmpty>
           <ComboboxList>

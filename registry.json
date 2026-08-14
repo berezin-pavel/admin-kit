@@ -830,7 +830,7 @@
       "name": "file-field",
       "type": "registry:component",
       "title": "File field",
-      "description": "A file picker built like the kit's other fields — label, hint, error — with one deliberate exception: value is File | null and onChange takes a File | null, not a string. A File can't be serialized into a string the way every other field's value is, and faking it with an object URL would leak the reference; checkbox-field's boolean is the kit's other exception to the string convention. accept restricts the file type the same way the native attribute does. The drop zone accepts a dragged file and highlights on dragover, buttonLabel opens the native picker, and the selected name and size (formatFileSize, exported and tested for B/KB/MB) show next to it, or noFileLabel when nothing's chosen; a ghost X button clears the selection. The native input stays in the DOM, visually hidden rather than display:none, so Tab and Enter/Space still reach and drive it.",
+      "description": "A file picker built like the kit's other fields — label, hint, error — with one deliberate exception: value is File | null and onChange takes a File | null, not a string. A File can't be serialized into a string the way every other field's value is, and faking it with an object URL would leak the reference; checkbox-field's boolean is the kit's other exception to the string convention. accept restricts the file type the same way the native attribute does. The drop zone accepts a dragged file and highlights on dragover, buttonLabel opens the native picker, and the selected name and size (formatFileSize, exported and tested for B/KB/MB) show next to it, or noFileLabel when nothing's chosen; a ghost X button clears the selection. The native input stays in the DOM, visually hidden rather than display:none, so Tab and Enter/Space still reach and drive it. A disabled field is marked aria-disabled, so the dimmed text reads as inactive rather than as low-contrast content.",
       "registryDependencies": [
         "button",
         "label"
@@ -898,7 +898,7 @@
       "name": "widget-progress",
       "title": "Progress widget",
       "type": "registry:component",
-      "description": "A progress-bar card for a dashboard: warehouse fill level, plan completion, quota usage. Next to the bar is a percentage share computed against max (100 by default). A value outside the range doesn't break the layout: a negative one counts as zero, one above max counts as the maximum. An optional target draws a tick mark on the bar at target/max and a right-aligned targetLabel caption (\"Goal\" by default) — target is clamped into [0, max] the same way value is. Requires the admin-theme theme. The tone prop recolors the bar (default/success/warning/danger theme tokens) so a goal that is behind schedule reads at a glance; the consumer decides the thresholds. loading swaps the bar and the percentage for skeleton bars while the title stays put.",
+      "description": "A progress-bar card for a dashboard: warehouse fill level, plan completion, quota usage. Next to the bar is a percentage share computed against max (100 by default). A value outside the range doesn't break the layout: a negative one counts as zero, one above max counts as the maximum. An optional target draws a tick mark on the bar at target/max and a right-aligned targetLabel caption (\"Goal\" by default) — target is clamped into [0, max] the same way value is. Requires the admin-theme theme. The tone prop recolors the bar (default/success/warning/danger theme tokens) so a goal that is behind schedule reads at a glance; the consumer decides the thresholds. loading swaps the bar and the percentage for skeleton bars while the title stays put. The bar takes its accessible name from title, so a screen reader announces which target is at 62% rather than an anonymous progress bar.",
       "registryDependencies": [
         "card",
         "progress",
@@ -1021,7 +1021,7 @@
       "name": "combobox-field",
       "type": "registry:component",
       "title": "Combobox field",
-      "description": "A single-select field with type-ahead search over a value/label options list, for picking one record out of hundreds — a customer, a product, a warehouse — where select-field's plain dropdown stops scaling. The visible input shows the selected option's label when closed and the typed query while searching; filterComboboxOptions matches the trimmed query as a case-insensitive substring anywhere in the label, and is exported and unit-tested on its own. Clearing the field always calls onChange(\"\"), so the field never holds a selection the parent doesn't know about. When any option carries a group, matching options render under their group's name and ungrouped options keep their original order ahead of the named groups; with no groups at all the list is flat. emptyLabel (\"Nothing found\" by default) renders when a query matches nothing, placeholder (\"Search…\") sits in the empty input. Keyboard movement, Enter and Escape come from the underlying Base UI combobox rather than hand-rolled key handling, so Enter does not submit an enclosing form while the popup is open. Shares the label/hint/error anatomy of every other field: error replaces hint and sets aria-invalid.",
+      "description": "A single-select field with type-ahead search over a value/label options list, for picking one record out of hundreds — a customer, a product, a warehouse — where select-field's plain dropdown stops scaling. The visible input shows the selected option's label when closed and the typed query while searching; filterComboboxOptions matches the trimmed query as a case-insensitive substring anywhere in the label, and is exported and unit-tested on its own. Clearing the field always calls onChange(\"\"), so the field never holds a selection the parent doesn't know about. When any option carries a group, matching options render under their group's name and ungrouped options keep their original order ahead of the named groups; with no groups at all the list is flat. emptyLabel (\"Nothing found\" by default) renders when a query matches nothing, placeholder (\"Search…\") sits in the empty input. Keyboard movement, Enter and Escape come from the underlying Base UI combobox rather than hand-rolled key handling, so Enter does not submit an enclosing form while the popup is open. Shares the label/hint/error anatomy of every other field: error replaces hint and sets aria-invalid. The trigger and the clear button carry accessible names of their own (openLabel, clearLabel), since an icon-only button is silent to a screen reader otherwise.",
       "registryDependencies": [
         "combobox",
         "input-group",
@@ -1033,6 +1033,9 @@
           "type": "registry:component",
           "target": "@components/admin/combobox-field.tsx"
         }
+      ],
+      "dependencies": [
+        "lucide-react"
       ]
     },
     {

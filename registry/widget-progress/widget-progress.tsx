@@ -64,6 +64,7 @@ export function WidgetProgress({
               <Progress
                 value={clampedValue}
                 max={max}
+                aria-label={title}
                 className={cn(toneClassName[tone])}
               >
                 <span className="text-2xl font-semibold tabular-nums">

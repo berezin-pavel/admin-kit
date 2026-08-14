@@ -62,6 +62,7 @@ export function FileField({
     <div className={cn("flex flex-col gap-1.5", className)}>
       {label ? <Label htmlFor={id}>{label}</Label> : null}
       <div
+        aria-disabled={disabled || undefined}
         className={cn(
           "flex items-center gap-2 rounded-lg border border-dashed border-input px-2.5 py-1.5 transition-colors",
           isDragOver && "border-ring bg-muted/50",

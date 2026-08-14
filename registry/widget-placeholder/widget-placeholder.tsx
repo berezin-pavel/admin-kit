@@ -19,7 +19,7 @@ export function WidgetPlaceholder({
       )}
     >
       <span className="text-sm font-medium text-muted-foreground">{title}</span>
-      <span className="text-sm text-muted-foreground/70">{hint}</span>
+      <span className="text-sm text-muted-foreground">{hint}</span>
     </div>
   )
 }
