@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
+import { Skeleton } from "@/components/ui/skeleton"
 import { cn } from "@/lib/utils"
 
 export type WidgetProgressTone = "default" | "success" | "warning" | "danger"
@@ -19,6 +20,7 @@ export interface WidgetProgressProps {
   targetLabel?: string
   tone?: WidgetProgressTone
   hint?: string
+  loading?: boolean
   className?: string
 }
 
@@ -30,6 +32,7 @@ export function WidgetProgress({
   targetLabel = "Goal",
   tone = "default",
   hint,
+  loading = false,
   className,
 }: WidgetProgressProps) {
   const clampedValue = Math.min(Math.max(value, 0), max)
@@ -46,37 +49,49 @@ export function WidgetProgress({
           {title}
         </CardTitle>
       </CardHeader>
-      <CardContent className="flex flex-col gap-2">
-        <div className="relative">
-          <Progress
-            value={clampedValue}
-            max={max}
-            className={cn(toneClassName[tone])}
-          >
-            <span className="text-2xl font-semibold tabular-nums">
-              {percent}%
-            </span>
-          </Progress>
-          {targetPercent !== undefined ? (
-            <span
-              aria-hidden="true"
-              className="absolute bottom-0 h-1 w-0.5 bg-foreground/60"
-              style={{ left: `${targetPercent}%` }}
-            />
-          ) : null}
-        </div>
-        {hint || target !== undefined ? (
-          <div className="flex items-center gap-2">
-            {hint ? (
-              <span className="text-sm text-muted-foreground">{hint}</span>
-            ) : null}
-            {target !== undefined ? (
-              <span className="ml-auto text-sm text-muted-foreground">
-                {targetLabel}
-              </span>
-            ) : null}
+      <CardContent
+        className="flex flex-col gap-2"
+        aria-busy={loading || undefined}
+      >
+        {loading ? (
+          <div className="flex flex-col gap-2">
+            <Skeleton className="h-7 w-14" />
+            <Skeleton className="h-1 w-full rounded-full" />
           </div>
-        ) : null}
+        ) : (
+          <>
+            <div className="relative">
+              <Progress
+                value={clampedValue}
+                max={max}
+                className={cn(toneClassName[tone])}
+              >
+                <span className="text-2xl font-semibold tabular-nums">
+                  {percent}%
+                </span>
+              </Progress>
+              {targetPercent !== undefined ? (
+                <span
+                  aria-hidden="true"
+                  className="absolute bottom-0 h-1 w-0.5 bg-foreground/60"
+                  style={{ left: `${targetPercent}%` }}
+                />
+              ) : null}
+            </div>
+            {hint || target !== undefined ? (
+              <div className="flex items-center gap-2">
+                {hint ? (
+                  <span className="text-sm text-muted-foreground">{hint}</span>
+                ) : null}
+                {target !== undefined ? (
+                  <span className="ml-auto text-sm text-muted-foreground">
+                    {targetLabel}
+                  </span>
+                ) : null}
+              </div>
+            ) : null}
+          </>
+        )}
       </CardContent>
     </Card>
   )

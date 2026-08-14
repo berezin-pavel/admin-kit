@@ -160,5 +160,17 @@ export const widgetChartEntry: ShowcaseEntry = {
         <WidgetChart title="Revenue by month" labels={[]} series={[]} />
       ),
     },
+    {
+      id: "loading",
+      name: "Loading",
+      render: () => (
+        <WidgetChart
+          title="Revenue by month"
+          labels={months}
+          series={revenueSeries}
+          loading
+        />
+      ),
+    },
   ],
 }

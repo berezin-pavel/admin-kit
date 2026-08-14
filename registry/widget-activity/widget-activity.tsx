@@ -4,6 +4,7 @@ import type { Locale } from "date-fns"
 import { enUS } from "date-fns/locale"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Skeleton } from "@/components/ui/skeleton"
 import { StateEmpty } from "@/registry/state-empty/state-empty"
 
 export interface WidgetActivityEntry {
@@ -27,6 +28,7 @@ export interface WidgetActivityProps {
   locale?: Locale
   dayFormat?: string
   timeFormat?: string
+  loading?: boolean
   className?: string
 }
 
@@ -116,6 +118,8 @@ function groupHeading(
   return format(date, dayFormat, { locale })
 }
 
+const skeletonEntryCount = 3
+
 export function WidgetActivity({
   title,
   entries,
@@ -123,6 +127,7 @@ export function WidgetActivity({
   locale = enUS,
   dayFormat = "MMMM d",
   timeFormat = "HH:mm",
+  loading = false,
   className,
 }: WidgetActivityProps) {
   const groups = groupActivityEntries(entries)
@@ -137,8 +142,24 @@ export function WidgetActivity({
           </CardTitle>
         </CardHeader>
       ) : null}
-      <CardContent>
-        {entries.length === 0 ? (
+      <CardContent aria-busy={loading || undefined}>
+        {loading ? (
+          <ul className="flex flex-col divide-y divide-border">
+            {Array.from({ length: skeletonEntryCount }, (_, index) => (
+              <li
+                key={index}
+                className="flex items-start gap-3 py-3 first:pt-0 last:pb-0"
+              >
+                <Skeleton className="mt-0.5 size-4 shrink-0 rounded-full" />
+                <div className="flex min-w-0 flex-1 flex-col gap-1.5">
+                  <Skeleton className="h-4 w-40" />
+                  <Skeleton className="h-3.5 w-24" />
+                </div>
+                <Skeleton className="mt-0.5 h-3.5 w-10 shrink-0" />
+              </li>
+            ))}
+          </ul>
+        ) : entries.length === 0 ? (
           <StateEmpty title={labels.emptyTitle ?? "No activity"} />
         ) : (
           <div className="flex flex-col gap-4">

@@ -15,6 +15,7 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from "@/components/ui/chart"
+import { Skeleton } from "@/components/ui/skeleton"
 import { StateEmpty } from "@/registry/state-empty/state-empty"
 
 export interface WidgetDonutSlice {
@@ -29,18 +30,21 @@ export interface WidgetDonutProps {
   slices: readonly WidgetDonutSlice[]
   valueFormat?: (value: number, share: number) => string
   emptyTitle?: string
+  loading?: boolean
   className?: string
 }
 
 const sliceColorCount = 5
+const skeletonLegendRowCount = 4
 
 export interface WidgetDonutSliceShare extends WidgetDonutSlice {
   share: number
 }
 
-export function computeDonutShares(
-  slices: readonly WidgetDonutSlice[]
-): { total: number; shares: readonly WidgetDonutSliceShare[] } {
+export function computeDonutShares(slices: readonly WidgetDonutSlice[]): {
+  total: number
+  shares: readonly WidgetDonutSliceShare[]
+} {
   const total = slices.reduce((sum, slice) => sum + slice.value, 0)
 
   return {
@@ -73,6 +77,7 @@ export function WidgetDonut({
   slices,
   valueFormat = defaultValueFormat,
   emptyTitle = "No data",
+  loading = false,
   className,
 }: WidgetDonutProps) {
   const { total, shares } = computeDonutShares(slices)
@@ -90,8 +95,21 @@ export function WidgetDonut({
           {hint ? <CardDescription>{hint}</CardDescription> : null}
         </CardHeader>
       ) : null}
-      <CardContent>
-        {isEmpty ? (
+      <CardContent aria-busy={loading || undefined}>
+        {loading ? (
+          <div className="flex flex-col items-center gap-4 sm:flex-row">
+            <Skeleton className="aspect-square h-40 w-40 shrink-0 rounded-full" />
+            <ul className="flex w-full flex-1 flex-col gap-2">
+              {Array.from({ length: skeletonLegendRowCount }, (_, index) => (
+                <li key={index} className="flex items-center gap-2 text-sm">
+                  <Skeleton className="size-2 shrink-0 rounded-[2px]" />
+                  <Skeleton className="h-3.5 flex-1" />
+                  <Skeleton className="h-3.5 w-8 shrink-0" />
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : isEmpty ? (
           <StateEmpty title={emptyTitle} />
         ) : (
           <div className="flex flex-col items-center gap-4 sm:flex-row">

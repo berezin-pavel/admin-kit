@@ -67,8 +67,7 @@ export const widgetMetricEntry: ShowcaseEntry = {
           title="Revenue"
           value="$18,420"
           trendValues={[
-            820, 932, 901, 1204, 1390, 1280, 1340, 1450, 1510, 1602, 1780,
-            2040,
+            820, 932, 901, 1204, 1390, 1280, 1340, 1450, 1510, 1602, 1780, 2040,
           ]}
         />
       ),
@@ -91,6 +90,11 @@ export const widgetMetricEntry: ShowcaseEntry = {
           ]}
         />
       ),
+    },
+    {
+      id: "loading",
+      name: "Loading",
+      render: () => <WidgetMetric title="Orders" value="312" loading />,
     },
   ],
 }

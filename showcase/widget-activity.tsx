@@ -73,12 +73,25 @@ export const widgetActivityEntry: ShowcaseEntry = {
     {
       id: "grouped",
       name: "Today, yesterday, and earlier",
-      render: () => <WidgetActivity title="Recent activity" entries={buildEntries()} />,
+      render: () => (
+        <WidgetActivity title="Recent activity" entries={buildEntries()} />
+      ),
     },
     {
       id: "empty",
       name: "No activity",
       render: () => <WidgetActivity title="Recent activity" entries={[]} />,
+    },
+    {
+      id: "loading",
+      name: "Loading",
+      render: () => (
+        <WidgetActivity
+          title="Recent activity"
+          entries={buildEntries()}
+          loading
+        />
+      ),
     },
   ],
 }

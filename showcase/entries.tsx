@@ -3,6 +3,7 @@ import { adminToasterEntry } from "./admin-toaster"
 import { breadcrumbsEntry } from "./breadcrumbs"
 import { checkboxFieldEntry } from "./checkbox-field"
 import { colorFieldEntry } from "./color-field"
+import { comboboxFieldEntry } from "./combobox-field"
 import { confirmDialogEntry } from "./confirm-dialog"
 import { formDialogEntry } from "./form-dialog"
 import { dateFieldEntry } from "./date-field"
@@ -12,6 +13,7 @@ import { fileFieldEntry } from "./file-field"
 import { hintEntry } from "./hint"
 import { languageToggleEntry } from "./language-toggle"
 import { localeRuEntry } from "./locale-ru"
+import { multiSelectFieldEntry } from "./multi-select-field"
 import { numberFieldEntry } from "./number-field"
 import { rowActionsEntry } from "./row-actions"
 import { selectFieldEntry } from "./select-field"
@@ -36,7 +38,9 @@ import { widgetListEntry } from "./widget-list"
 import { widgetMetricEntry } from "./widget-metric"
 import { widgetPlaceholderEntry } from "./widget-placeholder"
 import { widgetQuickActionsEntry } from "./widget-quick-actions"
+import { pageAuthEntry } from "./page-auth"
 import { pageEntityEntry } from "./page-entity"
+import { pageTabsEntry } from "./page-tabs"
 import { pageFormEntry } from "./page-form"
 import { pageListEntry } from "./page-list"
 import { pageHeaderEntry } from "./page-header"
@@ -59,6 +63,8 @@ export const showcaseEntries: readonly ShowcaseEntry[] = [
   pageEntityEntry,
   pageListEntry,
   pageFormEntry,
+  pageAuthEntry,
+  pageTabsEntry,
   pageHeaderEntry,
   statusBadgeEntry,
   hintEntry,
@@ -73,6 +79,8 @@ export const showcaseEntries: readonly ShowcaseEntry[] = [
   numberFieldEntry,
   textareaFieldEntry,
   selectFieldEntry,
+  comboboxFieldEntry,
+  multiSelectFieldEntry,
   checkboxFieldEntry,
   fileFieldEntry,
   tagsFieldEntry,

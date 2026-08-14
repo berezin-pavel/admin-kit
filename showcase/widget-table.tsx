@@ -160,9 +160,7 @@ export const widgetTableEntry: ShowcaseEntry = {
     {
       id: "with-sort",
       name: "With sortable columns",
-      render: () => (
-        <WidgetTableShowcaseView title="Recent orders" withSort />
-      ),
+      render: () => <WidgetTableShowcaseView title="Recent orders" withSort />,
     },
     {
       id: "with-page-size",
@@ -198,6 +196,18 @@ export const widgetTableEntry: ShowcaseEntry = {
       name: "With row selection",
       render: () => (
         <WidgetTableShowcaseView title="Recent orders" withSelection />
+      ),
+    },
+    {
+      id: "loading",
+      name: "Loading",
+      render: () => (
+        <WidgetTable
+          title="Recent orders"
+          columns={columns}
+          rows={rows}
+          loading
+        />
       ),
     },
   ],

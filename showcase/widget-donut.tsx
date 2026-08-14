@@ -55,5 +55,16 @@ export const widgetDonutEntry: ShowcaseEntry = {
       name: "No data",
       render: () => <WidgetDonut title="Orders by status" slices={[]} />,
     },
+    {
+      id: "loading",
+      name: "Loading",
+      render: () => (
+        <WidgetDonut
+          title="Orders by status"
+          slices={orderStatusSlices}
+          loading
+        />
+      ),
+    },
   ],
 }

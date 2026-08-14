@@ -12,6 +12,7 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from "@/components/ui/chart"
+import { Skeleton } from "@/components/ui/skeleton"
 import { StateEmpty } from "@/registry/state-empty/state-empty"
 
 export interface WidgetChartSeries {
@@ -29,6 +30,7 @@ export interface WidgetChartProps {
   toolbar?: ReactNode
   empty?: ReactNode
   emptyTitle?: string
+  loading?: boolean
   className?: string
 }
 
@@ -71,6 +73,7 @@ export function WidgetChart({
   toolbar,
   empty,
   emptyTitle = "No data",
+  loading = false,
   className,
 }: WidgetChartProps) {
   const isEmpty = labels.length === 0 || series.length === 0
@@ -85,8 +88,13 @@ export function WidgetChart({
           <div className="flex items-center gap-2">{toolbar}</div>
         ) : null}
       </CardHeader>
-      <CardContent className="flex flex-col gap-3">
-        {isEmpty ? (
+      <CardContent
+        className="flex flex-col gap-3"
+        aria-busy={loading || undefined}
+      >
+        {loading ? (
+          <Skeleton className="h-56 w-full" />
+        ) : isEmpty ? (
           (empty ?? <StateEmpty title={emptyTitle} />)
         ) : (
           <ChartContainer

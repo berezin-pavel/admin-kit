@@ -98,5 +98,10 @@ export const widgetListEntry: ShowcaseEntry = {
       name: "No rows, default state",
       render: () => <WidgetList title="Team" items={[]} />,
     },
+    {
+      id: "loading",
+      name: "Loading",
+      render: () => <WidgetList title="Team" items={teamItems} loading />,
+    },
   ],
 }

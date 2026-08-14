@@ -1,3 +1,5 @@
+import { WidgetQuickActions } from "@/registry/widget-quick-actions/widget-quick-actions"
+
 import {
   EmptyView,
   ThreeColumnsView,
@@ -25,6 +27,13 @@ export const widgetQuickActionsEntry: ShowcaseEntry = {
       id: "empty",
       name: "No actions",
       render: () => <EmptyView />,
+    },
+    {
+      id: "loading",
+      name: "Loading",
+      render: () => (
+        <WidgetQuickActions title="Quick actions" actions={[]} loading />
+      ),
     },
   ],
 }

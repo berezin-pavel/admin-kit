@@ -247,9 +247,10 @@
       "name": "widget-metric",
       "type": "registry:component",
       "title": "Metric widget",
-      "description": "A single-number card for a dashboard: title, value, an optional trend with an arrow, and a caption. direction sets the arrow, and a separate tone prop sets the color (derived from direction by default). trendValues, given two or more points, draws a small line chart under the caption — leave it out and the card renders byte-identical to before. Data is passed as props. Requires the admin-theme theme. Hovering the sparkline shows the exact point value, formatted via trendTooltipFormat.",
+      "description": "A single-number card for a dashboard: title, value, an optional trend with an arrow, and a caption. direction sets the arrow, and a separate tone prop sets the color (derived from direction by default). trendValues, given two or more points, draws a small line chart under the caption — leave it out and the card renders byte-identical to before. Data is passed as props. Requires the admin-theme theme. Hovering the sparkline shows the exact point value, formatted via trendTooltipFormat. loading swaps the value, trend and sparkline for skeleton bars while the title stays put.",
       "registryDependencies": [
         "card",
+        "skeleton",
         "berezin-pavel/admin-kit/admin-theme"
       ],
       "dependencies": [
@@ -269,16 +270,17 @@
       "name": "widget-table",
       "type": "registry:component",
       "title": "Table widget",
-      "description": "A self-sufficient table card: the title is optional, the header holds a toolbar slot for filters on the left and a record count, page-size select, and sort select on the right, and the footer holds centered pagination. A column pulls its value from the row via cell and aligns with the align prop; a column with sortable gets a sort button in its header and aria-sort. The sort select is set with a sortOptions list, and an option's key need not match a column: this lets you sort by a field that isn't rendered, or apply a composite sort behind one opaque key. Sorting and paging are controlled: the table reports the choice via onSortChange and onPageChange but never reorders or slices the rows itself — whoever owns the data sets the order and the slice, otherwise the element would lie on a server with paginated output. With no rows and no empty prop of its own it shows state-empty; the header and footer stay in place. Passing both selectedKeys and onSelectionChange adds a checkbox column: the header checkbox selects or clears every row on the current page only, and once a row is selected it swaps the left side of the header for a selection bar showing an N-selected count, the selectionActions as small buttons, and a clear button.",
+      "description": "A self-sufficient table card: the title is optional, the header holds a toolbar slot for filters on the left and a record count, page-size select, and sort select on the right, and the footer holds centered pagination. A column pulls its value from the row via cell and aligns with the align prop; a column with sortable gets a sort button in its header and aria-sort. The sort select is set with a sortOptions list, and an option's key need not match a column: this lets you sort by a field that isn't rendered, or apply a composite sort behind one opaque key. Sorting and paging are controlled: the table reports the choice via onSortChange and onPageChange but never reorders or slices the rows itself — whoever owns the data sets the order and the slice, otherwise the element would lie on a server with paginated output. With no rows and no empty prop of its own it shows state-empty; the header and footer stay in place. Passing both selectedKeys and onSelectionChange adds a checkbox column: the header checkbox selects or clears every row on the current page only, and once a row is selected it swaps the left side of the header for a selection bar showing an N-selected count, the selectionActions as small buttons, and a clear button. loading swaps the rows for skeleton bars in the same column layout and withholds the sort select, pagination and selection bar until the data arrives.",
       "registryDependencies": [
-        "berezin-pavel/admin-kit/admin-theme",
-        "berezin-pavel/admin-kit/state-empty",
         "button",
         "card",
         "checkbox",
         "pagination",
         "select",
-        "table"
+        "skeleton",
+        "table",
+        "berezin-pavel/admin-kit/admin-theme",
+        "berezin-pavel/admin-kit/state-empty"
       ],
       "files": [
         {
@@ -321,10 +323,11 @@
       "name": "widget-chart",
       "type": "registry:component",
       "title": "Chart widget",
-      "description": "A chart card for a dashboard: a shared labels axis and a series list, each with its own values — the values length must match labels, or the missing points simply aren't drawn. The kind prop switches the rendering between a line (default) and bars. Series color comes from the chart-1…chart-5 tokens in order; past five series the colors cycle, and two series of the same color on one chart read as a bug. The legend appears only when there's more than one series. With no labels or no series at all it shows the \"No data\" state. Requires the admin-theme theme. The header has a toolbar slot on the right — a period picker like date-range-field drops straight in.",
+      "description": "A chart card for a dashboard: a shared labels axis and a series list, each with its own values — the values length must match labels, or the missing points simply aren't drawn. The kind prop switches the rendering between a line (default) and bars. Series color comes from the chart-1…chart-5 tokens in order; past five series the colors cycle, and two series of the same color on one chart read as a bug. The legend appears only when there's more than one series. With no labels or no series at all it shows the \"No data\" state. Requires the admin-theme theme. The header has a toolbar slot on the right — a period picker like date-range-field drops straight in. loading swaps the chart for a skeleton block of the same height, checked ahead of the empty state.",
       "registryDependencies": [
-        "chart",
         "card",
+        "chart",
+        "skeleton",
         "berezin-pavel/admin-kit/admin-theme",
         "berezin-pavel/admin-kit/state-empty"
       ],
@@ -344,9 +347,10 @@
       "name": "widget-list",
       "type": "registry:component",
       "title": "List widget",
-      "description": "A list of rows for a dashboard: a title, an optional description under it, an optional meta on the right, and an optional icon on the left. The icon is accepted as a component — the element doesn't pull in a specific icon library. With no rows and no empty prop passed it shows StateEmpty with \"No data\". Requires the admin-theme theme.",
+      "description": "A list of rows for a dashboard: a title, an optional description under it, an optional meta on the right, and an optional icon on the left. The icon is accepted as a component — the element doesn't pull in a specific icon library. With no rows and no empty prop passed it shows StateEmpty with \"No data\". Requires the admin-theme theme. loading swaps the rows for skeleton bars at the same row rhythm, checked ahead of the empty state.",
       "registryDependencies": [
         "card",
+        "skeleton",
         "berezin-pavel/admin-kit/admin-theme",
         "berezin-pavel/admin-kit/state-empty"
       ],
@@ -894,10 +898,11 @@
       "name": "widget-progress",
       "title": "Progress widget",
       "type": "registry:component",
-      "description": "A progress-bar card for a dashboard: warehouse fill level, plan completion, quota usage. Next to the bar is a percentage share computed against max (100 by default). A value outside the range doesn't break the layout: a negative one counts as zero, one above max counts as the maximum. An optional target draws a tick mark on the bar at target/max and a right-aligned targetLabel caption (\"Goal\" by default) — target is clamped into [0, max] the same way value is. Requires the admin-theme theme. The tone prop recolors the bar (default/success/warning/danger theme tokens) so a goal that is behind schedule reads at a glance; the consumer decides the thresholds.",
+      "description": "A progress-bar card for a dashboard: warehouse fill level, plan completion, quota usage. Next to the bar is a percentage share computed against max (100 by default). A value outside the range doesn't break the layout: a negative one counts as zero, one above max counts as the maximum. An optional target draws a tick mark on the bar at target/max and a right-aligned targetLabel caption (\"Goal\" by default) — target is clamped into [0, max] the same way value is. Requires the admin-theme theme. The tone prop recolors the bar (default/success/warning/danger theme tokens) so a goal that is behind schedule reads at a glance; the consumer decides the thresholds. loading swaps the bar and the percentage for skeleton bars while the title stays put.",
       "registryDependencies": [
         "card",
         "progress",
+        "skeleton",
         "berezin-pavel/admin-kit/admin-theme"
       ],
       "files": [
@@ -913,9 +918,10 @@
       "name": "widget-activity",
       "type": "registry:component",
       "title": "Activity widget",
-      "description": "A recent-activity feed card for a dashboard: entries carry a title, an optional secondary meta line, an optional icon, and a YYYY-MM-DDTHH:mm timestamp — the same string family date-time-field uses, parsed the same strict way. Entries are grouped by calendar day; the group header reads labels.today or labels.yesterday relative to the actual current date, and dayFormat (a date-fns pattern) for anything older. Within a group, entries keep the order they're given — the item never resorts them. With no entries it shows state-empty. Requires the admin-theme theme.",
+      "description": "A recent-activity feed card for a dashboard: entries carry a title, an optional secondary meta line, an optional icon, and a YYYY-MM-DDTHH:mm timestamp — the same string family date-time-field uses, parsed the same strict way. Entries are grouped by calendar day; the group header reads labels.today or labels.yesterday relative to the actual current date, and dayFormat (a date-fns pattern) for anything older. Within a group, entries keep the order they're given — the item never resorts them. With no entries it shows state-empty. Requires the admin-theme theme. loading swaps the entries for skeleton rows at the same rhythm, checked ahead of the empty state.",
       "registryDependencies": [
         "card",
+        "skeleton",
         "berezin-pavel/admin-kit/admin-theme",
         "berezin-pavel/admin-kit/state-empty"
       ],
@@ -935,10 +941,11 @@
       "name": "widget-donut",
       "type": "registry:component",
       "title": "Donut widget",
-      "description": "A donut-chart card for a dashboard: a list of labeled slices, each drawn as a ring segment and as a row in the legend beside it — a color dot, the label, and valueFormat(value, share) right-aligned, where share is value divided by the total (the default renders it as a rounded percentage). Colors cycle through the chart-1…chart-5 tokens in order. With no slices, or slices that total zero, it shows state-empty. Requires the admin-theme theme.",
+      "description": "A donut-chart card for a dashboard: a list of labeled slices, each drawn as a ring segment and as a row in the legend beside it — a color dot, the label, and valueFormat(value, share) right-aligned, where share is value divided by the total (the default renders it as a rounded percentage). Colors cycle through the chart-1…chart-5 tokens in order. With no slices, or slices that total zero, it shows state-empty. Requires the admin-theme theme. loading swaps the ring and the legend for skeleton shapes of the same size, checked ahead of the empty state.",
       "registryDependencies": [
         "card",
         "chart",
+        "skeleton",
         "berezin-pavel/admin-kit/admin-theme",
         "berezin-pavel/admin-kit/state-empty"
       ],
@@ -958,10 +965,11 @@
       "name": "widget-quick-actions",
       "type": "registry:component",
       "title": "Quick actions widget",
-      "description": "A grid of shortcut buttons for a dashboard: id, label, an optional icon component, and an onSelect handler per action. columns switches the grid between two (default) and three columns. With no actions it renders the titled card with an empty grid — that's a consumer mistake, not a data state, so it doesn't fall back to state-empty. Requires the admin-theme theme.",
+      "description": "A grid of shortcut buttons for a dashboard: id, label, an optional icon component, and an onSelect handler per action. columns switches the grid between two (default) and three columns. With no actions it renders the titled card with an empty grid — that's a consumer mistake, not a data state, so it doesn't fall back to state-empty. Requires the admin-theme theme. loading swaps the action buttons for skeleton blocks in the same grid, so nothing is clickable mid-fetch.",
       "registryDependencies": [
-        "card",
         "button",
+        "card",
+        "skeleton",
         "berezin-pavel/admin-kit/admin-theme"
       ],
       "files": [
@@ -1005,6 +1013,82 @@
           "path": "registry/page-list/page-list-filters.tsx",
           "type": "registry:component",
           "target": "@components/admin/page-list-filters.tsx"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "combobox-field",
+      "type": "registry:component",
+      "title": "Combobox field",
+      "description": "A single-select field with type-ahead search over a value/label options list, for picking one record out of hundreds — a customer, a product, a warehouse — where select-field's plain dropdown stops scaling. The visible input shows the selected option's label when closed and the typed query while searching; filterComboboxOptions matches the trimmed query as a case-insensitive substring anywhere in the label, and is exported and unit-tested on its own. Clearing the field always calls onChange(\"\"), so the field never holds a selection the parent doesn't know about. When any option carries a group, matching options render under their group's name and ungrouped options keep their original order ahead of the named groups; with no groups at all the list is flat. emptyLabel (\"Nothing found\" by default) renders when a query matches nothing, placeholder (\"Search…\") sits in the empty input. Keyboard movement, Enter and Escape come from the underlying Base UI combobox rather than hand-rolled key handling, so Enter does not submit an enclosing form while the popup is open. Shares the label/hint/error anatomy of every other field: error replaces hint and sets aria-invalid.",
+      "registryDependencies": [
+        "combobox",
+        "input-group",
+        "label"
+      ],
+      "files": [
+        {
+          "path": "registry/combobox-field/combobox-field.tsx",
+          "type": "registry:component",
+          "target": "@components/admin/combobox-field.tsx"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "page-auth",
+      "type": "registry:component",
+      "title": "Auth page",
+      "description": "The sign-in screen, and the one common admin screen that lives outside the shell: a centered card on an empty full-height page, with no header, sidebar or navigation. appName sits above the card title — the only place the product names itself here. The item ships no email or password field of its own, because which fields a sign-in needs (email, phone, one-time code, tenant picker) differs per project and the kit already has fields for all of them: they go in as children. The card body is a real form and onSubmit receives the raw submit event — the item never calls preventDefault for you. submitLabel defaults to \"Sign in\" on a full-width button; while submitting is true that button and every field inside are disabled together through a wrapping fieldset, so a second submit cannot race the first, and the form is marked aria-busy. error renders above the button as an assertive role=alert live region, so a failed sign-in reaches a screen reader. footer sits under the card for a forgot-password or sign-up link. aside, when given, renders a second panel beside the card from the lg breakpoint up — the illustration half of a split sign-in screen — and is hidden below it, leaving the card simply centered.",
+      "registryDependencies": [
+        "button",
+        "card"
+      ],
+      "files": [
+        {
+          "path": "registry/page-auth/page-auth.tsx",
+          "type": "registry:component",
+          "target": "@components/admin/page-auth.tsx"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "multi-select-field",
+      "type": "registry:component",
+      "title": "Multi-select field",
+      "description": "Pick several options out of a fixed list of value/label pairs — the counterpart to tags-field, which takes free text instead. value is a string array and onChange replaces it wholesale, the same convention as every other controlled field. Built on the Base UI combobox in chips mode: the chosen options sit as removable chips inside the input, typing filters the list case-insensitively, and already-selected options stay listed and marked so they can be unselected. Backspace on an empty input drops the last chip; each chip's remove button gets its aria-label from removeLabel, which takes the option's label and defaults to `Remove ${label}`. maxItems, when set, disables the options beyond the limit rather than hiding them, so it is visible why nothing happens — selected options stay clickable and the search keeps working. emptyLabel (\"Nothing found\") shows when a query matches nothing; placeholder (\"Search…\") only shows while nothing is selected. Enter never submits a surrounding form. Exports toggleMultiSelectValue(value, option), the pure add/remove logic that also drives the component, for testing or reuse.",
+      "registryDependencies": [
+        "button",
+        "combobox",
+        "label"
+      ],
+      "dependencies": [
+        "lucide-react"
+      ],
+      "files": [
+        {
+          "path": "registry/multi-select-field/multi-select-field.tsx",
+          "type": "registry:component",
+          "target": "@components/admin/multi-select-field.tsx"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "page-tabs",
+      "type": "registry:component",
+      "title": "Page tabs",
+      "description": "Section navigation inside a single page — the tabs that split an order or customer screen into Overview, History and Settings without navigating away. Controlled like every item in the kit: value and onValueChange come from props, so the active tab can be routed through a URL query string; the item stores nothing itself. Only the active panel's content mounts — the underlying Base UI panel defaults to keepMounted false and unmounts a hidden panel's subtree instead of hiding it, so a heavy table on a hidden tab never renders while another tab is open. Each item's icon renders before the label and badge after it (a count or a status dot); disabled disables a trigger without removing it from the strip. actions renders on the same row as the tab strip, pushed to the far end, for a page-level button that belongs beside the tabs rather than inside a panel — on a narrow screen the row wraps instead of pushing the actions off screen, and the strip itself scrolls horizontally when the labels do not fit. Keyboard movement and ARIA (role=tablist, arrow keys, aria-selected) come from the primitive rather than being hand-rolled.",
+      "registryDependencies": [
+        "tabs"
+      ],
+      "files": [
+        {
+          "path": "registry/page-tabs/page-tabs.tsx",
+          "type": "registry:component",
+          "target": "@components/admin/page-tabs.tsx"
         }
       ]
     }

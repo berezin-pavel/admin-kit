@@ -8,6 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { Skeleton } from "@/components/ui/skeleton"
 import {
   Table,
   TableBody,
@@ -106,6 +107,7 @@ export interface WidgetTableProps<Row> {
   selectedKeys?: ReadonlySet<Key>
   onSelectionChange?: (keys: ReadonlySet<Key>) => void
   selectionActions?: readonly WidgetTableSelectionAction[]
+  loading?: boolean
 }
 
 export function getPageSelection(
@@ -148,6 +150,8 @@ function getAriaSort(
   return sort.direction === "asc" ? "ascending" : "descending"
 }
 
+const skeletonRowCount = 3
+
 export function WidgetTable<Row>({
   title,
   columns,
@@ -165,6 +169,7 @@ export function WidgetTable<Row>({
   selectedKeys,
   onSelectionChange,
   selectionActions,
+  loading = false,
 }: WidgetTableProps<Row>) {
   const resolvedLabels = { ...widgetTableLabelDefaults, ...labels }
   const hasSortSelect = Boolean(
@@ -186,7 +191,10 @@ export function WidgetTable<Row>({
       {hasHeader ? (
         <CardHeader className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex flex-wrap items-center gap-3">
-            {hasActiveSelection && selectedKeys && onSelectionChange ? (
+            {hasActiveSelection &&
+            !loading &&
+            selectedKeys &&
+            onSelectionChange ? (
               <WidgetTableSelectionBar
                 count={selectedKeys.size}
                 actions={selectionActions}
@@ -206,7 +214,7 @@ export function WidgetTable<Row>({
             )}
           </div>
           <div className="flex flex-wrap items-center gap-3">
-            {pagination
+            {pagination && !loading
               ? (footer ?? (
                   <>
                     <span className="text-sm text-muted-foreground">
@@ -224,7 +232,7 @@ export function WidgetTable<Row>({
                   </>
                 ))
               : null}
-            {hasSortSelect && sortOptions && onSortChange ? (
+            {hasSortSelect && !loading && sortOptions && onSortChange ? (
               <WidgetTableSortSelect
                 sortOptions={sortOptions}
                 sort={sort}
@@ -236,8 +244,41 @@ export function WidgetTable<Row>({
           </div>
         </CardHeader>
       ) : null}
-      <CardContent>
-        {rows.length === 0 ? (
+      <CardContent aria-busy={loading || undefined}>
+        {loading ? (
+          <Table>
+            <TableHeader>
+              <TableRow>
+                {hasSelection ? (
+                  <TableHead className="w-px [&:has([role=checkbox])]:pr-4">
+                    <Skeleton className="size-4" />
+                  </TableHead>
+                ) : null}
+                {columns.map((column) => (
+                  <TableHead key={column.id}>
+                    <Skeleton className="h-4 w-16" />
+                  </TableHead>
+                ))}
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {Array.from({ length: skeletonRowCount }, (_, rowIndex) => (
+                <TableRow key={rowIndex}>
+                  {hasSelection ? (
+                    <TableCell className="w-px [&:has([role=checkbox])]:pr-4">
+                      <Skeleton className="size-4" />
+                    </TableCell>
+                  ) : null}
+                  {columns.map((column) => (
+                    <TableCell key={column.id}>
+                      <Skeleton className="h-4 w-full" />
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        ) : rows.length === 0 ? (
           (empty ?? <StateEmpty title={resolvedLabels.emptyTitle} />)
         ) : (
           <Table>
@@ -321,8 +362,7 @@ export function WidgetTable<Row>({
                       <TableCell
                         key={column.id}
                         className={cn(
-                          column.align === "right" &&
-                            "text-right tabular-nums"
+                          column.align === "right" && "text-right tabular-nums"
                         )}
                       >
                         {column.cell(row)}
@@ -335,7 +375,7 @@ export function WidgetTable<Row>({
           </Table>
         )}
       </CardContent>
-      {pagination ? (
+      {pagination && !loading ? (
         <CardFooter className="justify-center bg-card">
           <WidgetTablePaginationControls
             page={pagination.page}

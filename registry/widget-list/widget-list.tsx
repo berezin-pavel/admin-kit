@@ -1,6 +1,7 @@
 import type { ComponentType, ReactNode } from "react"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Skeleton } from "@/components/ui/skeleton"
 import { StateEmpty } from "@/registry/state-empty/state-empty"
 
 export interface WidgetListItem {
@@ -16,14 +17,18 @@ export interface WidgetListProps {
   items: readonly WidgetListItem[]
   empty?: ReactNode
   emptyTitle?: string
+  loading?: boolean
   className?: string
 }
+
+const skeletonItemCount = 3
 
 export function WidgetList({
   title,
   items,
   empty,
   emptyTitle = "No data",
+  loading = false,
   className,
 }: WidgetListProps) {
   return (
@@ -33,8 +38,22 @@ export function WidgetList({
           {title}
         </CardTitle>
       </CardHeader>
-      <CardContent>
-        {items.length === 0 ? (
+      <CardContent aria-busy={loading || undefined}>
+        {loading ? (
+          <ul className="flex flex-col divide-y divide-border">
+            {Array.from({ length: skeletonItemCount }, (_, index) => (
+              <li
+                key={index}
+                className="flex flex-col gap-1 py-3 first:pt-0 last:pb-0 sm:flex-row sm:items-start sm:gap-3"
+              >
+                <div className="flex min-w-0 flex-1 flex-col gap-1.5">
+                  <Skeleton className="h-4 w-32" />
+                  <Skeleton className="h-3.5 w-48" />
+                </div>
+              </li>
+            ))}
+          </ul>
+        ) : items.length === 0 ? (
           (empty ?? <StateEmpty title={emptyTitle} />)
         ) : (
           <ul className="flex flex-col divide-y divide-border">

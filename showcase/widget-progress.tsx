@@ -107,5 +107,12 @@ export const widgetProgressEntry: ShowcaseEntry = {
         />
       ),
     },
+    {
+      id: "loading",
+      name: "Loading",
+      render: () => (
+        <WidgetProgress title="Plan completion" value={62} loading />
+      ),
+    },
   ],
 }
