@@ -25,6 +25,24 @@ Sections used below: **New** (items you can now install), **Changed** (installed
 re-pulling), **Breaking** (props or files that changed shape — read before overwriting), and
 **Project** (showcase, CI, docs — nothing that reaches your project).
 
+## 0.24.0 — 2026-08-14
+
+**New** — `combobox-field` (single select with type-ahead search, for picking one record out of
+hundreds where `select-field`'s dropdown stops scaling), `multi-select-field` (several values from
+a fixed list, shown as removable chips, with `maxItems` disabling the rest rather than hiding it),
+`page-auth` (the sign-in screen, outside the shell, shipping no fields of its own), `page-tabs`
+(section navigation inside one page; only the active panel mounts).
+
+**Changed** — all eight widgets — `widget-metric`, `widget-chart`, `widget-table`, `widget-list`,
+`widget-progress`, `widget-activity`, `widget-donut`, `widget-quick-actions` — take `loading`. It
+replaces the card body with skeletons of the same height while the title stays put, wins over the
+empty state, and renders nothing operable. Each gained `skeleton` as a registry dependency, so a
+repeated `add` pulls that primitive in. Nothing changes for a widget rendered without the prop.
+
+**Project** — the test suite grew from 143 to 229 and now renders components in jsdom instead of
+only exercising pure functions; browser checks moved into `e2e/` (`pnpm test:e2e`) rather than
+being rewritten per session.
+
 ## 0.23.0 — 2026-08-13
 
 **Changed** — `widget-progress` gained `tone` (`default` / `success` / `warning` / `danger`),
