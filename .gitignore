@@ -4,6 +4,7 @@ build/
 .next/
 out/
 coverage/
+.dev/
 
 .env
 .env.local
