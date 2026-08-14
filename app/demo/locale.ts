@@ -88,9 +88,8 @@ export interface DemoDictionary {
   orders: {
     title: string
     description: string
-    exportButton: string
     exportToastTitle: string
-    exportToastDescription: string
+    exportToastDescription: (rows: number) => string
     searchFilterLabel: string
     statusFilterLabel: string
     dateRangeFilterLabel: string
@@ -321,9 +320,9 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
     orders: {
       title: "Orders",
       description: "All store orders from the last 30 days",
-      exportButton: "Export to CSV",
       exportToastTitle: "Export started",
-      exportToastDescription: "The file will arrive by email in a couple of minutes",
+      exportToastDescription: (rows: number) =>
+        `${rows} rows are ready as CSV`,
       searchFilterLabel: "Search",
       statusFilterLabel: "Status",
       dateRangeFilterLabel: "Order date",
@@ -571,9 +570,9 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
     orders: {
       title: "Заказы",
       description: "Все заказы магазина за последние 30 дней",
-      exportButton: "Выгрузить в CSV",
       exportToastTitle: "Экспорт запущен",
-      exportToastDescription: "Файл придёт на почту через пару минут",
+      exportToastDescription: (rows: number) =>
+        `${rows} строк выгружено в CSV`,
       searchFilterLabel: "Поиск",
       statusFilterLabel: "Статус",
       dateRangeFilterLabel: "Дата заказа",

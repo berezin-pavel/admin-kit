@@ -4,6 +4,7 @@ import { useState } from "react"
 
 import { Button } from "@/components/ui/button"
 import { PageList, type PageListFilter } from "@/registry/page-list/page-list"
+import { toCsv } from "@/registry/widget-table/widget-table"
 
 import { roleFilterOptions, userColumns, userRows } from "./page-list-data"
 
@@ -13,6 +14,10 @@ export function PageListLive() {
   const [search, setSearch] = useState("")
   const [role, setRole] = useState("all")
   const [page, setPage] = useState(1)
+  const [hiddenColumnIds, setHiddenColumnIds] = useState<readonly string[]>(
+    []
+  )
+  const [csv, setCsv] = useState("")
 
   const query = search.trim().toLowerCase()
   const roleLabel = roleFilterOptions.find(
@@ -31,6 +36,7 @@ export function PageListLive() {
 
   const lastPage = Math.max(1, Math.ceil(matched.length / PAGE_SIZE))
   const currentPage = Math.min(page, lastPage)
+  const isFiltered = search.trim() !== "" || role !== "all"
 
   const filters: readonly PageListFilter[] = [
     { id: "search", label: "Search", kind: "search", value: search },
@@ -44,30 +50,46 @@ export function PageListLive() {
   ]
 
   return (
-    <PageList
-      title="Users"
-      description="Project members and their roles"
-      actions={<Button size="sm">Invite</Button>}
-      filters={filters}
-      onFilterChange={(id, value) => {
-        if (id === "search") {
-          setSearch(value)
-        } else {
-          setRole(value)
-        }
+    <div className="flex flex-col gap-3">
+      <PageList
+        title="Users"
+        description="Project members and their roles"
+        actions={<Button size="sm">Invite</Button>}
+        filters={filters}
+        onFilterChange={(id, value) => {
+          if (id === "search") {
+            setSearch(value)
+          } else {
+            setRole(value)
+          }
 
-        setPage(1)
-      }}
-      columns={userColumns}
-      rows={matched.slice(
-        (currentPage - 1) * PAGE_SIZE,
-        currentPage * PAGE_SIZE
-      )}
-      getRowKey={(row) => row.id}
-      page={currentPage}
-      pageSize={PAGE_SIZE}
-      total={matched.length}
-      onPageChange={setPage}
-    />
+          setPage(1)
+        }}
+        columns={userColumns}
+        rows={matched.slice(
+          (currentPage - 1) * PAGE_SIZE,
+          currentPage * PAGE_SIZE
+        )}
+        getRowKey={(row) => row.id}
+        page={currentPage}
+        pageSize={PAGE_SIZE}
+        total={matched.length}
+        onPageChange={setPage}
+        filtered={isFiltered}
+        onClearFilters={() => {
+          setSearch("")
+          setRole("all")
+          setPage(1)
+        }}
+        hiddenColumnIds={hiddenColumnIds}
+        onHiddenColumnIdsChange={setHiddenColumnIds}
+        onExport={(rows) => setCsv(toCsv(userColumns, rows))}
+      />
+      {csv ? (
+        <pre className="overflow-x-auto rounded-lg border border-border bg-muted p-3 text-xs">
+          {csv}
+        </pre>
+      ) : null}
+    </div>
   )
 }

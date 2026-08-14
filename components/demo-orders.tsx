@@ -19,6 +19,7 @@ import {
 } from "@/registry/page-list/page-list"
 import { RowActions } from "@/registry/row-actions/row-actions"
 import { StatusBadge } from "@/registry/status-badge/status-badge"
+import { toCsv } from "@/registry/widget-table/widget-table"
 import type {
   WidgetTableColumn,
   WidgetTableSelectionAction,
@@ -87,6 +88,7 @@ export function DemoOrders() {
   const [bulkDeleteOpen, setBulkDeleteOpen] = useState(false)
   const [bulkDeleting, setBulkDeleting] = useState(false)
   const [pageStatus, setPageStatus] = useState<PageStatus>("ready")
+  const [hiddenColumnIds, setHiddenColumnIds] = useState<readonly string[]>([])
 
   const rows = useMemo(
     () =>
@@ -145,6 +147,7 @@ export function DemoOrders() {
       id: "number",
       title: strings.columnNumber,
       sortable: true,
+      alwaysVisible: true,
       cell: (row) => (
         <Link href="/demo/order" className="font-medium hover:underline">
           #{row.number}
@@ -200,6 +203,9 @@ export function DemoOrders() {
       ),
     },
   ]
+
+  const hasActiveFilters =
+    search.trim() !== "" || status !== "all" || dateRange !== ""
 
   const filters: readonly PageListFilter[] = [
     { id: "search", label: strings.searchFilterLabel, kind: "search", value: search },
@@ -306,16 +312,7 @@ export function DemoOrders() {
               />
               {strings.reloadButton}
             </Button>
-            <Button
-              size="sm"
-              onClick={() =>
-                notify.info(strings.exportToastTitle, {
-                  description: strings.exportToastDescription,
-                })
-              }
-            >
-              {strings.exportButton}
-            </Button>
+
           </>
         }
         filters={filters}
@@ -351,6 +348,23 @@ export function DemoOrders() {
           setPage(1)
         }}
         tableLabels={locale === "ru" ? localeRu.widgetTable : undefined}
+        filtered={hasActiveFilters}
+        onClearFilters={() => {
+          setSearch("")
+          setStatus("all")
+          setDateRange("")
+          setPage(1)
+        }}
+        hiddenColumnIds={hiddenColumnIds}
+        onHiddenColumnIdsChange={setHiddenColumnIds}
+        onExport={(rows) => {
+          const csv = toCsv(columns, rows)
+          notify.info(strings.exportToastTitle, {
+            description: strings.exportToastDescription(
+              csv.split("\r\n").length - 1
+            ),
+          })
+        }}
         sortOptions={sortOptions}
         selectedKeys={selectedKeys}
         onSelectionChange={setSelectedKeys}

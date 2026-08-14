@@ -77,6 +77,12 @@ export function DemoOrderEdit() {
                   options={customerOptions}
                   placeholder={strings.customerPlaceholder}
                   emptyLabel={strings.customerEmptyLabel}
+                  openLabel={
+                    locale === "ru" ? localeRu.comboboxField.openLabel : undefined
+                  }
+                  clearLabel={
+                    locale === "ru" ? localeRu.comboboxField.clearLabel : undefined
+                  }
                 />
                 <SelectField
                   label={strings.productLabel}

@@ -66,3 +66,29 @@ test("the order edit form picks a customer by search and saves", async ({
     timeout: 10_000,
   })
 })
+
+test("the orders page exports, hides columns and recovers from an empty filter", async ({
+  page,
+}) => {
+  await page.goto("/demo/orders")
+
+  await expect(page.locator("th").first()).toBeVisible()
+  const columnsBefore = await page.locator("th").count()
+
+  await page.getByRole("button", { name: /export/i }).click()
+  await expect(page.getByText(/rows are ready as CSV/i)).toBeVisible()
+
+  await page.getByRole("button", { name: /columns/i }).click()
+  const pinned = page.getByRole("menuitemcheckbox", { name: /number/i })
+  await expect(pinned).toBeDisabled()
+  await page.getByRole("menuitemcheckbox", { name: /product/i }).click()
+  await page.waitForTimeout(400)
+  await expect(page.locator("th")).toHaveCount(columnsBefore - 1)
+  await page.keyboard.press("Escape")
+
+  await page.getByRole("textbox").first().fill("no such order anywhere")
+  const clear = page.getByRole("button", { name: /clear/i })
+  await expect(clear).toBeVisible()
+  await clear.click()
+  await expect(page.getByRole("row").first()).toBeVisible()
+})

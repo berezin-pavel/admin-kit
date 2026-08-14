@@ -1,5 +1,7 @@
 import type { ComponentType, Key, ReactNode } from "react"
+import { Download } from "lucide-react"
 
+import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
   Card,
@@ -20,6 +22,7 @@ import {
 import { cn } from "@/lib/utils"
 import { StateEmpty } from "@/registry/state-empty/state-empty"
 
+import { WidgetTableColumnsMenu } from "./widget-table-columns-menu"
 import { WidgetTablePageSizeSelect } from "./widget-table-page-size-select"
 import { WidgetTablePaginationControls } from "./widget-table-pagination"
 import { WidgetTableSelectionBar } from "./widget-table-selection-bar"
@@ -31,6 +34,7 @@ export interface WidgetTableColumn<Row> {
   title: string
   align?: "left" | "right"
   sortable?: boolean
+  alwaysVisible?: boolean
   cell: (row: Row) => ReactNode
 }
 
@@ -73,6 +77,11 @@ export interface WidgetTableLabels {
   selectAllOnPage?: string
   selected?: (count: number) => string
   clearSelection?: string
+  filteredEmptyTitle?: string
+  filteredEmptyDescription?: string
+  clearFiltersLabel?: string
+  columnsLabel?: string
+  exportLabel?: string
 }
 
 export const widgetTableLabelDefaults: Required<WidgetTableLabels> = {
@@ -88,6 +97,12 @@ export const widgetTableLabelDefaults: Required<WidgetTableLabels> = {
   selectAllOnPage: "Select all on page",
   selected: (count) => `${count} selected`,
   clearSelection: "Clear selection",
+  filteredEmptyTitle: "No results",
+  filteredEmptyDescription:
+    "No records match the current filter. Try adjusting or clearing it.",
+  clearFiltersLabel: "Clear filters",
+  columnsLabel: "Columns",
+  exportLabel: "Export",
 }
 
 export interface WidgetTableProps<Row> {
@@ -108,6 +123,55 @@ export interface WidgetTableProps<Row> {
   onSelectionChange?: (keys: ReadonlySet<Key>) => void
   selectionActions?: readonly WidgetTableSelectionAction[]
   loading?: boolean
+  filtered?: boolean
+  onClearFilters?: () => void
+  hiddenColumnIds?: readonly string[]
+  onHiddenColumnIdsChange?: (ids: readonly string[]) => void
+  stickyHeader?: boolean
+  maxBodyHeight?: string
+  onExport?: (rows: readonly Row[]) => void
+}
+
+export function toggleHiddenColumnId(
+  hidden: readonly string[],
+  columnId: string
+): readonly string[] {
+  if (hidden.includes(columnId)) {
+    return hidden.filter((id) => id !== columnId)
+  }
+  return [...hidden, columnId]
+}
+
+function csvField(value: string): string {
+  if (/["\n\r,]/.test(value)) {
+    return `"${value.replace(/"/g, '""')}"`
+  }
+  return value
+}
+
+export function toCsv<Row>(
+  columns: readonly WidgetTableColumn<Row>[],
+  rows: readonly Row[],
+  getCellText?: (row: Row, column: WidgetTableColumn<Row>) => string
+): string {
+  const resolveCellText = (row: Row, column: WidgetTableColumn<Row>) => {
+    if (getCellText) {
+      return getCellText(row, column)
+    }
+    const value = column.cell(row)
+    return typeof value === "string" || typeof value === "number"
+      ? String(value)
+      : ""
+  }
+
+  const lines = [
+    columns.map((column) => csvField(column.title)).join(","),
+    ...rows.map((row) =>
+      columns.map((column) => csvField(resolveCellText(row, column))).join(",")
+    ),
+  ]
+
+  return lines.join("\r\n")
 }
 
 export function getPageSelection(
@@ -170,12 +234,25 @@ export function WidgetTable<Row>({
   onSelectionChange,
   selectionActions,
   loading = false,
+  filtered = false,
+  onClearFilters,
+  hiddenColumnIds,
+  onHiddenColumnIdsChange,
+  stickyHeader = false,
+  maxBodyHeight = "24rem",
+  onExport,
 }: WidgetTableProps<Row>) {
   const resolvedLabels = { ...widgetTableLabelDefaults, ...labels }
+  const visibleColumns = columns.filter(
+    (column) => column.alwaysVisible || !hiddenColumnIds?.includes(column.id)
+  )
   const hasSortSelect = Boolean(
     sortOptions && sortOptions.length > 0 && onSortChange
   )
-  const hasServiceGroup = Boolean(pagination) || hasSortSelect
+  const hasColumnsMenu = Boolean(onHiddenColumnIdsChange)
+  const hasExport = Boolean(onExport)
+  const hasServiceGroup =
+    Boolean(pagination) || hasSortSelect || hasColumnsMenu || hasExport
   const hasSelection = Boolean(selectedKeys && onSelectionChange)
   const pageKeys = hasSelection
     ? rows.map((row, index) => getRowKey?.(row, index) ?? index)
@@ -241,6 +318,25 @@ export function WidgetTable<Row>({
                 ariaLabel={resolvedLabels.sorting}
               />
             ) : null}
+            {hasColumnsMenu && !loading && onHiddenColumnIdsChange ? (
+              <WidgetTableColumnsMenu
+                columns={columns}
+                hiddenColumnIds={hiddenColumnIds ?? []}
+                onHiddenColumnIdsChange={onHiddenColumnIdsChange}
+                label={resolvedLabels.columnsLabel}
+              />
+            ) : null}
+            {hasExport && !loading && onExport ? (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => onExport(rows)}
+              >
+                <Download />
+                {resolvedLabels.exportLabel}
+              </Button>
+            ) : null}
           </div>
         </CardHeader>
       ) : null}
@@ -254,7 +350,7 @@ export function WidgetTable<Row>({
                     <Skeleton className="size-4" />
                   </TableHead>
                 ) : null}
-                {columns.map((column) => (
+                {visibleColumns.map((column) => (
                   <TableHead key={column.id}>
                     <Skeleton className="h-4 w-16" />
                   </TableHead>
@@ -269,7 +365,7 @@ export function WidgetTable<Row>({
                       <Skeleton className="size-4" />
                     </TableCell>
                   ) : null}
-                  {columns.map((column) => (
+                  {visibleColumns.map((column) => (
                     <TableCell key={column.id}>
                       <Skeleton className="h-4 w-full" />
                     </TableCell>
@@ -279,100 +375,139 @@ export function WidgetTable<Row>({
             </TableBody>
           </Table>
         ) : rows.length === 0 ? (
-          (empty ?? <StateEmpty title={resolvedLabels.emptyTitle} />)
+          (empty ??
+            (filtered ? (
+              <StateEmpty
+                title={resolvedLabels.filteredEmptyTitle}
+                description={resolvedLabels.filteredEmptyDescription}
+                actions={
+                  onClearFilters ? (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={onClearFilters}
+                    >
+                      {resolvedLabels.clearFiltersLabel}
+                    </Button>
+                  ) : undefined
+                }
+              />
+            ) : (
+              <StateEmpty title={resolvedLabels.emptyTitle} />
+            )))
         ) : (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                {hasSelection ? (
-                  <TableHead className="w-px [&:has([role=checkbox])]:pr-4">
-                    <Checkbox
-                      checked={pageSelection === "all"}
-                      indeterminate={pageSelection === "some"}
-                      aria-label={resolvedLabels.selectAllOnPage}
-                      onCheckedChange={(checked) => {
-                        if (!selectedKeys || !onSelectionChange) return
-                        const next = new Set(selectedKeys)
-                        for (const key of pageKeys) {
-                          if (checked) {
-                            next.add(key)
-                          } else {
-                            next.delete(key)
-                          }
-                        }
-                        onSelectionChange(next)
-                      }}
-                    />
-                  </TableHead>
-                ) : null}
-                {columns.map((column) => (
-                  <TableHead
-                    key={column.id}
-                    aria-sort={
-                      column.sortable && onSortChange
-                        ? getAriaSort(column.id, sort)
-                        : undefined
-                    }
-                    className={cn(
-                      column.align === "right" && "text-right",
-                      column.sortable && onSortChange && "p-0"
-                    )}
-                  >
-                    {column.sortable && onSortChange ? (
-                      <WidgetTableSortButton
-                        columnId={column.id}
-                        align={column.align}
-                        sort={sort}
-                        onSortChange={onSortChange}
-                      >
-                        {column.title}
-                      </WidgetTableSortButton>
-                    ) : (
-                      column.title
-                    )}
-                  </TableHead>
-                ))}
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {rows.map((row, index) => {
-                const rowKey = getRowKey?.(row, index) ?? index
-
-                return (
-                  <TableRow key={rowKey}>
-                    {hasSelection ? (
-                      <TableCell className="w-px [&:has([role=checkbox])]:pr-4">
-                        <Checkbox
-                          checked={selectedKeys?.has(rowKey) ?? false}
-                          aria-label={resolvedLabels.selectRow}
-                          onCheckedChange={(checked) => {
-                            if (!selectedKeys || !onSelectionChange) return
-                            const next = new Set(selectedKeys)
+          <div
+            data-slot="table-container"
+            tabIndex={stickyHeader ? 0 : undefined}
+            role={stickyHeader ? "region" : undefined}
+            aria-label={stickyHeader ? title : undefined}
+            className={cn(
+              "relative w-full outline-none focus-visible:ring-3 focus-visible:ring-ring/50",
+              stickyHeader ? "overflow-auto" : "overflow-x-auto"
+            )}
+            style={stickyHeader ? { maxHeight: maxBodyHeight } : undefined}
+          >
+            <table className="w-full caption-bottom text-sm">
+              <TableHeader>
+                <TableRow>
+                  {hasSelection ? (
+                    <TableHead
+                      className={cn(
+                        "w-px [&:has([role=checkbox])]:pr-4",
+                        stickyHeader && "sticky top-0 z-10 bg-card"
+                      )}
+                    >
+                      <Checkbox
+                        checked={pageSelection === "all"}
+                        indeterminate={pageSelection === "some"}
+                        aria-label={resolvedLabels.selectAllOnPage}
+                        onCheckedChange={(checked) => {
+                          if (!selectedKeys || !onSelectionChange) return
+                          const next = new Set(selectedKeys)
+                          for (const key of pageKeys) {
                             if (checked) {
-                              next.add(rowKey)
+                              next.add(key)
                             } else {
-                              next.delete(rowKey)
+                              next.delete(key)
                             }
-                            onSelectionChange(next)
-                          }}
-                        />
-                      </TableCell>
-                    ) : null}
-                    {columns.map((column) => (
-                      <TableCell
-                        key={column.id}
-                        className={cn(
-                          column.align === "right" && "text-right tabular-nums"
-                        )}
-                      >
-                        {column.cell(row)}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                )
-              })}
-            </TableBody>
-          </Table>
+                          }
+                          onSelectionChange(next)
+                        }}
+                      />
+                    </TableHead>
+                  ) : null}
+                  {visibleColumns.map((column) => (
+                    <TableHead
+                      key={column.id}
+                      aria-sort={
+                        column.sortable && onSortChange
+                          ? getAriaSort(column.id, sort)
+                          : undefined
+                      }
+                      className={cn(
+                        column.align === "right" && "text-right",
+                        column.sortable && onSortChange && "p-0",
+                        stickyHeader && "sticky top-0 z-10 bg-card"
+                      )}
+                    >
+                      {column.sortable && onSortChange ? (
+                        <WidgetTableSortButton
+                          columnId={column.id}
+                          align={column.align}
+                          sort={sort}
+                          onSortChange={onSortChange}
+                        >
+                          {column.title}
+                        </WidgetTableSortButton>
+                      ) : (
+                        column.title
+                      )}
+                    </TableHead>
+                  ))}
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {rows.map((row, index) => {
+                  const rowKey = getRowKey?.(row, index) ?? index
+
+                  return (
+                    <TableRow key={rowKey}>
+                      {hasSelection ? (
+                        <TableCell className="w-px [&:has([role=checkbox])]:pr-4">
+                          <Checkbox
+                            checked={selectedKeys?.has(rowKey) ?? false}
+                            aria-label={resolvedLabels.selectRow}
+                            onCheckedChange={(checked) => {
+                              if (!selectedKeys || !onSelectionChange) return
+                              const next = new Set(selectedKeys)
+                              if (checked) {
+                                next.add(rowKey)
+                              } else {
+                                next.delete(rowKey)
+                              }
+                              onSelectionChange(next)
+                            }}
+                          />
+                        </TableCell>
+                      ) : null}
+                      {visibleColumns.map((column) => (
+                        <TableCell
+                          key={column.id}
+                          className={cn(
+                            column.align === "right" &&
+                              "text-right tabular-nums"
+                          )}
+                        >
+                          {column.cell(row)}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  )
+                })}
+              </TableBody>
+            </table>
+          </div>
         )}
       </CardContent>
       {pagination && !loading ? (

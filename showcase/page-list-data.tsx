@@ -8,7 +8,7 @@ export interface UserRow {
 }
 
 export const userColumns: readonly WidgetTableColumn<UserRow>[] = [
-  { id: "name", title: "Name", cell: (row) => row.name },
+  { id: "name", title: "Name", alwaysVisible: true, cell: (row) => row.name },
   { id: "email", title: "Email", cell: (row) => row.email },
   { id: "role", title: "Role", cell: (row) => row.role },
 ]

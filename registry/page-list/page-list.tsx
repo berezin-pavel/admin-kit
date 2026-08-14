@@ -55,6 +55,11 @@ export interface PageListProps<Row> {
   selectedKeys?: ReadonlySet<Key>
   onSelectionChange?: (keys: ReadonlySet<Key>) => void
   selectionActions?: readonly WidgetTableSelectionAction[]
+  filtered?: boolean
+  onClearFilters?: () => void
+  hiddenColumnIds?: readonly string[]
+  onHiddenColumnIdsChange?: (ids: readonly string[]) => void
+  onExport?: (rows: readonly Row[]) => void
 }
 
 function getStatusContent(status: PageStatus): ReactNode {
@@ -89,6 +94,11 @@ export function PageList<Row>({
   selectedKeys,
   onSelectionChange,
   selectionActions,
+  filtered,
+  onClearFilters,
+  hiddenColumnIds,
+  onHiddenColumnIdsChange,
+  onExport,
 }: PageListProps<Row>) {
   return (
     <div className={cn("flex flex-col gap-6", className)}>
@@ -138,6 +148,11 @@ export function PageList<Row>({
         selectedKeys={selectedKeys}
         onSelectionChange={onSelectionChange}
         selectionActions={selectionActions}
+        filtered={filtered}
+        onClearFilters={onClearFilters}
+        hiddenColumnIds={hiddenColumnIds}
+        onHiddenColumnIdsChange={onHiddenColumnIdsChange}
+        onExport={onExport}
       />
     </div>
   )

@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input"
 import { notify } from "@/registry/admin-toaster/admin-toaster"
 import { RowActions } from "@/registry/row-actions/row-actions"
 import {
+  toCsv,
   WidgetTable,
   type WidgetTableColumn,
   type WidgetTableSelectionAction,
@@ -235,5 +236,131 @@ export function WidgetTableShowcaseView({
           : undefined
       }
     />
+  )
+}
+
+const filteredEmptyColumns: readonly WidgetTableColumn<OrderRow>[] = [
+  { id: "number", title: "Number", cell: (row) => row.number },
+  { id: "customer", title: "Customer", cell: (row) => row.customer },
+  { id: "total", title: "Amount", align: "right", cell: (row) => row.total },
+]
+
+export function WidgetTableFilteredEmptyView() {
+  const [search, setSearch] = useState("zzz")
+
+  const query = search.trim().toLowerCase()
+  const rows = allRows.filter(
+    (row) =>
+      query === "" ||
+      row.number.includes(query) ||
+      row.customer.toLowerCase().includes(query)
+  )
+
+  return (
+    <WidgetTable
+      title="Recent orders"
+      columns={filteredEmptyColumns}
+      rows={rows}
+      getRowKey={(row) => row.number}
+      filtered={search.trim() !== ""}
+      onClearFilters={() => setSearch("")}
+      toolbar={
+        <Input
+          value={search}
+          onChange={(event) => setSearch(event.target.value)}
+          placeholder="Search orders"
+          aria-label="Search orders"
+          className="w-48"
+        />
+      }
+    />
+  )
+}
+
+const columnVisibilityColumns: readonly WidgetTableColumn<OrderRow>[] = [
+  {
+    id: "number",
+    title: "Number",
+    alwaysVisible: true,
+    cell: (row) => row.number,
+  },
+  { id: "customer", title: "Customer", cell: (row) => row.customer },
+  { id: "total", title: "Amount", align: "right", cell: (row) => row.total },
+]
+
+export function WidgetTableColumnVisibilityView() {
+  const [hiddenColumnIds, setHiddenColumnIds] = useState<readonly string[]>(
+    []
+  )
+
+  return (
+    <WidgetTable
+      title="Recent orders"
+      columns={columnVisibilityColumns}
+      rows={allRows}
+      getRowKey={(row) => row.number}
+      hiddenColumnIds={hiddenColumnIds}
+      onHiddenColumnIdsChange={setHiddenColumnIds}
+    />
+  )
+}
+
+interface StickyOrderRow {
+  number: string
+  customer: string
+  total: string
+}
+
+const stickyHeaderColumns: readonly WidgetTableColumn<StickyOrderRow>[] = [
+  { id: "number", title: "Number", cell: (row) => row.number },
+  { id: "customer", title: "Customer", cell: (row) => row.customer },
+  { id: "total", title: "Amount", align: "right", cell: (row) => row.total },
+]
+
+const stickyHeaderRows: readonly StickyOrderRow[] = Array.from(
+  { length: 16 },
+  (_, index) => ({
+    number: String(1060 - index),
+    customer: `Customer ${index + 1}`,
+    total: `$${(900 + index * 215).toLocaleString("en-US")}`,
+  })
+)
+
+export function WidgetTableStickyHeaderView() {
+  return (
+    <WidgetTable
+      title="Recent orders"
+      columns={stickyHeaderColumns}
+      rows={stickyHeaderRows}
+      getRowKey={(row) => row.number}
+      stickyHeader
+    />
+  )
+}
+
+const exportColumns: readonly WidgetTableColumn<OrderRow>[] = [
+  { id: "number", title: "Number", cell: (row) => row.number },
+  { id: "customer", title: "Customer", cell: (row) => row.customer },
+  { id: "total", title: "Amount", align: "right", cell: (row) => row.total },
+]
+
+export function WidgetTableExportView() {
+  const [csv, setCsv] = useState("")
+
+  return (
+    <div className="flex flex-col gap-3">
+      <WidgetTable
+        title="Recent orders"
+        columns={exportColumns}
+        rows={allRows}
+        getRowKey={(row) => row.number}
+        onExport={(rows) => setCsv(toCsv(exportColumns, rows))}
+      />
+      {csv ? (
+        <pre className="overflow-x-auto rounded-lg border border-border bg-muted p-3 text-xs">
+          {csv}
+        </pre>
+      ) : null}
+    </div>
   )
 }

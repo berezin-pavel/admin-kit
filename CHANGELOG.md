@@ -25,6 +25,32 @@ Sections used below: **New** (items you can now install), **Changed** (installed
 re-pulling), **Breaking** (props or files that changed shape — read before overwriting), and
 **Project** (showcase, CI, docs — nothing that reaches your project).
 
+## 0.25.0 — 2026-08-14
+
+**Changed** — `widget-table` gained four capabilities, all forwarded by `page-list`:
+
+- `filtered` + `onClearFilters` split "nothing matches this filter" from "there is nothing here
+  yet" — different words, and a clear-filters button instead of a dead end.
+- `hiddenColumnIds` + `onHiddenColumnIdsChange` hide columns and add a columns menu to the header;
+  a column marked `alwaysVisible` cannot be hidden, so rows stay identifiable.
+- `stickyHeader` (with `maxBodyHeight`, `24rem` by default) keeps the header row in view while the
+  body scrolls; the scroll area is focusable and labelled, so the keyboard can reach it.
+- `onExport` hands the current rows to a callback and the exported `toCsv` helper turns columns
+  and rows into an RFC 4180 string. The table never builds a file itself — whether to export this
+  page or the whole server-side result is the data owner's call.
+
+`widget-table` gained `dropdown-menu` as a registry dependency and a second file
+(`widget-table-columns-menu.tsx`), so a repeated `add` pulls both in.
+
+**Fixed (accessibility)** — an axe sweep over every showcase preview found four defects, now
+fixed: `combobox-field`'s icon-only trigger and clear button had no accessible name (they now take
+`openLabel` and `clearLabel`), `widget-progress` announced an anonymous progress bar (it now takes
+its name from `title`), `widget-placeholder`'s hint sat at 2.71:1, and `file-field`'s disabled
+state was dimmed without being marked `aria-disabled`.
+
+**Changed** — `locale-ru` gained the Russian strings for the table's new labels and for
+`combobox-field`, `multi-select-field` and `page-auth`.
+
 ## 0.24.0 — 2026-08-14
 
 **New** — `combobox-field` (single select with type-ahead search, for picking one record out of
