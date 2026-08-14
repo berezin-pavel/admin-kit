@@ -27,9 +27,11 @@ export function WidgetTableColumnsMenu<Row>({
 }: WidgetTableColumnsMenuProps<Row>) {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger render={<Button variant="outline" size="sm" />}>
+      <DropdownMenuTrigger
+        aria-label={label}
+        render={<Button variant="outline" size="icon" />}
+      >
         <Columns3 />
-        {label}
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         {columns.map((column) => (

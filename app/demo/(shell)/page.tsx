@@ -325,6 +325,9 @@ export default function DemoPage() {
         entries={activityEntries}
         labels={activityLabels}
         locale={locale === "ru" ? localeRu.widgetActivity.locale : undefined}
+        dayFormat={
+          locale === "ru" ? localeRu.widgetActivity.dayFormat : undefined
+        }
         loading={reloading}
       />
     </div>

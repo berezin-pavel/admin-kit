@@ -170,6 +170,9 @@ export function DemoOrderEntity() {
           entries={timelineEntries}
           labels={locale === "ru" ? localeRu.widgetActivity : undefined}
           locale={locale === "ru" ? localeRu.widgetActivity.locale : undefined}
+          dayFormat={
+            locale === "ru" ? localeRu.widgetActivity.dayFormat : undefined
+          }
           loading={reloading}
         />
       ),

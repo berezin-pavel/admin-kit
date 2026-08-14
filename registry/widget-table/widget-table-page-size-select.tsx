@@ -30,7 +30,7 @@ export function WidgetTablePageSizeSelect({
         }
       }}
     >
-      <SelectTrigger className="w-20" aria-label={ariaLabel}>
+      <SelectTrigger className="w-auto" aria-label={ariaLabel}>
         <SelectValue>{pageSize}</SelectValue>
       </SelectTrigger>
       <SelectContent

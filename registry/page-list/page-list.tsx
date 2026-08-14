@@ -60,6 +60,8 @@ export interface PageListProps<Row> {
   hiddenColumnIds?: readonly string[]
   onHiddenColumnIdsChange?: (ids: readonly string[]) => void
   onExport?: (rows: readonly Row[]) => void
+  stickyHeader?: boolean
+  maxBodyHeight?: string
 }
 
 function getStatusContent(status: PageStatus): ReactNode {
@@ -99,6 +101,8 @@ export function PageList<Row>({
   hiddenColumnIds,
   onHiddenColumnIdsChange,
   onExport,
+  stickyHeader,
+  maxBodyHeight,
 }: PageListProps<Row>) {
   return (
     <div className={cn("flex flex-col gap-6", className)}>
@@ -153,6 +157,8 @@ export function PageList<Row>({
         hiddenColumnIds={hiddenColumnIds}
         onHiddenColumnIdsChange={onHiddenColumnIdsChange}
         onExport={onExport}
+        stickyHeader={stickyHeader}
+        maxBodyHeight={maxBodyHeight}
       />
     </div>
   )

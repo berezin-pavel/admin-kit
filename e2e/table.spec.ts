@@ -83,3 +83,45 @@ test("export hands the current rows to the consumer as CSV", async ({
   await expect(output).toBeVisible()
   expect(await output.innerText()).toContain(",")
 })
+
+test("the header sticks to an outer scroller when the table has no scroll area of its own", async ({
+  page,
+}) => {
+  await page.goto("/demo/orders")
+
+  await page.locator('[aria-label="Rows per page"]').first().click()
+  await page.getByRole("option", { name: "100", exact: true }).click()
+  await expect(page.locator("tbody tr")).toHaveCount(100)
+
+  const header = page.locator("th").nth(1)
+  await expect(header).toBeVisible()
+
+  await page.evaluate(() => document.querySelector("main")?.scrollTo(0, 1500))
+  await page.waitForTimeout(300)
+
+  const box = await header.boundingBox()
+  expect(box).not.toBeNull()
+  expect(box!.y).toBeGreaterThan(0)
+  expect(box!.y).toBeLessThan(200)
+
+  const documentScroll = await page.evaluate(
+    () =>
+      document.documentElement.scrollHeight -
+      document.documentElement.clientHeight
+  )
+  expect(documentScroll).toBe(0)
+})
+
+test("a long form does not add a second scrollbar to the page", async ({
+  page,
+}) => {
+  await page.goto("/demo/order/edit")
+  await expect(page.getByRole("button", { name: /save/i })).toBeVisible()
+
+  const documentScroll = await page.evaluate(
+    () =>
+      document.documentElement.scrollHeight -
+      document.documentElement.clientHeight
+  )
+  expect(documentScroll).toBe(0)
+})

@@ -144,40 +144,37 @@ export function WidgetActivity({
       ) : null}
       <CardContent aria-busy={loading || undefined}>
         {loading ? (
-          <ul className="flex flex-col divide-y divide-border">
+          <ul className="flex flex-col gap-3">
             {Array.from({ length: skeletonEntryCount }, (_, index) => (
-              <li
-                key={index}
-                className="flex items-start gap-3 py-3 first:pt-0 last:pb-0"
-              >
+              <li key={index} className="flex items-start gap-3">
+                <Skeleton className="mt-0.5 h-3.5 w-11 shrink-0" />
                 <Skeleton className="mt-0.5 size-4 shrink-0 rounded-full" />
                 <div className="flex min-w-0 flex-1 flex-col gap-1.5">
                   <Skeleton className="h-4 w-40" />
                   <Skeleton className="h-3.5 w-24" />
                 </div>
-                <Skeleton className="mt-0.5 h-3.5 w-10 shrink-0" />
               </li>
             ))}
           </ul>
         ) : entries.length === 0 ? (
           <StateEmpty title={labels.emptyTitle ?? "No activity"} />
         ) : (
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-5">
             {groups.map((group) => (
-              <div key={group.dayKey} className="flex flex-col gap-1">
+              <div key={group.dayKey} className="flex flex-col gap-3">
                 <span className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
                   {groupHeading(group.date, now, locale, dayFormat, labels)}
                 </span>
-                <ul className="flex flex-col divide-y divide-border">
+                <ul className="flex flex-col gap-3">
                   {group.entries.map((entry) => {
                     const Icon = entry.icon
                     const date = parseActivityTimestamp(entry.timestamp)
 
                     return (
-                      <li
-                        key={entry.id}
-                        className="flex items-start gap-3 py-3 first:pt-0 last:pb-0"
-                      >
+                      <li key={entry.id} className="flex items-start gap-3">
+                        <span className="w-11 shrink-0 text-sm text-muted-foreground tabular-nums">
+                          {date ? format(date, timeFormat, { locale }) : ""}
+                        </span>
                         {Icon ? (
                           <Icon className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
                         ) : null}
@@ -191,9 +188,6 @@ export function WidgetActivity({
                             </span>
                           ) : null}
                         </div>
-                        <span className="shrink-0 text-sm text-muted-foreground">
-                          {date ? format(date, timeFormat, { locale }) : ""}
-                        </span>
                       </li>
                     )
                   })}

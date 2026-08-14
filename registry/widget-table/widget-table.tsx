@@ -239,10 +239,11 @@ export function WidgetTable<Row>({
   hiddenColumnIds,
   onHiddenColumnIdsChange,
   stickyHeader = false,
-  maxBodyHeight = "24rem",
+  maxBodyHeight,
   onExport,
 }: WidgetTableProps<Row>) {
   const resolvedLabels = { ...widgetTableLabelDefaults, ...labels }
+  const hasOwnScrollArea = stickyHeader && maxBodyHeight !== undefined
   const visibleColumns = columns.filter(
     (column) => column.alwaysVisible || !hiddenColumnIds?.includes(column.id)
   )
@@ -264,7 +265,12 @@ export function WidgetTable<Row>({
   )
 
   return (
-    <Card className={className}>
+    <Card
+      className={cn(
+        stickyHeader && !hasOwnScrollArea && "overflow-visible",
+        className
+      )}
+    >
       {hasHeader ? (
         <CardHeader className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex flex-wrap items-center gap-3">
@@ -330,11 +336,11 @@ export function WidgetTable<Row>({
               <Button
                 type="button"
                 variant="outline"
-                size="sm"
+                size="icon"
+                aria-label={resolvedLabels.exportLabel}
                 onClick={() => onExport(rows)}
               >
                 <Download />
-                {resolvedLabels.exportLabel}
               </Button>
             ) : null}
           </div>
@@ -399,14 +405,15 @@ export function WidgetTable<Row>({
         ) : (
           <div
             data-slot="table-container"
-            tabIndex={stickyHeader ? 0 : undefined}
-            role={stickyHeader ? "region" : undefined}
-            aria-label={stickyHeader ? title : undefined}
+            tabIndex={hasOwnScrollArea ? 0 : undefined}
+            role={hasOwnScrollArea ? "region" : undefined}
+            aria-label={hasOwnScrollArea ? title : undefined}
             className={cn(
               "relative w-full outline-none focus-visible:ring-3 focus-visible:ring-ring/50",
-              stickyHeader ? "overflow-auto" : "overflow-x-auto"
+              hasOwnScrollArea && "overflow-auto",
+              !stickyHeader && "overflow-x-auto"
             )}
-            style={stickyHeader ? { maxHeight: maxBodyHeight } : undefined}
+            style={hasOwnScrollArea ? { maxHeight: maxBodyHeight } : undefined}
           >
             <table className="w-full caption-bottom text-sm">
               <TableHeader>

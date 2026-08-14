@@ -48,6 +48,7 @@ export interface DateRangeFieldProps {
   placeholder?: string
   presets?: readonly DateRangePreset[]
   disabled?: boolean
+  width?: "auto" | "full"
   className?: string
   locale?: Locale
   displayFormat?: string
@@ -208,6 +209,7 @@ export function DateRangeField({
   placeholder = "Pick a date range",
   presets = defaultDateRangePresets,
   disabled = false,
+  width = "auto",
   className,
   locale = enUS,
   displayFormat = "MMM d, yyyy",
@@ -379,7 +381,8 @@ export function DateRangeField({
             <Button
               variant="outline"
               className={cn(
-                "w-full justify-start font-normal",
+                "justify-start font-normal",
+                width === "full" ? "w-full" : "w-auto",
                 !selected && "text-muted-foreground"
               )}
             />

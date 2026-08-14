@@ -52,7 +52,7 @@ export function WidgetTableSortSelect({
         }
       }}
     >
-      <SelectTrigger className="w-44" aria-label={ariaLabel}>
+      <SelectTrigger className="w-auto" aria-label={ariaLabel}>
         <SelectValue>
           <span className="truncate">
             {activeOption?.label ?? noSortingLabel}

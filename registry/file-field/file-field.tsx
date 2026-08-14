@@ -64,7 +64,7 @@ export function FileField({
       <div
         aria-disabled={disabled || undefined}
         className={cn(
-          "flex items-center gap-2 rounded-lg border border-dashed border-input px-2.5 py-1.5 transition-colors",
+          "relative flex items-center gap-2 rounded-lg border border-dashed border-input px-2.5 py-1.5 transition-colors",
           isDragOver && "border-ring bg-muted/50",
           disabled && "pointer-events-none opacity-50"
         )}

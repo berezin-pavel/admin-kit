@@ -355,6 +355,7 @@ export function DemoOrders() {
           setDateRange("")
           setPage(1)
         }}
+        stickyHeader
         hiddenColumnIds={hiddenColumnIds}
         onHiddenColumnIdsChange={setHiddenColumnIds}
         onExport={(rows) => {

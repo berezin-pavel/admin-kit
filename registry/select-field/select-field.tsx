@@ -17,6 +17,8 @@ export interface SelectFieldOption {
   label: string
 }
 
+export type FieldWidth = "auto" | "full"
+
 export interface SelectFieldProps {
   value: string
   onChange: (value: string) => void
@@ -26,6 +28,7 @@ export interface SelectFieldProps {
   hint?: string
   error?: string
   disabled?: boolean
+  width?: FieldWidth
   className?: string
 }
 
@@ -38,6 +41,7 @@ export function SelectField({
   hint,
   error,
   disabled = false,
+  width = "auto",
   className,
 }: SelectFieldProps) {
   const id = React.useId()
@@ -55,7 +59,7 @@ export function SelectField({
       >
         <SelectTrigger
           id={id}
-          className="w-full"
+          className={width === "full" ? "w-full" : "w-auto"}
           aria-invalid={error ? true : undefined}
           aria-describedby={error ? errorId : hint ? hintId : undefined}
         >

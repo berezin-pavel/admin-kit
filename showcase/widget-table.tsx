@@ -216,7 +216,12 @@ export const widgetTableEntry: ShowcaseEntry = {
     },
     {
       id: "sticky-header",
-      name: "With a sticky header",
+      name: "Sticky header, own scroll area",
+      render: () => <WidgetTableStickyHeaderView maxBodyHeight="18rem" />,
+    },
+    {
+      id: "sticky-header-page-scroll",
+      name: "Sticky header, page scrolls",
       render: () => <WidgetTableStickyHeaderView />,
     },
     {

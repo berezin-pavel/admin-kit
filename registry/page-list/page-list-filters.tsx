@@ -36,7 +36,6 @@ export function PageListFilters({
               value={filter.value}
               onChange={(value) => onFilterChange?.(filter.id, value)}
               placeholder={filter.label}
-              className="w-64"
               {...filter.dateRange}
             />
           )
@@ -67,7 +66,7 @@ export function PageListFilters({
                   onFilterChange?.(filter.id, value ?? "")
                 }
               >
-                <SelectTrigger id={controlId} className="w-40">
+                <SelectTrigger id={controlId} className="w-auto">
                   <SelectValue placeholder={filter.label}>
                     {filter.options?.find(
                       (option) => option.value === filter.value

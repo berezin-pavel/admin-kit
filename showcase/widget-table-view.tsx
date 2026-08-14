@@ -326,7 +326,11 @@ const stickyHeaderRows: readonly StickyOrderRow[] = Array.from(
   })
 )
 
-export function WidgetTableStickyHeaderView() {
+export function WidgetTableStickyHeaderView({
+  maxBodyHeight,
+}: {
+  maxBodyHeight?: string
+}) {
   return (
     <WidgetTable
       title="Recent orders"
@@ -334,6 +338,7 @@ export function WidgetTableStickyHeaderView() {
       rows={stickyHeaderRows}
       getRowKey={(row) => row.number}
       stickyHeader
+      maxBodyHeight={maxBodyHeight}
     />
   )
 }
