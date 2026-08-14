@@ -1,12 +1,27 @@
 import { defineConfig } from "vitest/config"
 
+const alias = { "@": import.meta.dirname }
+
 export default defineConfig({
   test: {
-    include: ["registry/**/*.test.ts"],
-  },
-  resolve: {
-    alias: {
-      "@": import.meta.dirname,
-    },
+    projects: [
+      {
+        resolve: { alias },
+        test: {
+          name: "logic",
+          include: ["registry/**/*.test.ts"],
+          environment: "node",
+        },
+      },
+      {
+        resolve: { alias },
+        test: {
+          name: "dom",
+          include: ["registry/**/*.test.tsx"],
+          environment: "jsdom",
+          setupFiles: ["./vitest.setup.ts"],
+        },
+      },
+    ],
   },
 })
