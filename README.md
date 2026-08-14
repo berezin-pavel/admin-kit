@@ -298,6 +298,11 @@ pnpm dlx shadcn@latest add berezin-pavel/admin-kit/admin-shell -o
 
 overwrites the item's files with the new version.
 
+Whether an update is worth taking is answered by
+[CHANGELOG.md](CHANGELOG.md): for every release it lists the new items, the
+installed items that changed, and the prop or file changes that break on
+overwrite.
+
 ## Rule
 
 Registry items aren't edited in your own project: the next `add -o` will
