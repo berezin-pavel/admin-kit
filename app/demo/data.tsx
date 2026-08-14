@@ -24,6 +24,7 @@ import { enUS, ru } from "date-fns/locale"
 
 import { cn } from "@/lib/utils"
 import type { AdminNavItem } from "@/registry/admin-shell/admin-shell"
+import type { ComboboxFieldOption } from "@/registry/combobox-field/combobox-field"
 import type { DateRange } from "@/registry/date-range-field/date-range-field"
 import type { SelectFieldOption } from "@/registry/select-field/select-field"
 import type { StatusTone } from "@/registry/status-badge/status-badge"
@@ -780,5 +781,211 @@ export function getDemoProductOptions(
   return PRODUCT_COPY[locale].map((copy, index) => ({
     value: PRODUCT_IDS[index],
     label: copy.title,
+  }))
+}
+
+const CUSTOMER_FIRST_NAMES: Record<DemoLocale, readonly string[]> = {
+  en: [
+    "Jon",
+    "Kim",
+    "Zoe",
+    "Max",
+    "Amy",
+    "Alexandra",
+    "Bartholomew",
+    "Persephone",
+    "Maximilian",
+    "Anastasia",
+    "Evangeline",
+  ],
+  ru: [
+    "Ян",
+    "Лев",
+    "Ада",
+    "Марк",
+    "Инна",
+    "Александра",
+    "Анастасия",
+    "Вячеслав",
+    "Серафима",
+    "Всеволод",
+    "Евдокия",
+  ],
+}
+
+const CUSTOMER_LAST_NAMES: Record<DemoLocale, readonly string[]> = {
+  en: [
+    "Roe",
+    "Fox",
+    "Lee",
+    "Kerr",
+    "Diaz",
+    "Cole",
+    "Featherstonehaugh",
+    "Castellanos",
+    "Kowalczyk",
+    "Villanueva-Ortiz",
+    "Whitmore-Blackburn",
+    "Okonkwo-Reyes",
+    "Nakamura-Silva",
+  ],
+  ru: [
+    "Ким",
+    "Пак",
+    "Цой",
+    "Гук",
+    "Ли",
+    "Тан",
+    "Заболотных",
+    "Виноградова",
+    "Александрович",
+    "Овчаренко-Белых",
+    "Константинопольская",
+    "Барановская-Смирнова",
+    "Скворцова-Литвиненко",
+  ],
+}
+
+const DEMO_CUSTOMER_COUNT = 44
+
+function buildDemoCustomerName(index: number, locale: DemoLocale): string {
+  const firstNames = CUSTOMER_FIRST_NAMES[locale]
+  const lastNames = CUSTOMER_LAST_NAMES[locale]
+
+  return `${firstNames[index % firstNames.length]} ${lastNames[index % lastNames.length]}`
+}
+
+export function getDemoCustomerOptions(
+  locale: DemoLocale
+): readonly ComboboxFieldOption[] {
+  return Array.from({ length: DEMO_CUSTOMER_COUNT }, (_, index) => ({
+    value: `customer-${index}`,
+    label: buildDemoCustomerName(index, locale),
+  }))
+}
+
+const ORDER_TIMELINE_TITLE: Record<
+  DemoLocale,
+  { placed: string; paid: string; shipped: string; delivered: string }
+> = {
+  en: {
+    placed: "Order placed",
+    paid: "Payment captured",
+    shipped: "Package shipped",
+    delivered: "Package delivered",
+  },
+  ru: {
+    placed: "Заказ оформлен",
+    paid: "Оплата проведена",
+    shipped: "Отправлен курьером",
+    delivered: "Заказ доставлен",
+  },
+}
+
+const ORDER_TIMELINE_META: Record<
+  DemoLocale,
+  { placed: string; paid: string; shipped: string; delivered: string }
+> = {
+  en: {
+    placed: "Emily Carter checked out",
+    paid: "$2,340 charged to card",
+    shipped: "Handed to the in-house courier",
+    delivered: "Signed for at the door",
+  },
+  ru: {
+    placed: "Смирнова Екатерина оформила заказ",
+    paid: "Списано ₽ 2 340",
+    shipped: "Передан курьеру",
+    delivered: "Получен под подпись",
+  },
+}
+
+export function getDemoOrderTimelineEntries(
+  locale: DemoLocale
+): readonly WidgetActivityEntry[] {
+  const title = ORDER_TIMELINE_TITLE[locale]
+  const meta = ORDER_TIMELINE_META[locale]
+
+  return [
+    {
+      id: "placed",
+      title: title.placed,
+      meta: meta.placed,
+      icon: ShoppingCart,
+      timestamp: "2026-08-03T14:12",
+    },
+    {
+      id: "paid",
+      title: title.paid,
+      meta: meta.paid,
+      icon: CreditCard,
+      timestamp: "2026-08-03T14:13",
+    },
+    {
+      id: "shipped",
+      title: title.shipped,
+      meta: meta.shipped,
+      icon: Truck,
+      timestamp: "2026-08-04T09:20",
+    },
+    {
+      id: "delivered",
+      title: title.delivered,
+      meta: meta.delivered,
+      icon: PackageCheck,
+      timestamp: "2026-08-05T11:40",
+    },
+  ]
+}
+
+interface DemoOrderLineItemCopy {
+  title: string
+  description: string
+  meta: string
+}
+
+const ORDER_LINE_ITEMS: Record<DemoLocale, readonly DemoOrderLineItemCopy[]> = {
+  en: [
+    {
+      title: "Nova Sneakers",
+      description: "Size US 10, Midnight Blue",
+      meta: "$1,890",
+    },
+    {
+      title: "Express delivery protection",
+      description: "Signature required on arrival",
+      meta: "$450",
+    },
+  ],
+  ru: [
+    {
+      title: "Кроссовки Nova",
+      description: "Размер 44, тёмно-синие",
+      meta: "₽ 1 890",
+    },
+    {
+      title: "Защита экспресс-доставки",
+      description: "Вручение под подпись",
+      meta: "₽ 450",
+    },
+  ],
+}
+
+const ORDER_LINE_ITEM_IDS = ["sneakers-nova", "delivery-protection"] as const
+
+const ORDER_LINE_ITEM_ICONS: readonly ComponentType<{ className?: string }>[] = [
+  SportShoe,
+  Truck,
+]
+
+export function getDemoOrderLineItems(
+  locale: DemoLocale
+): readonly WidgetListItem[] {
+  return ORDER_LINE_ITEMS[locale].map((copy, index) => ({
+    id: ORDER_LINE_ITEM_IDS[index],
+    title: copy.title,
+    description: copy.description,
+    meta: copy.meta,
+    icon: ORDER_LINE_ITEM_ICONS[index],
   }))
 }

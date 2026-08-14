@@ -1,9 +1,11 @@
 "use client"
 
-import { useState } from "react"
+import { useMemo, useState } from "react"
+import { History, LayoutDashboard, RotateCw, ShoppingBag } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { DemoOrderBreadcrumbs } from "@/components/demo-order-breadcrumbs"
+import { cn } from "@/lib/utils"
 import { notify } from "@/registry/admin-toaster/admin-toaster"
 import { ConfirmDialog } from "@/registry/confirm-dialog/confirm-dialog"
 import { FormDialog } from "@/registry/form-dialog/form-dialog"
@@ -15,15 +17,22 @@ import {
   PageEntity,
   type PageEntitySection,
 } from "@/registry/page-entity/page-entity"
+import { PageTabs, type PageTabsItem } from "@/registry/page-tabs/page-tabs"
 import { StatusBadge } from "@/registry/status-badge/status-badge"
+import { WidgetActivity } from "@/registry/widget-activity/widget-activity"
+import { WidgetList } from "@/registry/widget-list/widget-list"
 
 import {
   formatDemoCurrency,
+  getDemoOrderLineItems,
+  getDemoOrderTimelineEntries,
   orderStatusLabelByLocale,
   orderStatusTone,
 } from "@/app/demo/data"
 import { demoDictionary } from "@/app/demo/locale"
 import { useDemoLocale } from "@/app/demo/locale-store"
+
+const RELOAD_DELAY_MS = 1200
 
 export function DemoOrderEntity() {
   const [cancelling, setCancelling] = useState(false)
@@ -35,9 +44,16 @@ export function DemoOrderEntity() {
   const [channel, setChannel] = useState("online")
   const [draftTotal, setDraftTotal] = useState(total)
   const [draftChannel, setDraftChannel] = useState(channel)
+  const [tab, setTab] = useState("overview")
+  const [reloading, setReloading] = useState(false)
   const locale = useDemoLocale()
   const strings = demoDictionary[locale].orderEntity
   const statusLabel = orderStatusLabelByLocale[locale]
+  const timelineEntries = useMemo(
+    () => getDemoOrderTimelineEntries(locale),
+    [locale]
+  )
+  const lineItems = useMemo(() => getDemoOrderLineItems(locale), [locale])
 
   const status = cancelled ? "cancelled" : "delivered"
 
@@ -125,14 +141,74 @@ export function DemoOrderEntity() {
     }, 700)
   }
 
+  const reload = () => {
+    setReloading(true)
+    window.setTimeout(() => setReloading(false), RELOAD_DELAY_MS)
+  }
+
+  const tabItems: readonly PageTabsItem[] = [
+    {
+      id: "overview",
+      label: strings.tabOverviewLabel,
+      icon: LayoutDashboard,
+      content: (
+        <PageEntity
+          title={strings.title}
+          description={strings.description}
+          status={reloading ? "loading" : "ready"}
+          sections={sections}
+        />
+      ),
+    },
+    {
+      id: "history",
+      label: strings.tabHistoryLabel,
+      icon: History,
+      content: (
+        <WidgetActivity
+          title={strings.historyTitle}
+          entries={timelineEntries}
+          labels={locale === "ru" ? localeRu.widgetActivity : undefined}
+          locale={locale === "ru" ? localeRu.widgetActivity.locale : undefined}
+          loading={reloading}
+        />
+      ),
+    },
+    {
+      id: "related",
+      label: strings.tabRelatedLabel,
+      icon: ShoppingBag,
+      content: (
+        <WidgetList
+          title={strings.relatedTitle}
+          items={lineItems}
+          emptyTitle={
+            locale === "ru" ? localeRu.widgetList.emptyTitle : undefined
+          }
+          loading={reloading}
+        />
+      ),
+    },
+  ]
+
   return (
     <div className="flex flex-col gap-4">
       <DemoOrderBreadcrumbs />
-      <PageEntity
-        title={strings.title}
-        description={strings.description}
+      <PageTabs
+        items={tabItems}
+        value={tab}
+        onValueChange={setTab}
         actions={
           <>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={reload}
+              disabled={reloading}
+            >
+              <RotateCw className={cn("size-4", reloading && "animate-spin")} />
+              {strings.reloadButton}
+            </Button>
             <Button
               variant="outline"
               size="sm"
@@ -165,7 +241,6 @@ export function DemoOrderEntity() {
             </Button>
           </>
         }
-        sections={sections}
       />
       <FormDialog
         open={editOpen}

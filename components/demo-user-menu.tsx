@@ -1,6 +1,7 @@
 "use client"
 
 import { LogOut, User } from "lucide-react"
+import { useRouter } from "next/navigation"
 
 import { notify } from "@/registry/admin-toaster/admin-toaster"
 import { localeRu } from "@/registry/locale-ru/locale-ru"
@@ -13,6 +14,7 @@ const NAME = "Alex Morgan"
 const EMAIL = "alex@example.com"
 
 export function DemoUserMenu() {
+  const router = useRouter()
   const locale = useDemoLocale()
   const strings = demoDictionary[locale].userMenu
 
@@ -32,7 +34,7 @@ export function DemoUserMenu() {
           label: strings.signOutAction,
           icon: LogOut,
           tone: "danger",
-          onSelect: () => notify.info(strings.signOutToastTitle),
+          onSelect: () => router.push("/demo/sign-in"),
         },
       ]}
       label={locale === "ru" ? localeRu.userMenu.label : undefined}

@@ -7,29 +7,30 @@ import { DemoOrderBreadcrumbs } from "@/components/demo-order-breadcrumbs"
 import { notify } from "@/registry/admin-toaster/admin-toaster"
 import { CheckboxField } from "@/registry/checkbox-field/checkbox-field"
 import { ColorField } from "@/registry/color-field/color-field"
+import { ComboboxField } from "@/registry/combobox-field/combobox-field"
 import { DateField } from "@/registry/date-field/date-field"
 import { DateTimeField } from "@/registry/date-time-field/date-time-field"
 import { FileField } from "@/registry/file-field/file-field"
 import { localeRu } from "@/registry/locale-ru/locale-ru"
+import { MultiSelectField } from "@/registry/multi-select-field/multi-select-field"
 import { NumberField } from "@/registry/number-field/number-field"
 import { PageForm } from "@/registry/page-form/page-form"
 import { SelectField } from "@/registry/select-field/select-field"
-import { TagsField } from "@/registry/tags-field/tags-field"
-import { TextField } from "@/registry/text-field/text-field"
 import { TextareaField } from "@/registry/textarea-field/textarea-field"
 import { TimeField } from "@/registry/time-field/time-field"
 
-import { getDemoProductOptions } from "@/app/demo/data"
+import { getDemoCustomerOptions, getDemoProductOptions } from "@/app/demo/data"
 import { demoDictionary } from "@/app/demo/locale"
 import { useDemoLocale } from "@/app/demo/locale-store"
 
-const INITIAL_CUSTOMER = "Emily Carter"
+const INITIAL_CUSTOMER = "customer-6"
 const INITIAL_PRODUCT = "sneakers-nova"
 const INITIAL_AMOUNT = "2340"
 const INITIAL_DATE = "2026-08-03"
 const INITIAL_PAID = true
 const INITIAL_COMMENT = "Gift wrap requested, deliver after 6pm."
-const INITIAL_TAGS: readonly string[] = ["Gift", "Priority"]
+const INITIAL_TAGS: readonly string[] = ["gift", "priority"]
+const INITIAL_CHANNELS: readonly string[] = ["online", "retail"]
 const INITIAL_PICKUP = "2026-08-14T11:00"
 const INITIAL_DELIVERY_TIME = "11:30"
 const INITIAL_LABEL_COLOR = "#f97316"
@@ -39,6 +40,7 @@ export function DemoOrderEdit() {
   const locale = useDemoLocale()
   const strings = demoDictionary[locale].orderEdit
   const productOptions = getDemoProductOptions(locale)
+  const customerOptions = getDemoCustomerOptions(locale)
 
   const [customer, setCustomer] = useState(INITIAL_CUSTOMER)
   const [product, setProduct] = useState(INITIAL_PRODUCT)
@@ -47,6 +49,7 @@ export function DemoOrderEdit() {
   const [paid, setPaid] = useState(INITIAL_PAID)
   const [comment, setComment] = useState(INITIAL_COMMENT)
   const [tags, setTags] = useState<readonly string[]>(INITIAL_TAGS)
+  const [channels, setChannels] = useState<readonly string[]>(INITIAL_CHANNELS)
   const [attachment, setAttachment] = useState<File | null>(null)
   const [pickup, setPickup] = useState(INITIAL_PICKUP)
   const [deliveryTime, setDeliveryTime] = useState(INITIAL_DELIVERY_TIME)
@@ -67,10 +70,13 @@ export function DemoOrderEdit() {
             title: strings.sectionTitle,
             children: (
               <div className="flex flex-col gap-4">
-                <TextField
+                <ComboboxField
                   label={strings.customerLabel}
                   value={customer}
                   onChange={setCustomer}
+                  options={customerOptions}
+                  placeholder={strings.customerPlaceholder}
+                  emptyLabel={strings.customerEmptyLabel}
                 />
                 <SelectField
                   label={strings.productLabel}
@@ -160,17 +166,25 @@ export function DemoOrderEdit() {
                     max={100}
                   />
                 </div>
-                <TagsField
+                <MultiSelectField
                   label={strings.tagsLabel}
                   value={tags}
                   onChange={setTags}
-                  suggestions={strings.tagsSuggestions}
-                  placeholder={
-                    locale === "ru" ? localeRu.tagsField.placeholder : undefined
-                  }
-                  removeLabel={
-                    locale === "ru" ? localeRu.tagsField.removeLabel : undefined
-                  }
+                  options={strings.tagsOptions}
+                  placeholder={strings.tagsPlaceholder}
+                  emptyLabel={strings.tagsEmptyLabel}
+                  removeLabel={strings.removeItemLabel}
+                />
+                <MultiSelectField
+                  label={strings.channelsLabel}
+                  value={channels}
+                  onChange={setChannels}
+                  options={strings.channelsOptions}
+                  placeholder={strings.channelsPlaceholder}
+                  emptyLabel={strings.channelsEmptyLabel}
+                  removeLabel={strings.removeItemLabel}
+                  hint={strings.channelsHint}
+                  maxItems={3}
                 />
                 <FileField
                   label={strings.attachmentLabel}

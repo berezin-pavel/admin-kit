@@ -32,6 +32,7 @@ export interface DemoDictionary {
       openReports: string
     }
     quickActionToastTitle: (label: string) => string
+    reloadButton: string
   }
   standaloneTable: {
     title: string
@@ -121,10 +122,17 @@ export interface DemoDictionary {
     selectionDeleteConfirmLabel: string
     selectionDeleteToastTitle: string
     selectionDeleteToastDescription: (count: number) => string
+    reloadButton: string
   }
   orderEntity: {
     title: string
     description: string
+    tabOverviewLabel: string
+    tabHistoryLabel: string
+    tabRelatedLabel: string
+    historyTitle: string
+    relatedTitle: string
+    reloadButton: string
     sectionOrder: string
     fieldStatus: string
     fieldPlaced: string
@@ -171,6 +179,8 @@ export interface DemoDictionary {
     description: string
     sectionTitle: string
     customerLabel: string
+    customerPlaceholder: string
+    customerEmptyLabel: string
     productLabel: string
     amountLabel: string
     dateLabel: string
@@ -178,7 +188,15 @@ export interface DemoDictionary {
     commentLabel: string
     commentPlaceholder: string
     tagsLabel: string
-    tagsSuggestions: readonly string[]
+    tagsPlaceholder: string
+    tagsEmptyLabel: string
+    tagsOptions: readonly { value: string; label: string }[]
+    channelsLabel: string
+    channelsPlaceholder: string
+    channelsEmptyLabel: string
+    channelsHint: string
+    channelsOptions: readonly { value: string; label: string }[]
+    removeItemLabel: (label: string) => string
     attachmentLabel: string
     pickupLabel: string
     deliveryTimeLabel: string
@@ -193,10 +211,20 @@ export interface DemoDictionary {
     profileAction: string
     signOutAction: string
     profileToastTitle: string
-    signOutToastTitle: string
   }
   breadcrumbs: {
     editLabel: string
+  }
+  signIn: {
+    title: string
+    description: string
+    emailLabel: string
+    emailPlaceholder: string
+    passwordLabel: string
+    rememberLabel: string
+    submitLabel: string
+    errorMessage: string
+    backToDemoLabel: string
   }
 }
 
@@ -233,6 +261,7 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
         openReports: "Open reports",
       },
       quickActionToastTitle: (label) => `${label} — demo action`,
+      reloadButton: "Reload",
     },
     standaloneTable: {
       title: "Recent orders",
@@ -330,10 +359,17 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       selectionDeleteToastTitle: "Orders deleted",
       selectionDeleteToastDescription: (count) =>
         `${count} orders removed from the list`,
+      reloadButton: "Reload",
     },
     orderEntity: {
       title: "Order #4187",
       description: "Nova sneakers, delivery in Austin",
+      tabOverviewLabel: "Overview",
+      tabHistoryLabel: "History",
+      tabRelatedLabel: "Items",
+      historyTitle: "Order timeline",
+      relatedTitle: "Items in this order",
+      reloadButton: "Reload",
       sectionOrder: "Order",
       fieldStatus: "Status",
       fieldPlaced: "Placed",
@@ -384,6 +420,8 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       description: "Update the order and save the changes",
       sectionTitle: "Order",
       customerLabel: "Customer",
+      customerPlaceholder: "Search customers…",
+      customerEmptyLabel: "No customer found",
       productLabel: "Product",
       amountLabel: "Amount",
       dateLabel: "Delivery date",
@@ -391,13 +429,27 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       commentLabel: "Comment",
       commentPlaceholder: "Add a note for the fulfillment team",
       tagsLabel: "Tags",
-      tagsSuggestions: [
-        "Gift",
-        "Priority",
-        "Fragile",
-        "Wholesale",
-        "Repeat customer",
+      tagsPlaceholder: "Search tags…",
+      tagsEmptyLabel: "No tags found",
+      tagsOptions: [
+        { value: "gift", label: "Gift" },
+        { value: "priority", label: "Priority" },
+        { value: "fragile", label: "Fragile" },
+        { value: "wholesale", label: "Wholesale" },
+        { value: "repeat-customer", label: "Repeat customer" },
       ],
+      channelsLabel: "Channels",
+      channelsPlaceholder: "Search channels…",
+      channelsEmptyLabel: "No channel found",
+      channelsHint: "Up to 3 channels this order touched",
+      channelsOptions: [
+        { value: "online", label: "Online store" },
+        { value: "retail", label: "Retail" },
+        { value: "marketplace", label: "Marketplace" },
+        { value: "phone", label: "Phone" },
+        { value: "social", label: "Social media" },
+      ],
+      removeItemLabel: (label) => `Remove ${label}`,
       attachmentLabel: "Attachment",
       pickupLabel: "Pickup",
       deliveryTimeLabel: "Delivery time",
@@ -412,10 +464,21 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       profileAction: "Profile",
       signOutAction: "Sign out",
       profileToastTitle: "Opened profile",
-      signOutToastTitle: "Signed out",
     },
     breadcrumbs: {
       editLabel: "Edit",
+    },
+    signIn: {
+      title: "Sign in",
+      description:
+        "Use owner@example.com with the password demo to explore the panel.",
+      emailLabel: "Email",
+      emailPlaceholder: "you@example.com",
+      passwordLabel: "Password",
+      rememberLabel: "Remember me",
+      submitLabel: "Sign in",
+      errorMessage: "Incorrect email or password",
+      backToDemoLabel: "Back to the demo",
     },
   },
   ru: {
@@ -450,6 +513,7 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
         openReports: "Открыть отчёты",
       },
       quickActionToastTitle: (label) => `${label} — демо-действие`,
+      reloadButton: "Обновить",
     },
     standaloneTable: {
       title: "Последние заказы",
@@ -544,10 +608,17 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       selectionDeleteToastTitle: "Заказы удалены",
       selectionDeleteToastDescription: (count) =>
         `Убрано из списка заказов: ${count}`,
+      reloadButton: "Обновить",
     },
     orderEntity: {
       title: "Заказ №4187",
       description: "Кроссовки Nova, доставка по Казани",
+      tabOverviewLabel: "Обзор",
+      tabHistoryLabel: "История",
+      tabRelatedLabel: "Состав",
+      historyTitle: "Хронология заказа",
+      relatedTitle: "Состав заказа",
+      reloadButton: "Обновить",
       sectionOrder: "Заказ",
       fieldStatus: "Статус",
       fieldPlaced: "Оформлен",
@@ -598,6 +669,8 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       description: "Обновите заказ и сохраните изменения",
       sectionTitle: "Заказ",
       customerLabel: "Покупатель",
+      customerPlaceholder: "Поиск покупателя…",
+      customerEmptyLabel: "Покупатель не найден",
       productLabel: "Товар",
       amountLabel: "Сумма",
       dateLabel: "Дата доставки",
@@ -605,13 +678,27 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       commentLabel: "Комментарий",
       commentPlaceholder: "Добавьте заметку для сборщиков заказа",
       tagsLabel: "Теги",
-      tagsSuggestions: [
-        "Подарок",
-        "Срочно",
-        "Хрупкое",
-        "Опт",
-        "Постоянный клиент",
+      tagsPlaceholder: "Поиск тегов…",
+      tagsEmptyLabel: "Теги не найдены",
+      tagsOptions: [
+        { value: "gift", label: "Подарок" },
+        { value: "priority", label: "Срочно" },
+        { value: "fragile", label: "Хрупкое" },
+        { value: "wholesale", label: "Опт" },
+        { value: "repeat-customer", label: "Постоянный клиент" },
       ],
+      channelsLabel: "Каналы",
+      channelsPlaceholder: "Поиск каналов…",
+      channelsEmptyLabel: "Канал не найден",
+      channelsHint: "До 3 каналов, через которые пришёл заказ",
+      channelsOptions: [
+        { value: "online", label: "Онлайн-магазин" },
+        { value: "retail", label: "Розница" },
+        { value: "marketplace", label: "Маркетплейс" },
+        { value: "phone", label: "Телефон" },
+        { value: "social", label: "Соцсети" },
+      ],
+      removeItemLabel: (label) => `Убрать ${label}`,
       attachmentLabel: "Вложение",
       pickupLabel: "Забрать заказ",
       deliveryTimeLabel: "Время доставки",
@@ -626,10 +713,21 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       profileAction: "Профиль",
       signOutAction: "Выйти",
       profileToastTitle: "Открыт профиль",
-      signOutToastTitle: "Вы вышли из аккаунта",
     },
     breadcrumbs: {
       editLabel: "Редактирование",
+    },
+    signIn: {
+      title: "Вход",
+      description:
+        "Используйте owner@example.com и пароль demo, чтобы посмотреть панель.",
+      emailLabel: "Email",
+      emailPlaceholder: "you@example.com",
+      passwordLabel: "Пароль",
+      rememberLabel: "Запомнить меня",
+      submitLabel: "Войти",
+      errorMessage: "Неверный email или пароль",
+      backToDemoLabel: "Вернуться в демо",
     },
   },
 }

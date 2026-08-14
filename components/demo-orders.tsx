@@ -4,14 +4,19 @@ import { useMemo, useState } from "react"
 import type { Key } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import { Download, Eye, Pencil, Trash2 } from "lucide-react"
+import { Download, Eye, Pencil, RotateCw, Trash2 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
 import { notify } from "@/registry/admin-toaster/admin-toaster"
 import { ConfirmDialog } from "@/registry/confirm-dialog/confirm-dialog"
 import { parseDateRangeValue } from "@/registry/date-range-field/date-range-field"
 import { localeRu } from "@/registry/locale-ru/locale-ru"
-import { PageList, type PageListFilter } from "@/registry/page-list/page-list"
+import {
+  PageList,
+  type PageListFilter,
+  type PageStatus,
+} from "@/registry/page-list/page-list"
 import { RowActions } from "@/registry/row-actions/row-actions"
 import { StatusBadge } from "@/registry/status-badge/status-badge"
 import type {
@@ -32,6 +37,7 @@ import { useDemoLocale } from "@/app/demo/locale-store"
 
 const PAGE_SIZE_OPTIONS = [4, 8, 12] as const
 const DEFAULT_PAGE_SIZE = 4
+const RELOAD_DELAY_MS = 1200
 
 function parseTotal(total: string) {
   return Number(total.replace(/\D/g, ""))
@@ -80,6 +86,7 @@ export function DemoOrders() {
   )
   const [bulkDeleteOpen, setBulkDeleteOpen] = useState(false)
   const [bulkDeleting, setBulkDeleting] = useState(false)
+  const [pageStatus, setPageStatus] = useState<PageStatus>("ready")
 
   const rows = useMemo(
     () =>
@@ -256,6 +263,11 @@ export function DemoOrders() {
     }, 700)
   }
 
+  const reload = () => {
+    setPageStatus("loading")
+    window.setTimeout(() => setPageStatus("ready"), RELOAD_DELAY_MS)
+  }
+
   const selectionActions: readonly WidgetTableSelectionAction[] = [
     {
       id: "export",
@@ -279,16 +291,32 @@ export function DemoOrders() {
         title={strings.title}
         description={strings.description}
         actions={
-          <Button
-            size="sm"
-            onClick={() =>
-              notify.info(strings.exportToastTitle, {
-                description: strings.exportToastDescription,
-              })
-            }
-          >
-            {strings.exportButton}
-          </Button>
+          <>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={reload}
+              disabled={pageStatus === "loading"}
+            >
+              <RotateCw
+                className={cn(
+                  "size-4",
+                  pageStatus === "loading" && "animate-spin"
+                )}
+              />
+              {strings.reloadButton}
+            </Button>
+            <Button
+              size="sm"
+              onClick={() =>
+                notify.info(strings.exportToastTitle, {
+                  description: strings.exportToastDescription,
+                })
+              }
+            >
+              {strings.exportButton}
+            </Button>
+          </>
         }
         filters={filters}
         onFilterChange={(id, value) => {
@@ -327,6 +355,7 @@ export function DemoOrders() {
         selectedKeys={selectedKeys}
         onSelectionChange={setSelectedKeys}
         selectionActions={selectionActions}
+        status={pageStatus}
       />
       <ConfirmDialog
         open={bulkDeleteOpen}

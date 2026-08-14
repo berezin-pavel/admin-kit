@@ -2,7 +2,9 @@
 
 import { useMemo, useState } from "react"
 
+import { Button } from "@/components/ui/button"
 import { DemoStandaloneTable } from "@/components/demo-standalone-table"
+import { cn } from "@/lib/utils"
 import {
   DateRangeField,
   defaultDateRangePresets,
@@ -18,7 +20,7 @@ import { WidgetMetric } from "@/registry/widget-metric/widget-metric"
 import { WidgetProgress } from "@/registry/widget-progress/widget-progress"
 import { WidgetQuickActions } from "@/registry/widget-quick-actions/widget-quick-actions"
 import { notify } from "@/registry/admin-toaster/admin-toaster"
-import { Download, FileChartColumn, Plus, UserPlus } from "lucide-react"
+import { Download, FileChartColumn, Plus, RotateCw, UserPlus } from "lucide-react"
 
 import {
   formatDemoCurrency,
@@ -92,6 +94,7 @@ export default function DemoPage() {
     locale === "ru" ? localeRu.widgetProgress.targetLabel : undefined
 
   const [rangeValue, setRangeValue] = useState(getDefaultOverviewRangeValue)
+  const [reloading, setReloading] = useState(false)
   const dailyMetrics = useMemo(() => getDemoDailyMetrics(), [])
   const range = useMemo(() => parseDateRangeValue(rangeValue), [rangeValue])
 
@@ -162,8 +165,24 @@ export default function DemoPage() {
     onSelect: () => notify.info(strings.quickActionToastTitle(action.label)),
   }))
 
+  const reload = () => {
+    setReloading(true)
+    window.setTimeout(() => setReloading(false), 1200)
+  }
+
   return (
     <div className="flex flex-col gap-4">
+      <div className="flex justify-end">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={reload}
+          disabled={reloading}
+        >
+          <RotateCw className={cn("size-4", reloading && "animate-spin")} />
+          {strings.reloadButton}
+        </Button>
+      </div>
       <div className="grid gap-4 sm:grid-cols-3">
         <WidgetMetric
           title={strings.metricOrdersTitle}
@@ -176,6 +195,7 @@ export default function DemoPage() {
           trendValues={ordersTrend}
           trendTooltipFormat={(value) => formatDemoNumber(value, locale)}
           hint={strings.metricHint}
+          loading={reloading}
         />
         <WidgetMetric
           title={strings.metricRevenueTitle}
@@ -188,6 +208,7 @@ export default function DemoPage() {
           trendValues={revenueTrend}
           trendTooltipFormat={(value) => formatDemoCurrency(value, locale)}
           hint={strings.metricHint}
+          loading={reloading}
         />
         <WidgetMetric
           title={strings.metricAverageOrderTitle}
@@ -203,6 +224,7 @@ export default function DemoPage() {
           trendValues={averageOrderTrend}
           trendTooltipFormat={(value) => formatDemoCurrency(value, locale)}
           hint={strings.metricHint}
+          loading={reloading}
         />
       </div>
       <div className="grid gap-4 md:grid-cols-3">
@@ -217,6 +239,7 @@ export default function DemoPage() {
             formatDemoCurrency(monthlyGoal.value, locale),
             formatDemoCurrency(monthlyGoal.max, locale)
           )}
+          loading={reloading}
         />
         <WidgetProgress
           title={strings.progressOrdersTitle}
@@ -229,10 +252,12 @@ export default function DemoPage() {
             formatDemoNumber(monthlyOrdersGoal.value, locale),
             formatDemoNumber(monthlyOrdersGoal.max, locale)
           )}
+          loading={reloading}
         />
         <WidgetQuickActions
           title={strings.quickActionsTitle}
           actions={quickActions}
+          loading={reloading}
         />
       </div>
       <WidgetChart
@@ -241,6 +266,7 @@ export default function DemoPage() {
         series={revenueChart.series}
         hint={strings.financeChartHint}
         emptyTitle={chartEmptyTitle}
+        loading={reloading}
         toolbar={
           <DateRangeField
             value={rangeValue}
@@ -266,27 +292,31 @@ export default function DemoPage() {
           series={getDemoOrdersByChannelSeries(locale)}
           kind="bar"
           emptyTitle={chartEmptyTitle}
+          loading={reloading}
         />
         <WidgetChart
           title={strings.newCustomersChartTitle}
           labels={getDemoMonths(locale)}
           series={getDemoNewCustomersSeries(locale)}
           emptyTitle={chartEmptyTitle}
+          loading={reloading}
         />
       </div>
       <div className="grid gap-4 lg:grid-cols-2">
-        <DemoStandaloneTable />
+        <DemoStandaloneTable loading={reloading} />
         <div className="flex flex-col gap-4">
           <WidgetList
             title={strings.productsTitle}
             items={getDemoProductItems(locale)}
             emptyTitle={emptyTitle}
+            loading={reloading}
           />
           <WidgetDonut
             title={strings.donutTitle}
             hint={strings.metricHint}
             slices={donutSlices}
             emptyTitle={donutEmptyTitle}
+            loading={reloading}
           />
         </div>
       </div>
@@ -295,6 +325,7 @@ export default function DemoPage() {
         entries={activityEntries}
         labels={activityLabels}
         locale={locale === "ru" ? localeRu.widgetActivity.locale : undefined}
+        loading={reloading}
       />
     </div>
   )

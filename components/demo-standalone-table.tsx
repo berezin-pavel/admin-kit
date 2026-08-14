@@ -39,7 +39,11 @@ function sortOrderRows(
   })
 }
 
-export function DemoStandaloneTable() {
+export function DemoStandaloneTable({
+  loading = false,
+}: {
+  loading?: boolean
+}) {
   const [search, setSearch] = useState("")
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE)
@@ -99,6 +103,7 @@ export function DemoStandaloneTable() {
         },
       }}
       labels={locale === "ru" ? localeRu.widgetTable : undefined}
+      loading={loading}
     />
   )
 }
