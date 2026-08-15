@@ -8,7 +8,7 @@
       "name": "admin-theme",
       "type": "registry:theme",
       "title": "Admin theme",
-      "description": "Admin colors and radii, including a pair of success and warning tokens on top of the standard shadcn set, for both light and dark schemes. Installed first: the rest of the admin-kit items rely on these tokens. The theme also ships one behavioural rule: anything clickable — a button, a menu item, an option, a tab — gets a pointer cursor, which neither the browser default nor Tailwind's preflight provides, so a control does not read as inert text under the mouse.",
+      "description": "Admin colors and radii, including a pair of success and warning tokens on top of the standard shadcn set, for both light and dark schemes. Installed first: the rest of the admin-kit items rely on these tokens.",
       "files": [],
       "cssVars": {
         "light": {
@@ -87,13 +87,6 @@
           "warning": "oklch(0.55 0.14 55)",
           "warning-foreground": "oklch(0.985 0 0)",
           "destructive-foreground": "oklch(0.145 0 0)"
-        }
-      },
-      "css": {
-        "@layer base": {
-          "button:not(:disabled), [role=\"button\"]:not([aria-disabled=\"true\"]), [role=\"menuitem\"], [role=\"menuitemcheckbox\"], [role=\"option\"], [role=\"tab\"]": {
-            "cursor": "pointer"
-          }
         }
       }
     },
@@ -201,7 +194,7 @@
       "name": "user-menu",
       "type": "registry:component",
       "title": "User menu",
-      "description": "An avatar icon button opening a dropdown with the user's name, email, and a list of items (icon, label, and a danger tone for actions like sign-out). Without avatarUrl the trigger shows bare initials in the same lettering as the kit's toggles. variant=\"row\" (the default is \"icon\") fills admin-shell's sidebarProfile slot: avatar, name, the email in muted text beneath it and a trailing chevron, the whole row a single trigger — its accessible name comes from that visible text, so a screen reader announces who is signed in rather than a generic label, and a long name or email truncates instead of widening the sidebar. variant=\"icon\" stays the fit for sidebarActions, the header's actions slot or sidebarFooter. The dropdown's open state lives in the primitive, the same as the kit's other popups.",
+      "description": "An avatar button opening a dropdown with the user's name, email, and a list of items (icon, label, and a danger tone for actions like sign-out). The avatar is the same fixed-size circle in both variants, falling back to the initials when avatarUrl is missing — bare text in a button would sit off-centre wherever the surrounding layout is not a square. variant=\"row\" (the default is \"icon\") fills admin-shell's sidebarProfile slot: avatar, name, the email in muted text beneath it and a trailing chevron, the whole row a single trigger — its accessible name comes from that visible text, so a screen reader announces who is signed in rather than a generic label, and a long name or email truncates instead of widening the sidebar. variant=\"icon\" stays the fit for sidebarActions, the header's actions slot or sidebarFooter. The trigger carries data-slot=\"user-menu\" — the seam admin-shell restyles to collapse the row into the icon rail, and the reason not to look for data-slot=\"button\" there, which the dropdown primitive overwrites. The dropdown's open state lives in the primitive, the same as the kit's other popups.",
       "registryDependencies": [
         "avatar",
         "dropdown-menu",

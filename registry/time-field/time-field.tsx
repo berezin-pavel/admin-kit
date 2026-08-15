@@ -53,7 +53,7 @@ export function TimeField({
         disabled={disabled}
         aria-invalid={error ? true : undefined}
         aria-describedby={error ? errorId : hint ? hintId : undefined}
-        className="[&::-webkit-calendar-picker-indicator]:cursor-pointer dark:[&::-webkit-calendar-picker-indicator]:opacity-80 dark:[&::-webkit-calendar-picker-indicator]:invert"
+        className="dark:[&::-webkit-calendar-picker-indicator]:opacity-80 dark:[&::-webkit-calendar-picker-indicator]:invert"
       />
       {error ? (
         <p id={errorId} className="text-sm text-destructive">

@@ -57,20 +57,19 @@ export function UserMenu({
   align = "start",
   className,
 }: UserMenuProps) {
-  const avatar = avatarUrl ? (
+  const avatar = (
     <Avatar size="sm">
-      <AvatarImage src={avatarUrl} alt="" />
-      <AvatarFallback>{getUserMenuInitials(name)}</AvatarFallback>
+      {avatarUrl ? <AvatarImage src={avatarUrl} alt="" /> : null}
+      <AvatarFallback className="font-medium text-foreground">
+        {getUserMenuInitials(name)}
+      </AvatarFallback>
     </Avatar>
-  ) : (
-    <span className="text-[10px] font-semibold">
-      {getUserMenuInitials(name)}
-    </span>
   )
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
+        data-slot="user-menu"
         render={
           variant === "row" ? (
             <Button
@@ -82,17 +81,17 @@ export function UserMenu({
             />
           ) : (
             <Button
-              variant="outline"
+              variant="ghost"
               size="icon"
               aria-label={label}
-              className={className}
+              className={cn("rounded-full p-0", className)}
             />
           )
         }
       >
         {variant === "row" ? (
           <>
-            <span className="flex shrink-0 items-center">{avatar}</span>
+            {avatar}
             <span
               data-slot="user-menu-details"
               className="flex min-w-0 flex-1 flex-col items-start overflow-hidden"

@@ -107,7 +107,7 @@ export function ShowcaseNavBody({
   return (
     <>
       <details className="-mx-6 border-b border-border bg-background/95 px-6 py-2 backdrop-blur md:hidden">
-        <summary className="flex cursor-pointer list-none items-center justify-between gap-2 text-sm font-medium">
+        <summary className="flex list-none items-center justify-between gap-2 text-sm font-medium">
           Sections
           <ChevronDown className="size-4 text-muted-foreground" />
         </summary>

@@ -11,10 +11,12 @@ test.describe("page-tabs", () => {
 
     const first = await page.getByRole("tabpanel").innerText()
     await tabs.nth(1).click()
+    await expect(tabs.nth(1)).toHaveAttribute("aria-selected", "true")
+    await expect(page.getByRole("tabpanel")).toHaveCount(1)
+
     const second = await page.getByRole("tabpanel").innerText()
 
     expect(second).not.toBe(first)
-    await expect(page.getByRole("tabpanel")).toHaveCount(1)
   })
 
   test("moves between tabs with arrow keys", async ({ page }) => {

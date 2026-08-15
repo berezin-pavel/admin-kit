@@ -158,7 +158,7 @@ export function ColorField(props: ColorFieldProps): React.ReactElement {
             })}
           </div>
           <div className="flex items-center gap-2">
-            <label className="relative size-8 shrink-0 cursor-pointer overflow-hidden rounded-lg border border-input">
+            <label className="relative size-8 shrink-0 overflow-hidden rounded-lg border border-input">
               <span className="sr-only">Custom color</span>
               <span
                 aria-hidden="true"
@@ -170,7 +170,7 @@ export function ColorField(props: ColorFieldProps): React.ReactElement {
                 value={isValid ? color : "#000000"}
                 onChange={(event) => onChange(event.target.value)}
                 disabled={disabled}
-                className="absolute inset-0 size-full cursor-pointer opacity-0"
+                className="absolute inset-0 size-full opacity-0"
               />
             </label>
             <div className="flex h-8 flex-1 items-center gap-1 rounded-lg border border-input px-2.5 dark:bg-input/30">

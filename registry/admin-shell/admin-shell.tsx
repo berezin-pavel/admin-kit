@@ -132,7 +132,7 @@ export function AdminShell({
         {sidebarProfile ? (
           <div
             className={cn(
-              "flex shrink-0 justify-center border-b border-sidebar-border px-2 pt-1 pb-2 [&_[data-slot=button]]:size-8 [&_[data-slot=button]]:p-0 [&_[data-slot=user-menu-chevron]]:hidden [&_[data-slot=user-menu-details]]:hidden",
+              "flex shrink-0 justify-center border-b border-sidebar-border px-2 pt-1 pb-2 [&_[data-slot=user-menu-chevron]]:hidden [&_[data-slot=user-menu-details]]:hidden [&_[data-slot=user-menu]]:size-8 [&_[data-slot=user-menu]]:justify-center [&_[data-slot=user-menu]]:rounded-full [&_[data-slot=user-menu]]:p-0",
               !collapsed && "md:hidden"
             )}
           >

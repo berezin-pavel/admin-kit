@@ -63,3 +63,29 @@ describe("UserMenu variant=\"row\"", () => {
     expect(email).toHaveClass("truncate")
   })
 })
+
+describe("UserMenu trigger contract", () => {
+  it.each(["icon", "row"] as const)(
+    "marks the %s trigger with data-slot=user-menu for the shell to style",
+    (variant) => {
+      render(<UserMenu variant={variant} name="Alex Morgan" items={items} />)
+
+      expect(screen.getByRole("button")).toHaveAttribute(
+        "data-slot",
+        "user-menu"
+      )
+    }
+  )
+
+  it.each(["icon", "row"] as const)(
+    "draws the initials of the %s variant inside a fixed-size avatar",
+    (variant) => {
+      render(<UserMenu variant={variant} name="Alex Morgan" items={items} />)
+
+      const initials = screen.getByText("AM")
+
+      expect(initials).toHaveAttribute("data-slot", "avatar-fallback")
+      expect(initials.parentElement).toHaveAttribute("data-size", "sm")
+    }
+  )
+})

@@ -51,6 +51,12 @@ dependencies. `select-field` and `date-range-field` take `width` (`"auto"` by de
 to pin to the container), so a filter bar sizes to its content and stops wrapping onto a second
 row while a form field still fills its column.
 
+**Fixed** — `user-menu` draws the same fixed-size avatar in both variants instead of bare initials
+when `avatarUrl` is missing, and its trigger carries `data-slot="user-menu"`. The initials used to
+sit off-centre in the icon rail: the row trigger stayed left-aligned there because `admin-shell`
+restyled it through `data-slot="button"`, which the dropdown primitive overwrites with
+`data-slot="dropdown-menu-trigger"` — a selector that had silently matched nothing.
+
 **Fixed** — `file-field`'s container is positioned, so its visually hidden native input can no
 longer stretch the page into a second scrollbar on a long form. A select filter's unset state
 must be an empty value: Base UI marks a select as showing a placeholder whenever its value is
