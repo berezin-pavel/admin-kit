@@ -12,7 +12,6 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
-import { cn } from "@/lib/utils"
 
 export interface AdminMenuProps {
   appName: string
@@ -20,7 +19,6 @@ export interface AdminMenuProps {
   actions?: ReactNode
   profile?: ReactNode
   footer?: ReactNode
-  showOnDesktop?: boolean
   children: ReactNode
   openMenuLabel?: string
 }
@@ -31,7 +29,6 @@ export function AdminMenu({
   actions,
   profile,
   footer,
-  showOnDesktop = false,
   children,
   openMenuLabel = "Open navigation menu",
 }: AdminMenuProps) {
@@ -44,7 +41,7 @@ export function AdminMenu({
           <Button
             variant="ghost"
             size="icon"
-            className={cn(!showOnDesktop && "md:hidden")}
+            className="md:hidden"
             aria-label={openMenuLabel}
           />
         }

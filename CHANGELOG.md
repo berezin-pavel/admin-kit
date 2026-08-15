@@ -27,6 +27,26 @@ re-pulling), **Breaking** (props or files that changed shape — read before ove
 
 ## Unreleased
 
+**Breaking** — `admin-shell` gives a narrow screen no sidebar at all. Below `md` the icon rail is
+gone and the burger panel is the whole navigation; without a header the shell draws a compact bar
+carrying the burger, the logo and the app name, and the work area keeps the full width. A wide
+screen is unchanged apart from one control: the collapsed rail no longer shows a burger, because
+the sidebar toggle that expands it is already in the footer. `admin-menu.tsx` lost `showOnDesktop`
+and `admin-nav.tsx` lost `responsive` — with the rail confined to wide screens, `collapsed` is the
+only thing that decides the nav's shape.
+
+**Breaking** — `user-menu` no longer exports `getUserMenuInitials`, and the avatar falls back to a
+person icon instead of initials. An avatar is a picture the app uploads; initials were standing in
+for one, and a glyph reads as a placeholder while two letters read as data. `variant="row"` now
+names its trigger with `aria-labelledby` pointing at the name and the email rather than leaning on
+its visible text: in the collapsed rail that text is hidden, and with the initials gone the button
+would have had no accessible name at all. A referenced element still counts when hidden, so the
+button announces the same person at either width.
+
+**Changed** — navigation items and breadcrumb links take `cursor-default`. The kit reads as an
+application rather than a document, and a link in the chrome is a control like any other — the
+hand cursor was the browser's default for `<a>`, not a choice the kit had made.
+
 **Breaking** — `widget-table` renders no export button of its own: export becomes one of the
 consumer's `selectionActions` (`onExport` and `toCsv` stay exported for it). The columns dropdown
 became a settings dialog, so the item now depends on `dialog` instead of `dropdown-menu` and

@@ -22,7 +22,6 @@ export interface AdminNavProps {
   activeHref: string
   renderLink?: AdminNavLinkRenderer
   collapsed?: boolean
-  responsive?: boolean
   className?: string
   sectionsLabel?: string
 }
@@ -38,21 +37,17 @@ export function AdminNav({
   activeHref,
   renderLink,
   collapsed = false,
-  responsive = false,
   className,
   sectionsLabel = "Sections",
 }: AdminNavProps) {
   const renderItem = renderLink ?? renderNavLink
-  const isExpanded = !collapsed && !responsive
-  const collapsesAtMd = responsive && !collapsed
 
   return (
     <nav
       aria-label={sectionsLabel}
       className={cn(
         "flex flex-col gap-1 py-2",
-        isExpanded ? "items-stretch px-3" : "items-center",
-        collapsesAtMd && "md:items-stretch md:px-3",
+        collapsed ? "items-center" : "items-stretch px-3",
         className
       )}
     >
@@ -66,11 +61,10 @@ export function AdminNav({
               href: item.href,
               isActive,
               className: cn(
-                "flex items-center gap-2 rounded-md text-sm font-medium transition-colors",
-                !isExpanded && "size-10 justify-center",
-                isExpanded && "w-full justify-start px-3 py-2 font-normal",
-                collapsesAtMd &&
-                  "md:h-auto md:w-full md:justify-start md:px-3 md:py-2 md:font-normal",
+                "flex cursor-default items-center gap-2 rounded-md text-sm transition-colors",
+                collapsed
+                  ? "size-10 justify-center font-medium"
+                  : "w-full justify-start px-3 py-2 font-normal",
                 isActive
                   ? "bg-sidebar-accent text-sidebar-accent-foreground"
                   : "text-sidebar-foreground hover:bg-sidebar-accent/50"
@@ -80,23 +74,11 @@ export function AdminNav({
                   <span aria-hidden="true">
                     {Icon ? (
                       <Icon className="size-4 shrink-0" />
-                    ) : (
-                      <span
-                        className={cn(
-                          isExpanded && "hidden",
-                          collapsesAtMd && "md:hidden"
-                        )}
-                      >
-                        {item.title.charAt(0).toUpperCase()}
-                      </span>
-                    )}
+                    ) : collapsed ? (
+                      item.title.charAt(0).toUpperCase()
+                    ) : null}
                   </span>
-                  <span
-                    className={cn(
-                      !isExpanded && "sr-only",
-                      collapsesAtMd && "md:not-sr-only"
-                    )}
-                  >
+                  <span className={cn(collapsed && "sr-only")}>
                     {item.title}
                   </span>
                 </>

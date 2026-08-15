@@ -1,7 +1,7 @@
 "use client"
 
-import type { ComponentType } from "react"
-import { ChevronsUpDown } from "lucide-react"
+import { useId, type ComponentType } from "react"
+import { ChevronsUpDown, User } from "lucide-react"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
@@ -36,16 +36,6 @@ export interface UserMenuProps {
   className?: string
 }
 
-export function getUserMenuInitials(name: string): string {
-  return name
-    .trim()
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((word) => word.charAt(0).toUpperCase())
-    .join("")
-}
-
 export function UserMenu({
   name,
   email,
@@ -57,11 +47,14 @@ export function UserMenu({
   align = "start",
   className,
 }: UserMenuProps) {
+  const baseId = useId()
+  const nameId = `${baseId}-name`
+  const emailId = `${baseId}-email`
   const avatar = (
     <Avatar size="sm">
       {avatarUrl ? <AvatarImage src={avatarUrl} alt="" /> : null}
-      <AvatarFallback className="font-medium text-foreground">
-        {getUserMenuInitials(name)}
+      <AvatarFallback className="text-foreground">
+        <User className="size-3.5" />
       </AvatarFallback>
     </Avatar>
   )
@@ -74,6 +67,7 @@ export function UserMenu({
           variant === "row" ? (
             <Button
               variant="ghost"
+              aria-labelledby={email ? `${nameId} ${emailId}` : nameId}
               className={cn(
                 "h-auto w-full min-w-0 justify-start gap-2 px-2 py-1.5 text-left font-normal",
                 className
@@ -96,11 +90,17 @@ export function UserMenu({
               data-slot="user-menu-details"
               className="flex min-w-0 flex-1 flex-col items-start overflow-hidden"
             >
-              <span className="w-full truncate text-sm font-medium text-foreground">
+              <span
+                id={nameId}
+                className="w-full truncate text-sm font-medium text-foreground"
+              >
                 {name}
               </span>
               {email ? (
-                <span className="w-full truncate text-xs font-normal text-muted-foreground">
+                <span
+                  id={emailId}
+                  className="w-full truncate text-xs font-normal text-muted-foreground"
+                >
                   {email}
                 </span>
               ) : null}

@@ -9,7 +9,8 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 
-const BREADCRUMB_LINK_CLASSNAME = "transition-colors hover:text-foreground"
+const BREADCRUMB_LINK_CLASSNAME =
+  "cursor-default transition-colors hover:text-foreground"
 
 export interface BreadcrumbEntry {
   label: string

@@ -54,7 +54,7 @@ export const adminShellEntry: ShowcaseEntry = {
   item: "admin-shell",
   title: "Admin shell",
   description:
-    "The persistent frame of the admin panel: an optional header, a side navigation, and a work area. On a wide screen it's a sidebar with the app name; on a narrow one it's a strip of icons and a burger that opens a panel with labels. The controlled collapsed prop shrinks the sidebar on a wide screen to that same icon strip, where the burger also appears. The sidebar is drawn as a card — a panel with padding, rounding, and a border. The header prop can remove the header entirely: on a narrow screen without a header, the burger moves to the top of the icon strip. The top of the sidebar is a brand row — an optional logo slot before appName, sized to a 20-24px box and still visible in the icon strip and the burger panel once the name itself is hidden. Directly under it, sidebarProfile renders a full-width account row, separated from the navigation by a divider; in the icon strip it collapses to just the trigger's avatar, and in the burger panel it keeps its full row form. sidebarActions stays available alongside it for anything else that belongs next to the brand, like a notifications button. The sidebarFooter prop is a slot at the bottom of the sidebar and the icon strip for a theme toggle, sidebar toggle, or build version. Nav items and the active section are set by props, and the link renderer can be swapped for your own router.",
+    "The persistent frame of the admin panel: an optional header, a side navigation, and a work area. The sidebar belongs to the wide screen and is drawn as a card — a panel with padding, rounding, and a border. On a narrow screen it is gone entirely and the burger takes over: one panel holds the brand, the account row, every section with its label, and the footer, while the work area gets the full width. The controlled collapsed prop shrinks the sidebar on a wide screen to a strip of icons, and the sidebar toggle in the footer brings it back — no burger appears there, because a control that reopens the sidebar is already on screen. The header prop can remove the header entirely: without it a narrow screen gets a compact bar with the burger, the logo, and the app name. The top of the sidebar is a brand row — an optional logo slot before appName, sized to a 20-24px box and still visible in the icon strip and the burger panel once the name itself is hidden. Directly under it, sidebarProfile renders a full-width account row, separated from the navigation by a divider; in the icon strip it collapses to just the trigger's avatar. sidebarActions stays available alongside it for anything else that belongs next to the brand, like a notifications button. The sidebarFooter prop is a slot at the bottom of the sidebar and the icon strip for a theme toggle, sidebar toggle, or build version. Nav items and the active section are set by props, and the link renderer can be swapped for your own router.",
   views: [
     {
       id: "empty",
@@ -133,9 +133,10 @@ export const adminShellEntry: ShowcaseEntry = {
       render: () => (
         <AdminShellFooterView header={false}>
           <div className="text-sm text-muted-foreground">
-            On a narrow screen the burger opens a panel with the logo, the
-            full-width account row, all the navigation, and the same
-            sidebarFooter at the bottom — not just the icon strip.
+            On a narrow screen there is no sidebar at all: the burger opens
+            a panel with the logo, the full-width account row, all the
+            navigation, and the same sidebarFooter at the bottom, and the
+            work area keeps the full width.
           </div>
         </AdminShellFooterView>
       ),
@@ -167,7 +168,7 @@ export const adminShellEntry: ShowcaseEntry = {
         >
           <div className="text-sm text-muted-foreground">
             The controlled collapsed prop shrinks the sidebar on a wide
-            screen to the same icon strip as on a narrow one.
+            screen to a strip of icons.
           </div>
         </AdminShell>
       ),
@@ -180,8 +181,9 @@ export const adminShellEntry: ShowcaseEntry = {
           <div className="text-sm text-muted-foreground">
             Collapsed, the logo and the account row shrink to the same
             icon-strip footprint as a nav item — the account trigger still
-            opens the same menu. Expand it with the sidebar toggle in the
-            footer to see the full brand and account rows again.
+            opens the same menu, and no burger joins them. Expand it with
+            the sidebar toggle in the footer to see the full brand and
+            account rows again.
           </div>
         </AdminShellFooterView>
       ),

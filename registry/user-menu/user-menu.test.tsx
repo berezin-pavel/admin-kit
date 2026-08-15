@@ -78,14 +78,19 @@ describe("UserMenu trigger contract", () => {
   )
 
   it.each(["icon", "row"] as const)(
-    "draws the initials of the %s variant inside a fixed-size avatar",
+    "falls back to an icon in the %s variant's fixed-size avatar",
     (variant) => {
-      render(<UserMenu variant={variant} name="Alex Morgan" items={items} />)
+      const { container } = render(
+        <UserMenu variant={variant} name="Alex Morgan" items={items} />
+      )
 
-      const initials = screen.getByText("AM")
+      const fallback = container.querySelector(
+        '[data-slot="avatar-fallback"]'
+      )
 
-      expect(initials).toHaveAttribute("data-slot", "avatar-fallback")
-      expect(initials.parentElement).toHaveAttribute("data-size", "sm")
+      expect(fallback).not.toHaveTextContent(/\w/)
+      expect(fallback?.querySelector("svg")).toBeInTheDocument()
+      expect(fallback?.parentElement).toHaveAttribute("data-size", "sm")
     }
   )
 })

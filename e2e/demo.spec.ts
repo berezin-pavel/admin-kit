@@ -41,10 +41,12 @@ test("the order screen splits into working tabs", async ({ page }) => {
 
   const overview = await page.getByRole("tabpanel").innerText()
   await tabs.nth(1).click()
+  await expect(tabs.nth(1)).toHaveAttribute("aria-selected", "true")
+  await expect(page.getByRole("tabpanel")).toHaveCount(1)
+
   const history = await page.getByRole("tabpanel").innerText()
 
   expect(history).not.toBe(overview)
-  await expect(page.getByRole("tabpanel")).toHaveCount(1)
 })
 
 test("the order edit form picks a customer by search and saves", async ({

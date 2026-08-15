@@ -203,7 +203,7 @@ function NavItem({
           aria-current={isActive ? "page" : undefined}
           onClick={() => onNavigate(item.id)}
           className={cn(
-            "block flex-1 rounded-md px-2 py-1 transition-colors",
+            "block flex-1 cursor-default rounded-md px-2 py-1 transition-colors",
             isActive
               ? "bg-muted font-medium text-foreground"
               : "text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -236,7 +236,7 @@ function NavItem({
               <Link
                 href={`#${child.id}`}
                 onClick={() => onNavigate(item.id)}
-                className="block rounded-md px-2 py-0.5 text-xs text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                className="block cursor-default rounded-md px-2 py-0.5 text-xs text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
               >
                 {child.title}
               </Link>
