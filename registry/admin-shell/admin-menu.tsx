@@ -16,7 +16,9 @@ import { cn } from "@/lib/utils"
 
 export interface AdminMenuProps {
   appName: string
+  logo?: ReactNode
   actions?: ReactNode
+  profile?: ReactNode
   footer?: ReactNode
   showOnDesktop?: boolean
   children: ReactNode
@@ -25,7 +27,9 @@ export interface AdminMenuProps {
 
 export function AdminMenu({
   appName,
+  logo,
   actions,
+  profile,
   footer,
   showOnDesktop = false,
   children,
@@ -50,13 +54,27 @@ export function AdminMenu({
       <SheetContent side="left">
         <SheetHeader>
           <div className="flex items-center justify-between gap-2">
-            <SheetTitle>{appName}</SheetTitle>
+            <div className="flex min-w-0 items-center gap-2">
+              {logo ? (
+                <span className="flex size-5 shrink-0 items-center justify-center overflow-hidden">
+                  {logo}
+                </span>
+              ) : null}
+              <SheetTitle className="truncate">{appName}</SheetTitle>
+            </div>
             {actions ? (
-              <div className="flex items-center gap-1">{actions}</div>
+              <div className="flex shrink-0 items-center gap-1">
+                {actions}
+              </div>
             ) : null}
           </div>
         </SheetHeader>
         <div className="flex min-h-0 flex-1 flex-col">
+          {profile ? (
+            <div className="shrink-0 border-b border-sidebar-border px-4 pb-4">
+              {profile}
+            </div>
+          ) : null}
           <div
             onClick={(event) => {
               if (

@@ -6,9 +6,10 @@ import {
 
 import type { ShowcaseEntry } from "./types"
 import {
-  WidgetTableColumnVisibilityView,
   WidgetTableExportView,
   WidgetTableFilteredEmptyView,
+  WidgetTableSelectAllMatchingView,
+  WidgetTableSettingsDialogView,
   WidgetTableShowcaseView,
   WidgetTableStickyHeaderView,
 } from "./widget-table-view"
@@ -70,7 +71,7 @@ export const widgetTableEntry: ShowcaseEntry = {
   item: "widget-table",
   title: "Table widget",
   description:
-    "A self-contained table for a dashboard: columns and rows come in via props, and each column pulls its value from a row through cell. The title is optional — without it the toolbar panel sits as the card's first row. The toolbar prop (the consumer's filters) sits in the header on the left, with the record count, page size picker, sort select, columns menu, and export button on the right of the same header; the card's footer is reserved for pagination alone, with page buttons centered, their count depending on the total number of pages. Sorting is controlled: a column with sortable reports a click through onSortChange, but the table doesn't reorder rows — whoever owns the data does that. The sortOptions prop adds the same choice as a select: each option has its own sort, which doesn't have to reference a visible column — that's how sorting by a hidden or composite field is set up. The select and the column-header buttons share the same sort, so they show a consistent state. Pagination can offer a page-size choice via pageSizeOptions and onPageSizeChange. Without rows and without the empty prop it shows a default state; passing filtered switches that default to a filtered-results state with its own copy and, when onClearFilters is given, a clear-filters button — a filtered-out list reads differently from a genuinely empty table. hiddenColumnIds and onHiddenColumnIdsChange hide columns from the render and, once onHiddenColumnIdsChange is set, add a columns menu to the header; a column marked alwaysVisible can't be hidden from that menu. stickyHeader keeps the header row visible while the body scrolls inside maxBodyHeight (24rem by default). onExport adds an export button that hands the currently held rows to the callback — the table never builds a file itself, and the toCsv helper turns columns and rows into an RFC 4180 CSV string for the common case.",
+    "A self-contained table for a dashboard: columns and rows come in via props, and each column pulls its value from a row through cell. The title is optional — without it the toolbar panel sits as the card's first row. The toolbar prop (the consumer's filters) sits in the header on the left, with the record count, page size picker, and sort select on the right of the same header; the card's footer is reserved for pagination alone, with page buttons centered, their count depending on the total number of pages. Sorting is controlled: a column with sortable reports a click through onSortChange, but the table doesn't reorder rows — whoever owns the data does that. The sortOptions prop adds the same choice as a select: each option has its own sort, which doesn't have to reference a visible column — that's how sorting by a hidden or composite field is set up. The select and the column-header buttons share the same sort, so they show a consistent state. Pagination can offer a page-size choice via pageSizeOptions and onPageSizeChange. Without rows and without the empty prop it shows a default state; passing filtered switches that default to a filtered-results state with its own copy and, when onClearFilters is given, a clear-filters button — a filtered-out list reads differently from a genuinely empty table. hiddenColumnIds and onHiddenColumnIdsChange hide columns from the render and, once onHiddenColumnIdsChange is set, add a settings icon button to the header that opens a dialog holding the column checkboxes as a labelled section, ready for more settings later; a column marked alwaysVisible shows there checked and disabled, and a column with an empty title (an actions column) doesn't appear in the dialog at all. stickyHeader keeps the header row visible while the body scrolls inside its own focusable, labelled scroll area sized by maxBodyHeight (24rem by default) — stickyHeader always owns its scroll area, since sticking to whatever scroller the page happens to provide can't be made to work when that scroller has its own padding. Passing selectedKeys and onSelectionChange turns the row checkboxes on and swaps the header's left side for a selection bar; selectionActions render as icon buttons sized like row actions, each with a tooltip and an aria-label from its label, except an action with no icon, which keeps its text so the button isn't blank. Once totalCount is larger than the selected count and every row on the page is selected, onSelectAllMatching adds a button offering to extend the selection to all totalCount matching records, worded by selectAllMatchingLabel. The toCsv helper turns columns and rows into an RFC 4180 CSV string for the common case; the table itself never builds a file or renders an export button — export is just another selectionAction the consumer wires up, typically calling toCsv on the selected rows.",
   views: [
     {
       id: "multiple-rows",
@@ -205,28 +206,33 @@ export const widgetTableEntry: ShowcaseEntry = {
       ),
     },
     {
+      id: "select-all-matching",
+      name: "Offering to select every matching record",
+      render: () => <WidgetTableSelectAllMatchingView />,
+    },
+    {
       id: "filtered-empty",
       name: "No results for the current filter",
       render: () => <WidgetTableFilteredEmptyView />,
     },
     {
-      id: "with-column-visibility",
-      name: "With a column visibility menu",
-      render: () => <WidgetTableColumnVisibilityView />,
+      id: "with-settings-dialog",
+      name: "With the table settings dialog",
+      render: () => <WidgetTableSettingsDialogView />,
     },
     {
       id: "sticky-header",
-      name: "Sticky header, own scroll area",
-      render: () => <WidgetTableStickyHeaderView maxBodyHeight="18rem" />,
-    },
-    {
-      id: "sticky-header-page-scroll",
-      name: "Sticky header, page scrolls",
+      name: "Sticky header, default height",
       render: () => <WidgetTableStickyHeaderView />,
     },
     {
+      id: "sticky-header-custom-height",
+      name: "Sticky header, custom height",
+      render: () => <WidgetTableStickyHeaderView maxBodyHeight="18rem" />,
+    },
+    {
       id: "with-export",
-      name: "With CSV export",
+      name: "Export as a selection action",
       render: () => <WidgetTableExportView />,
     },
     {

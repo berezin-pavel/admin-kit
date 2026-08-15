@@ -277,7 +277,7 @@ export function WidgetTableFilteredEmptyView() {
   )
 }
 
-const columnVisibilityColumns: readonly WidgetTableColumn<OrderRow>[] = [
+const settingsDialogColumns: readonly WidgetTableColumn<OrderRow>[] = [
   {
     id: "number",
     title: "Number",
@@ -286,9 +286,26 @@ const columnVisibilityColumns: readonly WidgetTableColumn<OrderRow>[] = [
   },
   { id: "customer", title: "Customer", cell: (row) => row.customer },
   { id: "total", title: "Amount", align: "right", cell: (row) => row.total },
+  {
+    id: "actions",
+    title: "",
+    align: "right",
+    cell: (row) => (
+      <RowActions
+        actions={[
+          {
+            id: "view",
+            label: "View order",
+            icon: Eye,
+            onSelect: () => notify.info(`Order #${row.number}`),
+          },
+        ]}
+      />
+    ),
+  },
 ]
 
-export function WidgetTableColumnVisibilityView() {
+export function WidgetTableSettingsDialogView() {
   const [hiddenColumnIds, setHiddenColumnIds] = useState<readonly string[]>(
     []
   )
@@ -296,7 +313,7 @@ export function WidgetTableColumnVisibilityView() {
   return (
     <WidgetTable
       title="Recent orders"
-      columns={columnVisibilityColumns}
+      columns={settingsDialogColumns}
       rows={allRows}
       getRowKey={(row) => row.number}
       hiddenColumnIds={hiddenColumnIds}
@@ -350,7 +367,24 @@ const exportColumns: readonly WidgetTableColumn<OrderRow>[] = [
 ]
 
 export function WidgetTableExportView() {
+  const [selectedKeys, setSelectedKeys] = useState<ReadonlySet<Key>>(
+    new Set()
+  )
   const [csv, setCsv] = useState("")
+
+  const selectionActions: readonly WidgetTableSelectionAction[] = [
+    {
+      id: "export",
+      label: "Export",
+      icon: Download,
+      onSelect: () => {
+        const selectedRows = allRows.filter((row) =>
+          selectedKeys.has(row.number)
+        )
+        setCsv(toCsv(exportColumns, selectedRows))
+      },
+    },
+  ]
 
   return (
     <div className="flex flex-col gap-3">
@@ -359,7 +393,9 @@ export function WidgetTableExportView() {
         columns={exportColumns}
         rows={allRows}
         getRowKey={(row) => row.number}
-        onExport={(rows) => setCsv(toCsv(exportColumns, rows))}
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+        selectionActions={selectionActions}
       />
       {csv ? (
         <pre className="overflow-x-auto rounded-lg border border-border bg-muted p-3 text-xs">
@@ -367,5 +403,65 @@ export function WidgetTableExportView() {
         </pre>
       ) : null}
     </div>
+  )
+}
+
+interface MatchingOrderRow {
+  number: string
+  customer: string
+}
+
+const matchingRows: readonly MatchingOrderRow[] = Array.from(
+  { length: 12 },
+  (_, index) => ({
+    number: String(2000 + index),
+    customer: `Customer ${index + 1}`,
+  })
+)
+
+const matchingColumns: readonly WidgetTableColumn<MatchingOrderRow>[] = [
+  { id: "number", title: "Number", cell: (row) => row.number },
+  { id: "customer", title: "Customer", cell: (row) => row.customer },
+]
+
+export function WidgetTableSelectAllMatchingView() {
+  const pageSize = 4
+  const [page, setPage] = useState(1)
+  const [selectedKeys, setSelectedKeys] = useState<ReadonlySet<Key>>(
+    new Set()
+  )
+
+  const rows = matchingRows.slice((page - 1) * pageSize, page * pageSize)
+
+  const selectionActions: readonly WidgetTableSelectionAction[] = [
+    {
+      id: "delete",
+      label: "Delete",
+      icon: Trash2,
+      tone: "danger",
+      onSelect: () => setSelectedKeys(new Set()),
+    },
+  ]
+
+  return (
+    <WidgetTable
+      title="Matching orders"
+      columns={matchingColumns}
+      rows={rows}
+      getRowKey={(row) => row.number}
+      selectedKeys={selectedKeys}
+      onSelectionChange={setSelectedKeys}
+      selectionActions={selectionActions}
+      totalCount={matchingRows.length}
+      onSelectAllMatching={() =>
+        setSelectedKeys(new Set(matchingRows.map((row) => row.number)))
+      }
+      pagination={{
+        page,
+        pageSize,
+        total: matchingRows.length,
+        onPageChange: setPage,
+      }}
+    />
   )
 }

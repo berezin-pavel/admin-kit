@@ -12,7 +12,7 @@ const PAGE_SIZE = 3
 
 export function PageListLive() {
   const [search, setSearch] = useState("")
-  const [role, setRole] = useState("all")
+  const [role, setRole] = useState("")
   const [page, setPage] = useState(1)
   const [hiddenColumnIds, setHiddenColumnIds] = useState<readonly string[]>(
     []
@@ -25,7 +25,7 @@ export function PageListLive() {
   )?.label
 
   const matched = userRows.filter((row) => {
-    const byRole = role === "all" || row.role === roleLabel
+    const byRole = role === "" || row.role === roleLabel
     const byQuery =
       query === "" ||
       row.name.toLowerCase().includes(query) ||
@@ -36,7 +36,13 @@ export function PageListLive() {
 
   const lastPage = Math.max(1, Math.ceil(matched.length / PAGE_SIZE))
   const currentPage = Math.min(page, lastPage)
-  const isFiltered = search.trim() !== "" || role !== "all"
+  const isFiltered = search.trim() !== "" || role !== ""
+
+  function resetFilters() {
+    setSearch("")
+    setRole("")
+    setPage(1)
+  }
 
   const filters: readonly PageListFilter[] = [
     { id: "search", label: "Search", kind: "search", value: search },
@@ -76,11 +82,8 @@ export function PageListLive() {
         total={matched.length}
         onPageChange={setPage}
         filtered={isFiltered}
-        onClearFilters={() => {
-          setSearch("")
-          setRole("all")
-          setPage(1)
-        }}
+        onClearFilters={resetFilters}
+        onResetFilters={resetFilters}
         hiddenColumnIds={hiddenColumnIds}
         onHiddenColumnIdsChange={setHiddenColumnIds}
         onExport={(rows) => setCsv(toCsv(userColumns, rows))}

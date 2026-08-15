@@ -1,6 +1,7 @@
 import { Moon, Sun } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
+import { Hint } from "@/registry/hint/hint"
 
 export interface ThemeToggleLabels {
   toLight?: string
@@ -25,14 +26,19 @@ export function ThemeToggle({
   const label = isDark ? toLightLabel : toDarkLabel
 
   return (
-    <Button
-      variant="outline"
-      size="icon"
-      aria-label={label}
-      onClick={onToggle}
-      className={className}
-    >
-      {isDark ? <Sun className="size-4" /> : <Moon className="size-4" />}
-    </Button>
+    <Hint
+      text={label}
+      render={
+        <Button
+          variant="outline"
+          size="icon"
+          aria-label={label}
+          onClick={onToggle}
+          className={className}
+        >
+          {isDark ? <Sun className="size-4" /> : <Moon className="size-4" />}
+        </Button>
+      }
+    />
   )
 }

@@ -25,6 +25,41 @@ Sections used below: **New** (items you can now install), **Changed** (installed
 re-pulling), **Breaking** (props or files that changed shape — read before overwriting), and
 **Project** (showcase, CI, docs — nothing that reaches your project).
 
+## Unreleased
+
+**Breaking** — `widget-table` renders no export button of its own: export becomes one of the
+consumer's `selectionActions` (`onExport` and `toCsv` stay exported for it). The columns dropdown
+became a settings dialog, so the item now depends on `dialog` instead of `dropdown-menu` and
+ships `widget-table-settings-dialog.tsx` in place of `widget-table-columns-menu.tsx`; the
+`exportLabel` label is gone and `settingsLabel`, `settingsTitle` and `selectAllMatchingLabel`
+take its place. `stickyHeader` always owns its scroll area now, sized by `maxBodyHeight` (24rem
+by default) — sticking to a page-level scroller cannot be made correct once that scroller has
+padding, because a row keeps showing above the stuck header in the padding strip.
+
+**New** — `totalCount` plus `onSelectAllMatching` let the selection bar offer "Select all N" once
+the whole page is selected and more records match; the table never computes that selection
+itself. `page-list` forwards both, and gained `onResetFilters`/`resetFiltersLabel`, an icon
+button at the end of the filter bar shown only while a filter holds a value. `admin-shell` gained
+a `logo` slot on the brand row and a `sidebarProfile` row beneath it, and `user-menu` gained
+`variant="row"` to fill it — identity belongs at the top of a sidebar, not at the bottom, which
+is where it went unnoticed.
+
+**Changed** — selection actions and the settings control render as icon buttons with tooltips,
+matching the row actions; `theme-toggle`, `sidebar-toggle` and `language-toggle` gained tooltips
+too (they had accessible names but nothing visible on hover), which adds `hint` to their
+dependencies. `select-field` and `date-range-field` take `width` (`"auto"` by default, `"full"`
+to pin to the container), so a filter bar sizes to its content and stops wrapping onto a second
+row while a form field still fills its column.
+
+**Fixed** — `file-field`'s container is positioned, so its visually hidden native input can no
+longer stretch the page into a second scrollbar on a long form. A select filter's unset state
+must be an empty value: Base UI marks a select as showing a placeholder whenever its value is
+empty, so a catch-all sentinel like `"all"` rendered as selected-but-greyed and kept the reset
+button on screen forever. `widget-activity` lays its entries out in one left column — time, icon,
+title, meta — instead of pushing the time to the far edge, and its day heading follows
+`dayFormat`, which a non-English locale needs (`"d MMMM"` reads "3 августа", the English
+`"MMMM d"` read "августа 3").
+
 ## 0.25.0 — 2026-08-14
 
 **Changed** — `widget-table` gained four capabilities, all forwarded by `page-list`:

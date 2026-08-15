@@ -5,6 +5,8 @@ import type { ReactNode } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 
+import { Store } from "lucide-react"
+
 import { DemoLanguageToggle } from "@/components/demo-language-toggle"
 import { DemoThemeToggle } from "@/components/demo-theme-toggle"
 import { DemoUserMenu } from "@/components/demo-user-menu"
@@ -40,7 +42,12 @@ export function DemoShell({ children }: { children: ReactNode }) {
       activeHref={pathname}
       renderLink={renderDemoLink}
       header={false}
-      sidebarActions={<DemoUserMenu />}
+      logo={
+        <span className="flex size-5 items-center justify-center rounded-md bg-primary text-primary-foreground">
+          <Store className="size-3" />
+        </span>
+      }
+      sidebarProfile={<DemoUserMenu variant="row" />}
       collapsed={collapsed}
       labels={locale === "ru" ? localeRu.adminShell : undefined}
       sidebarFooter={

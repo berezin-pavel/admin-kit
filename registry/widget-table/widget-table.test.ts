@@ -228,6 +228,9 @@ describe("widget table labels merge", () => {
     expect(resolved.clearSelection).toBe(
       widgetTableLabelDefaults.clearSelection
     )
+    expect(resolved.selectAllMatchingLabel).toBe(
+      widgetTableLabelDefaults.selectAllMatchingLabel
+    )
     expect(resolved.filteredEmptyTitle).toBe(
       widgetTableLabelDefaults.filteredEmptyTitle
     )
@@ -238,7 +241,8 @@ describe("widget table labels merge", () => {
       widgetTableLabelDefaults.clearFiltersLabel
     )
     expect(resolved.columnsLabel).toBe(widgetTableLabelDefaults.columnsLabel)
-    expect(resolved.exportLabel).toBe(widgetTableLabelDefaults.exportLabel)
+    expect(resolved.settingsLabel).toBe(widgetTableLabelDefaults.settingsLabel)
+    expect(resolved.settingsTitle).toBe(widgetTableLabelDefaults.settingsTitle)
   })
 
   it("falls back to every default when labels is undefined", () => {
@@ -259,11 +263,13 @@ describe("widget table labels merge", () => {
       selectAllOnPage: "i",
       selected: () => "j",
       clearSelection: "k",
+      selectAllMatchingLabel: () => "k2",
       filteredEmptyTitle: "l",
       filteredEmptyDescription: "m",
       clearFiltersLabel: "n",
       columnsLabel: "o",
-      exportLabel: "p",
+      settingsLabel: "p",
+      settingsTitle: "q",
     })
 
     expect(resolved.emptyTitle).toBe("a")
@@ -277,10 +283,12 @@ describe("widget table labels merge", () => {
     expect(resolved.selectAllOnPage).toBe("i")
     expect(resolved.selected(0)).toBe("j")
     expect(resolved.clearSelection).toBe("k")
+    expect(resolved.selectAllMatchingLabel(0)).toBe("k2")
     expect(resolved.filteredEmptyTitle).toBe("l")
     expect(resolved.filteredEmptyDescription).toBe("m")
     expect(resolved.clearFiltersLabel).toBe("n")
     expect(resolved.columnsLabel).toBe("o")
-    expect(resolved.exportLabel).toBe("p")
+    expect(resolved.settingsLabel).toBe("p")
+    expect(resolved.settingsTitle).toBe("q")
   })
 })

@@ -42,7 +42,6 @@ export const userRows: readonly UserRow[] = [
 ]
 
 export const roleFilterOptions = [
-  { value: "all", label: "All roles" },
   { value: "admin", label: "Admin" },
   { value: "editor", label: "Editor" },
   { value: "viewer", label: "Viewer" },

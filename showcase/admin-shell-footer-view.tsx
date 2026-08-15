@@ -1,8 +1,16 @@
 "use client"
 
 import { useState } from "react"
-import { LayoutDashboard, LogOut, ShoppingCart, User } from "lucide-react"
+import {
+  Bell,
+  LayoutDashboard,
+  LogOut,
+  ShoppingCart,
+  Store,
+  User,
+} from "lucide-react"
 
+import { Button } from "@/components/ui/button"
 import {
   AdminShell,
   type AdminNavItem,
@@ -23,14 +31,22 @@ const locales = [
   { value: "ru", label: "RU" },
 ]
 
+const logoMark = (
+  <span className="flex size-5 items-center justify-center rounded-md bg-primary text-primary-foreground">
+    <Store className="size-3" />
+  </span>
+)
+
 export function AdminShellFooterView({
   header = true,
+  defaultCollapsed = false,
   children,
 }: {
   header?: boolean
+  defaultCollapsed?: boolean
   children?: React.ReactNode
 }) {
-  const [collapsed, setCollapsed] = useState(false)
+  const [collapsed, setCollapsed] = useState(defaultCollapsed)
   const [isDark, setIsDark] = useState(false)
   const [locale, setLocale] = useState("en")
 
@@ -49,8 +65,20 @@ export function AdminShellFooterView({
     </>
   )
 
-  const userMenu = (
+  const notifications = (
+    <Button
+      variant="ghost"
+      size="icon"
+      aria-label="Notifications"
+      onClick={() => notify.info("No new notifications")}
+    >
+      <Bell className="size-4" />
+    </Button>
+  )
+
+  const accountRow = (
     <UserMenu
+      variant="row"
       name="Alex Morgan"
       email="alex@example.com"
       side="bottom"
@@ -76,10 +104,12 @@ export function AdminShellFooterView({
   return header ? (
     <AdminShell
       appName="My Store"
+      logo={logoMark}
       nav={nav}
       activeHref="/orders"
       collapsed={collapsed}
-      sidebarActions={userMenu}
+      sidebarActions={notifications}
+      sidebarProfile={accountRow}
       sidebarFooter={footer}
     >
       {children}
@@ -88,11 +118,13 @@ export function AdminShellFooterView({
   ) : (
     <AdminShell
       appName="My Store"
+      logo={logoMark}
       nav={nav}
       activeHref="/orders"
       header={false}
       collapsed={collapsed}
-      sidebarActions={userMenu}
+      sidebarActions={notifications}
+      sidebarProfile={accountRow}
       sidebarFooter={footer}
     >
       {children}

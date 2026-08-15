@@ -13,13 +13,18 @@ import { useDemoLocale } from "@/app/demo/locale-store"
 const NAME = "Alex Morgan"
 const EMAIL = "alex@example.com"
 
-export function DemoUserMenu() {
+export function DemoUserMenu({
+  variant,
+}: {
+  variant?: "icon" | "row"
+}) {
   const router = useRouter()
   const locale = useDemoLocale()
   const strings = demoDictionary[locale].userMenu
 
   return (
     <UserMenu
+      variant={variant}
       name={NAME}
       email={EMAIL}
       items={[

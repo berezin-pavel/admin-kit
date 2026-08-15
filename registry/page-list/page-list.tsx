@@ -37,6 +37,8 @@ export interface PageListProps<Row> {
   actions?: ReactNode
   filters?: readonly PageListFilter[]
   onFilterChange?: (id: string, value: string) => void
+  onResetFilters?: () => void
+  resetFiltersLabel?: string
   columns: readonly WidgetTableColumn<Row>[]
   rows: readonly Row[]
   getRowKey?: (row: Row, index: number) => Key
@@ -60,6 +62,8 @@ export interface PageListProps<Row> {
   hiddenColumnIds?: readonly string[]
   onHiddenColumnIdsChange?: (ids: readonly string[]) => void
   onExport?: (rows: readonly Row[]) => void
+  totalCount?: number
+  onSelectAllMatching?: () => void
   stickyHeader?: boolean
   maxBodyHeight?: string
 }
@@ -78,6 +82,8 @@ export function PageList<Row>({
   actions,
   filters,
   onFilterChange,
+  onResetFilters,
+  resetFiltersLabel = "Reset filters",
   columns,
   rows,
   getRowKey,
@@ -101,6 +107,8 @@ export function PageList<Row>({
   hiddenColumnIds,
   onHiddenColumnIdsChange,
   onExport,
+  totalCount,
+  onSelectAllMatching,
   stickyHeader,
   maxBodyHeight,
 }: PageListProps<Row>) {
@@ -129,6 +137,8 @@ export function PageList<Row>({
             <PageListFilters
               filters={filters}
               onFilterChange={onFilterChange}
+              onResetFilters={onResetFilters}
+              resetFiltersLabel={resetFiltersLabel}
             />
           ) : undefined
         }
@@ -157,6 +167,8 @@ export function PageList<Row>({
         hiddenColumnIds={hiddenColumnIds}
         onHiddenColumnIdsChange={onHiddenColumnIdsChange}
         onExport={onExport}
+        totalCount={totalCount}
+        onSelectAllMatching={onSelectAllMatching}
         stickyHeader={stickyHeader}
         maxBodyHeight={maxBodyHeight}
       />

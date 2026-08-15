@@ -3,6 +3,7 @@
 import { Languages } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
+import { Hint } from "@/registry/hint/hint"
 import { cn } from "@/lib/utils"
 
 export interface LanguageToggleLocale {
@@ -43,21 +44,25 @@ export function LanguageToggle({
   }
 
   return (
-    <Button
-      variant="outline"
-      size="icon"
-      aria-label={label}
-      title={label}
-      onClick={handleClick}
-      className={cn("gap-0.5", className)}
-    >
-      {current ? (
-        <span className="text-[10px] font-semibold tracking-wide">
-          {current.label}
-        </span>
-      ) : (
-        <Languages className="size-4" />
-      )}
-    </Button>
+    <Hint
+      text={label}
+      render={
+        <Button
+          variant="outline"
+          size="icon"
+          aria-label={label}
+          onClick={handleClick}
+          className={cn("gap-0.5", className)}
+        >
+          {current ? (
+            <span className="text-[10px] font-semibold tracking-wide">
+              {current.label}
+            </span>
+          ) : (
+            <Languages className="size-4" />
+          )}
+        </Button>
+      }
+    />
   )
 }

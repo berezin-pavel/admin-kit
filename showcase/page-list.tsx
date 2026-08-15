@@ -10,7 +10,7 @@ const userFilters: readonly PageListFilter[] = [
     id: "role",
     label: "Role",
     kind: "select",
-    value: "all",
+    value: "",
     options: roleFilterOptions,
   },
 ]
@@ -21,7 +21,7 @@ const emptySearchFilters: readonly PageListFilter[] = [
     id: "role",
     label: "Role",
     kind: "select",
-    value: "all",
+    value: "",
     options: roleFilterOptions,
   },
 ]

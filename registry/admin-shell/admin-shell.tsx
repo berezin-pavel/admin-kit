@@ -19,11 +19,13 @@ export interface AdminShellLabels {
 
 type AdminShellBaseProps = {
   appName: string
+  logo?: ReactNode
   nav: readonly AdminNavItem[]
   activeHref: string
   renderLink?: AdminNavLinkRenderer
   sidebarFooter?: ReactNode
   sidebarActions?: ReactNode
+  sidebarProfile?: ReactNode
   collapsed?: boolean
   children?: ReactNode
   className?: string
@@ -35,11 +37,13 @@ export type AdminShellProps = AdminShellBaseProps &
 
 export function AdminShell({
   appName,
+  logo,
   nav,
   activeHref,
   renderLink,
   sidebarFooter,
   sidebarActions,
+  sidebarProfile,
   collapsed = false,
   header = true,
   actions,
@@ -54,7 +58,9 @@ export function AdminShell({
   const menu = (
     <AdminMenu
       appName={appName}
+      logo={logo}
       actions={sidebarActions}
+      profile={sidebarProfile}
       footer={sidebarFooter}
       showOnDesktop={collapsed}
       openMenuLabel={openMenuLabel}
@@ -81,6 +87,18 @@ export function AdminShell({
           !collapsed && "md:w-60"
         )}
       >
+        {logo ? (
+          <div
+            className={cn(
+              "flex h-14 shrink-0 items-center justify-center",
+              !collapsed && "md:hidden"
+            )}
+          >
+            <span className="flex size-5 shrink-0 items-center justify-center overflow-hidden">
+              {logo}
+            </span>
+          </div>
+        ) : null}
         {header === false ? (
           <div
             className={cn(
@@ -97,11 +115,30 @@ export function AdminShell({
             !collapsed && "md:flex"
           )}
         >
-          {appName}
+          <span className="flex min-w-0 items-center gap-2">
+            {logo ? (
+              <span className="flex size-5 shrink-0 items-center justify-center overflow-hidden">
+                {logo}
+              </span>
+            ) : null}
+            {appName}
+          </span>
           {sidebarActions ? (
-            <div className="flex items-center gap-1">{sidebarActions}</div>
+            <div className="flex shrink-0 items-center gap-1">
+              {sidebarActions}
+            </div>
           ) : null}
         </div>
+        {sidebarProfile ? (
+          <div
+            className={cn(
+              "flex shrink-0 justify-center border-b border-sidebar-border p-3 [&_[data-slot=button]]:size-8 [&_[data-slot=button]]:p-0 [&_[data-slot=user-menu-chevron]]:hidden [&_[data-slot=user-menu-details]]:hidden",
+              !collapsed && "md:hidden"
+            )}
+          >
+            {sidebarProfile}
+          </div>
+        ) : null}
         {sidebarActions ? (
           <div
             className={cn(
@@ -110,6 +147,16 @@ export function AdminShell({
             )}
           >
             {sidebarActions}
+          </div>
+        ) : null}
+        {sidebarProfile ? (
+          <div
+            className={cn(
+              "hidden shrink-0 border-b border-sidebar-border p-2",
+              !collapsed && "md:block"
+            )}
+          >
+            {sidebarProfile}
           </div>
         ) : null}
         <AdminNav

@@ -72,7 +72,7 @@ export function DemoOrders() {
   const statusLabel = orderStatusLabelByLocale[locale]
 
   const [search, setSearch] = useState("")
-  const [status, setStatus] = useState("all")
+  const [status, setStatus] = useState("")
   const [dateRange, setDateRange] = useState("")
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE)
@@ -97,7 +97,6 @@ export function DemoOrders() {
   )
 
   const statusOptions = [
-    { value: "all", label: strings.statusAll },
     { value: "delivered", label: statusLabel.delivered },
     { value: "in-transit", label: statusLabel["in-transit"] },
     { value: "paid", label: statusLabel.paid },
@@ -123,7 +122,7 @@ export function DemoOrders() {
   const createdAtRange = parseDateRangeValue(dateRange)
 
   const filtered = rows.filter((row) => {
-    const byStatus = status === "all" || row.status === status
+    const byStatus = status === "" || row.status === status
     const byQuery =
       query === "" ||
       row.number.includes(query) ||
@@ -205,7 +204,7 @@ export function DemoOrders() {
   ]
 
   const hasActiveFilters =
-    search.trim() !== "" || status !== "all" || dateRange !== ""
+    search.trim() !== "" || status !== "" || dateRange !== ""
 
   const filters: readonly PageListFilter[] = [
     { id: "search", label: strings.searchFilterLabel, kind: "search", value: search },
@@ -279,8 +278,15 @@ export function DemoOrders() {
       id: "export",
       label: strings.selectionExportAction,
       icon: Download,
-      onSelect: () =>
-        notify.info(strings.selectionExportToastTitle(selectedKeys.size)),
+      onSelect: () => {
+        const selectedRows = matched.filter((row) => selectedKeys.has(row.number))
+        const csv = toCsv(columns, selectedRows)
+        notify.info(strings.selectionExportToastTitle(selectedKeys.size), {
+          description: strings.exportToastDescription(
+            csv.split("\r\n").length - 1
+          ),
+        })
+      },
     },
     {
       id: "delete",
@@ -351,21 +357,25 @@ export function DemoOrders() {
         filtered={hasActiveFilters}
         onClearFilters={() => {
           setSearch("")
-          setStatus("all")
+          setStatus("")
           setDateRange("")
           setPage(1)
         }}
         stickyHeader
         hiddenColumnIds={hiddenColumnIds}
         onHiddenColumnIdsChange={setHiddenColumnIds}
-        onExport={(rows) => {
-          const csv = toCsv(columns, rows)
-          notify.info(strings.exportToastTitle, {
-            description: strings.exportToastDescription(
-              csv.split("\r\n").length - 1
-            ),
-          })
+        totalCount={matched.length}
+        onSelectAllMatching={() =>
+          setSelectedKeys(new Set(matched.map((row) => row.number)))
+        }
+        maxBodyHeight="calc(100svh - 20rem)"
+        onResetFilters={() => {
+          setSearch("")
+          setStatus("")
+          setDateRange("")
+          setPage(1)
         }}
+        resetFiltersLabel={strings.resetFiltersLabel}
         sortOptions={sortOptions}
         selectedKeys={selectedKeys}
         onSelectionChange={setSelectedKeys}

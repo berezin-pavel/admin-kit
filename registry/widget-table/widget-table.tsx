@@ -1,5 +1,4 @@
 import type { ComponentType, Key, ReactNode } from "react"
-import { Download } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -22,10 +21,10 @@ import {
 import { cn } from "@/lib/utils"
 import { StateEmpty } from "@/registry/state-empty/state-empty"
 
-import { WidgetTableColumnsMenu } from "./widget-table-columns-menu"
 import { WidgetTablePageSizeSelect } from "./widget-table-page-size-select"
 import { WidgetTablePaginationControls } from "./widget-table-pagination"
 import { WidgetTableSelectionBar } from "./widget-table-selection-bar"
+import { WidgetTableSettingsDialog } from "./widget-table-settings-dialog"
 import { WidgetTableSortButton } from "./widget-table-sort-button"
 import { WidgetTableSortSelect } from "./widget-table-sort-select"
 
@@ -77,11 +76,13 @@ export interface WidgetTableLabels {
   selectAllOnPage?: string
   selected?: (count: number) => string
   clearSelection?: string
+  selectAllMatchingLabel?: (count: number) => string
   filteredEmptyTitle?: string
   filteredEmptyDescription?: string
   clearFiltersLabel?: string
   columnsLabel?: string
-  exportLabel?: string
+  settingsLabel?: string
+  settingsTitle?: string
 }
 
 export const widgetTableLabelDefaults: Required<WidgetTableLabels> = {
@@ -97,12 +98,14 @@ export const widgetTableLabelDefaults: Required<WidgetTableLabels> = {
   selectAllOnPage: "Select all on page",
   selected: (count) => `${count} selected`,
   clearSelection: "Clear selection",
+  selectAllMatchingLabel: (count) => `Select all ${count}`,
   filteredEmptyTitle: "No results",
   filteredEmptyDescription:
     "No records match the current filter. Try adjusting or clearing it.",
   clearFiltersLabel: "Clear filters",
   columnsLabel: "Columns",
-  exportLabel: "Export",
+  settingsLabel: "Table settings",
+  settingsTitle: "Table settings",
 }
 
 export interface WidgetTableProps<Row> {
@@ -122,6 +125,8 @@ export interface WidgetTableProps<Row> {
   selectedKeys?: ReadonlySet<Key>
   onSelectionChange?: (keys: ReadonlySet<Key>) => void
   selectionActions?: readonly WidgetTableSelectionAction[]
+  totalCount?: number
+  onSelectAllMatching?: () => void
   loading?: boolean
   filtered?: boolean
   onClearFilters?: () => void
@@ -233,27 +238,25 @@ export function WidgetTable<Row>({
   selectedKeys,
   onSelectionChange,
   selectionActions,
+  totalCount,
+  onSelectAllMatching,
   loading = false,
   filtered = false,
   onClearFilters,
   hiddenColumnIds,
   onHiddenColumnIdsChange,
   stickyHeader = false,
-  maxBodyHeight,
-  onExport,
+  maxBodyHeight = "24rem",
 }: WidgetTableProps<Row>) {
   const resolvedLabels = { ...widgetTableLabelDefaults, ...labels }
-  const hasOwnScrollArea = stickyHeader && maxBodyHeight !== undefined
   const visibleColumns = columns.filter(
     (column) => column.alwaysVisible || !hiddenColumnIds?.includes(column.id)
   )
   const hasSortSelect = Boolean(
     sortOptions && sortOptions.length > 0 && onSortChange
   )
-  const hasColumnsMenu = Boolean(onHiddenColumnIdsChange)
-  const hasExport = Boolean(onExport)
-  const hasServiceGroup =
-    Boolean(pagination) || hasSortSelect || hasColumnsMenu || hasExport
+  const hasSettings = Boolean(onHiddenColumnIdsChange)
+  const hasServiceGroup = Boolean(pagination) || hasSortSelect || hasSettings
   const hasSelection = Boolean(selectedKeys && onSelectionChange)
   const pageKeys = hasSelection
     ? rows.map((row, index) => getRowKey?.(row, index) ?? index)
@@ -265,12 +268,7 @@ export function WidgetTable<Row>({
   )
 
   return (
-    <Card
-      className={cn(
-        stickyHeader && !hasOwnScrollArea && "overflow-visible",
-        className
-      )}
-    >
+    <Card className={className}>
       {hasHeader ? (
         <CardHeader className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex flex-wrap items-center gap-3">
@@ -284,6 +282,10 @@ export function WidgetTable<Row>({
                 selectedLabel={resolvedLabels.selected}
                 clearLabel={resolvedLabels.clearSelection}
                 onClear={() => onSelectionChange(new Set())}
+                allPageSelected={pageSelection === "all"}
+                totalCount={totalCount}
+                onSelectAllMatching={onSelectAllMatching}
+                selectAllMatchingLabel={resolvedLabels.selectAllMatchingLabel}
               />
             ) : (
               <>
@@ -324,24 +326,15 @@ export function WidgetTable<Row>({
                 ariaLabel={resolvedLabels.sorting}
               />
             ) : null}
-            {hasColumnsMenu && !loading && onHiddenColumnIdsChange ? (
-              <WidgetTableColumnsMenu
+            {hasSettings && !loading && onHiddenColumnIdsChange ? (
+              <WidgetTableSettingsDialog
                 columns={columns}
                 hiddenColumnIds={hiddenColumnIds ?? []}
                 onHiddenColumnIdsChange={onHiddenColumnIdsChange}
-                label={resolvedLabels.columnsLabel}
+                settingsLabel={resolvedLabels.settingsLabel}
+                settingsTitle={resolvedLabels.settingsTitle}
+                columnsLabel={resolvedLabels.columnsLabel}
               />
-            ) : null}
-            {hasExport && !loading && onExport ? (
-              <Button
-                type="button"
-                variant="outline"
-                size="icon"
-                aria-label={resolvedLabels.exportLabel}
-                onClick={() => onExport(rows)}
-              >
-                <Download />
-              </Button>
             ) : null}
           </div>
         </CardHeader>
@@ -405,15 +398,15 @@ export function WidgetTable<Row>({
         ) : (
           <div
             data-slot="table-container"
-            tabIndex={hasOwnScrollArea ? 0 : undefined}
-            role={hasOwnScrollArea ? "region" : undefined}
-            aria-label={hasOwnScrollArea ? title : undefined}
+            tabIndex={stickyHeader ? 0 : undefined}
+            role={stickyHeader ? "region" : undefined}
+            aria-label={stickyHeader ? title : undefined}
             className={cn(
               "relative w-full outline-none focus-visible:ring-3 focus-visible:ring-ring/50",
-              hasOwnScrollArea && "overflow-auto",
+              stickyHeader && "overflow-auto",
               !stickyHeader && "overflow-x-auto"
             )}
-            style={hasOwnScrollArea ? { maxHeight: maxBodyHeight } : undefined}
+            style={stickyHeader ? { maxHeight: maxBodyHeight } : undefined}
           >
             <table className="w-full caption-bottom text-sm">
               <TableHeader>

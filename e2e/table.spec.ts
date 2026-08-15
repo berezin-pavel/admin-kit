@@ -13,34 +13,33 @@ test("a filtered-out list offers to clear the filter instead of claiming there i
   await expect(page.getByRole("row")).not.toHaveCount(0)
 })
 
-test("hiding a column removes it from the table and keeps the pinned one", async ({
+test("the settings dialog hides a column and leaves the pinned one alone", async ({
   page,
 }) => {
-  await page.goto("/preview/widget-table/with-column-visibility")
+  await page.goto("/preview/widget-table/with-settings-dialog")
 
   const headers = page.getByRole("columnheader")
   const before = await headers.count()
 
-  await page.getByRole("button", { name: /columns/i }).click()
+  await page.getByRole("button", { name: "Table settings" }).click()
 
-  const items = page.getByRole("menuitemcheckbox")
-  await expect(items.first()).toBeVisible()
+  const dialog = page.getByRole("dialog")
+  await expect(dialog).toBeVisible()
 
-  const disabled = await items.evaluateAll(
-    (nodes) => nodes.filter((n) => n.getAttribute("aria-disabled") === "true").length
-  )
-  expect(disabled).toBeGreaterThan(0)
+  const boxes = dialog.getByRole("checkbox")
+  const pinned = boxes.first()
+  await expect(pinned).toBeDisabled()
 
-  const toggleable = items.filter({ hasNotText: "" })
-  for (let i = 0; i < (await toggleable.count()); i += 1) {
-    const item = toggleable.nth(i)
-    if ((await item.getAttribute("aria-disabled")) !== "true") {
-      await item.click()
+  const toggles = await boxes.count()
+  for (let i = 0; i < toggles; i += 1) {
+    if (!(await boxes.nth(i).isDisabled())) {
+      await boxes.nth(i).click()
       break
     }
   }
 
   await page.keyboard.press("Escape")
+  await expect(dialog).toBeHidden()
   await expect(headers).toHaveCount(before - 1)
 })
 
@@ -72,19 +71,27 @@ test("the header row stays put while the table body scrolls", async ({
   expect(Math.abs((topAfter ?? 0) - (topBefore ?? 0))).toBeLessThan(4)
 })
 
-test("export hands the current rows to the consumer as CSV", async ({
+test("export is a selection action rather than a header button", async ({
   page,
 }) => {
   await page.goto("/preview/widget-table/with-export")
 
-  await page.getByRole("button", { name: /export/i }).click()
+  await expect(
+    page.getByRole("button", { name: /export/i })
+  ).toHaveCount(0)
+
+  await page.getByRole("checkbox").first().click()
+
+  const exportAction = page.getByRole("button", { name: /export/i })
+  await expect(exportAction).toBeVisible()
+  await exportAction.click()
 
   const output = page.locator("pre")
   await expect(output).toBeVisible()
   expect(await output.innerText()).toContain(",")
 })
 
-test("the header sticks to an outer scroller when the table has no scroll area of its own", async ({
+test("a sticky-header list scrolls inside the table, not the page", async ({
   page,
 }) => {
   await page.goto("/demo/orders")
@@ -94,15 +101,23 @@ test("the header sticks to an outer scroller when the table has no scroll area o
   await expect(page.locator("tbody tr")).toHaveCount(100)
 
   const header = page.locator("th").nth(1)
-  await expect(header).toBeVisible()
+  const before = (await header.boundingBox())?.y
 
-  await page.evaluate(() => document.querySelector("main")?.scrollTo(0, 1500))
+  const scrolled = await page.evaluate(() => {
+    const node = [...document.querySelectorAll("div")].find(
+      (candidate) =>
+        candidate.querySelector("table") !== null &&
+        candidate.scrollHeight > candidate.clientHeight + 20
+    )
+    if (!node) return false
+    node.scrollTo(0, 600)
+    return node.scrollTop > 0
+  })
+  expect(scrolled).toBe(true)
   await page.waitForTimeout(300)
 
-  const box = await header.boundingBox()
-  expect(box).not.toBeNull()
-  expect(box!.y).toBeGreaterThan(0)
-  expect(box!.y).toBeLessThan(200)
+  const after = (await header.boundingBox())?.y
+  expect(Math.abs((after ?? 0) - (before ?? 0))).toBeLessThan(4)
 
   const documentScroll = await page.evaluate(
     () =>

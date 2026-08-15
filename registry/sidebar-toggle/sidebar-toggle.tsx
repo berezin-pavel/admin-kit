@@ -1,6 +1,7 @@
 import { PanelLeftClose, PanelLeftOpen } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
+import { Hint } from "@/registry/hint/hint"
 import { cn } from "@/lib/utils"
 
 export interface SidebarToggleLabels {
@@ -26,18 +27,23 @@ export function SidebarToggle({
   const label = collapsed ? expandLabel : collapseLabel
 
   return (
-    <Button
-      variant="outline"
-      size="icon"
-      aria-label={label}
-      onClick={onToggle}
-      className={cn("hidden md:inline-flex", className)}
-    >
-      {collapsed ? (
-        <PanelLeftOpen className="size-4" />
-      ) : (
-        <PanelLeftClose className="size-4" />
-      )}
-    </Button>
+    <Hint
+      text={label}
+      render={
+        <Button
+          variant="outline"
+          size="icon"
+          aria-label={label}
+          onClick={onToggle}
+          className={cn("hidden md:inline-flex", className)}
+        >
+          {collapsed ? (
+            <PanelLeftOpen className="size-4" />
+          ) : (
+            <PanelLeftClose className="size-4" />
+          )}
+        </Button>
+      }
+    />
   )
 }

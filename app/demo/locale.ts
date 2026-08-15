@@ -93,7 +93,7 @@ export interface DemoDictionary {
     searchFilterLabel: string
     statusFilterLabel: string
     dateRangeFilterLabel: string
-    statusAll: string
+    resetFiltersLabel: string
     columnNumber: string
     columnCustomer: string
     columnProduct: string
@@ -326,7 +326,7 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       searchFilterLabel: "Search",
       statusFilterLabel: "Status",
       dateRangeFilterLabel: "Order date",
-      statusAll: "All statuses",
+      resetFiltersLabel: "Reset filters",
       columnNumber: "Number",
       columnCustomer: "Customer",
       columnProduct: "Product",
@@ -576,7 +576,7 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       searchFilterLabel: "Поиск",
       statusFilterLabel: "Статус",
       dateRangeFilterLabel: "Дата заказа",
-      statusAll: "Все статусы",
+      resetFiltersLabel: "Сбросить фильтры",
       columnNumber: "Номер",
       columnCustomer: "Покупатель",
       columnProduct: "Товар",

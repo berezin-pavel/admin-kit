@@ -1,8 +1,10 @@
 "use client"
 
-import { Search } from "lucide-react"
+import { Search, X } from "lucide-react"
 
+import { Button } from "@/components/ui/button"
 import { DateRangeField } from "@/registry/date-range-field/date-range-field"
+import { Hint } from "@/registry/hint/hint"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import {
@@ -18,12 +20,18 @@ import type { PageListFilter } from "./page-list"
 export interface PageListFiltersProps {
   filters: readonly PageListFilter[]
   onFilterChange?: (id: string, value: string) => void
+  onResetFilters?: () => void
+  resetFiltersLabel: string
 }
 
 export function PageListFilters({
   filters,
   onFilterChange,
+  onResetFilters,
+  resetFiltersLabel,
 }: PageListFiltersProps) {
+  const hasActiveFilter = filters.some((filter) => filter.value !== "")
+
   return (
     <div className="flex flex-wrap items-center gap-2">
       {filters.map((filter) => {
@@ -68,9 +76,11 @@ export function PageListFilters({
               >
                 <SelectTrigger id={controlId} className="w-auto">
                   <SelectValue placeholder={filter.label}>
-                    {filter.options?.find(
-                      (option) => option.value === filter.value
-                    )?.label ?? filter.value}
+                    {
+                      filter.options?.find(
+                        (option) => option.value === filter.value
+                      )?.label
+                    }
                   </SelectValue>
                 </SelectTrigger>
                 <SelectContent
@@ -89,6 +99,22 @@ export function PageListFilters({
           </div>
         )
       })}
+      {onResetFilters && hasActiveFilter ? (
+        <Hint
+          text={resetFiltersLabel}
+          render={
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              aria-label={resetFiltersLabel}
+              onClick={onResetFilters}
+            >
+              <X />
+            </Button>
+          }
+        />
+      ) : null}
     </div>
   )
 }

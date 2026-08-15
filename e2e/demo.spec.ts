@@ -67,7 +67,7 @@ test("the order edit form picks a customer by search and saves", async ({
   })
 })
 
-test("the orders page exports, hides columns and recovers from an empty filter", async ({
+test("the orders page exports a selection, hides a column and resets its filters", async ({
   page,
 }) => {
   await page.goto("/demo/orders")
@@ -75,20 +75,33 @@ test("the orders page exports, hides columns and recovers from an empty filter",
   await expect(page.locator("th").first()).toBeVisible()
   const columnsBefore = await page.locator("th").count()
 
-  await page.getByRole("button", { name: /export/i }).click()
+  await expect(page.getByRole("button", { name: /export/i })).toHaveCount(0)
+
+  await page.getByRole("checkbox").first().click()
+  await expect(page.getByRole("button", { name: /select all 100/i })).toBeVisible()
+  await page.getByRole("button", { name: /^export$/i }).click()
   await expect(page.getByText(/rows are ready as CSV/i)).toBeVisible()
+  await page.getByRole("button", { name: /clear selection/i }).click()
 
-  await page.getByRole("button", { name: /columns/i }).click()
-  const pinned = page.getByRole("menuitemcheckbox", { name: /number/i })
-  await expect(pinned).toBeDisabled()
-  await page.getByRole("menuitemcheckbox", { name: /product/i }).click()
-  await page.waitForTimeout(400)
-  await expect(page.locator("th")).toHaveCount(columnsBefore - 1)
+  await page.getByRole("button", { name: "Table settings" }).click()
+  const dialog = page.getByRole("dialog")
+  const boxes = dialog.getByRole("checkbox")
+  await expect(boxes.first()).toBeDisabled()
+  for (let i = 0; i < (await boxes.count()); i += 1) {
+    if (!(await boxes.nth(i).isDisabled())) {
+      await boxes.nth(i).click()
+      break
+    }
+  }
   await page.keyboard.press("Escape")
+  await expect(page.locator("th")).toHaveCount(columnsBefore - 1)
 
+  await expect(
+    page.getByRole("button", { name: "Reset filters" })
+  ).toHaveCount(0)
   await page.getByRole("textbox").first().fill("no such order anywhere")
-  const clear = page.getByRole("button", { name: /clear/i })
-  await expect(clear).toBeVisible()
-  await clear.click()
+  const reset = page.getByRole("button", { name: "Reset filters" })
+  await expect(reset).toBeVisible()
+  await reset.click()
   await expect(page.getByRole("row").first()).toBeVisible()
 })
