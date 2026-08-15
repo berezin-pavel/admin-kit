@@ -17,6 +17,10 @@ export function ShowcaseNav({
   const items = resolveShowcaseGroups(entries).map((group) => ({
     id: group.id,
     title: group.title,
+    children: group.entries.map((entry) => ({
+      id: entry.item,
+      title: entry.title,
+    })),
   }))
 
   return (

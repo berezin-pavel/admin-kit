@@ -50,7 +50,7 @@ export function AdminNav({
     <nav
       aria-label={sectionsLabel}
       className={cn(
-        "flex flex-col gap-1 py-3",
+        "flex flex-col gap-1 py-2",
         isExpanded ? "items-stretch px-3" : "items-center",
         collapsesAtMd && "md:items-stretch md:px-3",
         className

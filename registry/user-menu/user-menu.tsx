@@ -63,7 +63,7 @@ export function UserMenu({
       <AvatarFallback>{getUserMenuInitials(name)}</AvatarFallback>
     </Avatar>
   ) : (
-    <span className="text-[10px] font-semibold tracking-wide">
+    <span className="text-[10px] font-semibold">
       {getUserMenuInitials(name)}
     </span>
   )

@@ -26,18 +26,21 @@ test("the settings dialog hides a column and leaves the pinned one alone", async
   const dialog = page.getByRole("dialog")
   await expect(dialog).toBeVisible()
 
-  const boxes = dialog.getByRole("checkbox")
-  const pinned = boxes.first()
-  await expect(pinned).toBeDisabled()
+  await dialog.getByRole("button", { name: "Columns" }).click()
 
-  const toggles = await boxes.count()
-  for (let i = 0; i < toggles; i += 1) {
-    if (!(await boxes.nth(i).isDisabled())) {
-      await boxes.nth(i).click()
+  const items = page.getByRole("menuitemcheckbox")
+  await expect(items.first()).toBeVisible()
+  await expect(items.first()).toBeDisabled()
+
+  const count = await items.count()
+  for (let i = 0; i < count; i += 1) {
+    if (!(await items.nth(i).isDisabled())) {
+      await items.nth(i).click()
       break
     }
   }
 
+  await page.keyboard.press("Escape")
   await page.keyboard.press("Escape")
   await expect(dialog).toBeHidden()
   await expect(headers).toHaveCount(before - 1)

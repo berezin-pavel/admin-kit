@@ -85,14 +85,17 @@ test("the orders page exports a selection, hides a column and resets its filters
 
   await page.getByRole("button", { name: "Table settings" }).click()
   const dialog = page.getByRole("dialog")
-  const boxes = dialog.getByRole("checkbox")
-  await expect(boxes.first()).toBeDisabled()
-  for (let i = 0; i < (await boxes.count()); i += 1) {
-    if (!(await boxes.nth(i).isDisabled())) {
-      await boxes.nth(i).click()
+  await dialog.getByRole("button", { name: "Columns" }).click()
+  const items = page.getByRole("menuitemcheckbox")
+  await expect(items.first()).toBeVisible()
+  await expect(items.first()).toBeDisabled()
+  for (let i = 0; i < (await items.count()); i += 1) {
+    if (!(await items.nth(i).isDisabled())) {
+      await items.nth(i).click()
       break
     }
   }
+  await page.keyboard.press("Escape")
   await page.keyboard.press("Escape")
   await expect(page.locator("th")).toHaveCount(columnsBefore - 1)
 

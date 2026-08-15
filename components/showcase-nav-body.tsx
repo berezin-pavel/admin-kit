@@ -11,6 +11,7 @@ export const SHOWCASE_NAV_SENTINEL_ID = "showcase-nav-sentinel"
 export interface ShowcaseNavItem {
   id: string
   title: string
+  children?: readonly ShowcaseNavItem[]
 }
 
 function useActiveSection(ids: readonly string[]) {
@@ -167,27 +168,82 @@ function NavItemList({
 }) {
   return (
     <ul className={cn("flex flex-col gap-1", className)}>
-      {items.map((item) => {
-        const isActive = item.id === activeId
-
-        return (
-          <li key={item.id}>
-            <Link
-              href={`#${item.id}`}
-              aria-current={isActive ? "page" : undefined}
-              onClick={() => onNavigate(item.id)}
-              className={cn(
-                "block rounded-md px-2 py-1 transition-colors",
-                isActive
-                  ? "bg-muted font-medium text-foreground"
-                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
-              )}
-            >
-              {item.title}
-            </Link>
-          </li>
-        )
-      })}
+      {items.map((item) => (
+        <NavItem
+          key={item.id}
+          item={item}
+          activeId={activeId}
+          onNavigate={onNavigate}
+        />
+      ))}
     </ul>
+  )
+}
+
+function NavItem({
+  item,
+  activeId,
+  onNavigate,
+}: {
+  item: ShowcaseNavItem
+  activeId: string | null
+  onNavigate: (id: string) => void
+}) {
+  const isActive = item.id === activeId
+  const [openedByUser, setOpenedByUser] = useState<boolean | null>(null)
+  const hasChildren = Boolean(item.children && item.children.length > 0)
+  const isOpen = openedByUser ?? isActive
+  const listId = `${item.id}-subsections`
+
+  return (
+    <li>
+      <div className="flex items-center gap-1">
+        <Link
+          href={`#${item.id}`}
+          aria-current={isActive ? "page" : undefined}
+          onClick={() => onNavigate(item.id)}
+          className={cn(
+            "block flex-1 rounded-md px-2 py-1 transition-colors",
+            isActive
+              ? "bg-muted font-medium text-foreground"
+              : "text-muted-foreground hover:bg-muted hover:text-foreground"
+          )}
+        >
+          {item.title}
+        </Link>
+        {hasChildren ? (
+          <button
+            type="button"
+            aria-expanded={isOpen}
+            aria-controls={listId}
+            aria-label={`${item.title} items`}
+            onClick={() => setOpenedByUser(!isOpen)}
+            className="rounded-md p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+          >
+            <ChevronDown
+              className={cn(
+                "size-3.5 transition-transform",
+                isOpen && "rotate-180"
+              )}
+            />
+          </button>
+        ) : null}
+      </div>
+      {hasChildren && isOpen ? (
+        <ul id={listId} className="mt-1 ml-2 flex flex-col gap-0.5 border-l border-border pl-2">
+          {item.children?.map((child) => (
+            <li key={child.id}>
+              <Link
+                href={`#${child.id}`}
+                onClick={() => onNavigate(item.id)}
+                className="block rounded-md px-2 py-0.5 text-xs text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+              >
+                {child.title}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      ) : null}
+    </li>
   )
 }

@@ -151,14 +151,18 @@ describe("widget table settings dialog", () => {
     expect(
       screen.getByRole("dialog", { name: "Table settings" })
     ).toBeInTheDocument()
-    expect(screen.getByRole("checkbox", { name: "Number" })).toHaveAttribute(
-      "aria-disabled",
-      "true"
-    )
+
+    await user.click(screen.getByRole("button", { name: "Columns" }))
+
     expect(
-      screen.getByRole("checkbox", { name: "Customer" })
+      await screen.findByRole("menuitemcheckbox", { name: "Number" })
+    ).toHaveAttribute("aria-disabled", "true")
+    expect(
+      screen.getByRole("menuitemcheckbox", { name: "Customer" })
     ).not.toHaveAttribute("aria-disabled")
-    expect(screen.queryByRole("checkbox", { name: "" })).not.toBeInTheDocument()
+    expect(
+      screen.queryByRole("menuitemcheckbox", { name: "" })
+    ).not.toBeInTheDocument()
   })
 })
 

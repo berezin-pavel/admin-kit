@@ -71,7 +71,7 @@ export function AdminMenu({
         </SheetHeader>
         <div className="flex min-h-0 flex-1 flex-col">
           {profile ? (
-            <div className="shrink-0 border-b border-sidebar-border px-4 pb-4">
+            <div className="shrink-0 border-b border-sidebar-border px-2 pt-1 pb-2">
               {profile}
             </div>
           ) : null}
@@ -88,7 +88,7 @@ export function AdminMenu({
             {children}
           </div>
           {footer ? (
-            <div className="mt-auto flex items-center gap-2 border-t border-sidebar-border p-3">
+            <div className="mt-auto flex items-center gap-2 border-t border-sidebar-border p-2">
               {footer}
             </div>
           ) : null}

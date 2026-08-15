@@ -2,9 +2,7 @@
 
 import { useMemo, useState } from "react"
 
-import { Button } from "@/components/ui/button"
 import { DemoStandaloneTable } from "@/components/demo-standalone-table"
-import { cn } from "@/lib/utils"
 import {
   DateRangeField,
   defaultDateRangePresets,
@@ -155,6 +153,11 @@ export default function DemoPage() {
     [dailyMetrics]
   )
 
+  const reload = () => {
+    setReloading(true)
+    window.setTimeout(() => setReloading(false), 1200)
+  }
+
   const quickActions = [
     { id: "create-order", label: strings.quickActionLabels.createOrder, icon: Plus },
     { id: "export-csv", label: strings.quickActionLabels.exportCsv, icon: Download },
@@ -165,24 +168,13 @@ export default function DemoPage() {
     onSelect: () => notify.info(strings.quickActionToastTitle(action.label)),
   }))
 
-  const reload = () => {
-    setReloading(true)
-    window.setTimeout(() => setReloading(false), 1200)
-  }
+  const overviewActions = [
+    { id: "reload", label: strings.reloadButton, icon: RotateCw, onSelect: reload },
+    ...quickActions,
+  ]
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex justify-end">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={reload}
-          disabled={reloading}
-        >
-          <RotateCw className={cn("size-4", reloading && "animate-spin")} />
-          {strings.reloadButton}
-        </Button>
-      </div>
       <div className="grid gap-4 sm:grid-cols-3">
         <WidgetMetric
           title={strings.metricOrdersTitle}
@@ -256,7 +248,7 @@ export default function DemoPage() {
         />
         <WidgetQuickActions
           title={strings.quickActionsTitle}
-          actions={quickActions}
+          actions={overviewActions}
           loading={reloading}
         />
       </div>

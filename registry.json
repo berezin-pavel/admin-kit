@@ -8,7 +8,7 @@
       "name": "admin-theme",
       "type": "registry:theme",
       "title": "Admin theme",
-      "description": "Admin colors and radii, including a pair of success and warning tokens on top of the standard shadcn set, for both light and dark schemes. Installed first: the rest of the admin-kit items rely on these tokens.",
+      "description": "Admin colors and radii, including a pair of success and warning tokens on top of the standard shadcn set, for both light and dark schemes. Installed first: the rest of the admin-kit items rely on these tokens. The theme also ships one behavioural rule: anything clickable — a button, a menu item, an option, a tab — gets a pointer cursor, which neither the browser default nor Tailwind's preflight provides, so a control does not read as inert text under the mouse.",
       "files": [],
       "cssVars": {
         "light": {
@@ -87,6 +87,13 @@
           "warning": "oklch(0.55 0.14 55)",
           "warning-foreground": "oklch(0.985 0 0)",
           "destructive-foreground": "oklch(0.145 0 0)"
+        }
+      },
+      "css": {
+        "@layer base": {
+          "button:not(:disabled), [role=\"button\"]:not([aria-disabled=\"true\"]), [role=\"menuitem\"], [role=\"menuitemcheckbox\"], [role=\"option\"], [role=\"tab\"]": {
+            "cursor": "pointer"
+          }
         }
       }
     },
@@ -279,6 +286,7 @@
         "card",
         "checkbox",
         "dialog",
+        "dropdown-menu",
         "pagination",
         "select",
         "skeleton",

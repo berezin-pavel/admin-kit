@@ -90,7 +90,7 @@ export function AdminShell({
         {logo ? (
           <div
             className={cn(
-              "flex h-14 shrink-0 items-center justify-center",
+              "flex h-12 shrink-0 items-center justify-center",
               !collapsed && "md:hidden"
             )}
           >
@@ -102,7 +102,7 @@ export function AdminShell({
         {header === false ? (
           <div
             className={cn(
-              "flex shrink-0 justify-center p-3",
+              "flex shrink-0 justify-center px-2 pb-2",
               !collapsed && "md:hidden"
             )}
           >
@@ -111,7 +111,7 @@ export function AdminShell({
         ) : null}
         <div
           className={cn(
-            "hidden h-14 shrink-0 items-center justify-between gap-2 px-6 text-sm font-semibold",
+            "hidden h-12 shrink-0 items-center justify-between gap-2 px-4 text-sm font-semibold",
             !collapsed && "md:flex"
           )}
         >
@@ -132,7 +132,7 @@ export function AdminShell({
         {sidebarProfile ? (
           <div
             className={cn(
-              "flex shrink-0 justify-center border-b border-sidebar-border p-3 [&_[data-slot=button]]:size-8 [&_[data-slot=button]]:p-0 [&_[data-slot=user-menu-chevron]]:hidden [&_[data-slot=user-menu-details]]:hidden",
+              "flex shrink-0 justify-center border-b border-sidebar-border px-2 pt-1 pb-2 [&_[data-slot=button]]:size-8 [&_[data-slot=button]]:p-0 [&_[data-slot=user-menu-chevron]]:hidden [&_[data-slot=user-menu-details]]:hidden",
               !collapsed && "md:hidden"
             )}
           >
@@ -142,7 +142,7 @@ export function AdminShell({
         {sidebarActions ? (
           <div
             className={cn(
-              "flex shrink-0 flex-col items-center gap-2 p-3",
+              "flex shrink-0 flex-col items-center gap-1 px-2 py-2",
               !collapsed && "md:hidden"
             )}
           >
@@ -152,7 +152,7 @@ export function AdminShell({
         {sidebarProfile ? (
           <div
             className={cn(
-              "hidden shrink-0 border-b border-sidebar-border p-2",
+              "hidden shrink-0 border-b border-sidebar-border px-2 pt-1 pb-2",
               !collapsed && "md:block"
             )}
           >
@@ -170,7 +170,7 @@ export function AdminShell({
         {sidebarFooter ? (
           <div
             className={cn(
-              "mt-auto flex shrink-0 flex-col items-center gap-2 border-t border-sidebar-border p-3",
+              "mt-auto flex shrink-0 flex-col items-center gap-2 border-t border-sidebar-border p-2",
               !collapsed && "md:flex-row"
             )}
           >

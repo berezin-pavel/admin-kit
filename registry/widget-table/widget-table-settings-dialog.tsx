@@ -1,10 +1,9 @@
 "use client"
 
 import * as React from "react"
-import { Settings2 } from "lucide-react"
+import { Columns3, Settings2 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
 import {
   Dialog,
   DialogContent,
@@ -12,7 +11,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { Label } from "@/components/ui/label"
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { Hint } from "@/registry/hint/hint"
 
 import { toggleHiddenColumnId, type WidgetTableColumn } from "./widget-table"
@@ -35,7 +39,6 @@ export function WidgetTableSettingsDialog<Row>({
   columnsLabel,
 }: WidgetTableSettingsDialogProps<Row>) {
   const [open, setOpen] = React.useState(false)
-  const id = React.useId()
   const namedColumns = columns.filter((column) => column.title !== "")
 
   return (
@@ -61,35 +64,33 @@ export function WidgetTableSettingsDialog<Row>({
         <DialogHeader>
           <DialogTitle>{settingsTitle}</DialogTitle>
         </DialogHeader>
-        <fieldset className="m-0 flex flex-col gap-3 border-0 p-0">
-          <legend className="px-0 text-sm font-medium text-foreground">
-            {columnsLabel}
-          </legend>
-          <div className="flex flex-col gap-2">
-            {namedColumns.map((column) => {
-              const checkboxId = `${id}-${column.id}`
-
-              return (
-                <div key={column.id} className="flex items-center gap-2">
-                  <Checkbox
-                    id={checkboxId}
-                    checked={
-                      column.alwaysVisible ||
-                      !hiddenColumnIds.includes(column.id)
-                    }
-                    disabled={column.alwaysVisible}
-                    onCheckedChange={() =>
-                      onHiddenColumnIdsChange(
-                        toggleHiddenColumnId(hiddenColumnIds, column.id)
-                      )
-                    }
-                  />
-                  <Label htmlFor={checkboxId}>{column.title}</Label>
-                </div>
-              )
-            })}
-          </div>
-        </fieldset>
+        <div className="flex flex-col items-start gap-2">
+          <DropdownMenu>
+            <DropdownMenuTrigger render={<Button variant="outline" />}>
+              <Columns3 />
+              {columnsLabel}
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start">
+              {namedColumns.map((column) => (
+                <DropdownMenuCheckboxItem
+                  key={column.id}
+                  checked={
+                    column.alwaysVisible ||
+                    !hiddenColumnIds.includes(column.id)
+                  }
+                  disabled={column.alwaysVisible}
+                  onCheckedChange={() =>
+                    onHiddenColumnIdsChange(
+                      toggleHiddenColumnId(hiddenColumnIds, column.id)
+                    )
+                  }
+                >
+                  {column.title}
+                </DropdownMenuCheckboxItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </DialogContent>
     </Dialog>
   )
