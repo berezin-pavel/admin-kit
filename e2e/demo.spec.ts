@@ -37,7 +37,7 @@ test("the order screen splits into working tabs", async ({ page }) => {
   await page.goto("/demo/order")
 
   const tabs = page.getByRole("tab")
-  await expect(tabs).toHaveCount(3)
+  await expect(tabs).toHaveCount(4)
 
   const overview = await page.getByRole("tabpanel").innerText()
   await tabs.nth(1).click()
@@ -47,6 +47,9 @@ test("the order screen splits into working tabs", async ({ page }) => {
   const history = await page.getByRole("tabpanel").innerText()
 
   expect(history).not.toBe(overview)
+
+  await page.getByRole("tab", { name: "Edit" }).click()
+  await expect(page).toHaveURL(/\/demo\/order\/edit$/)
 })
 
 test("the order edit form picks a customer by search and saves", async ({

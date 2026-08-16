@@ -8,7 +8,7 @@ import {
 } from "@/registry/image-field/image-field"
 
 export function ImageFieldView({
-  label = "Photos",
+  label = "Images",
   hint,
   error,
   disabled,

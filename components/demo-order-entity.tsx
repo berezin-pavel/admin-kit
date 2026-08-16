@@ -1,7 +1,14 @@
 "use client"
 
 import { useMemo, useState } from "react"
-import { History, LayoutDashboard, RotateCw, ShoppingBag } from "lucide-react"
+import { useRouter } from "next/navigation"
+import {
+  History,
+  LayoutDashboard,
+  Pencil,
+  RotateCw,
+  ShoppingBag,
+} from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { DemoOrderBreadcrumbs } from "@/components/demo-order-breadcrumbs"
@@ -34,7 +41,10 @@ import { useDemoLocale } from "@/app/demo/locale-store"
 
 const RELOAD_DELAY_MS = 1200
 
+const EDIT_TAB = "edit"
+
 export function DemoOrderEntity() {
+  const router = useRouter()
   const [cancelling, setCancelling] = useState(false)
   const [confirmOpen, setConfirmOpen] = useState(false)
   const [cancelled, setCancelled] = useState(false)
@@ -195,6 +205,12 @@ export function DemoOrderEntity() {
         />
       ),
     },
+    {
+      id: EDIT_TAB,
+      label: strings.tabEditLabel,
+      icon: Pencil,
+      content: null,
+    },
   ]
 
   return (
@@ -203,7 +219,14 @@ export function DemoOrderEntity() {
       <PageTabs
         items={tabItems}
         value={tab}
-        onValueChange={setTab}
+        onValueChange={(next) => {
+          if (next === EDIT_TAB) {
+            router.push("/demo/order/edit")
+            return
+          }
+
+          setTab(next)
+        }}
         actions={
           <>
             <Button

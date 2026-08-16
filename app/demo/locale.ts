@@ -129,6 +129,7 @@ export interface DemoDictionary {
     tabOverviewLabel: string
     tabHistoryLabel: string
     tabRelatedLabel: string
+    tabEditLabel: string
     historyTitle: string
     relatedTitle: string
     reloadButton: string
@@ -199,6 +200,7 @@ export interface DemoDictionary {
     attachmentLabel: string
     photosLabel: string
     photosHint: string
+    photosErrorText: string
     pickupLabel: string
     deliveryTimeLabel: string
     labelColorLabel: string
@@ -368,6 +370,7 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       tabOverviewLabel: "Overview",
       tabHistoryLabel: "History",
       tabRelatedLabel: "Items",
+      tabEditLabel: "Edit",
       historyTitle: "Order timeline",
       relatedTitle: "Items in this order",
       reloadButton: "Reload",
@@ -380,7 +383,7 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       fieldTotal: "Total",
       fieldTotalHint: "Item total after discount, delivery is calculated separately",
       fieldTotalValue: "$2,340",
-      editButton: "Edit",
+      editButton: "Quick edit",
       editDialogTitle: "Edit order",
       editDialogDescription: "Quick edits without leaving the page",
       editTotalLabel: "Total",
@@ -452,8 +455,9 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       ],
       removeItemLabel: (label) => `Remove ${label}`,
       attachmentLabel: "Attachment",
-      photosLabel: "Photos",
-      photosHint: "The first image is used as the order cover",
+      photosLabel: "Images",
+      photosHint: "The first image becomes the order cover; anything over 3 MB is rejected by the server",
+      photosErrorText: "The server rejected the file: over 3 MB",
       pickupLabel: "Pickup",
       deliveryTimeLabel: "Delivery time",
       labelColorLabel: "Category label color",
@@ -619,6 +623,7 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       tabOverviewLabel: "Обзор",
       tabHistoryLabel: "История",
       tabRelatedLabel: "Состав",
+      tabEditLabel: "Редактирование",
       historyTitle: "Хронология заказа",
       relatedTitle: "Состав заказа",
       reloadButton: "Обновить",
@@ -631,7 +636,7 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       fieldTotal: "Сумма",
       fieldTotalHint: "Сумма товаров со скидкой, доставка считается отдельно",
       fieldTotalValue: "₽ 2 340",
-      editButton: "Редактировать",
+      editButton: "Быстрая правка",
       editDialogTitle: "Редактирование заказа",
       editDialogDescription: "Быстрые правки, не уходя со страницы",
       editTotalLabel: "Сумма",
@@ -703,8 +708,9 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       ],
       removeItemLabel: (label) => `Убрать ${label}`,
       attachmentLabel: "Вложение",
-      photosLabel: "Фотографии",
-      photosHint: "Первая картинка идёт обложкой заказа",
+      photosLabel: "Изображения",
+      photosHint: "Первое изображение идёт обложкой заказа; файл больше 3 МБ сервер отклонит",
+      photosErrorText: "Сервер отклонил файл: больше 3 МБ",
       pickupLabel: "Забрать заказ",
       deliveryTimeLabel: "Время доставки",
       labelColorLabel: "Цвет метки категории",

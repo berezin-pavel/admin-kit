@@ -38,16 +38,19 @@ shows a burger, because the sidebar toggle that expands it is already in the foo
 `sr-only` name for the panel), and `admin-nav.tsx` lost `responsive` — with the rail confined to
 wide screens, `collapsed` is the only thing that decides the nav's shape.
 
-**New** — `image-field`, a gallery field for a record's images. Thumbnails sit in a responsive
-grid with the drop zone as the last tile; a file can be dropped anywhere on the field or picked
-through the native input; a thumbnail is dragged onto another to reorder, previewed full size in a
-dialog, opened in a new tab through a real link, or removed on the spot — the field has no Apply
-button, because a form's Save is the only one that should exist. It uploads nothing itself:
-`onSelect` hands the picked `File` objects to the consumer and the stored result comes back through
-`value` as `{id, url, name}`, so the same field works over S3, a REST endpoint or an object URL.
-`moveImageFieldItem` and `limitImageFieldFiles` are exported and tested. Reordering also works from
-a keyboard through move-earlier/move-later buttons, since HTML5 drag never reaches one.
-`locale-ru` gained the matching slice.
+**New** — `image-field`, a gallery field for a record's images. Thumbnails sit in a row and the
+drop zone stretches to the end of it; a file can be dropped anywhere on the field or picked through
+the native input; a thumbnail is dragged onto another to reorder, previewed full size in a dialog
+that steps through the whole set (arrow keys included) and links to the original from its header,
+or removed on the spot with a trash button — the field has no Apply button, because a form's Save
+is the only one that should exist. It uploads nothing itself: `onSelect` hands the picked `File`
+objects to the consumer and the stored result comes back through `value` as `{id, url, name}`, so
+the same field works over S3, a REST endpoint or an object URL. An item carrying `progress` and
+`speed` draws an upload bar over its thumbnail and one carrying `error` shows what the server said
+— the field renders upload state without ever owning it, and `formatUploadSpeed` turns bytes per
+second into that string. `moveImageFieldItem` and `limitImageFieldFiles` are exported and tested.
+Reordering also works from a keyboard through move-earlier/move-later buttons, since HTML5 drag
+never reaches one. `locale-ru` gained the matching slice.
 
 **New** — `page-entity` and `page-form` sections take `columns` (1, 2 or 3). An entity section
 already stacked two columns; it now goes up to three, and a form section that gets `columns`
@@ -56,9 +59,10 @@ needs the full width says so itself (`className="sm:col-span-2 lg:col-span-3"`),
 a checkbox lines up with the inputs beside it (`pt-7`). Both pages also tightened their vertical
 rhythm: 1rem between cards instead of 1.5rem, and 0.75rem between an entity's rows.
 
-**Changed** — `page-tabs` draws its tab strip at the height of a filter control: a tab is now 33px
-tall rather than 25px, so a row of tabs and a row of buttons no longer read as two different
-sizes.
+**Changed** — `page-tabs` looks like the sidebar's navigation rather than a segmented control: the
+grey track behind the strip is gone, a tab is a 36px row with the same padding, hover and active
+fill as a nav item, and the strip sits at the height of the buttons beside it. The kit uses that
+one shape for "pick a section" everywhere, and the segmented look was the only place it did not.
 
 **Changed** — every row of the sidebar now sits on one grid, shipped as `admin-row.ts`: the logo,
 the account avatar and the nav icons share a 24px box whose centre is 28px from the sidebar's

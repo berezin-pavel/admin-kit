@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
 
 import { DemoOrderBreadcrumbs } from "@/components/demo-order-breadcrumbs"
@@ -12,6 +12,7 @@ import { DateField } from "@/registry/date-field/date-field"
 import { DateTimeField } from "@/registry/date-time-field/date-time-field"
 import { FileField } from "@/registry/file-field/file-field"
 import {
+  formatUploadSpeed,
   ImageField,
   type ImageFieldItem,
 } from "@/registry/image-field/image-field"
@@ -43,6 +44,9 @@ const INITIAL_PHOTOS: readonly ImageFieldItem[] = [
   { id: "side", url: "/demo-images/side.svg", name: "side-view.svg" },
   { id: "sole", url: "/demo-images/sole.svg", name: "sole.svg" },
 ]
+const MAX_UPLOAD_BYTES = 3 * 1024 * 1024
+const UPLOAD_DURATION_MS = 2400
+const UPLOAD_TICK_MS = 120
 
 export function DemoOrderEdit() {
   const router = useRouter()
@@ -66,6 +70,60 @@ export function DemoOrderEdit() {
   const [supplierDiscount, setSupplierDiscount] = useState("")
   const [photos, setPhotos] = useState(INITIAL_PHOTOS)
   const [submitting, setSubmitting] = useState(false)
+  const uploadTimers = useRef(new Set<number>())
+
+  useEffect(() => {
+    const timers = uploadTimers.current
+
+    return () => {
+      timers.forEach((timer) => window.clearInterval(timer))
+      timers.clear()
+    }
+  }, [])
+
+  const uploadPhoto = (id: string, file: File) => {
+    let elapsed = 0
+
+    const timer = window.setInterval(() => {
+      elapsed += UPLOAD_TICK_MS
+
+      const ratio = Math.min(1, elapsed / UPLOAD_DURATION_MS)
+      const speed = formatUploadSpeed(
+        (file.size / (UPLOAD_DURATION_MS / 1000)) * (0.85 + Math.random() * 0.3)
+      )
+
+      if (ratio < 1) {
+        setPhotos((current) =>
+          current.map((item) =>
+            item.id === id
+              ? { ...item, progress: Math.round(ratio * 100), speed }
+              : item
+          )
+        )
+        return
+      }
+
+      window.clearInterval(timer)
+      uploadTimers.current.delete(timer)
+      setPhotos((current) =>
+        current.map((item) =>
+          item.id === id
+            ? {
+                id: item.id,
+                url: item.url,
+                name: item.name,
+                error:
+                  file.size > MAX_UPLOAD_BYTES
+                    ? strings.photosErrorText
+                    : undefined,
+              }
+            : item
+        )
+      )
+    }, UPLOAD_TICK_MS)
+
+    uploadTimers.current.add(timer)
+  }
 
   return (
     <div className="flex flex-col gap-4">
@@ -210,16 +268,19 @@ export function DemoOrderEdit() {
                   hint={strings.photosHint}
                   value={photos}
                   onChange={setPhotos}
-                  onSelect={(files) =>
-                    setPhotos((current) => [
-                      ...current,
-                      ...files.map((file) => ({
-                        id: `${file.name}-${file.lastModified}-${current.length}`,
-                        url: URL.createObjectURL(file),
-                        name: file.name,
-                      })),
-                    ])
-                  }
+                  onSelect={(files) => {
+                    const started = files.map((file, index) => ({
+                      id: `${file.name}-${file.lastModified}-${index}-${Date.now()}`,
+                      url: URL.createObjectURL(file),
+                      name: file.name,
+                      progress: 0,
+                    }))
+
+                    setPhotos((current) => [...current, ...started])
+                    started.forEach((item, index) =>
+                      uploadPhoto(item.id, files[index])
+                    )
+                  }}
                   maxItems={6}
                   labels={locale === "ru" ? localeRu.imageField : undefined}
                 />

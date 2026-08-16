@@ -10,16 +10,38 @@ const showcaseImages: readonly ImageFieldItem[] = [
   { id: "box", url: "/demo-images/box.svg", name: "Box" },
 ]
 
+const uploadingImages: readonly ImageFieldItem[] = [
+  showcaseImages[0],
+  {
+    id: "uploading",
+    url: "/demo-images/side.svg",
+    name: "side-view.jpg",
+    progress: 62,
+    speed: "1.4 MB/s",
+  },
+  {
+    id: "failed",
+    url: "/demo-images/sole.svg",
+    name: "sole.jpg",
+    error: "The server rejected the file",
+  },
+]
+
 export const imageFieldEntry: ShowcaseEntry = {
   item: "image-field",
   title: "Image field",
   description:
-    "A gallery of a record's images: thumbnails in a responsive grid, a drop zone that takes dragged files or opens the native picker, reordering by dragging one thumbnail onto another, a full-size preview in a dialog, a link that opens the original in a new tab, and removal that takes effect at once — there is no Apply button, because the form's Save is the only one that should exist. The field uploads nothing itself: onSelect hands the picked File objects over, and the stored result comes back through value as {id, url, name}. Every thumbnail also carries move-earlier and move-later buttons, since HTML5 drag never reaches a keyboard. Drag a file onto the views below, or drag one thumbnail onto another to reorder them.",
+    "A gallery of a record's images: thumbnails in a row with the drop zone stretching to the end of it, reordering by dragging one thumbnail onto another, a full-size preview dialog that steps through the whole set, a link that opens the original in a new tab, and removal that takes effect at once — there is no Apply button, because the form's Save is the only one that should exist. The field uploads nothing itself: onSelect hands the picked File objects over, and the stored result comes back through value as {id, url, name}. An item carrying progress and speed draws an upload bar; one carrying error shows what the server said. Every thumbnail also has move-earlier and move-later buttons, since HTML5 drag never reaches a keyboard. Drag a file onto the views below, or drag one thumbnail onto another to reorder them.",
   views: [
     {
       id: "gallery",
       name: "A gallery of four images",
       render: () => <ImageFieldView initial={showcaseImages} />,
+    },
+    {
+      id: "uploading",
+      name: "Uploading and failed",
+      render: () => <ImageFieldView initial={uploadingImages} />,
     },
     {
       id: "empty",
@@ -49,7 +71,7 @@ export const imageFieldEntry: ShowcaseEntry = {
       id: "error",
       name: "With an error",
       render: () => (
-        <ImageFieldView initial={[]} error="Add at least one photo" />
+        <ImageFieldView initial={[]} error="Add at least one image" />
       ),
     },
     {

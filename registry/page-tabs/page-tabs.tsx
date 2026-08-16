@@ -37,7 +37,7 @@ export function PageTabs({
     >
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="min-w-0 overflow-x-auto">
-          <TabsList className="group-data-horizontal/tabs:h-10">
+          <TabsList className="gap-1 bg-transparent p-0 group-data-horizontal/tabs:h-auto">
             {items.map((item) => {
               const Icon = item.icon
 
@@ -46,6 +46,7 @@ export function PageTabs({
                   key={item.id}
                   value={item.id}
                   disabled={item.disabled}
+                  className="h-9 gap-2 rounded-md px-3 font-normal text-sidebar-foreground hover:bg-sidebar-accent/50 data-active:bg-sidebar-accent data-active:text-sidebar-accent-foreground data-active:shadow-none dark:data-active:border-transparent dark:data-active:bg-sidebar-accent"
                 >
                   {Icon ? (
                     <Icon data-icon="inline-start" className="size-4" />

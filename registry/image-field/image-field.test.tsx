@@ -106,6 +106,61 @@ describe("ImageField", () => {
     ).toBeInTheDocument()
   })
 
+  it("shows progress and speed while an image uploads, and hides its actions", () => {
+    render(
+      <ControlledImageField
+        initial={[
+          { id: "1", url: "/one.png", name: "Front", progress: 42, speed: "1.5 MB/s" },
+        ]}
+      />
+    )
+
+    expect(screen.getByRole("progressbar", { name: "Uploading: Front" })).toHaveAttribute(
+      "aria-valuenow",
+      "42"
+    )
+    expect(screen.getByText("42%")).toBeInTheDocument()
+    expect(screen.getByText("1.5 MB/s")).toBeInTheDocument()
+    expect(
+      screen.queryByRole("button", { name: "Preview: Front" })
+    ).not.toBeInTheDocument()
+    expect(
+      screen.getByRole("button", { name: "Remove: Front" })
+    ).toBeInTheDocument()
+  })
+
+  it("shows the server's error on the failed image", () => {
+    render(
+      <ControlledImageField
+        initial={[{ id: "1", url: "/one.png", name: "Front", error: "Upload failed" }]}
+      />
+    )
+
+    expect(screen.getByText("Upload failed")).toBeInTheDocument()
+    expect(
+      screen.queryByRole("link", { name: "Open in a new tab: Front" })
+    ).not.toBeInTheDocument()
+  })
+
+  it("steps through every image in the preview dialog", async () => {
+    const user = userEvent.setup()
+    render(<ControlledImageField />)
+
+    await user.click(screen.getByRole("button", { name: "Preview: Front" }))
+
+    expect(await screen.findByRole("dialog", { name: "Front" })).toBeInTheDocument()
+    expect(screen.getByText("1 of 3")).toBeInTheDocument()
+
+    await user.click(screen.getByRole("button", { name: "Next image" }))
+    expect(await screen.findByRole("dialog", { name: "Back" })).toBeInTheDocument()
+
+    await user.click(screen.getByRole("button", { name: "Previous image" }))
+    await user.click(screen.getByRole("button", { name: "Previous image" }))
+    expect(
+      await screen.findByRole("dialog", { name: "Image 3" })
+    ).toBeInTheDocument()
+  })
+
   it("hands picked files to onSelect without touching value", async () => {
     const user = userEvent.setup()
     const onSelect = vi.fn()

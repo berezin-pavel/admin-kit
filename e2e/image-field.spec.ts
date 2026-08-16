@@ -52,6 +52,40 @@ test("a picked file joins the gallery and removal applies at once", async ({
   await expect(page.locator("li:has(img)")).toHaveCount(0)
 })
 
+test("the preview steps through the gallery with the arrow keys", async ({
+  page,
+}) => {
+  await page.goto("/preview/image-field/gallery")
+
+  await page.locator("li:has(img)").first().hover()
+  await page.getByRole("button", { name: "Preview: Front view" }).click()
+
+  await expect(page.getByRole("dialog", { name: "Front view" })).toBeVisible()
+  await expect(page.getByText("1 of 4")).toBeVisible()
+
+  await page.keyboard.press("ArrowRight")
+  await expect(page.getByRole("dialog", { name: "Side view" })).toBeVisible()
+
+  await page.keyboard.press("ArrowLeft")
+  await page.keyboard.press("ArrowLeft")
+  await expect(page.getByRole("dialog", { name: "Box" })).toBeVisible()
+})
+
+test("an uploading image reports its progress and a failed one its error", async ({
+  page,
+}) => {
+  await page.goto("/preview/image-field/uploading")
+
+  await expect(
+    page.getByRole("progressbar", { name: "Uploading: side-view.jpg" })
+  ).toHaveAttribute("aria-valuenow", "62")
+  await expect(page.getByText("1.4 MB/s")).toBeVisible()
+  await expect(page.getByText("The server rejected the file")).toBeVisible()
+  await expect(
+    page.getByRole("button", { name: "Preview: sole.jpg" })
+  ).toHaveCount(0)
+})
+
 test("the preview dialog shows the image and links to the original", async ({
   page,
 }) => {

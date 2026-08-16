@@ -102,7 +102,11 @@ export const localeRu = {
     remove: "Удалить",
     moveEarlier: "Переместить назад",
     moveLater: "Переместить вперёд",
-    imageName: (index: number) => `Картинка ${index + 1}`,
+    uploading: "Загружается",
+    imageName: (index: number) => `Изображение ${index + 1}`,
+    previous: "Предыдущее изображение",
+    next: "Следующее изображение",
+    counter: (index: number, total: number) => `${index + 1} из ${total}`,
   },
   tagsField: {
     placeholder: "Добавить тег…",

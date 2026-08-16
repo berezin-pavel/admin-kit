@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest"
 
-import { limitImageFieldFiles, moveImageFieldItem } from "./image-field"
+import {
+  formatUploadSpeed,
+  limitImageFieldFiles,
+  moveImageFieldItem,
+} from "./image-field"
 
 const imageFile = (name: string) =>
   new File(["x"], name, { type: "image/png" })
@@ -54,5 +58,25 @@ describe("limitImageFieldFiles", () => {
     expect(limitImageFieldFiles([imageFile("a.png")], 3, true, 3)).toHaveLength(
       0
     )
+  })
+})
+
+describe("formatUploadSpeed", () => {
+  it("keeps whole bytes per second", () => {
+    expect(formatUploadSpeed(512)).toBe("512 B/s")
+  })
+
+  it("steps up to kilobytes and megabytes", () => {
+    expect(formatUploadSpeed(1536)).toBe("1.5 KB/s")
+    expect(formatUploadSpeed(5 * 1024 * 1024)).toBe("5.0 MB/s")
+  })
+
+  it("rounds a large value in its unit", () => {
+    expect(formatUploadSpeed(700 * 1024)).toBe("700 KB/s")
+  })
+
+  it("reports nothing sensible as zero", () => {
+    expect(formatUploadSpeed(0)).toBe("0 B/s")
+    expect(formatUploadSpeed(Number.NaN)).toBe("0 B/s")
   })
 })
