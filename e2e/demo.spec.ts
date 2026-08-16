@@ -85,9 +85,7 @@ test("the orders page exports a selection, hides a column and resets its filters
   await expect(page.getByText(/rows are ready as CSV/i)).toBeVisible()
   await page.getByRole("button", { name: /clear selection/i }).click()
 
-  await page.getByRole("button", { name: "Table settings" }).click()
-  const dialog = page.getByRole("dialog")
-  await dialog.getByRole("button", { name: "Columns" }).click()
+  await page.getByRole("button", { name: "Columns" }).click()
   const items = page.getByRole("menuitemcheckbox")
   await expect(items.first()).toBeVisible()
   await expect(items.first()).toBeDisabled()
@@ -97,7 +95,6 @@ test("the orders page exports a selection, hides a column and resets its filters
       break
     }
   }
-  await page.keyboard.press("Escape")
   await page.keyboard.press("Escape")
   await expect(page.locator("th")).toHaveCount(columnsBefore - 1)
 
