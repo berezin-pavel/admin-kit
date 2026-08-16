@@ -197,6 +197,8 @@ export interface DemoDictionary {
     channelsOptions: readonly { value: string; label: string }[]
     removeItemLabel: (label: string) => string
     attachmentLabel: string
+    photosLabel: string
+    photosHint: string
     pickupLabel: string
     deliveryTimeLabel: string
     labelColorLabel: string
@@ -450,6 +452,8 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       ],
       removeItemLabel: (label) => `Remove ${label}`,
       attachmentLabel: "Attachment",
+      photosLabel: "Photos",
+      photosHint: "The first image is used as the order cover",
       pickupLabel: "Pickup",
       deliveryTimeLabel: "Delivery time",
       labelColorLabel: "Category label color",
@@ -699,6 +703,8 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       ],
       removeItemLabel: (label) => `Убрать ${label}`,
       attachmentLabel: "Вложение",
+      photosLabel: "Фотографии",
+      photosHint: "Первая картинка идёт обложкой заказа",
       pickupLabel: "Забрать заказ",
       deliveryTimeLabel: "Время доставки",
       labelColorLabel: "Цвет метки категории",

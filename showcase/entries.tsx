@@ -11,6 +11,7 @@ import { dateRangeFieldEntry } from "./date-range-field"
 import { dateTimeFieldEntry } from "./date-time-field"
 import { fileFieldEntry } from "./file-field"
 import { hintEntry } from "./hint"
+import { imageFieldEntry } from "./image-field"
 import { languageToggleEntry } from "./language-toggle"
 import { localeRuEntry } from "./locale-ru"
 import { multiSelectFieldEntry } from "./multi-select-field"
@@ -83,6 +84,7 @@ export const showcaseEntries: readonly ShowcaseEntry[] = [
   multiSelectFieldEntry,
   checkboxFieldEntry,
   fileFieldEntry,
+  imageFieldEntry,
   tagsFieldEntry,
   confirmDialogEntry,
   formDialogEntry,

@@ -9,6 +9,7 @@ import { DateField } from "@/registry/date-field/date-field"
 import { DateRangeField } from "@/registry/date-range-field/date-range-field"
 import { DateTimeField } from "@/registry/date-time-field/date-time-field"
 import { FileField } from "@/registry/file-field/file-field"
+import { ImageField } from "@/registry/image-field/image-field"
 import { MultiSelectField } from "@/registry/multi-select-field/multi-select-field"
 import { NumberField } from "@/registry/number-field/number-field"
 import { SelectField } from "@/registry/select-field/select-field"
@@ -90,6 +91,12 @@ const fields: readonly FieldCase[] = [
   {
     name: "file-field",
     render: (p) => <FileField value={null} onChange={noop} {...p} />,
+  },
+  {
+    name: "image-field",
+    render: (p) => (
+      <ImageField value={[]} onChange={noop} onSelect={noop} {...p} />
+    ),
   },
   {
     name: "tags-field",

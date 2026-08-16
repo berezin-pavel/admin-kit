@@ -235,7 +235,7 @@
       "name": "locale-ru",
       "type": "registry:component",
       "title": "Russian locale pack",
-      "description": "A Russian dictionary for the kit's items: a single const, localeRu, sliced into the exact shapes the other items' labels and locale props expect, so a slice spreads or passes straight into a prop — labels={localeRu.widgetTable}, locale={localeRu.dateField.locale}. Covers widget-table, widget-list, widget-chart, widget-activity, widget-donut, widget-progress, state-loading, state-error, state-forbidden, state-offline, widget-placeholder, confirm-dialog, date-field, date-time-field, date-range-field, color-field, file-field, tags-field, sidebar-toggle, theme-toggle, admin-shell, language-toggle, user-menu, and breadcrumbs, and bundles date-fns's ru locale for the date fields and widget-activity. The dateRangeField slice reuses date-range-field's default presets' ids and range math and only swaps in Russian labels, so the two never drift apart. Not a runtime i18n solution — it's a static dictionary, and switching locale at runtime is on the consumer.",
+      "description": "A Russian dictionary for the kit's items: a single const, localeRu, sliced into the exact shapes the other items' labels and locale props expect, so a slice spreads or passes straight into a prop — labels={localeRu.widgetTable}, locale={localeRu.dateField.locale}. Covers widget-table, widget-list, widget-chart, widget-activity, widget-donut, widget-progress, state-loading, state-error, state-forbidden, state-offline, widget-placeholder, confirm-dialog, date-field, date-time-field, date-range-field, color-field, file-field, image-field, tags-field, sidebar-toggle, theme-toggle, admin-shell, language-toggle, user-menu, and breadcrumbs, and bundles date-fns's ru locale for the date fields and widget-activity. The dateRangeField slice reuses date-range-field's default presets' ids and range math and only swaps in Russian labels, so the two never drift apart. Not a runtime i18n solution — it's a static dictionary, and switching locale at runtime is on the consumer.",
       "registryDependencies": [
         "berezin-pavel/admin-kit/date-range-field"
       ],
@@ -858,6 +858,34 @@
           "path": "registry/file-field/file-field.tsx",
           "type": "registry:component",
           "target": "@components/admin/file-field.tsx"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "image-field",
+      "type": "registry:component",
+      "title": "Image field",
+      "description": "A gallery field for a record's images: thumbnails in a responsive grid, a drop zone that takes dragged files or opens the native picker, reordering by drag, a full-size preview in a dialog, a direct link that opens the original in a new tab, and removal that applies straight away — the field has no Apply button of its own, because a form's Save is the only one there should be. Like every item in the kit it never uploads anything: onSelect hands the picked File objects to the consumer, which stores them and returns the result through value as {id, url, name} items, so the same field works over S3, a REST endpoint or an object URL. onChange reports the new order and the removals. multiple=false narrows it to a single image and maxItems caps the set, hiding the drop zone once it is full; limitImageFieldFiles (exported and tested) is what drops non-images and trims a selection to that cap. Reordering works without a mouse: every thumbnail carries move-earlier and move-later buttons alongside preview, open and remove, since HTML5 drag is unreachable from a keyboard; moveImageFieldItem is exported for the same move applied outside the field. Labels are props with English defaults, and each thumbnail's controls name the image they act on. Requires the admin-theme theme.",
+      "registryDependencies": [
+        "button",
+        "dialog",
+        "label",
+        "berezin-pavel/admin-kit/admin-theme"
+      ],
+      "dependencies": [
+        "lucide-react"
+      ],
+      "files": [
+        {
+          "path": "registry/image-field/image-field.tsx",
+          "type": "registry:component",
+          "target": "@components/admin/image-field.tsx"
+        },
+        {
+          "path": "registry/image-field/image-field-preview.tsx",
+          "type": "registry:component",
+          "target": "@components/admin/image-field-preview.tsx"
         }
       ]
     },

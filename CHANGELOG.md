@@ -38,6 +38,17 @@ shows a burger, because the sidebar toggle that expands it is already in the foo
 `sr-only` name for the panel), and `admin-nav.tsx` lost `responsive` — with the rail confined to
 wide screens, `collapsed` is the only thing that decides the nav's shape.
 
+**New** — `image-field`, a gallery field for a record's images. Thumbnails sit in a responsive
+grid with the drop zone as the last tile; a file can be dropped anywhere on the field or picked
+through the native input; a thumbnail is dragged onto another to reorder, previewed full size in a
+dialog, opened in a new tab through a real link, or removed on the spot — the field has no Apply
+button, because a form's Save is the only one that should exist. It uploads nothing itself:
+`onSelect` hands the picked `File` objects to the consumer and the stored result comes back through
+`value` as `{id, url, name}`, so the same field works over S3, a REST endpoint or an object URL.
+`moveImageFieldItem` and `limitImageFieldFiles` are exported and tested. Reordering also works from
+a keyboard through move-earlier/move-later buttons, since HTML5 drag never reaches one.
+`locale-ru` gained the matching slice.
+
 **New** — `page-entity` and `page-form` sections take `columns` (1, 2 or 3). An entity section
 already stacked two columns; it now goes up to three, and a form section that gets `columns`
 becomes a responsive grid where every field is one cell instead of one tall stack. A field that

@@ -94,6 +94,16 @@ export const localeRu = {
     noFileLabel: "Файл не выбран",
     clearLabel: "Убрать файл",
   },
+  imageField: {
+    dropzone: "Перетащите картинки сюда или нажмите, чтобы выбрать",
+    dropzoneHint: "PNG, JPG или WEBP",
+    preview: "Посмотреть",
+    openInNewTab: "Открыть в новой вкладке",
+    remove: "Удалить",
+    moveEarlier: "Переместить назад",
+    moveLater: "Переместить вперёд",
+    imageName: (index: number) => `Картинка ${index + 1}`,
+  },
   tagsField: {
     placeholder: "Добавить тег…",
     removeLabel: (tag: string) => `Убрать ${tag}`,

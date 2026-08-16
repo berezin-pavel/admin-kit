@@ -11,6 +11,10 @@ import { ComboboxField } from "@/registry/combobox-field/combobox-field"
 import { DateField } from "@/registry/date-field/date-field"
 import { DateTimeField } from "@/registry/date-time-field/date-time-field"
 import { FileField } from "@/registry/file-field/file-field"
+import {
+  ImageField,
+  type ImageFieldItem,
+} from "@/registry/image-field/image-field"
 import { localeRu } from "@/registry/locale-ru/locale-ru"
 import { MultiSelectField } from "@/registry/multi-select-field/multi-select-field"
 import { NumberField } from "@/registry/number-field/number-field"
@@ -34,6 +38,11 @@ const INITIAL_CHANNELS: readonly string[] = ["online", "retail"]
 const INITIAL_PICKUP = "2026-08-14T11:00"
 const INITIAL_DELIVERY_TIME = "11:30"
 const INITIAL_LABEL_COLOR = "#f97316"
+const INITIAL_PHOTOS: readonly ImageFieldItem[] = [
+  { id: "front", url: "/demo-images/front.svg", name: "front-view.svg" },
+  { id: "side", url: "/demo-images/side.svg", name: "side-view.svg" },
+  { id: "sole", url: "/demo-images/sole.svg", name: "sole.svg" },
+]
 
 export function DemoOrderEdit() {
   const router = useRouter()
@@ -55,6 +64,7 @@ export function DemoOrderEdit() {
   const [deliveryTime, setDeliveryTime] = useState(INITIAL_DELIVERY_TIME)
   const [labelColor, setLabelColor] = useState(INITIAL_LABEL_COLOR)
   const [supplierDiscount, setSupplierDiscount] = useState("")
+  const [photos, setPhotos] = useState(INITIAL_PHOTOS)
   const [submitting, setSubmitting] = useState(false)
 
   return (
@@ -193,6 +203,25 @@ export function DemoOrderEdit() {
                   clearLabel={
                     locale === "ru" ? localeRu.fileField.clearLabel : undefined
                   }
+                />
+                <ImageField
+                  className="sm:col-span-2 lg:col-span-3"
+                  label={strings.photosLabel}
+                  hint={strings.photosHint}
+                  value={photos}
+                  onChange={setPhotos}
+                  onSelect={(files) =>
+                    setPhotos((current) => [
+                      ...current,
+                      ...files.map((file) => ({
+                        id: `${file.name}-${file.lastModified}-${current.length}`,
+                        url: URL.createObjectURL(file),
+                        name: file.name,
+                      })),
+                    ])
+                  }
+                  maxItems={6}
+                  labels={locale === "ru" ? localeRu.imageField : undefined}
                 />
                 <TextareaField
                   className="sm:col-span-2 lg:col-span-3"
