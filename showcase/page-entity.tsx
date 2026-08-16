@@ -7,8 +7,51 @@ export const pageEntityEntry: ShowcaseEntry = {
   item: "page-entity",
   title: "Entity page",
   description:
-    "A card for a single record: a title, actions on the right, and fields grouped into sections. A field's value is a ReactNode, so a link or a badge can sit next to the text. The status prop swaps the fields for a state screen while keeping the title in place.",
+    "A card for a single record: a title, actions on the right, and fields grouped into sections. A field's value is a ReactNode, so a link or a badge can sit next to the text. A section lays its fields out in two columns by default; columns takes 1, 2 or 3, and three columns is what keeps a record with short values from spreading over a screen of empty space. The status prop swaps the fields for a state screen while keeping the title in place.",
   views: [
+    {
+      id: "three-columns",
+      name: "Sections in three columns",
+      render: () => (
+        <PageEntity
+          title="Order #4187"
+          description="Nova sneakers, delivery in Austin"
+          sections={[
+            {
+              id: "order",
+              title: "Order",
+              columns: 3,
+              fields: [
+                { id: "status", label: "Status", value: "Delivered" },
+                {
+                  id: "placed",
+                  label: "Placed",
+                  value: "August 3, 2026, 2:12 PM",
+                },
+                { id: "channel", label: "Channel", value: "Online store" },
+                { id: "total", label: "Total", value: "$2,340" },
+                { id: "payment", label: "Payment", value: "Card •• 4412" },
+                { id: "manager", label: "Manager", value: "Alex Morgan" },
+              ],
+            },
+            {
+              id: "customer",
+              title: "Customer",
+              columns: 3,
+              fields: [
+                { id: "name", label: "Name", value: "Emily Carter" },
+                {
+                  id: "email",
+                  label: "Email",
+                  value: "emily.carter@example.com",
+                },
+                { id: "phone", label: "Phone", value: "+1 512 555-0142" },
+              ],
+            },
+          ]}
+        />
+      ),
+    },
     {
       id: "order-three-sections",
       name: "Order card, three sections",

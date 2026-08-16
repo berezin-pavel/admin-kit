@@ -16,7 +16,14 @@ export interface PageEntityField {
 export interface PageEntitySection {
   id: string
   title?: string
+  columns?: 1 | 2 | 3
   fields: readonly PageEntityField[]
+}
+
+const sectionColumnsClassName: Record<1 | 2 | 3, string> = {
+  1: "",
+  2: "sm:grid-cols-2",
+  3: "sm:grid-cols-2 lg:grid-cols-3",
 }
 
 export type PageStatus = "ready" | "loading" | "error" | "forbidden" | "offline"
@@ -39,7 +46,7 @@ export function PageEntity({
   className,
 }: PageEntityProps) {
   return (
-    <div className={cn("flex flex-col gap-6", className)}>
+    <div className={cn("flex flex-col gap-4", className)}>
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="flex flex-col gap-1">
           <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
@@ -60,7 +67,7 @@ export function PageEntity({
       ) : status === "offline" ? (
         <StateOffline />
       ) : (
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-4">
           {sections.map((section) => (
             <Card key={section.id}>
               {section.title ? (
@@ -71,9 +78,14 @@ export function PageEntity({
                 </CardHeader>
               ) : null}
               <CardContent>
-                <dl className="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2">
+                <dl
+                  className={cn(
+                    "grid grid-cols-1 gap-x-6 gap-y-3",
+                    sectionColumnsClassName[section.columns ?? 2]
+                  )}
+                >
                   {section.fields.map((field) => (
-                    <div key={field.id} className="flex flex-col gap-1">
+                    <div key={field.id} className="flex flex-col gap-0.5">
                       <dt className="text-sm text-muted-foreground">
                         {field.label}
                       </dt>

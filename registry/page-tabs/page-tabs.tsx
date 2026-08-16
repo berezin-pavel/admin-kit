@@ -37,7 +37,7 @@ export function PageTabs({
     >
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="min-w-0 overflow-x-auto">
-          <TabsList>
+          <TabsList className="group-data-horizontal/tabs:h-10">
             {items.map((item) => {
               const Icon = item.icon
 

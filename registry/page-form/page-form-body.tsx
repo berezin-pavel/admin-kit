@@ -9,7 +9,15 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 
+import { cn } from "@/lib/utils"
+
 import type { PageFormSection } from "./page-form"
+
+const sectionColumnsClassName: Record<1 | 2 | 3, string> = {
+  1: "",
+  2: "sm:grid-cols-2",
+  3: "sm:grid-cols-2 lg:grid-cols-3",
+}
 
 export interface PageFormBodyProps {
   sections: readonly PageFormSection[]
@@ -35,7 +43,7 @@ export function PageFormBody({
         onSubmit?.()
       }}
       aria-busy={submitting || undefined}
-      className="flex flex-col gap-6"
+      className="flex flex-col gap-4"
     >
       {sections.map((section, index) => (
         <Card key={index}>
@@ -51,7 +59,20 @@ export function PageFormBody({
               ) : null}
             </CardHeader>
           ) : null}
-          <CardContent>{section.children}</CardContent>
+          <CardContent>
+            {section.columns && section.columns > 1 ? (
+              <div
+                className={cn(
+                  "grid items-start gap-4",
+                  sectionColumnsClassName[section.columns]
+                )}
+              >
+                {section.children}
+              </div>
+            ) : (
+              section.children
+            )}
+          </CardContent>
         </Card>
       ))}
       <div className="flex items-center justify-end gap-2">

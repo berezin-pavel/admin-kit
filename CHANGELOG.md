@@ -38,6 +38,17 @@ shows a burger, because the sidebar toggle that expands it is already in the foo
 `sr-only` name for the panel), and `admin-nav.tsx` lost `responsive` — with the rail confined to
 wide screens, `collapsed` is the only thing that decides the nav's shape.
 
+**New** — `page-entity` and `page-form` sections take `columns` (1, 2 or 3). An entity section
+already stacked two columns; it now goes up to three, and a form section that gets `columns`
+becomes a responsive grid where every field is one cell instead of one tall stack. A field that
+needs the full width says so itself (`className="sm:col-span-2 lg:col-span-3"`), which is also how
+a checkbox lines up with the inputs beside it (`pt-7`). Both pages also tightened their vertical
+rhythm: 1rem between cards instead of 1.5rem, and 0.75rem between an entity's rows.
+
+**Changed** — `page-tabs` draws its tab strip at the height of a filter control: a tab is now 33px
+tall rather than 25px, so a row of tabs and a row of buttons no longer read as two different
+sizes.
+
 **Changed** — every row of the sidebar now sits on one grid, shipped as `admin-row.ts`: the logo,
 the account avatar and the nav icons share a 24px box whose centre is 28px from the sidebar's
 edge, expanded or collapsed, and every label starts at 48px. Before, the three rows carried three

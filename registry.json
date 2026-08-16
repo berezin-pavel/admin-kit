@@ -494,7 +494,7 @@
       "name": "page-entity",
       "type": "registry:component",
       "title": "Entity page",
-      "description": "A single-record page: a title with actions on the right and fields grouped into sections. A field's value is a ReactNode, not a string: links, badges, and amounts with their own formatting live alongside the text. A section without a title is allowed — for an unnamed header made of the main fields. The status prop swaps the fields for one of the loading, error, forbidden, or offline states, while the title stays visible. No forms, no editing: edit buttons live in actions. Requires the admin-theme theme.",
+      "description": "A single-record page: a title with actions on the right and fields grouped into sections. A section lays its fields out in two columns by default; the columns prop takes 1, 2 or 3, and three columns is what keeps a record of short values from spreading over a screen of empty space. A field's value is a ReactNode, not a string: links, badges, and amounts with their own formatting live alongside the text. A section without a title is allowed — for an unnamed header made of the main fields. The status prop swaps the fields for one of the loading, error, forbidden, or offline states, while the title stays visible. No forms, no editing: edit buttons live in actions. Requires the admin-theme theme.",
       "registryDependencies": [
         "card",
         "berezin-pavel/admin-kit/admin-theme",
@@ -887,7 +887,7 @@
       "name": "page-form",
       "type": "registry:component",
       "title": "Form page",
-      "description": "A create/edit record page: a header with a title, description and an actions slot, sections of consumer-laid-out fields, and a footer with Cancel and Save (labels are props, so they localize). It is a real form element — Save submits, submitting disables both buttons and sets aria-busy. The status prop (ready/loading/error/forbidden/offline) swaps the sections for the matching State screen while the header stays. Requires the state screens it renders.",
+      "description": "A create/edit record page: a header with a title, description and an actions slot, sections of consumer-laid-out fields (a section's columns prop takes 2 or 3 and turns the section into a responsive grid where each field is one cell, so a form of a dozen short fields stops being one tall column; a field that needs the full width says so with col-span), and a footer with Cancel and Save (labels are props, so they localize). It is a real form element — Save submits, submitting disables both buttons and sets aria-busy. The status prop (ready/loading/error/forbidden/offline) swaps the sections for the matching State screen while the header stays. Requires the state screens it renders.",
       "registryDependencies": [
         "berezin-pavel/admin-kit/admin-theme",
         "button",

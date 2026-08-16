@@ -68,8 +68,9 @@ export function DemoOrderEdit() {
         sections={[
           {
             title: strings.sectionTitle,
+            columns: 3,
             children: (
-              <div className="flex flex-col gap-4">
+              <>
                 <ComboboxField
                   label={strings.customerLabel}
                   value={customer}
@@ -108,70 +109,57 @@ export function DemoOrderEdit() {
                     locale === "ru" ? localeRu.dateField.displayFormat : undefined
                   }
                 />
+                <DateTimeField
+                  label={strings.pickupLabel}
+                  value={pickup}
+                  onChange={setPickup}
+                  locale={
+                    locale === "ru" ? localeRu.dateTimeField.locale : undefined
+                  }
+                  displayFormat={
+                    locale === "ru"
+                      ? localeRu.dateTimeField.displayFormat
+                      : undefined
+                  }
+                  placeholder={
+                    locale === "ru"
+                      ? localeRu.dateTimeField.placeholder
+                      : undefined
+                  }
+                />
+                <TimeField
+                  label={strings.deliveryTimeLabel}
+                  value={deliveryTime}
+                  onChange={setDeliveryTime}
+                />
+                <ColorField
+                  label={strings.labelColorLabel}
+                  value={labelColor}
+                  onChange={setLabelColor}
+                  placeholder={
+                    locale === "ru" ? localeRu.colorField.placeholder : undefined
+                  }
+                  hexInputLabel={
+                    locale === "ru"
+                      ? localeRu.colorField.hexInputLabel
+                      : undefined
+                  }
+                />
+                <NumberField
+                  label={strings.supplierDiscountLabel}
+                  value={supplierDiscount}
+                  onChange={setSupplierDiscount}
+                  hint={strings.supplierDiscountHint}
+                  placeholder={strings.supplierDiscountPlaceholder}
+                  min={0}
+                  max={100}
+                />
                 <CheckboxField
+                  className="pt-7"
                   label={strings.paidLabel}
                   checked={paid}
                   onChange={setPaid}
                 />
-                <TextareaField
-                  label={strings.commentLabel}
-                  value={comment}
-                  onChange={setComment}
-                  placeholder={strings.commentPlaceholder}
-                />
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <DateTimeField
-                    label={strings.pickupLabel}
-                    value={pickup}
-                    onChange={setPickup}
-                    locale={
-                      locale === "ru"
-                        ? localeRu.dateTimeField.locale
-                        : undefined
-                    }
-                    displayFormat={
-                      locale === "ru"
-                        ? localeRu.dateTimeField.displayFormat
-                        : undefined
-                    }
-                    placeholder={
-                      locale === "ru"
-                        ? localeRu.dateTimeField.placeholder
-                        : undefined
-                    }
-                  />
-                  <TimeField
-                    label={strings.deliveryTimeLabel}
-                    value={deliveryTime}
-                    onChange={setDeliveryTime}
-                  />
-                </div>
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <ColorField
-                    label={strings.labelColorLabel}
-                    value={labelColor}
-                    onChange={setLabelColor}
-                    placeholder={
-                      locale === "ru"
-                        ? localeRu.colorField.placeholder
-                        : undefined
-                    }
-                    hexInputLabel={
-                      locale === "ru"
-                        ? localeRu.colorField.hexInputLabel
-                        : undefined
-                    }
-                  />
-                  <NumberField
-                    label={strings.supplierDiscountLabel}
-                    value={supplierDiscount}
-                    onChange={setSupplierDiscount}
-                    hint={strings.supplierDiscountHint}
-                    placeholder={strings.supplierDiscountPlaceholder}
-                    min={0}
-                    max={100}
-                  />
-                </div>
                 <MultiSelectField
                   label={strings.tagsLabel}
                   value={tags}
@@ -206,7 +194,14 @@ export function DemoOrderEdit() {
                     locale === "ru" ? localeRu.fileField.clearLabel : undefined
                   }
                 />
-              </div>
+                <TextareaField
+                  className="sm:col-span-2 lg:col-span-3"
+                  label={strings.commentLabel}
+                  value={comment}
+                  onChange={setComment}
+                  placeholder={strings.commentPlaceholder}
+                />
+              </>
             ),
           },
         ]}

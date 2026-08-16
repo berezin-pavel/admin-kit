@@ -11,6 +11,7 @@ import { PageFormBody } from "./page-form-body"
 export interface PageFormSection {
   title?: string
   description?: string
+  columns?: 1 | 2 | 3
   children: ReactNode
 }
 
@@ -44,7 +45,7 @@ export function PageForm({
   className,
 }: PageFormProps) {
   return (
-    <div className={cn("flex flex-col gap-6", className)}>
+    <div className={cn("flex flex-col gap-4", className)}>
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="flex flex-col gap-1">
           <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>

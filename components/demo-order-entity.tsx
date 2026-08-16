@@ -61,6 +61,7 @@ export function DemoOrderEntity() {
     {
       id: "order",
       title: strings.sectionOrder,
+      columns: 3,
       fields: [
         {
           id: "status",
@@ -99,6 +100,7 @@ export function DemoOrderEntity() {
     {
       id: "customer",
       title: strings.sectionCustomer,
+      columns: 3,
       fields: [
         { id: "name", label: strings.fieldName, value: strings.fieldNameValue },
         { id: "email", label: strings.fieldEmail, value: strings.fieldEmailValue },
@@ -108,6 +110,7 @@ export function DemoOrderEntity() {
     {
       id: "delivery",
       title: strings.sectionDelivery,
+      columns: 3,
       fields: [
         {
           id: "address",
@@ -205,7 +208,6 @@ export function DemoOrderEntity() {
           <>
             <Button
               variant="outline"
-              size="sm"
               onClick={reload}
               disabled={reloading}
             >
@@ -214,7 +216,6 @@ export function DemoOrderEntity() {
             </Button>
             <Button
               variant="outline"
-              size="sm"
               onClick={() => {
                 setDraftTotal(total)
                 setDraftChannel(channel)
@@ -225,7 +226,6 @@ export function DemoOrderEntity() {
             </Button>
             <Button
               variant="outline"
-              size="sm"
               onClick={() =>
                 notify.success(strings.sendReceiptToastTitle, {
                   description: strings.sendReceiptToastDescription,
@@ -236,7 +236,6 @@ export function DemoOrderEntity() {
             </Button>
             <Button
               variant="destructive"
-              size="sm"
               disabled={cancelled}
               onClick={() => setConfirmOpen(true)}
             >
