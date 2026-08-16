@@ -54,7 +54,7 @@ export const adminShellEntry: ShowcaseEntry = {
   item: "admin-shell",
   title: "Admin shell",
   description:
-    "The persistent frame of the admin panel: an optional header, a side navigation, and a work area. The sidebar belongs to the wide screen and is drawn as a card — a panel with padding, rounding, and a border. On a narrow screen it is gone entirely and the burger takes over: one panel holds the brand, the account row, every section with its label, and the footer, while the work area gets the full width. The controlled collapsed prop shrinks the sidebar on a wide screen to a strip of icons, and the sidebar toggle in the footer brings it back — no burger appears there, because a control that reopens the sidebar is already on screen. The header prop can remove the header entirely: without it a narrow screen gets a compact bar with the burger, the logo, and the app name. The top of the sidebar is a brand row — an optional logo slot before appName, sized to a 20-24px box and still visible in the icon strip and the burger panel once the name itself is hidden. Directly under it, sidebarProfile renders a full-width account row, separated from the navigation by a divider; in the icon strip it collapses to just the trigger's avatar. sidebarActions stays available alongside it for anything else that belongs next to the brand, like a notifications button. The sidebarFooter prop is a slot at the bottom of the sidebar and the icon strip for a theme toggle, sidebar toggle, or build version. Nav items and the active section are set by props, and the link renderer can be swapped for your own router.",
+    "The persistent frame of the admin panel: an optional header, a side navigation, and a work area. The sidebar belongs to the wide screen and is drawn as a card — a panel with padding, rounding, and a border. On a narrow screen it is gone entirely and the burger takes over: the panel holds every section with its label and the sidebarFooter, while the brand and the account row stay on the top bar, where they are already visible. The controlled collapsed prop shrinks the sidebar on a wide screen to a strip of icons, and the sidebar toggle in the footer brings it back — no burger appears there, because a control that reopens the sidebar is already on screen. The header prop can remove the header entirely: without it a narrow screen gets a compact bar with the burger, the logo, the app name, and the account on the right. Every row of the sidebar shares one grid: the logo, the account avatar, and the nav icons sit in the same 24px box, so their centre never moves when the sidebar collapses. The top of the sidebar is a brand row — an optional logo slot before appName. Directly under it, sidebarProfile renders a full-width account row, separated from the navigation by a divider; in the icon strip it collapses to just the trigger's avatar, and on a narrow screen it moves to the right of the top bar. sidebarActions stays available alongside it for anything else that belongs next to the brand, like a notifications button. The sidebarFooter prop is a slot at the bottom of the sidebar, the icon strip, and the burger panel for a theme toggle, sidebar toggle, or build version. Nav items and the active section are set by props, and the link renderer can be swapped for your own router.",
   views: [
     {
       id: "empty",
@@ -129,14 +129,14 @@ export const adminShellEntry: ShowcaseEntry = {
     },
     {
       id: "mobile-menu-footer",
-      name: "Logo, account row, and sidebarFooter in the burger panel (open on a narrow screen)",
+      name: "Navigation and sidebarFooter in the burger panel (open on a narrow screen)",
       render: () => (
         <AdminShellFooterView header={false}>
           <div className="text-sm text-muted-foreground">
-            On a narrow screen there is no sidebar at all: the burger opens
-            a panel with the logo, the full-width account row, all the
-            navigation, and the same sidebarFooter at the bottom, and the
-            work area keeps the full width.
+            On a narrow screen there is no sidebar at all: the top bar keeps
+            the logo, the app name, and the account, and the burger opens a
+            panel with the navigation and the same sidebarFooter at the
+            bottom — neither the name nor the account is repeated there.
           </div>
         </AdminShellFooterView>
       ),

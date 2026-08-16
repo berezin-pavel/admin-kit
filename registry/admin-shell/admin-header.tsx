@@ -6,6 +6,7 @@ export interface AdminHeaderProps {
   section: string
   actions?: ReactNode
   menu?: ReactNode
+  narrowActions?: ReactNode
   className?: string
 }
 
@@ -13,6 +14,7 @@ export function AdminHeader({
   section,
   actions,
   menu,
+  narrowActions,
   className,
 }: AdminHeaderProps) {
   return (
@@ -26,9 +28,14 @@ export function AdminHeader({
         {menu}
         <span className="text-sm font-medium">{section}</span>
       </div>
-      {actions ? (
-        <div className="flex items-center gap-2">{actions}</div>
-      ) : null}
+      <div className="flex items-center gap-2">
+        {narrowActions ? (
+          <div className="flex items-center gap-1 md:hidden">
+            {narrowActions}
+          </div>
+        ) : null}
+        {actions}
+      </div>
     </header>
   )
 }

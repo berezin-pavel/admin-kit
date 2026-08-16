@@ -8,16 +8,12 @@ import { Button } from "@/components/ui/button"
 import {
   Sheet,
   SheetContent,
-  SheetHeader,
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
 
 export interface AdminMenuProps {
   appName: string
-  logo?: ReactNode
-  actions?: ReactNode
-  profile?: ReactNode
   footer?: ReactNode
   children: ReactNode
   openMenuLabel?: string
@@ -25,9 +21,6 @@ export interface AdminMenuProps {
 
 export function AdminMenu({
   appName,
-  logo,
-  actions,
-  profile,
   footer,
   children,
   openMenuLabel = "Open navigation menu",
@@ -49,29 +42,8 @@ export function AdminMenu({
         <Menu className="size-4" />
       </SheetTrigger>
       <SheetContent side="left">
-        <SheetHeader>
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex min-w-0 items-center gap-2">
-              {logo ? (
-                <span className="flex size-5 shrink-0 items-center justify-center overflow-hidden">
-                  {logo}
-                </span>
-              ) : null}
-              <SheetTitle className="truncate">{appName}</SheetTitle>
-            </div>
-            {actions ? (
-              <div className="flex shrink-0 items-center gap-1">
-                {actions}
-              </div>
-            ) : null}
-          </div>
-        </SheetHeader>
-        <div className="flex min-h-0 flex-1 flex-col">
-          {profile ? (
-            <div className="shrink-0 border-b border-sidebar-border px-2 pt-1 pb-2">
-              {profile}
-            </div>
-          ) : null}
+        <SheetTitle className="sr-only">{appName}</SheetTitle>
+        <div className="flex min-h-0 flex-1 flex-col pt-11">
           <div
             onClick={(event) => {
               if (

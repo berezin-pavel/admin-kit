@@ -2,6 +2,8 @@ import type { ComponentType, ReactNode } from "react"
 
 import { cn } from "@/lib/utils"
 
+import { adminRowClassName, adminRowIconClassName } from "./admin-row"
+
 export interface AdminNavItem {
   href: string
   title: string
@@ -46,8 +48,8 @@ export function AdminNav({
     <nav
       aria-label={sectionsLabel}
       className={cn(
-        "flex flex-col gap-1 py-2",
-        collapsed ? "items-center" : "items-stretch px-3",
+        "flex flex-col gap-1 px-2 py-2",
+        collapsed ? "items-center" : "items-stretch",
         className
       )}
     >
@@ -61,24 +63,24 @@ export function AdminNav({
               href: item.href,
               isActive,
               className: cn(
-                "flex cursor-default items-center gap-2 rounded-md text-sm transition-colors",
-                collapsed
-                  ? "size-10 justify-center font-medium"
-                  : "w-full justify-start px-3 py-2 font-normal",
+                "cursor-default text-sm font-normal transition-colors",
+                adminRowClassName(collapsed),
                 isActive
                   ? "bg-sidebar-accent text-sidebar-accent-foreground"
                   : "text-sidebar-foreground hover:bg-sidebar-accent/50"
               ),
               children: (
                 <>
-                  <span aria-hidden="true">
-                    {Icon ? (
-                      <Icon className="size-4 shrink-0" />
-                    ) : collapsed ? (
-                      item.title.charAt(0).toUpperCase()
-                    ) : null}
-                  </span>
-                  <span className={cn(collapsed && "sr-only")}>
+                  {Icon || collapsed ? (
+                    <span aria-hidden="true" className={adminRowIconClassName}>
+                      {Icon ? (
+                        <Icon className="size-4" />
+                      ) : (
+                        item.title.charAt(0).toUpperCase()
+                      )}
+                    </span>
+                  ) : null}
+                  <span className={cn("truncate", collapsed && "sr-only")}>
                     {item.title}
                   </span>
                 </>

@@ -28,12 +28,22 @@ re-pulling), **Breaking** (props or files that changed shape — read before ove
 ## Unreleased
 
 **Breaking** — `admin-shell` gives a narrow screen no sidebar at all. Below `md` the icon rail is
-gone and the burger panel is the whole navigation; without a header the shell draws a compact bar
-carrying the burger, the logo and the app name, and the work area keeps the full width. A wide
-screen is unchanged apart from one control: the collapsed rail no longer shows a burger, because
-the sidebar toggle that expands it is already in the footer. `admin-menu.tsx` lost `showOnDesktop`
-and `admin-nav.tsx` lost `responsive` — with the rail confined to wide screens, `collapsed` is the
-only thing that decides the nav's shape.
+gone and the burger panel holds the navigation and `sidebarFooter`; the brand and the account are
+not repeated inside it but stay on a compact top bar — burger, logo and app name on the left,
+`sidebarActions` and `sidebarProfile` on the right — and the work area keeps the full width. With
+`header` on, that same pair rides along in the header through its new `narrowActions` slot, shown
+below `md` only. A wide screen is unchanged apart from one control: the collapsed rail no longer
+shows a burger, because the sidebar toggle that expands it is already in the footer.
+`admin-menu.tsx` lost `showOnDesktop`, `logo`, `actions` and `profile` (its title is now an
+`sr-only` name for the panel), and `admin-nav.tsx` lost `responsive` — with the rail confined to
+wide screens, `collapsed` is the only thing that decides the nav's shape.
+
+**Changed** — every row of the sidebar now sits on one grid, shipped as `admin-row.ts`: the logo,
+the account avatar and the nav icons share a 24px box whose centre is 28px from the sidebar's
+edge, expanded or collapsed, and every label starts at 48px. Before, the three rows carried three
+different paddings, so the logo, the avatar and the icons each stood on their own vertical line
+and shifted again when the sidebar collapsed. The account row also lost its extra top inset, which
+had left it floating away from the brand row above it.
 
 **Breaking** — `user-menu` no longer exports `getUserMenuInitials`, and the avatar falls back to a
 person icon instead of initials. An avatar is a picture the app uploads; initials were standing in

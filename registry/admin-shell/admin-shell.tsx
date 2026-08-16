@@ -9,6 +9,12 @@ import {
   type AdminNavItem,
   type AdminNavLinkRenderer,
 } from "./admin-nav"
+import {
+  adminNarrowProfileClassName,
+  adminRailProfileClassName,
+  adminRowIconClassName,
+  adminRowProfileClassName,
+} from "./admin-row"
 
 export type { AdminNavItem, AdminNavLinkRenderer }
 
@@ -56,17 +62,27 @@ export function AdminShell({
   const sectionsLabel = labels?.sections ?? "Sections"
 
   const brand = logo ? (
-    <span className="flex size-5 shrink-0 items-center justify-center overflow-hidden">
+    <span
+      data-slot="admin-brand"
+      className={cn(adminRowIconClassName, "overflow-hidden")}
+    >
       {logo}
     </span>
   ) : null
 
+  const narrowActions =
+    sidebarActions || sidebarProfile ? (
+      <div className="flex shrink-0 items-center gap-1">
+        {sidebarActions}
+        {sidebarProfile ? (
+          <div className={adminNarrowProfileClassName}>{sidebarProfile}</div>
+        ) : null}
+      </div>
+    ) : null
+
   const menu = (
     <AdminMenu
       appName={appName}
-      logo={logo}
-      actions={sidebarActions}
-      profile={sidebarProfile}
       footer={sidebarFooter}
       openMenuLabel={openMenuLabel}
     >
@@ -87,17 +103,16 @@ export function AdminShell({
       )}
     >
       {header === false ? (
-        <div className="flex h-12 shrink-0 items-center gap-2 rounded-xl bg-card px-2 ring-1 ring-foreground/10 md:hidden">
+        <div
+          data-slot="admin-top-bar"
+          className="flex h-12 shrink-0 items-center gap-2 rounded-xl bg-card px-2 ring-1 ring-foreground/10 md:hidden"
+        >
           {menu}
           {brand}
           <span className="min-w-0 flex-1 truncate text-sm font-semibold">
             {appName}
           </span>
-          {sidebarActions ? (
-            <div className="flex shrink-0 items-center gap-1">
-              {sidebarActions}
-            </div>
-          ) : null}
+          {narrowActions}
         </div>
       ) : null}
       <aside
@@ -108,15 +123,17 @@ export function AdminShell({
       >
         {collapsed ? (
           brand ? (
-            <div className="flex h-12 shrink-0 items-center justify-center">
-              {brand}
+            <div className="flex h-12 shrink-0 items-center px-2">
+              <span className="flex size-10 items-center justify-center">
+                {brand}
+              </span>
             </div>
           ) : null
         ) : (
-          <div className="flex h-12 shrink-0 items-center justify-between gap-2 px-4 text-sm font-semibold">
-            <span className="flex min-w-0 items-center gap-2">
+          <div className="flex h-12 shrink-0 items-center gap-1 px-2 text-sm font-semibold">
+            <span className="flex min-w-0 flex-1 items-center gap-2 px-2">
               {brand}
-              {appName}
+              <span className="truncate">{appName}</span>
             </span>
             {sidebarActions ? (
               <div className="flex shrink-0 items-center gap-1">
@@ -128,9 +145,8 @@ export function AdminShell({
         {sidebarProfile ? (
           <div
             className={cn(
-              "shrink-0 border-b border-sidebar-border px-2 pt-1 pb-2",
-              collapsed &&
-                "flex justify-center [&_[data-slot=user-menu-chevron]]:hidden [&_[data-slot=user-menu-details]]:hidden [&_[data-slot=user-menu]]:size-8 [&_[data-slot=user-menu]]:justify-center [&_[data-slot=user-menu]]:rounded-full [&_[data-slot=user-menu]]:p-0"
+              "shrink-0 border-b border-sidebar-border px-2 pb-2",
+              collapsed ? adminRailProfileClassName : adminRowProfileClassName
             )}
           >
             {sidebarProfile}
@@ -161,7 +177,12 @@ export function AdminShell({
       </aside>
       <div className="flex min-h-0 min-w-0 flex-1 flex-col">
         {header ? (
-          <AdminHeader section={section} actions={actions} menu={menu} />
+          <AdminHeader
+            section={section}
+            actions={actions}
+            menu={menu}
+            narrowActions={narrowActions}
+          />
         ) : null}
         <main className="min-h-0 flex-1 overflow-y-auto p-4 md:p-6">
           {children}
