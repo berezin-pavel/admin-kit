@@ -54,14 +54,14 @@ as they were.
 | Name                  | Type                  | What it does                                                                                                                                                                                                                                                                                                                                                           |
 | --------------------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `admin-theme`        | `registry:theme`     | Colors and radii for the admin panel, for the light and dark schemes. Installed first — the other items rely on its tokens                                                                                                                                                                                                                                            |
-| `admin-shell`        | `registry:block`     | A persistent full-height frame for the admin panel: an optional header, side navigation (on a narrow screen — always an icon rail and a burger menu; on a wide one — a sidebar, or with `collapsed`, that same rail and burger menu), a `logo` slot before the app name, a `sidebarProfile` row under it for the account, a `sidebarActions` slot next to the app name, a `sidebarFooter` slot at the bottom, and a work area with its own scrolling; the sidebar is drawn as a card. Installed once per project |
+| `admin-shell`        | `registry:block`     | A persistent full-height frame for the admin panel: an optional header, side navigation (on a wide screen a sidebar, or an icon rail with `collapsed`; on a narrow one no sidebar at all — a compact top bar with the burger, the logo, the app name and the account, and the panel behind the burger holds the sections), a `logo` slot before the app name, a `sidebarProfile` row under it for the account, a `sidebarActions` slot next to the app name, a `sidebarFooter` slot at the bottom, and a work area with its own scrolling. Every sidebar row shares one grid, so the logo, the avatar and the nav icons keep the same centre expanded or collapsed. Installed once per project |
 | `theme-toggle`       | `registry:component` | A theme-switch button that doesn't store the theme itself: the `isDark` state and the `onToggle` handler arrive as props. Fits the shell's `sidebarFooter` slot or anywhere else on the page                                                                                                                                                                          |
-| `sidebar-toggle`     | `registry:component` | A button that collapses the shell's sidebar into the icon rail, built the same way as `theme-toggle`: `collapsed` and `onToggle` arrive as props. Visible only on a wide screen — on a narrow one the sidebar is already an icon rail with a burger menu. Its place is the `sidebarFooter` slot next to the theme toggle                                             |
+| `sidebar-toggle`     | `registry:component` | A button that collapses the shell's sidebar into the icon rail, built the same way as `theme-toggle`: `collapsed` and `onToggle` arrive as props. Visible only on a wide screen — a narrow one has no sidebar to collapse. Its place is the `sidebarFooter` slot next to the theme toggle                                             |
 | `language-toggle`    | `registry:component` | A locale-switch button built the same way as `theme-toggle`: `locale`, `locales`, and `onLocaleChange` arrive as props. Shows the current locale's short label, cycling to the next one in the list on click. Its place is the `sidebarFooter` slot next to the theme toggle                                                                                        |
 | `user-menu`          | `registry:component` | An avatar icon button that opens a dropdown with the user's name, email, and a list of `items` (icon, label, and a `danger` tone for actions like sign-out). Without `avatarUrl` the trigger shows bare initials in the toggles' lettering. `variant="row"` fills the shell's `sidebarProfile` row — avatar, name, email and a chevron in one trigger, which is where identity belongs in a sidebar; `variant="icon"` (the default) suits `sidebarActions`, the header's `actions` slot or `sidebarFooter` |
 | `locale-ru`          | `registry:component` | A Russian dictionary: one `localeRu` const sliced into the exact shapes the other items' `labels`/`locale` props expect, so a slice passes straight into a prop. Bundles `date-fns`'s `ru` locale for the date fields                                                                                                                                                 |
 | `widget-metric`      | `registry:component` | A single-number card for a dashboard: a title, a value, optional trend (an arrow with its own separate color), and a caption; `trendValues`, given two or more points, adds a small sparkline under the caption                                                                                                                                                      |
-| `widget-table`       | `registry:component` | A self-contained table card: the heading is optional, the header has a `toolbar` slot for filters, and the footer has a record count, pagination, and a page-size picker. A column with `sortable` gets a sort button and `aria-sort`; row order and slicing are set by the data owner, the table only reports the choice via `onSortChange` and `onPageChange`. Passing both `selectedKeys` and `onSelectionChange` adds a checkbox column — the header checkbox selects or clears the current page only — and swaps the header's left side for a selection bar with an N-selected count and `selectionActions`. `filtered` swaps the empty state for a filtered-results one with a clear-filters button; `hiddenColumnIds` plus a settings dialog hide columns, except those marked `alwaysVisible` and those with no title; `stickyHeader` keeps the header in view while the body scrolls inside its own area, sized by `maxBodyHeight`; `totalCount` and `onSelectAllMatching` let the selection bar offer to extend a full-page selection to every matching record; export is a `selectionAction` the consumer wires up, with the exported `toCsv` helper for the usual case |
+| `widget-table`       | `registry:component` | A self-contained table card: the heading is optional, the header has a `toolbar` slot for filters, and the footer has a record count, pagination, and a page-size picker. A column with `sortable` gets a sort button and `aria-sort`; row order and slicing are set by the data owner, the table only reports the choice via `onSortChange` and `onPageChange`. Passing both `selectedKeys` and `onSelectionChange` adds a checkbox column — the header checkbox selects or clears the current page only — and swaps the header's left side for a selection bar with an N-selected count and `selectionActions`. `filtered` swaps the empty state for a filtered-results one with a clear-filters button; `hiddenColumnIds` plus a columns menu hide columns, except those marked `alwaysVisible` and those with no title; `stickyHeader` keeps the header in view while the body scrolls inside its own area, sized by `maxBodyHeight`; `totalCount` and `onSelectAllMatching` let the selection bar offer to extend a full-page selection to every matching record; export is a `selectionAction` the consumer wires up, with the exported `toCsv` helper for the usual case |
 | `widget-chart`       | `registry:component` | A chart card: a shared `labels` axis and a `series` list each with its own `values`; the `kind` prop switches between a line and bars; series colors cycle through the `chart-1`…`chart-5` tokens, and a legend appears once there are two or more series; the header has a `toolbar` slot for a period picker; without `labels` or `series` it shows `state-empty`                                                       |
 | `widget-list`        | `registry:component` | A list of rows: a name, an optional explanation, optional content on the right, and an icon; without rows and its own `empty`, it shows `state-empty`                                                                                                                                                                                                                  |
 | `widget-activity`    | `registry:component` | A recent-activity feed card: entries grouped by calendar day, with the group header reading "Today"/"Yesterday" relative to the real current date and a `dayFormat` date otherwise; entries keep their given order inside a group. Without entries it shows `state-empty`                                                                                            |
@@ -73,7 +73,7 @@ as they were.
 | `state-error`        | `registry:component` | A screen for a load or request failure: a title, an explanation, an actions slot, a red error icon by default                                                                                                                                                                                                                                                          |
 | `state-forbidden`    | `registry:component` | A forbidden screen: a title, an explanation, an actions slot, a muted lock icon — missing permissions is a denial, not a breakage                                                                                                                                                                                                                                       |
 | `state-offline`      | `registry:component` | A connection-lost screen: a title, an explanation, an actions slot, a red network-outage icon by default                                                                                                                                                                                                                                                                |
-| `page-entity`        | `registry:component` | A single-record page: a heading with actions and fields grouped into sections, with the field value being `ReactNode` rather than a string. The `status` prop swaps the fields for a loading, error, forbidden, or offline state, while the heading stays visible                                                                                                     |
+| `page-entity`        | `registry:component` | A single-record page: a heading with actions and fields grouped into sections, with the field value being `ReactNode` rather than a string. A section's `columns` (1, 2 or 3) sets how densely its fields sit. The `status` prop swaps the fields for a loading, error, forbidden, or offline state, while the heading stays visible                                                                                                     |
 | `page-header`        | `registry:component` | A section header: a title, an explanation, an actions slot on the right — a page building block, not a dashboard widget                                                                                                                                                                                                                                                |
 | `breadcrumbs`        | `registry:component` | A trail of section links above a page's heading: every entry but the last renders as a link when it has an `href` (through `renderLink`, or a plain `<a>` otherwise), and the last entry is always the current page, never a link. Server-compatible — no client state                                                                                              |
 | `status-badge`       | `registry:component` | A record-status badge with tone `neutral`, `success`, `warning`, `danger`; the `success` and `warning` tones depend on admin-kit's theme tokens                                                                                                                                                                                                                        |
@@ -94,8 +94,8 @@ as they were.
 | `multi-select-field` | `registry:component` | Several choices out of a fixed `options` list, shown as removable chips inside the input — the closed-set counterpart to `tags-field`. Selected options stay listed so they can be unselected, Backspace on an empty input drops the last chip, and `maxItems` disables the rest rather than hiding it, so it is visible why nothing happens
 | `tags-field`         | `registry:component` | A multi-value tag input: `value` is a string array, `onChange` replaces it wholesale. Enter or a comma commits the trimmed input as a new tag, Backspace on an empty input drops the last one, and each tag is a `Badge` with its own remove button. `suggestions` filters to matches in a popup as you type                                                          |
 | `page-auth`          | `registry:component` | A sign-in screen outside the shell: a centered card on an empty page, `appName` above the title, the fields as children (the item ships none of its own). A real form whose `onSubmit` gets the raw event; `submitting` disables the button and every field through a wrapping fieldset, `error` announces a failed sign-in through `role="alert"`, and `aside` adds the second panel of a split layout from `lg` up
-| `page-tabs`          | `registry:component` | Section navigation inside one page — Overview, History, Settings on a record screen. Controlled through `value`/`onValueChange`, so the active tab can live in the URL; only the active panel mounts, so a heavy table on a hidden tab never renders. `actions` sits beside the strip, which scrolls horizontally when the labels do not fit
-| `page-form`          | `registry:component` | A create/edit record page: a heading, sections of consumer-laid-out fields inside a real `form`, and a footer with Cancel and Save. `submitting` disables the buttons and sets `aria-busy`; the `status` prop swaps sections for a state screen while the heading stays                                                                                                 |
+| `page-tabs`          | `registry:component` | Section navigation inside one page — Overview, History, Settings on a record screen. A tab is drawn like a sidebar nav item, not as a segmented control. Controlled through `value`/`onValueChange`, so the active tab can live in the URL and a tab can navigate instead of switching panels; only the active panel mounts, so a heavy table on a hidden tab never renders. `actions` sits beside the strip, which scrolls horizontally when the labels do not fit
+| `page-form`          | `registry:component` | A create/edit record page: a heading, sections of consumer-laid-out fields inside a real `form`, and a footer with Cancel and Save. A section's `columns` (2 or 3) turns it into a responsive grid where each field is one cell, and a field asks for the full width with `col-span`. `submitting` disables the buttons and sets `aria-busy`; the `status` prop swaps sections for a state screen while the heading stays                                                                                                 |
 | `confirm-dialog`     | `registry:component` | A controlled confirmation modal: `open` and `onOpenChange` are held by the consumer, `tone="danger"` colors the confirm button, `loading` disables the buttons and blocks closing while the operation is in progress                                                                                                                                                   |
 | `form-dialog`        | `registry:component` | A modal with a real form for quick edits: fields as children, Cancel/Save in the footer, `submitting` disables the buttons and blocks closing while in progress. Controlled `open`/`onOpenChange`; for a full page use `page-form`                                                                                                                                       |
 | `admin-toaster`      | `registry:component` | Toasts about an operation's outcome: `AdminToaster` is placed once, and they're shown by calling `notify.info`, `notify.success`, `notify.warning`, `notify.danger` from anywhere, including code outside React                                                                                                                                                        |
@@ -150,43 +150,54 @@ sidebar, the icon rail, and the `sidebarFooter` slot stay in place.
 Before, the whole page used to scroll and the navigation would drift
 upward with long content.
 
+Navigation lives in exactly one place per width. On a wide screen that is
+the sidebar; below `md` the sidebar is gone entirely and the burger panel
+is the navigation, so a phone gives the work area its full width instead
+of a strip of unlabelled icons duplicating a panel. The brand and the
+account are not repeated inside that panel — they sit on the narrow top
+bar: the burger, the logo and the app name on the left, `sidebarActions`
+and `sidebarProfile` on the right. With the header on, the same pair
+reaches a narrow screen through the header's `narrowActions` slot.
+
+Every row of the sidebar shares one grid, shipped as `admin-row.ts`: the
+logo, the account avatar and the nav icons all sit in the same 24px box,
+whose centre is 28px from the sidebar's edge whether the sidebar is
+expanded or collapsed, and every label starts at 48px. That is what keeps
+the icons from shifting sideways when the sidebar collapses.
+
 The `sidebarFooter` prop sets a slot at the bottom of the sidebar, the
-icon rail on a narrow screen, and the burger panel — shared by the theme
-toggle (`theme-toggle`), the sidebar toggle (`sidebar-toggle`), the user
-menu (`user-menu`), or a build version; it works even with the header
-turned off. It's
-the same slot in all three places: the same content is drawn in a 240px
-sidebar, in a rail the width of a single button, and in the expanded
-burger panel — large or multi-line content won't fit there without a
-separate layout for the narrow width.
+icon rail, and the burger panel — shared by the theme toggle
+(`theme-toggle`), the sidebar toggle (`sidebar-toggle`), the user menu
+(`user-menu`), or a build version; it works even with the header turned
+off. It's the same slot in all three places: the same content is drawn in
+a 240px sidebar, in a rail the width of a single button, and in the
+expanded burger panel — large or multi-line content won't fit there
+without a separate layout for the narrow width.
 
 The shell itself dictates the layout of the slot's content, not whatever
 is placed inside it: buttons go into `sidebarFooter` without their own
 wrapper container — the shell arranges them in a row in the wide sidebar
-and in the burger panel, and stacks them in the narrow icon rail. A
-wrapper of your own on top breaks this: the consumer's horizontal
-container won't fit into the narrow icon rail's width.
+and in the burger panel, and stacks them in the icon rail. A wrapper of
+your own on top breaks this: the consumer's horizontal container won't
+fit into the rail's width.
 
 `admin-shell`'s header can be removed entirely with the `header={false}`
 prop — then it's the sidebar on the left, the work area right after it,
-and on a narrow screen the menu button moves to the top of the icon rail.
-Navigation links default to plain `<a href>`, and the `renderLink` prop
-swaps their rendering for the consumer's router (`next/link`,
-react-router, and others) — the same way in the sidebar, the icon rail,
-and the burger panel.
+and on a narrow screen the compact top bar carries the burger, the logo,
+the app name and the account. Navigation links default to plain
+`<a href>`, and the `renderLink` prop swaps their rendering for the
+consumer's router (`next/link`, react-router, and others) — the same way
+in the sidebar, the icon rail, and the burger panel.
 
 The controlled `collapsed` prop (`false` by default) collapses the
-sidebar on a wide screen down to the same icon rail already shown on a
-narrow one: the consumer holds the state, the shell doesn't store it. In
-the collapsed view a burger menu also appears next to the icons, opening
-a panel with section names — the same behavior as on a narrow screen,
-where the sidebar is always collapsed. `sidebar-toggle` provides the
-collapse button — built the same way as `theme-toggle`, it goes into the
-same `sidebarFooter` slot and is visible only on a wide screen, hidden
-right inside the item itself on a narrow one. The sidebar and the icon
-rail are drawn as a card — a separate panel with margin from the edges,
-rounded corners, a background, and a border like the widgets have — and
-the work area gets the same margin from the edges.
+sidebar on a wide screen down to an icon rail: the consumer holds the
+state, the shell doesn't store it. No burger joins the rail — the control
+that expands it again is already on screen, in the footer. `sidebar-toggle`
+provides that button — built the same way as `theme-toggle`, it goes into
+the same `sidebarFooter` slot and is visible only on a wide screen. The
+sidebar and the icon rail are drawn as a card — a separate panel with
+margin from the edges, rounded corners, a background, and a border like
+the widgets have — and the work area gets the same margin from the edges.
 
 **Contract for the `sidebarFooter` and `renderLink` slots: the content is
 drawn as several independent instances at once, rather than moving
@@ -234,8 +245,10 @@ wording it replaced. Most of these props are grouped under a single
 `selectAllOnPage`, `selected`, `clearSelection`),
 `sidebar-toggle`'s `labels` (`expand`, `collapse`), `theme-toggle`'s
 `labels` (`toLight`, `toDark`), `admin-shell`'s `labels` (`openMenu`,
-`sections`), and `widget-activity`'s `labels` (`today`, `yesterday`,
-`emptyTitle`). `user-menu` and `breadcrumbs` each carry a single string as a
+`sections`), `image-field`'s `labels` (`dropzone`, `dropzoneHint`,
+`preview`, `openInNewTab`, `remove`, `moveEarlier`, `moveLater`,
+`uploading`, `imageName`, `previous`, `next`, `counter`), and
+`widget-activity`'s `labels` (`today`, `yesterday`, `emptyTitle`). `user-menu` and `breadcrumbs` each carry a single string as a
 flat `label` prop rather than a `labels` object — the `aria-label` on the
 avatar trigger and on the `nav`, defaulting to "Open user menu" and
 "Breadcrumb". A handful of items already had a dedicated prop for their one

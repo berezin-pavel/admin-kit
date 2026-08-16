@@ -8,7 +8,7 @@ items changed, and what breaks if you pull them.
 **Install an item, pinned to a release:**
 
 ```bash
-pnpm dlx shadcn@latest add berezin-pavel/admin-kit/widget-table#v0.24.0
+pnpm dlx shadcn@latest add berezin-pavel/admin-kit/widget-table#v0.26.0
 ```
 
 **See what an update would change before taking it:**
@@ -25,7 +25,7 @@ Sections used below: **New** (items you can now install), **Changed** (installed
 re-pulling), **Breaking** (props or files that changed shape — read before overwriting), and
 **Project** (showcase, CI, docs — nothing that reaches your project).
 
-## Unreleased
+## 0.26.0 — 2026-08-16
 
 **Breaking** — `admin-shell` gives a narrow screen no sidebar at all. Below `md` the icon rail is
 gone and the burger panel holds the navigation and `sidebarFooter`; the brand and the account are
@@ -120,8 +120,8 @@ must be an empty value: Base UI marks a select as showing a placeholder whenever
 empty, so a catch-all sentinel like `"all"` rendered as selected-but-greyed and kept the reset
 button on screen forever. `widget-activity` lays its entries out in one left column — time, icon,
 title, meta — instead of pushing the time to the far edge, and its day heading follows
-`dayFormat`, which a non-English locale needs (`"d MMMM"` reads "3 августа", the English
-`"MMMM d"` read "августа 3").
+`dayFormat`, which a non-English locale needs: Russian puts the day before the month, and the
+English `"MMMM d"` reversed the two.
 
 ## 0.25.0 — 2026-08-14
 
