@@ -21,10 +21,10 @@ import {
 import { cn } from "@/lib/utils"
 import { StateEmpty } from "@/registry/state-empty/state-empty"
 
+import { WidgetTableColumnsMenu } from "./widget-table-columns-menu"
 import { WidgetTablePageSizeSelect } from "./widget-table-page-size-select"
 import { WidgetTablePaginationControls } from "./widget-table-pagination"
 import { WidgetTableSelectionBar } from "./widget-table-selection-bar"
-import { WidgetTableSettingsDialog } from "./widget-table-settings-dialog"
 import { WidgetTableSortButton } from "./widget-table-sort-button"
 import { WidgetTableSortSelect } from "./widget-table-sort-select"
 
@@ -81,8 +81,6 @@ export interface WidgetTableLabels {
   filteredEmptyDescription?: string
   clearFiltersLabel?: string
   columnsLabel?: string
-  settingsLabel?: string
-  settingsTitle?: string
 }
 
 export const widgetTableLabelDefaults: Required<WidgetTableLabels> = {
@@ -104,8 +102,6 @@ export const widgetTableLabelDefaults: Required<WidgetTableLabels> = {
     "No records match the current filter. Try adjusting or clearing it.",
   clearFiltersLabel: "Clear filters",
   columnsLabel: "Columns",
-  settingsLabel: "Table settings",
-  settingsTitle: "Table settings",
 }
 
 export interface WidgetTableProps<Row> {
@@ -255,8 +251,9 @@ export function WidgetTable<Row>({
   const hasSortSelect = Boolean(
     sortOptions && sortOptions.length > 0 && onSortChange
   )
-  const hasSettings = Boolean(onHiddenColumnIdsChange)
-  const hasServiceGroup = Boolean(pagination) || hasSortSelect || hasSettings
+  const hasColumnsMenu = Boolean(onHiddenColumnIdsChange)
+  const hasServiceGroup =
+    Boolean(pagination) || hasSortSelect || hasColumnsMenu
   const hasSelection = Boolean(selectedKeys && onSelectionChange)
   const pageKeys = hasSelection
     ? rows.map((row, index) => getRowKey?.(row, index) ?? index)
@@ -326,14 +323,12 @@ export function WidgetTable<Row>({
                 ariaLabel={resolvedLabels.sorting}
               />
             ) : null}
-            {hasSettings && !loading && onHiddenColumnIdsChange ? (
-              <WidgetTableSettingsDialog
+            {hasColumnsMenu && !loading && onHiddenColumnIdsChange ? (
+              <WidgetTableColumnsMenu
                 columns={columns}
                 hiddenColumnIds={hiddenColumnIds ?? []}
                 onHiddenColumnIdsChange={onHiddenColumnIdsChange}
-                settingsLabel={resolvedLabels.settingsLabel}
-                settingsTitle={resolvedLabels.settingsTitle}
-                columnsLabel={resolvedLabels.columnsLabel}
+                label={resolvedLabels.columnsLabel}
               />
             ) : null}
           </div>

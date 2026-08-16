@@ -37,7 +37,7 @@ import { demoDictionary } from "@/app/demo/locale"
 import { useDemoLocale } from "@/app/demo/locale-store"
 
 const PAGE_SIZE_OPTIONS = [10, 20, 50, 100] as const
-const DEFAULT_PAGE_SIZE = 10
+const DEFAULT_PAGE_SIZE = 50
 const RELOAD_DELAY_MS = 1200
 
 function parseTotal(total: string) {

@@ -122,8 +122,8 @@ describe("widget table selection bar", () => {
   })
 })
 
-describe("widget table settings dialog", () => {
-  const settingsColumns: readonly WidgetTableColumn<OrderRow>[] = [
+describe("widget table columns menu", () => {
+  const menuColumns: readonly WidgetTableColumn<OrderRow>[] = [
     {
       id: "number",
       title: "Number",
@@ -134,23 +134,17 @@ describe("widget table settings dialog", () => {
     { id: "actions", title: "", cell: () => "actions" },
   ]
 
-  it("opens a dialog listing columns and excluding empty-title ones", async () => {
+  it("lists columns and excludes empty-title ones", async () => {
     const user = userEvent.setup()
     render(
       <WidgetTable
         title="Orders"
-        columns={settingsColumns}
+        columns={menuColumns}
         rows={rows}
         hiddenColumnIds={[]}
         onHiddenColumnIdsChange={() => {}}
       />
     )
-
-    await user.click(screen.getByRole("button", { name: "Table settings" }))
-
-    expect(
-      screen.getByRole("dialog", { name: "Table settings" })
-    ).toBeInTheDocument()
 
     await user.click(screen.getByRole("button", { name: "Columns" }))
 

@@ -31,8 +31,6 @@ export const localeRu = {
     filteredEmptyDescription: "Под текущие фильтры не подходит ни одна запись",
     clearFiltersLabel: "Сбросить фильтры",
     columnsLabel: "Колонки",
-    settingsLabel: "Настройки таблицы",
-    settingsTitle: "Настройки таблицы",
     selectAllMatchingLabel: (count: number) => `Выбрать все: ${count}`,
   },
   comboboxField: {

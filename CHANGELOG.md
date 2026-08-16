@@ -58,13 +58,14 @@ application rather than a document, and a link in the chrome is a control like a
 hand cursor was the browser's default for `<a>`, not a choice the kit had made.
 
 **Breaking** — `widget-table` renders no export button of its own: export becomes one of the
-consumer's `selectionActions` (`onExport` and `toCsv` stay exported for it). The columns dropdown
-became a settings dialog, so the item now depends on `dialog` instead of `dropdown-menu` and
-ships `widget-table-settings-dialog.tsx` in place of `widget-table-columns-menu.tsx`; the
-`exportLabel` label is gone and `settingsLabel`, `settingsTitle` and `selectAllMatchingLabel`
-take its place. `stickyHeader` always owns its scroll area now, sized by `maxBodyHeight` (24rem
-by default) — sticking to a page-level scroller cannot be made correct once that scroller has
-padding, because a row keeps showing above the stuck header in the padding strip.
+consumer's `selectionActions` (`onExport` and `toCsv` stay exported for it), so the `exportLabel`
+label is gone and `selectAllMatchingLabel` joins the set. The columns control stays a dropdown
+behind a columns icon — a dialog was tried and dropped, because one list of checkboxes does not
+need a modal — but a column with an empty title no longer appears in it: an actions column has no
+name to show and no business being hidden. `stickyHeader` always owns its scroll area now, sized
+by `maxBodyHeight` (24rem by default) — sticking to a page-level scroller cannot be made correct
+once that scroller has padding, because a row keeps showing above the stuck header in the padding
+strip.
 
 **New** — `totalCount` plus `onSelectAllMatching` let the selection bar offer "Select all N" once
 the whole page is selected and more records match; the table never computes that selection

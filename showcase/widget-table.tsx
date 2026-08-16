@@ -9,7 +9,7 @@ import {
   WidgetTableExportView,
   WidgetTableFilteredEmptyView,
   WidgetTableSelectAllMatchingView,
-  WidgetTableSettingsDialogView,
+  WidgetTableColumnsMenuView,
   WidgetTableShowcaseView,
   WidgetTableStickyHeaderView,
 } from "./widget-table-view"
@@ -216,9 +216,9 @@ export const widgetTableEntry: ShowcaseEntry = {
       render: () => <WidgetTableFilteredEmptyView />,
     },
     {
-      id: "with-settings-dialog",
-      name: "With the table settings dialog",
-      render: () => <WidgetTableSettingsDialogView />,
+      id: "with-columns-menu",
+      name: "With the columns menu",
+      render: () => <WidgetTableColumnsMenuView />,
     },
     {
       id: "sticky-header",

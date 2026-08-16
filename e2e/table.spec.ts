@@ -13,20 +13,15 @@ test("a filtered-out list offers to clear the filter instead of claiming there i
   await expect(page.getByRole("row")).not.toHaveCount(0)
 })
 
-test("the settings dialog hides a column and leaves the pinned one alone", async ({
+test("the columns menu hides a column and leaves the pinned one alone", async ({
   page,
 }) => {
-  await page.goto("/preview/widget-table/with-settings-dialog")
+  await page.goto("/preview/widget-table/with-columns-menu")
 
   const headers = page.getByRole("columnheader")
   const before = await headers.count()
 
-  await page.getByRole("button", { name: "Table settings" }).click()
-
-  const dialog = page.getByRole("dialog")
-  await expect(dialog).toBeVisible()
-
-  await dialog.getByRole("button", { name: "Columns" }).click()
+  await page.getByRole("button", { name: "Columns" }).click()
 
   const items = page.getByRole("menuitemcheckbox")
   await expect(items.first()).toBeVisible()
@@ -41,8 +36,7 @@ test("the settings dialog hides a column and leaves the pinned one alone", async
   }
 
   await page.keyboard.press("Escape")
-  await page.keyboard.press("Escape")
-  await expect(dialog).toBeHidden()
+  await expect(items.first()).toBeHidden()
   await expect(headers).toHaveCount(before - 1)
 })
 

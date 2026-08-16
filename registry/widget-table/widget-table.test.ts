@@ -241,8 +241,6 @@ describe("widget table labels merge", () => {
       widgetTableLabelDefaults.clearFiltersLabel
     )
     expect(resolved.columnsLabel).toBe(widgetTableLabelDefaults.columnsLabel)
-    expect(resolved.settingsLabel).toBe(widgetTableLabelDefaults.settingsLabel)
-    expect(resolved.settingsTitle).toBe(widgetTableLabelDefaults.settingsTitle)
   })
 
   it("falls back to every default when labels is undefined", () => {
@@ -268,8 +266,6 @@ describe("widget table labels merge", () => {
       filteredEmptyDescription: "m",
       clearFiltersLabel: "n",
       columnsLabel: "o",
-      settingsLabel: "p",
-      settingsTitle: "q",
     })
 
     expect(resolved.emptyTitle).toBe("a")
@@ -288,7 +284,5 @@ describe("widget table labels merge", () => {
     expect(resolved.filteredEmptyDescription).toBe("m")
     expect(resolved.clearFiltersLabel).toBe("n")
     expect(resolved.columnsLabel).toBe("o")
-    expect(resolved.settingsLabel).toBe("p")
-    expect(resolved.settingsTitle).toBe("q")
   })
 })

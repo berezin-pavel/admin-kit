@@ -277,7 +277,7 @@ export function WidgetTableFilteredEmptyView() {
   )
 }
 
-const settingsDialogColumns: readonly WidgetTableColumn<OrderRow>[] = [
+const columnsMenuColumns: readonly WidgetTableColumn<OrderRow>[] = [
   {
     id: "number",
     title: "Number",
@@ -305,7 +305,7 @@ const settingsDialogColumns: readonly WidgetTableColumn<OrderRow>[] = [
   },
 ]
 
-export function WidgetTableSettingsDialogView() {
+export function WidgetTableColumnsMenuView() {
   const [hiddenColumnIds, setHiddenColumnIds] = useState<readonly string[]>(
     []
   )
@@ -313,7 +313,7 @@ export function WidgetTableSettingsDialogView() {
   return (
     <WidgetTable
       title="Recent orders"
-      columns={settingsDialogColumns}
+      columns={columnsMenuColumns}
       rows={allRows}
       getRowKey={(row) => row.number}
       hiddenColumnIds={hiddenColumnIds}
