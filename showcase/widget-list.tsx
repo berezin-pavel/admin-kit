@@ -1,12 +1,20 @@
 import { CircleUserRound, CreditCard, ShoppingCart } from "lucide-react"
 
+import type { GradientStops } from "@/registry/admin-theme-tokens/admin-theme-tokens"
 import { StateEmpty } from "@/registry/state-empty/state-empty"
 import {
   WidgetList,
   type WidgetListItem,
 } from "@/registry/widget-list/widget-list"
 
+import { GradientFrame } from "./gradient-frame"
 import type { ShowcaseEntry } from "./types"
+
+const listGradientStops: GradientStops = {
+  angle: 150,
+  from: "#78350f",
+  to: "#881337",
+}
 
 const teamItems: readonly WidgetListItem[] = [
   { id: "anna", title: "Anna Bennett", description: "Designer" },
@@ -102,6 +110,19 @@ export const widgetListEntry: ShowcaseEntry = {
       id: "loading",
       name: "Loading",
       render: () => <WidgetList title="Team" items={teamItems} loading />,
+    },
+    {
+      id: "gradient",
+      name: "With a gradient backdrop",
+      render: () => (
+        <GradientFrame id="clay" stops={listGradientStops}>
+          <WidgetList
+            title="Recent transactions"
+            items={orderItemsWithMeta}
+            gradient="clay"
+          />
+        </GradientFrame>
+      ),
     },
   ],
 }

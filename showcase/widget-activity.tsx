@@ -1,11 +1,19 @@
 import { CreditCard, PackageCheck, Truck, XCircle } from "lucide-react"
 
+import type { GradientStops } from "@/registry/admin-theme-tokens/admin-theme-tokens"
 import {
   WidgetActivity,
   type WidgetActivityEntry,
 } from "@/registry/widget-activity/widget-activity"
 
+import { GradientFrame } from "./gradient-frame"
 import type { ShowcaseEntry } from "./types"
+
+const activityGradientStops: GradientStops = {
+  angle: 160,
+  from: "#4c1d95",
+  to: "#0c4a6e",
+}
 
 function formatTimestamp(date: Date): string {
   const year = date.getFullYear()
@@ -91,6 +99,19 @@ export const widgetActivityEntry: ShowcaseEntry = {
           entries={buildEntries()}
           loading
         />
+      ),
+    },
+    {
+      id: "gradient",
+      name: "With a gradient backdrop",
+      render: () => (
+        <GradientFrame id="cobalt" stops={activityGradientStops}>
+          <WidgetActivity
+            title="Recent activity"
+            entries={buildEntries()}
+            gradient="cobalt"
+          />
+        </GradientFrame>
       ),
     },
   ],

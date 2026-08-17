@@ -2,6 +2,7 @@ import { WidgetQuickActions } from "@/registry/widget-quick-actions/widget-quick
 
 import {
   EmptyView,
+  GradientView,
   ThreeColumnsView,
   TwoColumnsView,
 } from "./widget-quick-actions-view"
@@ -34,6 +35,11 @@ export const widgetQuickActionsEntry: ShowcaseEntry = {
       render: () => (
         <WidgetQuickActions title="Quick actions" actions={[]} loading />
       ),
+    },
+    {
+      id: "gradient",
+      name: "With a gradient backdrop",
+      render: () => <GradientView />,
     },
   ],
 }

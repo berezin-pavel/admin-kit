@@ -1,6 +1,14 @@
+import type { GradientStops } from "@/registry/admin-theme-tokens/admin-theme-tokens"
 import { WidgetProgress } from "@/registry/widget-progress/widget-progress"
 
+import { GradientFrame } from "./gradient-frame"
 import type { ShowcaseEntry } from "./types"
+
+const progressGradientStops: GradientStops = {
+  angle: 120,
+  from: "#064e3b",
+  to: "#164e63",
+}
 
 export const widgetProgressEntry: ShowcaseEntry = {
   item: "widget-progress",
@@ -112,6 +120,22 @@ export const widgetProgressEntry: ShowcaseEntry = {
       name: "Loading",
       render: () => (
         <WidgetProgress title="Plan completion" value={62} loading />
+      ),
+    },
+    {
+      id: "gradient",
+      name: "With a gradient backdrop",
+      render: () => (
+        <GradientFrame id="ridge" stops={progressGradientStops}>
+          <WidgetProgress
+            title="Monthly revenue"
+            value={340}
+            max={500}
+            target={420}
+            hint="$34,000 of $50,000"
+            gradient="ridge"
+          />
+        </GradientFrame>
       ),
     },
   ],

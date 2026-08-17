@@ -1,10 +1,18 @@
+import type { GradientStops } from "@/registry/admin-theme-tokens/admin-theme-tokens"
 import {
   WidgetChart,
   type WidgetChartSeries,
 } from "@/registry/widget-chart/widget-chart"
 
+import { GradientFrame } from "./gradient-frame"
 import { WidgetChartToolbarView } from "./widget-chart-toolbar-view"
 import type { ShowcaseEntry } from "./types"
+
+const chartGradientStops: GradientStops = {
+  angle: 135,
+  from: "#134e4a",
+  to: "#312e81",
+}
 
 const months = [
   "Jan",
@@ -170,6 +178,21 @@ export const widgetChartEntry: ShowcaseEntry = {
           series={revenueSeries}
           loading
         />
+      ),
+    },
+    {
+      id: "gradient",
+      name: "With a gradient backdrop",
+      render: () => (
+        <GradientFrame id="aurora" stops={chartGradientStops}>
+          <WidgetChart
+            title="Revenue, expenses, and profit"
+            labels={months}
+            series={revenueExpenseProfitSeries}
+            hint="in thousands of dollars"
+            gradient="aurora"
+          />
+        </GradientFrame>
       ),
     },
   ],
