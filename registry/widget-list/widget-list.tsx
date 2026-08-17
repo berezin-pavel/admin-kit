@@ -18,7 +18,17 @@ export interface WidgetListProps {
   empty?: ReactNode
   emptyTitle?: string
   loading?: boolean
+  gradient?: string
   className?: string
+}
+
+function gradientSurfaceStyle(gradient?: string) {
+  return gradient
+    ? {
+        backgroundImage: `var(--gradient-${gradient})`,
+        color: `var(--gradient-${gradient}-foreground)`,
+      }
+    : undefined
 }
 
 const skeletonItemCount = 3
@@ -29,10 +39,11 @@ export function WidgetList({
   empty,
   emptyTitle = "No data",
   loading = false,
+  gradient,
   className,
 }: WidgetListProps) {
   return (
-    <Card className={className}>
+    <Card className={className} style={gradientSurfaceStyle(gradient)}>
       <CardHeader>
         <CardTitle className="text-sm font-medium text-muted-foreground">
           {title}

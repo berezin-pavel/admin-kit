@@ -31,7 +31,17 @@ export interface WidgetChartProps {
   empty?: ReactNode
   emptyTitle?: string
   loading?: boolean
+  gradient?: string
   className?: string
+}
+
+function gradientSurfaceStyle(gradient?: string) {
+  return gradient
+    ? {
+        backgroundImage: `var(--gradient-${gradient})`,
+        color: `var(--gradient-${gradient}-foreground)`,
+      }
+    : undefined
 }
 
 const seriesColorCount = 5
@@ -74,12 +84,13 @@ export function WidgetChart({
   empty,
   emptyTitle = "No data",
   loading = false,
+  gradient,
   className,
 }: WidgetChartProps) {
   const isEmpty = labels.length === 0 || series.length === 0
 
   return (
-    <Card className={className}>
+    <Card className={className} style={gradientSurfaceStyle(gradient)}>
       <CardHeader className="flex flex-wrap items-center justify-between gap-4">
         <CardTitle className="text-sm font-medium text-muted-foreground">
           {title}

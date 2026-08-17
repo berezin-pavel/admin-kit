@@ -29,7 +29,17 @@ export interface WidgetActivityProps {
   dayFormat?: string
   timeFormat?: string
   loading?: boolean
+  gradient?: string
   className?: string
+}
+
+function gradientSurfaceStyle(gradient?: string) {
+  return gradient
+    ? {
+        backgroundImage: `var(--gradient-${gradient})`,
+        color: `var(--gradient-${gradient}-foreground)`,
+      }
+    : undefined
 }
 
 export interface WidgetActivityGroup {
@@ -128,13 +138,14 @@ export function WidgetActivity({
   dayFormat = "MMMM d",
   timeFormat = "HH:mm",
   loading = false,
+  gradient,
   className,
 }: WidgetActivityProps) {
   const groups = groupActivityEntries(entries)
   const now = new Date()
 
   return (
-    <Card className={className}>
+    <Card className={className} style={gradientSurfaceStyle(gradient)}>
       {title ? (
         <CardHeader>
           <CardTitle className="text-sm font-medium text-muted-foreground">

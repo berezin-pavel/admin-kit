@@ -21,7 +21,17 @@ export interface WidgetProgressProps {
   tone?: WidgetProgressTone
   hint?: string
   loading?: boolean
+  gradient?: string
   className?: string
+}
+
+function gradientSurfaceStyle(gradient?: string) {
+  return gradient
+    ? {
+        backgroundImage: `var(--gradient-${gradient})`,
+        color: `var(--gradient-${gradient}-foreground)`,
+      }
+    : undefined
 }
 
 export function WidgetProgress({
@@ -33,6 +43,7 @@ export function WidgetProgress({
   tone = "default",
   hint,
   loading = false,
+  gradient,
   className,
 }: WidgetProgressProps) {
   const clampedValue = Math.min(Math.max(value, 0), max)
@@ -43,7 +54,7 @@ export function WidgetProgress({
       : (Math.min(Math.max(target, 0), max) / max) * 100
 
   return (
-    <Card className={className}>
+    <Card className={className} style={gradientSurfaceStyle(gradient)}>
       <CardHeader>
         <CardTitle className="text-sm font-medium text-muted-foreground">
           {title}

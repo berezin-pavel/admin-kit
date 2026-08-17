@@ -31,7 +31,17 @@ export interface WidgetDonutProps {
   valueFormat?: (value: number, share: number) => string
   emptyTitle?: string
   loading?: boolean
+  gradient?: string
   className?: string
+}
+
+function gradientSurfaceStyle(gradient?: string) {
+  return gradient
+    ? {
+        backgroundImage: `var(--gradient-${gradient})`,
+        color: `var(--gradient-${gradient}-foreground)`,
+      }
+    : undefined
 }
 
 const sliceColorCount = 5
@@ -78,13 +88,14 @@ export function WidgetDonut({
   valueFormat = defaultValueFormat,
   emptyTitle = "No data",
   loading = false,
+  gradient,
   className,
 }: WidgetDonutProps) {
   const { total, shares } = computeDonutShares(slices)
   const isEmpty = slices.length === 0 || total === 0
 
   return (
-    <Card className={className}>
+    <Card className={className} style={gradientSurfaceStyle(gradient)}>
       {title || hint ? (
         <CardHeader>
           {title ? (

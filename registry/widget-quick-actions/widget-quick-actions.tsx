@@ -17,7 +17,17 @@ export interface WidgetQuickActionsProps {
   actions: readonly QuickAction[]
   columns?: 2 | 3
   loading?: boolean
+  gradient?: string
   className?: string
+}
+
+function gradientSurfaceStyle(gradient?: string) {
+  return gradient
+    ? {
+        backgroundImage: `var(--gradient-${gradient})`,
+        color: `var(--gradient-${gradient}-foreground)`,
+      }
+    : undefined
 }
 
 const skeletonActionRowCount = 2
@@ -27,10 +37,11 @@ export function WidgetQuickActions({
   actions,
   columns = 2,
   loading = false,
+  gradient,
   className,
 }: WidgetQuickActionsProps) {
   return (
-    <Card className={className}>
+    <Card className={className} style={gradientSurfaceStyle(gradient)}>
       {title ? (
         <CardHeader>
           <CardTitle className="text-sm font-medium text-muted-foreground">

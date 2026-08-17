@@ -22,7 +22,17 @@ export interface WidgetMetricProps {
   trendValues?: readonly number[]
   trendTooltipFormat?: (value: number) => string
   loading?: boolean
+  gradient?: string
   className?: string
+}
+
+function gradientSurfaceStyle(gradient?: string) {
+  return gradient
+    ? {
+        backgroundImage: `var(--gradient-${gradient})`,
+        color: `var(--gradient-${gradient}-foreground)`,
+      }
+    : undefined
 }
 
 export function WidgetMetric({
@@ -33,6 +43,7 @@ export function WidgetMetric({
   trendValues,
   trendTooltipFormat = String,
   loading = false,
+  gradient,
   className,
 }: WidgetMetricProps) {
   const TrendIcon = trend?.direction === "down" ? TrendingDown : TrendingUp
@@ -40,7 +51,7 @@ export function WidgetMetric({
     trend?.tone ?? (trend?.direction === "down" ? "negative" : "positive")
 
   return (
-    <Card className={className}>
+    <Card className={className} style={gradientSurfaceStyle(gradient)}>
       <CardHeader>
         <CardTitle className="text-sm font-medium text-muted-foreground">
           {title}
