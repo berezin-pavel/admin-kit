@@ -8,7 +8,7 @@
       "name": "admin-theme",
       "type": "registry:theme",
       "title": "Admin theme",
-      "description": "Admin colors and radii, including a pair of success and warning tokens on top of the standard shadcn set, for both light and dark schemes. Installed first: the rest of the admin-kit items rely on these tokens.",
+      "description": "Admin colors and radii on top of the standard shadcn set, for both light and dark schemes: a pair of success and warning tokens, and a sidebar-active pair that paints the current navigation row and the current tab in a tint of the brand with a darker shade of it for the text, because the brand colour over a tint of itself never clears 4.5:1. Installed first: the rest of the admin-kit items rely on these tokens.",
       "files": [],
       "cssVars": {
         "light": {
