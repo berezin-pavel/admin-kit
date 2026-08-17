@@ -10,9 +10,11 @@ import { TextField } from "@/registry/text-field/text-field"
 export function PageAuthView({
   simulateError,
   aside,
+  gradient,
 }: {
   simulateError?: boolean
   aside?: ReactNode
+  gradient?: string
 }) {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -28,6 +30,7 @@ export function PageAuthView({
       submitting={submitting}
       error={error}
       aside={aside}
+      gradient={gradient}
       onSubmit={(event) => {
         event.preventDefault()
         setSubmitting(true)

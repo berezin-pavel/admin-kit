@@ -40,10 +40,12 @@ const logoMark = (
 export function AdminShellFooterView({
   header = true,
   defaultCollapsed = false,
+  sidebarGradient,
   children,
 }: {
   header?: boolean
   defaultCollapsed?: boolean
+  sidebarGradient?: string
   children?: React.ReactNode
 }) {
   const [collapsed, setCollapsed] = useState(defaultCollapsed)
@@ -111,6 +113,7 @@ export function AdminShellFooterView({
       sidebarActions={notifications}
       sidebarProfile={accountRow}
       sidebarFooter={footer}
+      sidebarGradient={sidebarGradient}
     >
       {children}
       <AdminToaster />
@@ -126,6 +129,7 @@ export function AdminShellFooterView({
       sidebarActions={notifications}
       sidebarProfile={accountRow}
       sidebarFooter={footer}
+      sidebarGradient={sidebarGradient}
     >
       {children}
       <AdminToaster />

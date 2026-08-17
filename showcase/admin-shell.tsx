@@ -7,6 +7,7 @@ import {
   type AdminNavItem,
   type AdminNavLinkRenderer,
 } from "@/registry/admin-shell/admin-shell"
+import type { GradientStops } from "@/registry/admin-theme-tokens/admin-theme-tokens"
 import { WidgetMetric } from "@/registry/widget-metric/widget-metric"
 import {
   WidgetTable,
@@ -14,7 +15,14 @@ import {
 } from "@/registry/widget-table/widget-table"
 
 import { AdminShellFooterView } from "./admin-shell-footer-view"
+import { GradientFrame } from "./gradient-frame"
 import type { ShowcaseEntry } from "./types"
+
+const sidebarGradientStops: GradientStops = {
+  angle: 135,
+  from: "#0f172a",
+  to: "#4c1d95",
+}
 
 const nav: readonly AdminNavItem[] = [
   { href: "/", title: "Overview", icon: LayoutDashboard },
@@ -186,6 +194,23 @@ export const adminShellEntry: ShowcaseEntry = {
             account rows again.
           </div>
         </AdminShellFooterView>
+      ),
+    },
+    {
+      id: "sidebar-gradient",
+      name: "Sidebar painted by sidebarGradient",
+      render: () => (
+        <GradientFrame id="midnight" stops={sidebarGradientStops}>
+          <AdminShellFooterView sidebarGradient="midnight">
+            <div className="text-sm text-muted-foreground">
+              sidebarGradient replaces the sidebar card background and
+              carries its own foreground down to the nav rows, the account
+              row, and the footer toggles — the same tokens a themed
+              consumer would supply, applied here through gradient-frame so
+              the preview route has something to resolve them against.
+            </div>
+          </AdminShellFooterView>
+        </GradientFrame>
       ),
     },
   ],
