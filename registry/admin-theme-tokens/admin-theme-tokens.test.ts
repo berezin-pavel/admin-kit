@@ -36,6 +36,41 @@ function circularHueDelta(a: number, b: number) {
   return Math.min(diff, 360 - diff)
 }
 
+function clamp(value: number, min: number, max: number) {
+  return Math.min(max, Math.max(min, value))
+}
+
+function isNeutralHex(hex: string) {
+  const value = Number.parseInt(hex.slice(1), 16)
+  const red = (value >> 16) & 255
+  const green = (value >> 8) & 255
+  const blue = value & 255
+  return red === green && green === blue
+}
+
+function darkenedLightness(lightness: number) {
+  return Math.min(lightness, clamp(lightness * 0.55, 0.12, 0.6))
+}
+
+function bestAchievableHueDrift(hex: string) {
+  const source = hexToOklch(hex)
+  const targetLightness = darkenedLightness(source.l)
+  const FINE_CHROMA_STEP = 0.0002
+
+  let best = Infinity
+  for (let chroma = source.c; chroma >= 0; chroma -= FINE_CHROMA_STEP) {
+    const candidateHex = oklchToHex({ l: targetLightness, c: chroma, h: source.h })
+    if (isNeutralHex(candidateHex)) {
+      break
+    }
+    const drift = circularHueDelta(hexToOklch(candidateHex).h, source.h)
+    if (drift < best) {
+      best = drift
+    }
+  }
+  return best
+}
+
 describe("deriveAdminTheme", () => {
   const { light, dark } = deriveAdminTheme(defaultAdminThemeSources)
 
@@ -281,6 +316,35 @@ describe("suggestDarkStops", () => {
         `hue at input h=${hue}`
       ).toBeLessThan(2)
       expect(after.c, `chroma at input h=${hue}`).toBeGreaterThan(0)
+    }
+  })
+
+  it("never leaves a chromatic stop as a neutral grey, even where the gamut can't hold its hue", () => {
+    const REPORTED_STOPS = [
+      "#140800",
+      "#1d0300",
+      "#011000",
+      "#00110a",
+      "#001b15",
+      "#002928",
+    ]
+
+    for (const hex of REPORTED_STOPS) {
+      const result = suggestDarkStops({ angle: 0, from: hex, to: hex })
+
+      expect(isNeutralHex(result.from), `${hex} -> ${result.from}`).toBe(
+        false
+      )
+
+      const before = hexToOklch(hex)
+      const after = hexToOklch(result.from)
+      const actualDrift = circularHueDelta(after.h, before.h)
+      const bestDrift = bestAchievableHueDrift(hex)
+
+      expect(
+        actualDrift,
+        `${hex} drift ${actualDrift.toFixed(4)} vs best achievable ${bestDrift.toFixed(4)}`
+      ).toBeLessThanOrEqual(bestDrift + 0.01)
     }
   })
 })

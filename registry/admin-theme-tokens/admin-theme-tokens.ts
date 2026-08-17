@@ -356,17 +356,19 @@ export function deriveAdminTheme(sources: AdminThemeSources): {
 }
 
 const HUE_DRIFT_TOLERANCE = 1.5
-const CHROMA_SEARCH_STEP = 0.002
-const MIN_VERIFIED_CHROMA = 0.001
+const CHROMA_SEARCH_STEP = 0.0005
 
 function circularHueDistance(a: number, b: number) {
   const diff = Math.abs(a - b) % 360
   return Math.min(diff, 360 - diff)
 }
 
-function hueDriftAtChroma(color: Oklch, chroma: number) {
-  const roundTripped = hexToOklch(oklchToHex({ ...color, c: chroma }))
-  return circularHueDistance(roundTripped.h, color.h)
+function isNeutralHex(hex: string) {
+  const value = Number.parseInt(hex.slice(1), 16)
+  const red = (value >> 16) & 255
+  const green = (value >> 8) & 255
+  const blue = value & 255
+  return red === green && green === blue
 }
 
 function fitChromaToGamut(color: Oklch): Oklch {
@@ -374,29 +376,34 @@ function fitChromaToGamut(color: Oklch): Oklch {
     return color
   }
 
-  if (hueDriftAtChroma(color, color.c) <= HUE_DRIFT_TOLERANCE) {
-    return color
-  }
+  let bestCandidate: Oklch | undefined
+  let bestDrift = Infinity
 
-  const steps = Math.ceil((color.c - MIN_VERIFIED_CHROMA) / CHROMA_SEARCH_STEP)
-  let smallestVerified = color.c
+  const steps = Math.ceil(color.c / CHROMA_SEARCH_STEP)
 
-  for (let step = 1; step <= steps; step++) {
-    const candidate = Math.max(
-      color.c - step * CHROMA_SEARCH_STEP,
-      MIN_VERIFIED_CHROMA
-    )
-    smallestVerified = candidate
+  for (let step = 0; step <= steps; step++) {
+    const chroma = Math.max(color.c - step * CHROMA_SEARCH_STEP, 0)
+    const candidate: Oklch = { ...color, c: chroma }
+    const hex = oklchToHex(candidate)
 
-    if (hueDriftAtChroma(color, candidate) <= HUE_DRIFT_TOLERANCE) {
-      return { ...color, c: candidate }
+    if (isNeutralHex(hex)) {
+      break
     }
-    if (candidate <= MIN_VERIFIED_CHROMA) {
+
+    const drift = circularHueDistance(hexToOklch(hex).h, color.h)
+    if (drift < bestDrift) {
+      bestDrift = drift
+      bestCandidate = candidate
+    }
+    if (drift <= HUE_DRIFT_TOLERANCE) {
+      return candidate
+    }
+    if (chroma <= 0) {
       break
     }
   }
 
-  return { ...color, c: smallestVerified }
+  return bestCandidate ?? color
 }
 
 export function suggestDarkStops(light: GradientStops): GradientStops {
