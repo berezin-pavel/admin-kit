@@ -20,6 +20,8 @@ import type {
 import { ColorField } from "@/registry/color-field/color-field"
 import { NumberField } from "@/registry/number-field/number-field"
 
+import { ThemeEditorGradients } from "./theme-editor-gradients"
+
 export interface ThemeEditorLabels {
   brand?: string
   surface?: string
@@ -160,6 +162,11 @@ export function ThemeEditor(props: ThemeEditorProps): React.ReactElement {
           </div>
         </CardContent>
       </Card>
+      <ThemeEditorGradients
+        gradients={value.gradients}
+        onChange={(gradients) => onChange({ ...value, gradients })}
+        labels={resolvedLabels}
+      />
       {showCss ? (
         <Card>
           <CardHeader>

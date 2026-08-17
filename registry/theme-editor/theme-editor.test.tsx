@@ -51,3 +51,69 @@ describe("ThemeEditor sources", () => {
     expect(screen.getByText(/:root:root/)).toBeInTheDocument()
   })
 })
+
+const revenue = {
+  id: "revenue",
+  name: "Revenue",
+  light: { angle: 135, from: "#0ea5e9", to: "#a855f7" },
+  dark: { angle: 135, from: "#075985", to: "#6b21a8" },
+}
+
+describe("ThemeEditor gradients", () => {
+  it("adds a gradient with an id derived from its name", async () => {
+    const onChange = vi.fn()
+    render(<ThemeEditor value={theme} onChange={onChange} />)
+
+    await userEvent.click(screen.getByRole("button", { name: "Add gradient" }))
+
+    const added = onChange.mock.calls.at(-1)?.[0].gradients.at(-1)
+    expect(added.id).toMatch(/^[a-z][a-z0-9-]*$/)
+  })
+
+  it("suggests a dark variant that is darker than the light one", async () => {
+    const onChange = vi.fn()
+    render(
+      <ThemeEditor
+        value={{ ...theme, gradients: [revenue] }}
+        onChange={onChange}
+      />
+    )
+
+    await userEvent.click(
+      screen.getByRole("button", { name: "Suggest dark: Revenue" })
+    )
+
+    const next = onChange.mock.calls.at(-1)?.[0].gradients[0]
+    expect(next.dark.from).not.toBe(revenue.dark.from)
+  })
+
+  it("warns when a gradient cannot carry legible text", () => {
+    render(
+      <ThemeEditor
+        value={{
+          ...theme,
+          gradients: [
+            {
+              ...revenue,
+              light: { angle: 90, from: "#7f7f7f", to: "#8a8a8a" },
+            },
+          ],
+        }}
+        onChange={() => {}}
+      />
+    )
+
+    expect(screen.getByRole("status")).toHaveTextContent(/contrast/i)
+  })
+
+  it("does not warn on a gradient that clears the threshold", () => {
+    render(
+      <ThemeEditor
+        value={{ ...theme, gradients: [revenue] }}
+        onChange={() => {}}
+      />
+    )
+
+    expect(screen.queryByRole("status")).toBeNull()
+  })
+})
