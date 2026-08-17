@@ -64,6 +64,17 @@ active row yourself, that override no longer reaches it — move it to `sidebar-
 
 **Changed** — `locale-ru` gained a `themeEditor` slice matching `ThemeEditorLabels` exactly.
 
+**Changed** — `page-tabs` now requires `admin-theme`, because its active tab uses the new
+`sidebar-active` pair. The CLI pulls the theme in for you; an existing install that only ever had
+`tabs` should re-pull the item so the dependency is recorded.
+
+**Note on file locations** — the two new items land in `components/` rather than
+`components/admin/`, unlike the fifty-three items that came before. That is deliberate: with a
+subdirectory in the target, the CLI writes a file to one path and rewrites its imports to another,
+so any item importing a sibling item resolves to a path that does not exist. The remaining items
+move to the same flat layout in a separate patch release. Until then a project holding both will
+have admin-kit files in two places; the imports are correct either way.
+
 **Project** — a showcase section for the editor with its CSS output on, a `/demo/appearance` page
 that repaints the demo for real and persists across reloads, 42 end-to-end checks, and 371 unit
 tests. Two CSS-injection holes were found and closed during the round: a gradient's `viaPosition`
