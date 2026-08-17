@@ -120,6 +120,57 @@ describe("deriveAdminTheme", () => {
     }
   })
 
+  it(
+    "resolves a pathological brand hue without hanging",
+    () => {
+      const derived = deriveAdminTheme({
+        ...defaultAdminThemeSources,
+        brand: "#ff3ab6",
+      })
+
+      for (const scheme of [derived.light, derived.dark]) {
+        const ratio = contrastRatio(
+          oklchStringToHex(scheme.primary),
+          oklchStringToHex(scheme["primary-foreground"])
+        )
+        expect(ratio).toBeGreaterThanOrEqual(4.5)
+      }
+    },
+    2000
+  )
+
+  it("keeps every filled surface legible across a grid of sources", () => {
+    for (let hue = 0; hue < 360; hue += 30) {
+      for (const lightness of [0.2, 0.5, 0.8, 0.95]) {
+        for (const chroma of [0.02, 0.12, 0.3]) {
+          const brand = oklchToHex({ l: lightness, c: chroma, h: hue })
+          const derived = deriveAdminTheme({
+            ...defaultAdminThemeSources,
+            brand,
+          })
+
+          for (const scheme of [derived.light, derived.dark]) {
+            for (const token of [
+              "primary",
+              "success",
+              "warning",
+              "destructive",
+            ]) {
+              const ratio = contrastRatio(
+                oklchStringToHex(scheme[token]),
+                oklchStringToHex(scheme[`${token}-foreground`])
+              )
+              expect(
+                ratio,
+                `${token} at l=${lightness} c=${chroma} h=${hue}`
+              ).toBeGreaterThanOrEqual(4.5)
+            }
+          }
+        }
+      }
+    }
+  })
+
   it("tints the neutrals with the surface hue and keeps them near-neutral", () => {
     expect(hueOf(light, "muted").c).toBeLessThanOrEqual(0.01)
     expect(hueOf(light, "border").c).toBeLessThanOrEqual(0.01)

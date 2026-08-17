@@ -122,31 +122,42 @@ function clampToLegibleLightness(
   min: number,
   max: number
 ): Oklch {
-  let candidate: Oklch = { ...color, l: clamp(color.l, min, max) }
+  const start = clamp(color.l, min, max)
+  const startCandidate: Oklch = { ...color, l: start }
 
-  while (legibilityRatio(candidate) < LEGIBLE_CONTRAST) {
-    const darker = candidate.l - LIGHTNESS_SEARCH_STEP
-    const lighter = candidate.l + LIGHTNESS_SEARCH_STEP
-    const canDarken = darker >= min
-    const canLighten = lighter <= max
-    if (!canDarken && !canLighten) {
+  let bestCandidate = startCandidate
+  let bestRatio = legibilityRatio(startCandidate)
+
+  const maxOffset = Math.ceil((max - min) / LIGHTNESS_SEARCH_STEP)
+
+  for (
+    let step = 1;
+    bestRatio < LEGIBLE_CONTRAST && step <= maxOffset;
+    step++
+  ) {
+    const lighterL = start + step * LIGHTNESS_SEARCH_STEP
+    const darkerL = start - step * LIGHTNESS_SEARCH_STEP
+    const candidates: Oklch[] = []
+    if (lighterL <= max) {
+      candidates.push({ ...color, l: lighterL })
+    }
+    if (darkerL >= min) {
+      candidates.push({ ...color, l: darkerL })
+    }
+    if (candidates.length === 0) {
       break
     }
 
-    const darkerRatio = canDarken
-      ? legibilityRatio({ ...candidate, l: darker })
-      : -1
-    const lighterRatio = canLighten
-      ? legibilityRatio({ ...candidate, l: lighter })
-      : -1
-
-    candidate = {
-      ...candidate,
-      l: darkerRatio >= lighterRatio ? darker : lighter,
+    for (const candidate of candidates) {
+      const ratio = legibilityRatio(candidate)
+      if (ratio > bestRatio) {
+        bestRatio = ratio
+        bestCandidate = candidate
+      }
     }
   }
 
-  return candidate
+  return bestCandidate
 }
 
 export function deriveAdminTheme(sources: AdminThemeSources): {
