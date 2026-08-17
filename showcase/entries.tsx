@@ -30,6 +30,7 @@ import {
   stateForbiddenEntry,
   stateOfflineEntry,
 } from "./states-problem"
+import { themeEditorEntry } from "./theme-editor"
 import { themeToggleEntry } from "./theme-toggle"
 import type { ShowcaseEntry } from "./types"
 import { widgetActivityEntry } from "./widget-activity"
@@ -52,6 +53,7 @@ import { widgetTableEntry } from "./widget-table"
 export const showcaseEntries: readonly ShowcaseEntry[] = [
   adminShellEntry,
   themeToggleEntry,
+  themeEditorEntry,
   sidebarToggleEntry,
   userMenuEntry,
   languageToggleEntry,
