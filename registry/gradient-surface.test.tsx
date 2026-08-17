@@ -184,3 +184,50 @@ describe("page-auth takes a gradient", () => {
     })
   })
 })
+
+describe("widget-metric trend on a gradient surface", () => {
+  const renderTrend = (gradient?: string) =>
+    render(
+      <WidgetMetric
+        title="Revenue"
+        value="12"
+        trend={{ direction: "down", value: "-3%", tone: "negative" }}
+        gradient={gradient}
+      />
+    )
+
+  it("drops the tone colour class once a gradient replaces the card background", () => {
+    const { getByText } = renderTrend("revenue")
+
+    expect(getByText("-3%").className).not.toMatch(/text-destructive|text-primary/)
+  })
+
+  it("keeps the tone colour class without a gradient", () => {
+    const { getByText } = renderTrend(undefined)
+
+    expect(getByText("-3%").className).toMatch(/text-destructive/)
+  })
+})
+
+describe.each([
+  { name: "state-error", Component: StateError },
+  { name: "state-offline", Component: StateOffline },
+])("$name icon on a gradient surface", ({ Component }) => {
+  it("drops the fixed destructive colour once a gradient replaces the frame background", () => {
+    const { container } = render(
+      <Component title="Nothing here" gradient="calm" />
+    )
+    const icon = container.querySelector("svg")
+
+    expect(icon).toBeTruthy()
+    expect(icon?.getAttribute("class")).not.toMatch(/text-destructive/)
+  })
+
+  it("keeps the fixed destructive colour without a gradient", () => {
+    const { container } = render(<Component title="Nothing here" />)
+    const icon = container.querySelector("svg")
+
+    expect(icon).toBeTruthy()
+    expect(icon?.getAttribute("class")).toMatch(/text-destructive/)
+  })
+})

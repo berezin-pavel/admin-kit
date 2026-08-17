@@ -40,7 +40,7 @@ export function StateOffline({
       )}
       style={gradientSurfaceStyle(gradient)}
     >
-      <WifiOff className="size-8 text-destructive" />
+      <WifiOff className={cn("size-8", !gradient && "text-destructive")} />
       <span className="font-medium">{title}</span>
       {description ? (
         <p className="max-w-sm text-sm text-muted-foreground">{description}</p>

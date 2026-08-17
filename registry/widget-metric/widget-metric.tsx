@@ -82,7 +82,8 @@ export function WidgetMetric({
                 <span
                   className={cn(
                     "flex items-center gap-1 text-sm whitespace-nowrap",
-                    tone === "negative" ? "text-destructive" : "text-primary"
+                    !gradient &&
+                      (tone === "negative" ? "text-destructive" : "text-primary")
                   )}
                 >
                   <TrendIcon className="size-4" />

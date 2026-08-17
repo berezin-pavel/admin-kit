@@ -40,7 +40,7 @@ export function StateError({
       )}
       style={gradientSurfaceStyle(gradient)}
     >
-      <CircleAlert className="size-8 text-destructive" />
+      <CircleAlert className={cn("size-8", !gradient && "text-destructive")} />
       <span className="font-medium">{title}</span>
       {description ? (
         <p className="max-w-sm text-sm text-muted-foreground">{description}</p>
