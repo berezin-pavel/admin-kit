@@ -5,9 +5,18 @@ import { useSyncExternalStore } from "react"
 import {
   defaultAdminThemeSources,
   type AdminTheme,
+  type AdminThemeSources,
 } from "@/registry/admin-theme-tokens/admin-theme-tokens"
 
 const STORAGE_KEY = "admin-kit-demo-theme"
+const ADMIN_THEME_SOURCE_KEYS = [
+  "brand",
+  "surface",
+  "success",
+  "warning",
+  "danger",
+  "radius",
+] as const
 
 export const DEFAULT_DEMO_THEME: AdminTheme = {
   sources: defaultAdminThemeSources,
@@ -39,6 +48,25 @@ export const DEFAULT_DEMO_THEME: AdminTheme = {
   ],
 }
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null
+}
+
+function isAdminThemeSources(value: unknown): value is AdminThemeSources {
+  return (
+    isRecord(value) &&
+    ADMIN_THEME_SOURCE_KEYS.every((key) => key in value)
+  )
+}
+
+export function isAdminTheme(value: unknown): value is AdminTheme {
+  return (
+    isRecord(value) &&
+    isAdminThemeSources(value.sources) &&
+    Array.isArray(value.gradients)
+  )
+}
+
 type Listener = () => void
 
 const listeners = new Set<Listener>()
@@ -47,7 +75,11 @@ let cachedTheme: AdminTheme | undefined
 function readStoredTheme(): AdminTheme {
   try {
     const stored = window.localStorage.getItem(STORAGE_KEY)
-    return stored ? (JSON.parse(stored) as AdminTheme) : DEFAULT_DEMO_THEME
+    if (!stored) {
+      return DEFAULT_DEMO_THEME
+    }
+    const parsed: unknown = JSON.parse(stored)
+    return isAdminTheme(parsed) ? parsed : DEFAULT_DEMO_THEME
   } catch {
     return DEFAULT_DEMO_THEME
   }
