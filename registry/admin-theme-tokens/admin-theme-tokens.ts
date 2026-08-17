@@ -77,31 +77,29 @@ function neutral(surface: Oklch, lightness: number) {
   })
 }
 
-function readableForeground(background: Oklch, hue: number) {
-  const nearWhite: Oklch = {
-    l: NEAR_WHITE_LIGHTNESS,
-    c: NEAR_WHITE_CHROMA,
-    h: hue,
-  }
-  const nearBlack: Oklch = { l: NEAR_BLACK_LIGHTNESS, c: 0, h: hue }
-  const backgroundHex = oklchToHex(background)
-
-  return contrastRatio(backgroundHex, oklchToHex(nearWhite)) >=
-    contrastRatio(backgroundHex, oklchToHex(nearBlack))
-    ? nearWhite
-    : nearBlack
+function nearWhite(hue: number): Oklch {
+  return { l: NEAR_WHITE_LIGHTNESS, c: NEAR_WHITE_CHROMA, h: hue }
 }
 
-function filledPair(hex: string, transform: (color: Oklch) => Oklch) {
-  const surface = transform(hexToOklch(hex))
-  return {
-    surface: formatOklch(surface),
-    foreground: formatOklch(readableForeground(surface, surface.h)),
-  }
+function nearBlack(hue: number): Oklch {
+  return { l: NEAR_BLACK_LIGHTNESS, c: 0, h: hue }
+}
+
+function readableForeground(background: Oklch, hue: number) {
+  const backgroundHex = oklchToHex(background)
+
+  return contrastRatio(backgroundHex, oklchToHex(nearWhite(hue))) >=
+    contrastRatio(backgroundHex, oklchToHex(nearBlack(hue)))
+    ? nearWhite(hue)
+    : nearBlack(hue)
 }
 
 const LEGIBLE_CONTRAST = 4.5
 const LIGHTNESS_SEARCH_STEP = 0.005
+const FILLED_SURFACE_LIGHTNESS_MIN = 0.15
+const FILLED_SURFACE_LIGHTNESS_MAX = 0.85
+const SIDEBAR_PRIMARY_LIGHTNESS_MIN = 0.35
+const SIDEBAR_PRIMARY_LIGHTNESS_MAX = 0.85
 
 function roundedOklch(color: Oklch): Oklch {
   return {
@@ -117,16 +115,23 @@ function legibilityRatio(color: Oklch) {
   return contrastRatio(oklchToHex(rounded), oklchToHex(foreground))
 }
 
-function clampToLegibleLightness(
+function contrastAgainstNearWhite(color: Oklch) {
+  const rounded = roundedOklch(color)
+  const foreground = roundedOklch(nearWhite(rounded.h))
+  return contrastRatio(oklchToHex(rounded), oklchToHex(foreground))
+}
+
+function searchLegibleLightness(
   color: Oklch,
   min: number,
-  max: number
+  max: number,
+  ratioOf: (color: Oklch) => number
 ): Oklch {
   const start = clamp(color.l, min, max)
   const startCandidate: Oklch = { ...color, l: start }
 
   let bestCandidate = startCandidate
-  let bestRatio = legibilityRatio(startCandidate)
+  let bestRatio = ratioOf(startCandidate)
 
   const maxOffset = Math.ceil((max - min) / LIGHTNESS_SEARCH_STEP)
 
@@ -149,7 +154,7 @@ function clampToLegibleLightness(
     }
 
     for (const candidate of candidates) {
-      const ratio = legibilityRatio(candidate)
+      const ratio = ratioOf(candidate)
       if (ratio > bestRatio) {
         bestRatio = ratio
         bestCandidate = candidate
@@ -160,6 +165,24 @@ function clampToLegibleLightness(
   return bestCandidate
 }
 
+function filledPair(
+  hex: string,
+  transform: (color: Oklch) => Oklch,
+  min: number,
+  max: number
+) {
+  const surface = searchLegibleLightness(
+    transform(hexToOklch(hex)),
+    min,
+    max,
+    legibilityRatio
+  )
+  return {
+    surface: formatOklch(surface),
+    foreground: formatOklch(readableForeground(surface, surface.h)),
+  }
+}
+
 export function deriveAdminTheme(sources: AdminThemeSources): {
   light: AdminThemeScheme
   dark: AdminThemeScheme
@@ -167,32 +190,84 @@ export function deriveAdminTheme(sources: AdminThemeSources): {
   const brand = hexToOklch(sources.brand)
   const surface = hexToOklch(sources.surface)
 
-  const lightPrimary: Oklch = clampToLegibleLightness(brand, 0.35, 0.72)
+  const lightPrimary: Oklch = searchLegibleLightness(
+    brand,
+    0.35,
+    0.72,
+    legibilityRatio
+  )
   const darkPrimaryBase: Oklch = {
     h: brand.h,
     c: lightPrimary.c * 0.8,
     l: clamp(lightPrimary.l - 0.076, 0.28, 0.62),
   }
-  const darkPrimary: Oklch = clampToLegibleLightness(
+  const darkPrimary: Oklch = searchLegibleLightness(
     darkPrimaryBase,
     0.28,
-    0.62
+    0.62,
+    legibilityRatio
   )
-  const lightSidebarPrimary: Oklch = {
+
+  const lightSidebarPrimaryBase: Oklch = {
     h: brand.h,
     c: lightPrimary.c + 0.027,
-    l: clamp(lightPrimary.l + 0.088, 0.35, 0.85),
+    l: clamp(
+      lightPrimary.l + 0.088,
+      SIDEBAR_PRIMARY_LIGHTNESS_MIN,
+      SIDEBAR_PRIMARY_LIGHTNESS_MAX
+    ),
   }
-  const darkSidebarPrimary: Oklch = { h: brand.h, c: 0.17, l: 0.696 }
+  const lightSidebarPrimary: Oklch = searchLegibleLightness(
+    lightSidebarPrimaryBase,
+    SIDEBAR_PRIMARY_LIGHTNESS_MIN,
+    SIDEBAR_PRIMARY_LIGHTNESS_MAX,
+    contrastAgainstNearWhite
+  )
+
+  const darkSidebarPrimaryBase: Oklch = {
+    h: brand.h,
+    c: darkPrimary.c + 0.027,
+    l: clamp(
+      darkPrimary.l + 0.088,
+      SIDEBAR_PRIMARY_LIGHTNESS_MIN,
+      SIDEBAR_PRIMARY_LIGHTNESS_MAX
+    ),
+  }
+  const darkSidebarPrimary: Oklch = searchLegibleLightness(
+    darkSidebarPrimaryBase,
+    SIDEBAR_PRIMARY_LIGHTNESS_MIN,
+    SIDEBAR_PRIMARY_LIGHTNESS_MAX,
+    contrastAgainstNearWhite
+  )
 
   const identity = (color: Oklch) => color
-  const success = filledPair(sources.success, identity)
-  const warning = filledPair(sources.warning, identity)
-  const dangerLight = filledPair(sources.danger, identity)
-  const dangerDark = filledPair(sources.danger, (color) => ({
-    ...color,
-    l: clamp(color.l + 0.1, 0, 0.9),
-  }))
+  const success = filledPair(
+    sources.success,
+    identity,
+    FILLED_SURFACE_LIGHTNESS_MIN,
+    FILLED_SURFACE_LIGHTNESS_MAX
+  )
+  const warning = filledPair(
+    sources.warning,
+    identity,
+    FILLED_SURFACE_LIGHTNESS_MIN,
+    FILLED_SURFACE_LIGHTNESS_MAX
+  )
+  const dangerLight = filledPair(
+    sources.danger,
+    identity,
+    FILLED_SURFACE_LIGHTNESS_MIN,
+    FILLED_SURFACE_LIGHTNESS_MAX
+  )
+  const dangerDark = filledPair(
+    sources.danger,
+    (color) => ({
+      ...color,
+      l: clamp(color.l + 0.1, 0, 0.9),
+    }),
+    FILLED_SURFACE_LIGHTNESS_MIN,
+    FILLED_SURFACE_LIGHTNESS_MAX
+  )
 
   const chart = (index: number, ramp: typeof CHART_LIGHT) =>
     formatOklch({
@@ -230,9 +305,7 @@ export function deriveAdminTheme(sources: AdminThemeSources): {
     sidebar: neutral(surface, 0.985),
     "sidebar-foreground": neutral(surface, 0.145),
     "sidebar-primary": formatOklch(lightSidebarPrimary),
-    "sidebar-primary-foreground": formatOklch(
-      readableForeground(lightSidebarPrimary, brand.h)
-    ),
+    "sidebar-primary-foreground": formatOklch(nearWhite(brand.h)),
     "sidebar-accent": neutral(surface, 0.97),
     "sidebar-accent-foreground": neutral(surface, 0.205),
     "sidebar-border": neutral(surface, 0.922),
@@ -267,9 +340,7 @@ export function deriveAdminTheme(sources: AdminThemeSources): {
     sidebar: neutral(surface, 0.205),
     "sidebar-foreground": neutral(surface, 0.985),
     "sidebar-primary": formatOklch(darkSidebarPrimary),
-    "sidebar-primary-foreground": formatOklch(
-      readableForeground(darkSidebarPrimary, brand.h)
-    ),
+    "sidebar-primary-foreground": formatOklch(nearWhite(brand.h)),
     "sidebar-accent": neutral(surface, 0.269),
     "sidebar-accent-foreground": neutral(surface, 0.985),
     "sidebar-border": "oklch(1 0 0 / 10%)",
@@ -284,46 +355,55 @@ export function deriveAdminTheme(sources: AdminThemeSources): {
   return { light, dark }
 }
 
-const CHROMA_DRIFT_TOLERANCE = 0.002
-const CHROMA_SEARCH_ITERATIONS = 30
+const HUE_DRIFT_TOLERANCE = 1.5
+const CHROMA_SEARCH_STEP = 0.002
+const MIN_VERIFIED_CHROMA = 0.001
+
+function circularHueDistance(a: number, b: number) {
+  const diff = Math.abs(a - b) % 360
+  return Math.min(diff, 360 - diff)
+}
+
+function hueDriftAtChroma(color: Oklch, chroma: number) {
+  const roundTripped = hexToOklch(oklchToHex({ ...color, c: chroma }))
+  return circularHueDistance(roundTripped.h, color.h)
+}
 
 function fitChromaToGamut(color: Oklch): Oklch {
   if (color.c <= 0) {
     return color
   }
 
-  const chromaDrift = (chroma: number) => {
-    const roundTripped = hexToOklch(oklchToHex({ ...color, c: chroma }))
-    return Math.abs(roundTripped.c - chroma)
-  }
-
-  if (chromaDrift(color.c) <= CHROMA_DRIFT_TOLERANCE) {
+  if (hueDriftAtChroma(color, color.c) <= HUE_DRIFT_TOLERANCE) {
     return color
   }
 
-  let low = 0
-  let high = color.c
-  for (let i = 0; i < CHROMA_SEARCH_ITERATIONS; i++) {
-    const mid = (low + high) / 2
-    if (chromaDrift(mid) <= CHROMA_DRIFT_TOLERANCE) {
-      low = mid
-    } else {
-      high = mid
+  const steps = Math.ceil((color.c - MIN_VERIFIED_CHROMA) / CHROMA_SEARCH_STEP)
+  let smallestVerified = color.c
+
+  for (let step = 1; step <= steps; step++) {
+    const candidate = Math.max(
+      color.c - step * CHROMA_SEARCH_STEP,
+      MIN_VERIFIED_CHROMA
+    )
+    smallestVerified = candidate
+
+    if (hueDriftAtChroma(color, candidate) <= HUE_DRIFT_TOLERANCE) {
+      return { ...color, c: candidate }
+    }
+    if (candidate <= MIN_VERIFIED_CHROMA) {
+      break
     }
   }
 
-  return { ...color, c: low }
+  return { ...color, c: smallestVerified }
 }
 
 export function suggestDarkStops(light: GradientStops): GradientStops {
   const darken = (hex: string) => {
     const color = hexToOklch(hex)
-    return oklchToHex(
-      fitChromaToGamut({
-        ...color,
-        l: clamp(color.l * 0.55, 0.12, 0.6),
-      })
-    )
+    const targetLightness = Math.min(color.l, clamp(color.l * 0.55, 0.12, 0.6))
+    return oklchToHex(fitChromaToGamut({ ...color, l: targetLightness }))
   }
 
   return {

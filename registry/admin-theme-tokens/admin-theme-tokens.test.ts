@@ -31,6 +31,11 @@ function hueOf(scheme: AdminThemeScheme, token: string) {
   return { l: Number(match[1]), c: Number(match[2]), h: Number(match[3]) }
 }
 
+function circularHueDelta(a: number, b: number) {
+  const diff = Math.abs(a - b) % 360
+  return Math.min(diff, 360 - diff)
+}
+
 describe("deriveAdminTheme", () => {
   const { light, dark } = deriveAdminTheme(defaultAdminThemeSources)
 
@@ -143,10 +148,13 @@ describe("deriveAdminTheme", () => {
     for (let hue = 0; hue < 360; hue += 30) {
       for (const lightness of [0.2, 0.5, 0.8, 0.95]) {
         for (const chroma of [0.02, 0.12, 0.3]) {
-          const brand = oklchToHex({ l: lightness, c: chroma, h: hue })
+          const sourceHex = oklchToHex({ l: lightness, c: chroma, h: hue })
           const derived = deriveAdminTheme({
             ...defaultAdminThemeSources,
-            brand,
+            brand: sourceHex,
+            success: sourceHex,
+            warning: sourceHex,
+            danger: sourceHex,
           })
 
           for (const scheme of [derived.light, derived.dark]) {
@@ -168,6 +176,45 @@ describe("deriveAdminTheme", () => {
           }
         }
       }
+    }
+  })
+
+  it("keeps the reported worst-case success/warning/destructive source legible", () => {
+    const derived = deriveAdminTheme({
+      ...defaultAdminThemeSources,
+      success: "#d7397b",
+      warning: "#d7397b",
+      danger: "#d7397b",
+    })
+
+    for (const scheme of [derived.light, derived.dark]) {
+      for (const token of ["success", "warning", "destructive"]) {
+        const ratio = contrastRatio(
+          oklchStringToHex(scheme[token]),
+          oklchStringToHex(scheme[`${token}-foreground`])
+        )
+        expect(ratio, `${token} in ${scheme === derived.light ? "light" : "dark"}`).toBeGreaterThanOrEqual(4.5)
+      }
+    }
+  })
+
+  it("keeps sidebar-primary's foreground near-white and legible in both schemes", () => {
+    for (const [scheme, label] of [
+      [light, "light"],
+      [dark, "dark"],
+    ] as const) {
+      expect(
+        hueOf(scheme, "sidebar-primary-foreground").l,
+        `${label} sidebar-primary-foreground lightness`
+      ).toBe(0.979)
+
+      const ratio = contrastRatio(
+        oklchStringToHex(scheme["sidebar-primary"]),
+        oklchStringToHex(scheme["sidebar-primary-foreground"])
+      )
+      expect(ratio, `${label} sidebar-primary ratio`).toBeGreaterThanOrEqual(
+        4.5
+      )
     }
   })
 
@@ -199,8 +246,13 @@ describe("suggestDarkStops", () => {
 
   it("darkens every stop while keeping its hue", () => {
     for (const key of ["from", "via", "to"] as const) {
-      const before = hexToOklch(light[key] as string)
-      const after = hexToOklch(dark[key] as string)
+      const afterValue = dark[key]
+      if (afterValue === undefined) {
+        throw new Error(`${key} is missing from the darkened stops`)
+      }
+
+      const before = hexToOklch(light[key])
+      const after = hexToOklch(afterValue)
       expect(after.l).toBeLessThan(before.l)
       expect(Math.abs(after.h - before.h)).toBeLessThan(2)
     }
@@ -209,5 +261,26 @@ describe("suggestDarkStops", () => {
   it("drops the middle stop when the light variant has none", () => {
     expect(suggestDarkStops({ angle: 90, from: "#ffffff", to: "#000000" }).via)
       .toBeUndefined()
+  })
+
+  it("never lightens a stop that is already darker than the clamp floor", () => {
+    expect(
+      suggestDarkStops({ angle: 90, from: "#ffffff", to: "#000000" }).to
+    ).toBe("#000000")
+  })
+
+  it("preserves hue and avoids collapsing to grey for low-lightness saturated stops", () => {
+    for (let hue = 0; hue < 360; hue += 60) {
+      const stopHex = oklchToHex({ l: 0.12, c: 0.3, h: hue })
+      const before = hexToOklch(stopHex)
+      const darkened = suggestDarkStops({ angle: 0, from: stopHex, to: stopHex })
+      const after = hexToOklch(darkened.from)
+
+      expect(
+        circularHueDelta(after.h, before.h),
+        `hue at input h=${hue}`
+      ).toBeLessThan(2)
+      expect(after.c, `chroma at input h=${hue}`).toBeGreaterThan(0)
+    }
   })
 })
