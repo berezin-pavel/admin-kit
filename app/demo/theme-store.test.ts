@@ -41,6 +41,56 @@ describe("isAdminTheme", () => {
     ).toBe(false)
   })
 
+  it("rejects a source with the wrong type (brand not a string)", () => {
+    const badSources = { ...DEFAULT_DEMO_THEME.sources, brand: 123 }
+    expect(isAdminTheme({ sources: badSources, gradients: [] })).toBe(false)
+  })
+
+  it("rejects a gradient entry that is null", () => {
+    expect(
+      isAdminTheme({ sources: DEFAULT_DEMO_THEME.sources, gradients: [null] })
+    ).toBe(false)
+  })
+
+  it("rejects a source that looks like a color but isn't hex", () => {
+    const badSources = { ...DEFAULT_DEMO_THEME.sources, brand: "blue" }
+    expect(isAdminTheme({ sources: badSources, gradients: [] })).toBe(false)
+  })
+
+  it("rejects a radius that is a string", () => {
+    const badSources = { ...DEFAULT_DEMO_THEME.sources, radius: "0.45" }
+    expect(isAdminTheme({ sources: badSources, gradients: [] })).toBe(false)
+  })
+
+  it("rejects a gradient missing its dark stops", () => {
+    const gradient = DEFAULT_DEMO_THEME.gradients[0]
+    const gradientWithoutDark = {
+      id: gradient.id,
+      name: gradient.name,
+      light: gradient.light,
+    }
+    expect(
+      isAdminTheme({
+        sources: DEFAULT_DEMO_THEME.sources,
+        gradients: [gradientWithoutDark],
+      })
+    ).toBe(false)
+  })
+
+  it("rejects a gradient whose angle is a string", () => {
+    const gradient = DEFAULT_DEMO_THEME.gradients[0]
+    const badGradient = {
+      ...gradient,
+      light: { ...gradient.light, angle: "135" },
+    }
+    expect(
+      isAdminTheme({
+        sources: DEFAULT_DEMO_THEME.sources,
+        gradients: [badGradient],
+      })
+    ).toBe(false)
+  })
+
   it("accepts a well-formed theme", () => {
     expect(isAdminTheme(DEFAULT_DEMO_THEME)).toBe(true)
   })

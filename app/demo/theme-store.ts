@@ -3,20 +3,18 @@
 import { useSyncExternalStore } from "react"
 
 import {
+  isGradientId,
+  isHexColor,
+} from "@/registry/admin-theme-tokens/admin-theme-css"
+import {
   defaultAdminThemeSources,
   type AdminTheme,
+  type AdminThemeGradient,
   type AdminThemeSources,
+  type GradientStops,
 } from "@/registry/admin-theme-tokens/admin-theme-tokens"
 
 const STORAGE_KEY = "admin-kit-demo-theme"
-const ADMIN_THEME_SOURCE_KEYS = [
-  "brand",
-  "surface",
-  "success",
-  "warning",
-  "danger",
-  "radius",
-] as const
 
 export const DEFAULT_DEMO_THEME: AdminTheme = {
   sources: defaultAdminThemeSources,
@@ -52,10 +50,47 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null
 }
 
+function isValidColor(value: unknown): value is string {
+  return typeof value === "string" && isHexColor(value)
+}
+
+function isValidGradientId(value: unknown): value is string {
+  return typeof value === "string" && isGradientId(value)
+}
+
+function isFiniteNumber(value: unknown): value is number {
+  return typeof value === "number" && Number.isFinite(value)
+}
+
 function isAdminThemeSources(value: unknown): value is AdminThemeSources {
   return (
     isRecord(value) &&
-    ADMIN_THEME_SOURCE_KEYS.every((key) => key in value)
+    isValidColor(value.brand) &&
+    isValidColor(value.surface) &&
+    isValidColor(value.success) &&
+    isValidColor(value.warning) &&
+    isValidColor(value.danger) &&
+    isFiniteNumber(value.radius)
+  )
+}
+
+function isGradientStops(value: unknown): value is GradientStops {
+  return (
+    isRecord(value) &&
+    isFiniteNumber(value.angle) &&
+    isValidColor(value.from) &&
+    isValidColor(value.to) &&
+    (value.via === undefined || isValidColor(value.via))
+  )
+}
+
+function isAdminThemeGradient(value: unknown): value is AdminThemeGradient {
+  return (
+    isRecord(value) &&
+    isValidGradientId(value.id) &&
+    typeof value.name === "string" &&
+    isGradientStops(value.light) &&
+    isGradientStops(value.dark)
   )
 }
 
@@ -63,7 +98,8 @@ export function isAdminTheme(value: unknown): value is AdminTheme {
   return (
     isRecord(value) &&
     isAdminThemeSources(value.sources) &&
-    Array.isArray(value.gradients)
+    Array.isArray(value.gradients) &&
+    value.gradients.every(isAdminThemeGradient)
   )
 }
 
