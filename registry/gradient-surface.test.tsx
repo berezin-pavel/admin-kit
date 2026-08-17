@@ -96,8 +96,54 @@ describe("the shell's sidebar takes a gradient", () => {
 
     expect(container.querySelector("aside")).toHaveStyle({
       backgroundImage: "var(--gradient-brand)",
+      "--card-foreground": "var(--gradient-brand-foreground)",
+      "--muted-foreground": "var(--gradient-brand-foreground)",
+      "--sidebar-foreground": "var(--gradient-brand-foreground)",
     })
     expect(container.querySelector("main")?.getAttribute("style")).toBeNull()
+  })
+
+  const shellWithNav = (sidebarGradient?: string) => (
+    <AdminShell
+      appName="Store"
+      nav={[
+        { href: "/orders", title: "Orders" },
+        { href: "/settings", title: "Settings" },
+      ]}
+      activeHref="/orders"
+      sidebarGradient={sidebarGradient}
+    >
+      <p>Work</p>
+    </AdminShell>
+  )
+
+  const findInactiveNavLink = (container: HTMLElement) =>
+    [...container.querySelectorAll("aside nav a")].find((link) =>
+      link.textContent?.includes("Settings")
+    )
+
+  it("carries the gradient foreground down to an inactive nav row", () => {
+    const { container } = render(shellWithNav("brand"))
+    const inactiveLink = findInactiveNavLink(container)
+
+    expect(inactiveLink).toBeTruthy()
+    expect(
+      getComputedStyle(inactiveLink as Element).getPropertyValue(
+        "--sidebar-foreground"
+      )
+    ).toBe("var(--gradient-brand-foreground)")
+  })
+
+  it("leaves an inactive nav row at the sidebar default without a gradient", () => {
+    const { container } = render(shellWithNav(undefined))
+    const inactiveLink = findInactiveNavLink(container)
+
+    expect(inactiveLink).toBeTruthy()
+    expect(
+      getComputedStyle(inactiveLink as Element).getPropertyValue(
+        "--sidebar-foreground"
+      )
+    ).toBe("")
   })
 })
 
