@@ -1,6 +1,12 @@
 import { render } from "@testing-library/react"
 import { describe, expect, it } from "vitest"
 
+import { AdminShell } from "./admin-shell/admin-shell"
+import { PageAuth } from "./page-auth/page-auth"
+import { StateEmpty } from "./state-empty/state-empty"
+import { StateError } from "./state-error/state-error"
+import { StateForbidden } from "./state-forbidden/state-forbidden"
+import { StateOffline } from "./state-offline/state-offline"
 import { WidgetActivity } from "./widget-activity/widget-activity"
 import { WidgetChart } from "./widget-chart/widget-chart"
 import { WidgetDonut } from "./widget-donut/widget-donut"
@@ -70,5 +76,61 @@ describe.each(cases)("$name gradient surface", ({ render: renderCase }) => {
     const card = container.querySelector('[data-slot="card"]')
 
     expect(card?.getAttribute("style")).toBeNull()
+  })
+})
+
+describe("the shell's sidebar takes a gradient", () => {
+  it("paints the sidebar and leaves the work area alone", () => {
+    const { container } = render(
+      <AdminShell
+        appName="Store"
+        nav={[]}
+        activeHref="/"
+        sidebarGradient="brand"
+      >
+        <p>Work</p>
+      </AdminShell>
+    )
+
+    expect(container.querySelector("aside")).toHaveStyle({
+      backgroundImage: "var(--gradient-brand)",
+    })
+    expect(container.querySelector("main")?.getAttribute("style")).toBeNull()
+  })
+})
+
+describe.each([
+  { name: "state-empty", Component: StateEmpty },
+  { name: "state-error", Component: StateError },
+  { name: "state-forbidden", Component: StateForbidden },
+  { name: "state-offline", Component: StateOffline },
+])("$name gradient surface", ({ Component }) => {
+  it("paints its frame from the named gradient", () => {
+    const { container } = render(
+      <Component title="Nothing here" gradient="calm" />
+    )
+
+    expect(container.firstElementChild).toHaveStyle({
+      backgroundImage: "var(--gradient-calm)",
+    })
+  })
+})
+
+describe("page-auth takes a gradient", () => {
+  it("paints the screen behind the card", () => {
+    const { container } = render(
+      <PageAuth
+        appName="Store"
+        title="Sign in"
+        onSubmit={() => {}}
+        gradient="brand"
+      >
+        <p>Fields</p>
+      </PageAuth>
+    )
+
+    expect(container.firstElementChild).toHaveStyle({
+      backgroundImage: "var(--gradient-brand)",
+    })
   })
 })

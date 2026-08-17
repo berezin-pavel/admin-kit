@@ -6,13 +6,24 @@ export interface StateEmptyProps {
   title: string
   description?: string
   actions?: ReactNode
+  gradient?: string
   className?: string
+}
+
+function gradientSurfaceStyle(gradient?: string) {
+  return gradient
+    ? {
+        backgroundImage: `var(--gradient-${gradient})`,
+        color: `var(--gradient-${gradient}-foreground)`,
+      }
+    : undefined
 }
 
 export function StateEmpty({
   title,
   description,
   actions,
+  gradient,
   className,
 }: StateEmptyProps) {
   return (
@@ -21,6 +32,7 @@ export function StateEmpty({
         "flex flex-col items-center gap-3 px-6 py-12 text-center",
         className
       )}
+      style={gradientSurfaceStyle(gradient)}
     >
       <span className="font-medium">{title}</span>
       {description ? (

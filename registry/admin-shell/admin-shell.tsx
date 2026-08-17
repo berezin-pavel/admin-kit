@@ -33,6 +33,7 @@ type AdminShellBaseProps = {
   sidebarActions?: ReactNode
   sidebarProfile?: ReactNode
   collapsed?: boolean
+  sidebarGradient?: string
   children?: ReactNode
   className?: string
   labels?: AdminShellLabels
@@ -40,6 +41,15 @@ type AdminShellBaseProps = {
 
 export type AdminShellProps = AdminShellBaseProps &
   ({ header?: true; actions?: ReactNode } | { header: false; actions?: never })
+
+function gradientSurfaceStyle(gradient?: string) {
+  return gradient
+    ? {
+        backgroundImage: `var(--gradient-${gradient})`,
+        color: `var(--gradient-${gradient}-foreground)`,
+      }
+    : undefined
+}
 
 export function AdminShell({
   appName,
@@ -51,6 +61,7 @@ export function AdminShell({
   sidebarActions,
   sidebarProfile,
   collapsed = false,
+  sidebarGradient,
   header = true,
   actions,
   children,
@@ -120,6 +131,7 @@ export function AdminShell({
           "hidden w-60 shrink-0 flex-col overflow-hidden rounded-xl bg-card ring-1 ring-foreground/10 md:flex",
           collapsed && "md:w-14"
         )}
+        style={gradientSurfaceStyle(sidebarGradient)}
       >
         {collapsed ? (
           brand ? (

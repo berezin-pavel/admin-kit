@@ -23,7 +23,17 @@ export interface PageAuthProps {
   error?: string
   footer?: ReactNode
   aside?: ReactNode
+  gradient?: string
   className?: string
+}
+
+function gradientSurfaceStyle(gradient?: string) {
+  return gradient
+    ? {
+        backgroundImage: `var(--gradient-${gradient})`,
+        color: `var(--gradient-${gradient}-foreground)`,
+      }
+    : undefined
 }
 
 export function PageAuth({
@@ -37,10 +47,14 @@ export function PageAuth({
   error,
   footer,
   aside,
+  gradient,
   className,
 }: PageAuthProps) {
   return (
-    <div className={cn("flex min-h-svh flex-col lg:flex-row", className)}>
+    <div
+      className={cn("flex min-h-svh flex-col lg:flex-row", className)}
+      style={gradientSurfaceStyle(gradient)}
+    >
       {aside ? (
         <div className="hidden bg-muted lg:flex lg:w-1/2 lg:items-center lg:justify-center lg:p-10">
           {aside}
