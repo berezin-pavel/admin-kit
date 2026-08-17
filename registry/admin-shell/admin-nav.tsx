@@ -66,7 +66,7 @@ export function AdminNav({
                 "cursor-default text-sm font-normal transition-colors",
                 adminRowClassName(collapsed),
                 isActive
-                  ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                  ? "bg-sidebar-active text-sidebar-active-foreground"
                   : "text-sidebar-foreground hover:bg-sidebar-accent/50"
               ),
               children: (

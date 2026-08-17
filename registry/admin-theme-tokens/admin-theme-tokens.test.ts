@@ -311,6 +311,27 @@ describe("deriveAdminTheme", () => {
     expect(dark.border).toBe("oklch(1 0 0 / 10%)")
     expect(dark.input).toBe("oklch(1 0 0 / 15%)")
   })
+
+  it("derives an active row that carries legible text", () => {
+    for (let hue = 0; hue < 360; hue += 15) {
+      const brand = oklchToHex({ l: 0.55, c: 0.12, h: hue })
+      const derived = deriveAdminTheme({ ...defaultAdminThemeSources, brand })
+
+      for (const scheme of [derived.light, derived.dark]) {
+        const ratio = contrastRatio(
+          oklchStringToHex(scheme["sidebar-active"]),
+          oklchStringToHex(scheme["sidebar-active-foreground"])
+        )
+        expect(ratio, `hue ${hue}`).toBeGreaterThanOrEqual(4.5)
+      }
+    }
+  })
+
+  it("keeps the active row tinted rather than neutral", () => {
+    const { light } = deriveAdminTheme(defaultAdminThemeSources)
+    expect(hueOf(light, "sidebar-active").c).toBeGreaterThan(0.01)
+    expect(hueOf(light, "sidebar-active-foreground").c).toBeGreaterThan(0.01)
+  })
 })
 
 describe("suggestDarkStops", () => {

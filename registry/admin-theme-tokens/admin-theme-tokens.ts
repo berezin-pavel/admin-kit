@@ -109,6 +109,11 @@ const FILLED_SURFACE_LIGHTNESS_MIN = 0.15
 const FILLED_SURFACE_LIGHTNESS_MAX = 0.85
 const SIDEBAR_PRIMARY_LIGHTNESS_MIN = 0.35
 const SIDEBAR_PRIMARY_LIGHTNESS_MAX = 0.85
+const SIDEBAR_ACTIVE_LIGHT_LIGHTNESS = 0.94
+const SIDEBAR_ACTIVE_DARK_LIGHTNESS = 0.27
+const SIDEBAR_ACTIVE_TINT_CHROMA_CAP = 0.03
+const SIDEBAR_ACTIVE_FOREGROUND_LIGHTNESS_MIN = 0.15
+const SIDEBAR_ACTIVE_FOREGROUND_LIGHTNESS_MAX = 0.85
 
 function roundedOklch(color: Oklch): Oklch {
   return {
@@ -128,6 +133,12 @@ function contrastAgainstNearWhite(color: Oklch) {
   const rounded = roundedOklch(color)
   const foreground = roundedOklch(nearWhite(rounded.h))
   return contrastRatio(oklchToHex(rounded), oklchToHex(foreground))
+}
+
+function contrastAgainstFixedBackground(background: Oklch) {
+  const backgroundHex = oklchToHex(roundedOklch(background))
+  return (candidate: Oklch) =>
+    contrastRatio(backgroundHex, oklchToHex(roundedOklch(candidate)))
 }
 
 function searchLegibleLightness(
@@ -192,6 +203,37 @@ function filledPair(
   }
 }
 
+function sidebarActivePair(
+  brand: Oklch,
+  tintLightness: number,
+  pushDirection: "down" | "up"
+) {
+  const active: Oklch = {
+    h: brand.h,
+    c: Math.min(brand.c, SIDEBAR_ACTIVE_TINT_CHROMA_CAP),
+    l: tintLightness,
+  }
+  const foregroundMin =
+    pushDirection === "down"
+      ? SIDEBAR_ACTIVE_FOREGROUND_LIGHTNESS_MIN
+      : brand.l
+  const foregroundMax =
+    pushDirection === "down"
+      ? brand.l
+      : SIDEBAR_ACTIVE_FOREGROUND_LIGHTNESS_MAX
+  const foreground = searchLegibleLightness(
+    brand,
+    foregroundMin,
+    foregroundMax,
+    contrastAgainstFixedBackground(active)
+  )
+
+  return {
+    active: formatOklch(active),
+    foreground: formatOklch(foreground),
+  }
+}
+
 export function deriveAdminTheme(sources: AdminThemeSources): {
   light: AdminThemeScheme
   dark: AdminThemeScheme
@@ -247,6 +289,17 @@ export function deriveAdminTheme(sources: AdminThemeSources): {
     SIDEBAR_PRIMARY_LIGHTNESS_MIN,
     SIDEBAR_PRIMARY_LIGHTNESS_MAX,
     contrastAgainstNearWhite
+  )
+
+  const lightSidebarActive = sidebarActivePair(
+    brand,
+    SIDEBAR_ACTIVE_LIGHT_LIGHTNESS,
+    "down"
+  )
+  const darkSidebarActive = sidebarActivePair(
+    brand,
+    SIDEBAR_ACTIVE_DARK_LIGHTNESS,
+    "up"
   )
 
   const identity = (color: Oklch) => color
@@ -317,6 +370,8 @@ export function deriveAdminTheme(sources: AdminThemeSources): {
     "sidebar-primary-foreground": formatOklch(nearWhite(brand.h)),
     "sidebar-accent": neutral(surface, 0.97),
     "sidebar-accent-foreground": neutral(surface, 0.205),
+    "sidebar-active": lightSidebarActive.active,
+    "sidebar-active-foreground": lightSidebarActive.foreground,
     "sidebar-border": neutral(surface, 0.922),
     "sidebar-ring": neutral(surface, 0.708),
     radius: sanitizedRadiusRem(sources.radius),
@@ -352,6 +407,8 @@ export function deriveAdminTheme(sources: AdminThemeSources): {
     "sidebar-primary-foreground": formatOklch(nearWhite(brand.h)),
     "sidebar-accent": neutral(surface, 0.269),
     "sidebar-accent-foreground": neutral(surface, 0.985),
+    "sidebar-active": darkSidebarActive.active,
+    "sidebar-active-foreground": darkSidebarActive.foreground,
     "sidebar-border": "oklch(1 0 0 / 10%)",
     "sidebar-ring": neutral(surface, 0.556),
   }
