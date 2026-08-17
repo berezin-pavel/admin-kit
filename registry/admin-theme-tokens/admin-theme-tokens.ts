@@ -69,6 +69,15 @@ function clamp(value: number, min: number, max: number) {
   return Math.min(max, Math.max(min, value))
 }
 
+const RADIUS_FALLBACK_REM = 0.45
+const RADIUS_MIN_REM = 0
+const RADIUS_MAX_REM = 4
+
+function sanitizedRadiusRem(radius: number): string {
+  const finiteRadius = Number.isFinite(radius) ? radius : RADIUS_FALLBACK_REM
+  return `${clamp(finiteRadius, RADIUS_MIN_REM, RADIUS_MAX_REM)}rem`
+}
+
 function neutral(surface: Oklch, lightness: number) {
   return formatOklch({
     l: lightness,
@@ -310,7 +319,7 @@ export function deriveAdminTheme(sources: AdminThemeSources): {
     "sidebar-accent-foreground": neutral(surface, 0.205),
     "sidebar-border": neutral(surface, 0.922),
     "sidebar-ring": neutral(surface, 0.708),
-    radius: `${sources.radius}rem`,
+    radius: sanitizedRadiusRem(sources.radius),
   }
 
   const dark: AdminThemeScheme = {

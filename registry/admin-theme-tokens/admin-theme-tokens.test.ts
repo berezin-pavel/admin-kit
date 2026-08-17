@@ -125,6 +125,55 @@ describe("deriveAdminTheme", () => {
     expect(dark.radius).toBeUndefined()
   })
 
+  const RADIUS_PATTERN = /^\d+(\.\d+)?rem$/
+
+  it("never lets a hostile radius payload reach the emitted CSS value", () => {
+    for (const payload of [
+      "1rem; } body { display: none } /*",
+      "0; background-image: url(http://evil/?x=1)",
+    ]) {
+      const hostileRadius = JSON.parse(JSON.stringify(payload))
+      const { light: hostileLight } = deriveAdminTheme({
+        ...defaultAdminThemeSources,
+        radius: hostileRadius,
+      })
+
+      expect(hostileLight.radius, payload).toMatch(RADIUS_PATTERN)
+      expect(hostileLight.radius, payload).not.toContain("background-image")
+      expect(hostileLight.radius, payload).not.toContain("display: none")
+    }
+  })
+
+  it("never emits NaNrem or Infinityrem", () => {
+    for (const radius of [Number.NaN, Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY]) {
+      const { light: hostileLight } = deriveAdminTheme({
+        ...defaultAdminThemeSources,
+        radius,
+      })
+      expect(hostileLight.radius, String(radius)).toMatch(RADIUS_PATTERN)
+    }
+  })
+
+  it("clamps a negative or absurdly large radius instead of emitting it raw", () => {
+    const { light: negative } = deriveAdminTheme({
+      ...defaultAdminThemeSources,
+      radius: -5,
+    })
+    expect(negative.radius).toBe("0rem")
+
+    const { light: huge } = deriveAdminTheme({
+      ...defaultAdminThemeSources,
+      radius: 999999,
+    })
+    expect(huge.radius).toBe("4rem")
+  })
+
+  it("keeps the shipped default radius exact", () => {
+    expect(deriveAdminTheme(defaultAdminThemeSources).light.radius).toBe(
+      "0.45rem"
+    )
+  })
+
   it("keeps the chart fan around the brand hue", () => {
     CURRENT_LIGHT_CHART_HUES.forEach((expected, index) => {
       expect(
