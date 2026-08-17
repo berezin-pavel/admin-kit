@@ -92,6 +92,30 @@
     },
     {
       "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "admin-theme-tokens",
+      "type": "registry:component",
+      "title": "Admin theme tokens",
+      "description": "The theme as data instead of hand-written CSS: six source colours plus a radius go into deriveAdminTheme, which computes every token admin-theme declares for both schemes in OKLCH, and adminThemeToCss prints the result as custom properties a consumer renders in a style element. Foreground colours are never chosen by hand, they are searched by contrast, so no combination of sources produces text below 4.5:1 — the surface itself is nudged when the text alone cannot save it. The dark scheme is derived rather than stored. Gradients are a separate class of token, named by the consumer and emitted as --gradient-<id> with a matching --gradient-<id>-foreground taken from the gradient's worst stop, because a gradient cannot live in a colour token that also feeds text, borders and oklch algebra. Ids and colours are validated before they reach the CSS text and an unusable gradient is dropped whole rather than half-emitted. Pure TypeScript with no React and no dependencies: suggestDarkStops proposes a dark variant of a gradient and fits its chroma back into the sRGB gamut so a darkened stop keeps its hue instead of collapsing to grey, contrastRatio is the WCAG ratio, and defaultAdminThemeSources reproduces the shipped admin-theme as closely as sRGB allows. Install it with theme-editor, or on its own to generate a theme in a script.",
+      "files": [
+        {
+          "path": "registry/admin-theme-tokens/admin-theme-color.ts",
+          "type": "registry:component",
+          "target": "@components/admin-theme-color.ts"
+        },
+        {
+          "path": "registry/admin-theme-tokens/admin-theme-tokens.ts",
+          "type": "registry:component",
+          "target": "@components/admin-theme-tokens.ts"
+        },
+        {
+          "path": "registry/admin-theme-tokens/admin-theme-css.ts",
+          "type": "registry:component",
+          "target": "@components/admin-theme-css.ts"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
       "name": "admin-shell",
       "type": "registry:block",
       "title": "Admin shell",
