@@ -72,6 +72,15 @@ describe("gradientCss", () => {
       "linear-gradient(135deg, #075985 0%, #6b21a8 100%)"
     )
   })
+
+  it("clamps an out-of-range viaPosition instead of emitting it raw", () => {
+    expect(gradientCss({ ...revenue.light, viaPosition: 0 })).toBe(
+      "linear-gradient(135deg, #0ea5e9 0%, #6366f1 1%, #a855f7 100%)"
+    )
+    expect(gradientCss({ ...revenue.light, viaPosition: 100 })).toBe(
+      "linear-gradient(135deg, #0ea5e9 0%, #6366f1 99%, #a855f7 100%)"
+    )
+  })
 })
 
 describe("gradientForeground", () => {
@@ -156,5 +165,38 @@ describe("adminThemeToCss", () => {
       ],
     })
     expect(hostile).not.toContain("color: blue")
+  })
+
+  it("drops a gradient whose viaPosition could close its declaration and start another", () => {
+    for (const payload of [
+      "50%; } body { display: none } /*",
+      "0; background-image: url(http://evil/?x=1)",
+    ]) {
+      const hostileViaPosition = JSON.parse(JSON.stringify(payload))
+      const hostile = adminThemeToCss({
+        ...theme,
+        gradients: [
+          {
+            ...revenue,
+            light: { ...revenue.light, viaPosition: hostileViaPosition },
+          },
+        ],
+      })
+      expect(hostile, payload).not.toContain("--gradient-revenue")
+      expect(hostile, payload).not.toContain("background-image")
+      expect(hostile, payload).not.toContain("display: none")
+    }
+  })
+
+  it("drops a gradient whose viaPosition is not a finite number", () => {
+    for (const viaPosition of [Number.NaN, Number.POSITIVE_INFINITY]) {
+      const hostile = adminThemeToCss({
+        ...theme,
+        gradients: [
+          { ...revenue, light: { ...revenue.light, viaPosition } },
+        ],
+      })
+      expect(hostile, String(viaPosition)).not.toContain("--gradient-revenue")
+    }
   })
 })

@@ -16,6 +16,9 @@ const GRADIENT_ID_PATTERN = /^[a-z][a-z0-9-]*$/
 const HEX_PATTERN = /^#[0-9a-f]{6}$/i
 const NEAR_WHITE: Oklch = { l: 0.985, c: 0, h: 0 }
 const NEAR_BLACK: Oklch = { l: 0.205, c: 0, h: 0 }
+const VIA_POSITION_DEFAULT = 50
+const VIA_POSITION_MIN = 1
+const VIA_POSITION_MAX = 99
 
 export function isGradientId(value: string): boolean {
   return GRADIENT_ID_PATTERN.test(value)
@@ -36,13 +39,22 @@ function isUsable(stops: GradientStops) {
     Number.isFinite(stops.angle) &&
     stops.angle >= 0 &&
     stops.angle <= 360 &&
+    (stops.viaPosition === undefined || Number.isFinite(stops.viaPosition)) &&
     stopsOf(stops).every(isHexColor)
   )
 }
 
+function clampViaPosition(viaPosition: number) {
+  return Math.min(VIA_POSITION_MAX, Math.max(VIA_POSITION_MIN, viaPosition))
+}
+
 export function gradientCss(stops: GradientStops): string {
   const positions = stops.via
-    ? ["0%", `${stops.viaPosition ?? 50}%`, "100%"]
+    ? [
+        "0%",
+        `${clampViaPosition(stops.viaPosition ?? VIA_POSITION_DEFAULT)}%`,
+        "100%",
+      ]
     : ["0%", "100%"]
 
   const printed = stopsOf(stops)
