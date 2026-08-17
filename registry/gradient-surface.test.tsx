@@ -166,24 +166,62 @@ describe.each([
 })
 
 describe("page-auth takes a gradient", () => {
-  it("paints the screen behind the card", () => {
-    const { container } = render(
+  const renderAuth = (gradient?: string) =>
+    render(
       <PageAuth
         appName="Store"
         title="Sign in"
         onSubmit={() => {}}
-        gradient="brand"
+        gradient={gradient}
       >
         <p>Fields</p>
       </PageAuth>
     )
 
+  it("paints the screen behind the card", () => {
+    const { container } = renderAuth("brand")
+
     expect(container.firstElementChild).toHaveStyle({
       backgroundImage: "var(--gradient-brand)",
-      "--muted-foreground": "var(--gradient-brand-foreground)",
     })
   })
+
+  it("recolours only the text that sits on the backdrop", () => {
+    const { getByText } = renderAuth("brand")
+
+    expect(getByText("Store")).toHaveStyle({
+      color: "var(--gradient-brand-foreground)",
+    })
+    expect(getByText("Store")).not.toHaveClass("text-muted-foreground")
+  })
+
+  it("leaves the opaque card reading the theme's own foreground", () => {
+    const { container } = renderAuth("brand")
+    const card = container.querySelector('[data-slot="card"]')
+
+    expect(card?.getAttribute("style")).toBeNull()
+    expect(container.firstElementChild).not.toHaveStyle({
+      "--card-foreground": "var(--gradient-brand-foreground)",
+    })
+  })
+
+  it("carries no inline style at all without the prop", () => {
+    const { container } = renderAuth(undefined)
+
+    expect(container.firstElementChild?.getAttribute("style")).toBeNull()
+    expect(getByTextIn(container, "Store")).toHaveClass("text-muted-foreground")
+  })
 })
+
+function getByTextIn(container: HTMLElement, text: string) {
+  const found = Array.from(container.querySelectorAll("*")).find(
+    (node) => node.textContent === text && node.children.length === 0
+  )
+  if (!found) {
+    throw new Error(`No element with text ${text}`)
+  }
+  return found
+}
 
 describe("widget-metric trend on a gradient surface", () => {
   const renderTrend = (gradient?: string) =>

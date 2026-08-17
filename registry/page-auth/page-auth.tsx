@@ -27,17 +27,17 @@ export interface PageAuthProps {
   className?: string
 }
 
-function gradientSurfaceStyle(
+function gradientBackdropStyle(
   gradient?: string
-): (CSSProperties & Record<string, string>) | undefined {
+): CSSProperties | undefined {
   return gradient
-    ? {
-        backgroundImage: `var(--gradient-${gradient})`,
-        color: `var(--gradient-${gradient}-foreground)`,
-        "--card-foreground": `var(--gradient-${gradient}-foreground)`,
-        "--muted-foreground": `var(--gradient-${gradient}-foreground)`,
-        "--sidebar-foreground": `var(--gradient-${gradient}-foreground)`,
-      }
+    ? { backgroundImage: `var(--gradient-${gradient})` }
+    : undefined
+}
+
+function backdropTextStyle(gradient?: string): CSSProperties | undefined {
+  return gradient
+    ? { color: `var(--gradient-${gradient}-foreground)` }
     : undefined
 }
 
@@ -58,7 +58,7 @@ export function PageAuth({
   return (
     <div
       className={cn("flex min-h-svh flex-col lg:flex-row", className)}
-      style={gradientSurfaceStyle(gradient)}
+      style={gradientBackdropStyle(gradient)}
     >
       {aside ? (
         <div className="hidden bg-muted lg:flex lg:w-1/2 lg:items-center lg:justify-center lg:p-10">
@@ -72,7 +72,13 @@ export function PageAuth({
         )}
       >
         <div className="flex w-full max-w-sm flex-col gap-6">
-          <p className="text-center text-sm font-medium text-muted-foreground">
+          <p
+            className={cn(
+              "text-center text-sm font-medium",
+              gradient ? undefined : "text-muted-foreground"
+            )}
+            style={backdropTextStyle(gradient)}
+          >
             {appName}
           </p>
           <Card>
