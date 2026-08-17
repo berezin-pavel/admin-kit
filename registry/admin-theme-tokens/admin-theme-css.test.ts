@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest"
 
+import { contrastRatio, formatOklch, oklchToHex } from "./admin-theme-color"
 import {
   adminThemeToCss,
   gradientCss,
@@ -74,9 +75,49 @@ describe("gradientCss", () => {
 })
 
 describe("gradientForeground", () => {
-  it("picks a foreground that clears 4.5:1 against the worst stop", () => {
-    const foreground = gradientForeground(revenue.light)
-    expect(foreground).toMatch(/^oklch\(/)
+  const NEAR_WHITE = { l: 0.985, c: 0, h: 0 }
+  const NEAR_BLACK = { l: 0.205, c: 0, h: 0 }
+
+  it("picks near-black for an all-light gradient and clears 4.5:1 against the worst stop", () => {
+    const lightStops = { angle: 90, from: "#e0f2fe", to: "#fce7f3" }
+
+    expect(gradientForeground(lightStops)).toBe(formatOklch(NEAR_BLACK))
+
+    const worstContrast = Math.min(
+      contrastRatio(lightStops.from, oklchToHex(NEAR_BLACK)),
+      contrastRatio(lightStops.to, oklchToHex(NEAR_BLACK))
+    )
+    expect(worstContrast).toBeGreaterThanOrEqual(4.5)
+  })
+
+  it("picks near-white for an all-dark gradient and clears 4.5:1 against the worst stop", () => {
+    const darkStops = { angle: 90, from: "#0c4a6e", to: "#4a044e" }
+
+    expect(gradientForeground(darkStops)).toBe(formatOklch(NEAR_WHITE))
+
+    const worstContrast = Math.min(
+      contrastRatio(darkStops.from, oklchToHex(NEAR_WHITE)),
+      contrastRatio(darkStops.to, oklchToHex(NEAR_WHITE))
+    )
+    expect(worstContrast).toBeGreaterThanOrEqual(4.5)
+  })
+
+  it("picks whichever candidate genuinely scores higher when the two are close", () => {
+    const midStops = { angle: 90, from: "#808080", to: "#828282" }
+
+    const worstAgainst = (candidate: typeof NEAR_WHITE) =>
+      Math.min(
+        contrastRatio(midStops.from, oklchToHex(candidate)),
+        contrastRatio(midStops.to, oklchToHex(candidate))
+      )
+
+    const genuineWinner =
+      worstAgainst(NEAR_WHITE) >= worstAgainst(NEAR_BLACK)
+        ? NEAR_WHITE
+        : NEAR_BLACK
+
+    expect(genuineWinner).toBe(NEAR_BLACK)
+    expect(gradientForeground(midStops)).toBe(formatOklch(genuineWinner))
   })
 })
 

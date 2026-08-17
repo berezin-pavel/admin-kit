@@ -1,4 +1,9 @@
-import { contrastRatio, formatOklch } from "./admin-theme-color"
+import {
+  contrastRatio,
+  formatOklch,
+  oklchToHex,
+  type Oklch,
+} from "./admin-theme-color"
 import {
   deriveAdminTheme,
   type AdminTheme,
@@ -9,8 +14,8 @@ import {
 
 const GRADIENT_ID_PATTERN = /^[a-z][a-z0-9-]*$/
 const HEX_PATTERN = /^#[0-9a-f]{6}$/i
-const NEAR_WHITE = { l: 0.985, c: 0, h: 0 }
-const NEAR_BLACK = { l: 0.205, c: 0, h: 0 }
+const NEAR_WHITE: Oklch = { l: 0.985, c: 0, h: 0 }
+const NEAR_BLACK: Oklch = { l: 0.205, c: 0, h: 0 }
 
 export function isGradientId(value: string): boolean {
   return GRADIENT_ID_PATTERN.test(value)
@@ -48,10 +53,10 @@ export function gradientCss(stops: GradientStops): string {
 }
 
 export function gradientForeground(stops: GradientStops): string {
-  const worstAgainst = (candidate: typeof NEAR_WHITE) =>
+  const worstAgainst = (candidate: Oklch) =>
     Math.min(
       ...stopsOf(stops).map((stop) =>
-        contrastRatio(stop, oklchHex(candidate))
+        contrastRatio(stop, oklchToHex(candidate))
       )
     )
 
@@ -60,14 +65,6 @@ export function gradientForeground(stops: GradientStops): string {
       ? NEAR_WHITE
       : NEAR_BLACK
   )
-}
-
-function oklchHex(color: typeof NEAR_WHITE) {
-  const { l } = color
-  const channel = Math.round(Math.min(1, Math.max(0, l)) * 255)
-    .toString(16)
-    .padStart(2, "0")
-  return `#${channel}${channel}${channel}`
 }
 
 function usableGradients(gradients: readonly AdminThemeGradient[]) {
