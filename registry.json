@@ -107,27 +107,27 @@
         {
           "path": "registry/admin-shell/admin-shell.tsx",
           "type": "registry:component",
-          "target": "@components/admin/admin-shell.tsx"
+          "target": "@components/admin-shell.tsx"
         },
         {
           "path": "registry/admin-shell/admin-header.tsx",
           "type": "registry:component",
-          "target": "@components/admin/admin-header.tsx"
+          "target": "@components/admin-header.tsx"
         },
         {
           "path": "registry/admin-shell/admin-nav.tsx",
           "type": "registry:component",
-          "target": "@components/admin/admin-nav.tsx"
+          "target": "@components/admin-nav.tsx"
         },
         {
           "path": "registry/admin-shell/admin-menu.tsx",
           "type": "registry:component",
-          "target": "@components/admin/admin-menu.tsx"
+          "target": "@components/admin-menu.tsx"
         },
         {
           "path": "registry/admin-shell/admin-row.ts",
           "type": "registry:component",
-          "target": "@components/admin/admin-row.ts"
+          "target": "@components/admin-row.ts"
         }
       ]
     },
@@ -148,7 +148,7 @@
         {
           "path": "registry/theme-toggle/theme-toggle.tsx",
           "type": "registry:component",
-          "target": "@components/admin/theme-toggle.tsx"
+          "target": "@components/theme-toggle.tsx"
         }
       ]
     },
@@ -169,7 +169,7 @@
         {
           "path": "registry/sidebar-toggle/sidebar-toggle.tsx",
           "type": "registry:component",
-          "target": "@components/admin/sidebar-toggle.tsx"
+          "target": "@components/sidebar-toggle.tsx"
         }
       ]
     },
@@ -190,7 +190,7 @@
         {
           "path": "registry/language-toggle/language-toggle.tsx",
           "type": "registry:component",
-          "target": "@components/admin/language-toggle.tsx"
+          "target": "@components/language-toggle.tsx"
         }
       ]
     },
@@ -209,7 +209,7 @@
         {
           "path": "registry/user-menu/user-menu.tsx",
           "type": "registry:component",
-          "target": "@components/admin/user-menu.tsx"
+          "target": "@components/user-menu.tsx"
         }
       ]
     },
@@ -226,7 +226,7 @@
         {
           "path": "registry/breadcrumbs/breadcrumbs.tsx",
           "type": "registry:component",
-          "target": "@components/admin/breadcrumbs.tsx"
+          "target": "@components/breadcrumbs.tsx"
         }
       ]
     },
@@ -246,7 +246,7 @@
         {
           "path": "registry/locale-ru/locale-ru.ts",
           "type": "registry:component",
-          "target": "@components/admin/locale-ru.ts"
+          "target": "@components/locale-ru.ts"
         }
       ]
     },
@@ -269,7 +269,7 @@
         {
           "path": "registry/widget-metric/widget-metric.tsx",
           "type": "registry:component",
-          "target": "@components/admin/widget-metric.tsx"
+          "target": "@components/widget-metric.tsx"
         }
       ]
     },
@@ -296,37 +296,37 @@
         {
           "path": "registry/widget-table/widget-table.tsx",
           "type": "registry:component",
-          "target": "@components/admin/widget-table.tsx"
+          "target": "@components/widget-table.tsx"
         },
         {
           "path": "registry/widget-table/widget-table-pagination.tsx",
           "type": "registry:component",
-          "target": "@components/admin/widget-table-pagination.tsx"
+          "target": "@components/widget-table-pagination.tsx"
         },
         {
           "path": "registry/widget-table/widget-table-sort-button.tsx",
           "type": "registry:component",
-          "target": "@components/admin/widget-table-sort-button.tsx"
+          "target": "@components/widget-table-sort-button.tsx"
         },
         {
           "path": "registry/widget-table/widget-table-sort-select.tsx",
           "type": "registry:component",
-          "target": "@components/admin/widget-table-sort-select.tsx"
+          "target": "@components/widget-table-sort-select.tsx"
         },
         {
           "path": "registry/widget-table/widget-table-page-size-select.tsx",
           "type": "registry:component",
-          "target": "@components/admin/widget-table-page-size-select.tsx"
+          "target": "@components/widget-table-page-size-select.tsx"
         },
         {
           "path": "registry/widget-table/widget-table-selection-bar.tsx",
           "type": "registry:component",
-          "target": "@components/admin/widget-table-selection-bar.tsx"
+          "target": "@components/widget-table-selection-bar.tsx"
         },
         {
           "path": "registry/widget-table/widget-table-columns-menu.tsx",
           "type": "registry:component",
-          "target": "@components/admin/widget-table-columns-menu.tsx"
+          "target": "@components/widget-table-columns-menu.tsx"
         }
       ],
       "dependencies": [
@@ -353,7 +353,7 @@
         {
           "path": "registry/widget-chart/widget-chart.tsx",
           "type": "registry:component",
-          "target": "@components/admin/widget-chart.tsx"
+          "target": "@components/widget-chart.tsx"
         }
       ]
     },
@@ -373,7 +373,7 @@
         {
           "path": "registry/widget-list/widget-list.tsx",
           "type": "registry:component",
-          "target": "@components/admin/widget-list.tsx"
+          "target": "@components/widget-list.tsx"
         }
       ]
     },
@@ -390,7 +390,7 @@
         {
           "path": "registry/widget-placeholder/widget-placeholder.tsx",
           "type": "registry:component",
-          "target": "@components/admin/widget-placeholder.tsx"
+          "target": "@components/widget-placeholder.tsx"
         }
       ]
     },
@@ -408,7 +408,7 @@
         {
           "path": "registry/state-loading/state-loading.tsx",
           "type": "registry:component",
-          "target": "@components/admin/state-loading.tsx"
+          "target": "@components/state-loading.tsx"
         }
       ]
     },
@@ -425,7 +425,7 @@
         {
           "path": "registry/state-empty/state-empty.tsx",
           "type": "registry:component",
-          "target": "@components/admin/state-empty.tsx"
+          "target": "@components/state-empty.tsx"
         }
       ]
     },
@@ -445,7 +445,7 @@
         {
           "path": "registry/state-error/state-error.tsx",
           "type": "registry:component",
-          "target": "@components/admin/state-error.tsx"
+          "target": "@components/state-error.tsx"
         }
       ]
     },
@@ -465,7 +465,7 @@
         {
           "path": "registry/state-forbidden/state-forbidden.tsx",
           "type": "registry:component",
-          "target": "@components/admin/state-forbidden.tsx"
+          "target": "@components/state-forbidden.tsx"
         }
       ]
     },
@@ -485,7 +485,7 @@
         {
           "path": "registry/state-offline/state-offline.tsx",
           "type": "registry:component",
-          "target": "@components/admin/state-offline.tsx"
+          "target": "@components/state-offline.tsx"
         }
       ]
     },
@@ -507,7 +507,7 @@
         {
           "path": "registry/page-entity/page-entity.tsx",
           "type": "registry:component",
-          "target": "@components/admin/page-entity.tsx"
+          "target": "@components/page-entity.tsx"
         }
       ]
     },
@@ -524,7 +524,7 @@
         {
           "path": "registry/page-header/page-header.tsx",
           "type": "registry:component",
-          "target": "@components/admin/page-header.tsx"
+          "target": "@components/page-header.tsx"
         }
       ]
     },
@@ -542,7 +542,7 @@
         {
           "path": "registry/status-badge/status-badge.tsx",
           "type": "registry:component",
-          "target": "@components/admin/status-badge.tsx"
+          "target": "@components/status-badge.tsx"
         }
       ]
     },
@@ -562,7 +562,7 @@
         {
           "path": "registry/admin-toaster/admin-toaster.tsx",
           "type": "registry:component",
-          "target": "@components/admin/admin-toaster.tsx"
+          "target": "@components/admin-toaster.tsx"
         }
       ]
     },
@@ -582,7 +582,7 @@
         {
           "path": "registry/confirm-dialog/confirm-dialog.tsx",
           "type": "registry:component",
-          "target": "@components/admin/confirm-dialog.tsx"
+          "target": "@components/confirm-dialog.tsx"
         }
       ]
     },
@@ -619,7 +619,7 @@
         {
           "path": "registry/hint/hint.tsx",
           "type": "registry:component",
-          "target": "@components/admin/hint.tsx"
+          "target": "@components/hint.tsx"
         }
       ]
     },
@@ -637,7 +637,7 @@
         {
           "path": "registry/row-actions/row-actions.tsx",
           "type": "registry:component",
-          "target": "@components/admin/row-actions.tsx"
+          "target": "@components/row-actions.tsx"
         }
       ]
     },
@@ -661,7 +661,7 @@
         {
           "path": "registry/date-field/date-field.tsx",
           "type": "registry:component",
-          "target": "@components/admin/date-field.tsx"
+          "target": "@components/date-field.tsx"
         }
       ]
     },
@@ -686,7 +686,7 @@
         {
           "path": "registry/date-time-field/date-time-field.tsx",
           "type": "registry:component",
-          "target": "@components/admin/date-time-field.tsx"
+          "target": "@components/date-time-field.tsx"
         }
       ]
     },
@@ -710,7 +710,7 @@
         {
           "path": "registry/date-range-field/date-range-field.tsx",
           "type": "registry:component",
-          "target": "@components/admin/date-range-field.tsx"
+          "target": "@components/date-range-field.tsx"
         }
       ]
     },
@@ -729,7 +729,7 @@
         {
           "path": "registry/time-field/time-field.tsx",
           "type": "registry:component",
-          "target": "@components/admin/time-field.tsx"
+          "target": "@components/time-field.tsx"
         }
       ]
     },
@@ -751,7 +751,7 @@
         {
           "path": "registry/color-field/color-field.tsx",
           "type": "registry:component",
-          "target": "@components/admin/color-field.tsx"
+          "target": "@components/color-field.tsx"
         }
       ]
     },
@@ -857,7 +857,7 @@
         {
           "path": "registry/file-field/file-field.tsx",
           "type": "registry:component",
-          "target": "@components/admin/file-field.tsx"
+          "target": "@components/file-field.tsx"
         }
       ]
     },
@@ -881,12 +881,12 @@
         {
           "path": "registry/image-field/image-field.tsx",
           "type": "registry:component",
-          "target": "@components/admin/image-field.tsx"
+          "target": "@components/image-field.tsx"
         },
         {
           "path": "registry/image-field/image-field-preview.tsx",
           "type": "registry:component",
-          "target": "@components/admin/image-field-preview.tsx"
+          "target": "@components/image-field-preview.tsx"
         }
       ]
     },
@@ -907,7 +907,7 @@
         {
           "path": "registry/tags-field/tags-field.tsx",
           "type": "registry:component",
-          "target": "@components/admin/tags-field.tsx"
+          "target": "@components/tags-field.tsx"
         }
       ]
     },
@@ -953,7 +953,7 @@
         {
           "path": "registry/widget-progress/widget-progress.tsx",
           "type": "registry:component",
-          "target": "@components/admin/widget-progress.tsx"
+          "target": "@components/widget-progress.tsx"
         }
       ]
     },
@@ -976,7 +976,7 @@
         {
           "path": "registry/widget-activity/widget-activity.tsx",
           "type": "registry:component",
-          "target": "@components/admin/widget-activity.tsx"
+          "target": "@components/widget-activity.tsx"
         }
       ]
     },
@@ -1000,7 +1000,7 @@
         {
           "path": "registry/widget-donut/widget-donut.tsx",
           "type": "registry:component",
-          "target": "@components/admin/widget-donut.tsx"
+          "target": "@components/widget-donut.tsx"
         }
       ]
     },
@@ -1020,7 +1020,7 @@
         {
           "path": "registry/widget-quick-actions/widget-quick-actions.tsx",
           "type": "registry:component",
-          "target": "@components/admin/widget-quick-actions.tsx"
+          "target": "@components/widget-quick-actions.tsx"
         }
       ]
     },
@@ -1052,12 +1052,12 @@
         {
           "path": "registry/page-list/page-list.tsx",
           "type": "registry:component",
-          "target": "@components/admin/page-list.tsx"
+          "target": "@components/page-list.tsx"
         },
         {
           "path": "registry/page-list/page-list-filters.tsx",
           "type": "registry:component",
-          "target": "@components/admin/page-list-filters.tsx"
+          "target": "@components/page-list-filters.tsx"
         }
       ]
     },
@@ -1076,7 +1076,7 @@
         {
           "path": "registry/combobox-field/combobox-field.tsx",
           "type": "registry:component",
-          "target": "@components/admin/combobox-field.tsx"
+          "target": "@components/combobox-field.tsx"
         }
       ],
       "dependencies": [
@@ -1097,7 +1097,7 @@
         {
           "path": "registry/page-auth/page-auth.tsx",
           "type": "registry:component",
-          "target": "@components/admin/page-auth.tsx"
+          "target": "@components/page-auth.tsx"
         }
       ]
     },
@@ -1119,7 +1119,7 @@
         {
           "path": "registry/multi-select-field/multi-select-field.tsx",
           "type": "registry:component",
-          "target": "@components/admin/multi-select-field.tsx"
+          "target": "@components/multi-select-field.tsx"
         }
       ]
     },
@@ -1136,7 +1136,7 @@
         {
           "path": "registry/page-tabs/page-tabs.tsx",
           "type": "registry:component",
-          "target": "@components/admin/page-tabs.tsx"
+          "target": "@components/page-tabs.tsx"
         }
       ]
     }
