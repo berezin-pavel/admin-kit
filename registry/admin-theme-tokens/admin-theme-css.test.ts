@@ -5,6 +5,7 @@ import {
   adminThemeToCss,
   gradientCss,
   gradientForeground,
+  isAdminTheme,
   isGradientId,
   isHexColor,
 } from "./admin-theme-css"
@@ -57,6 +58,98 @@ describe("isHexColor", () => {
     expect(isHexColor("#fff")).toBe(false)
     expect(isHexColor("red")).toBe(false)
     expect(isHexColor("#0ea5e9; color: red")).toBe(false)
+  })
+})
+
+describe("isAdminTheme", () => {
+  it("rejects null", () => {
+    expect(isAdminTheme(JSON.parse("null"))).toBe(false)
+  })
+
+  it("rejects a number", () => {
+    expect(isAdminTheme(JSON.parse("123"))).toBe(false)
+  })
+
+  it("rejects an array", () => {
+    expect(isAdminTheme(JSON.parse("[]"))).toBe(false)
+  })
+
+  it("rejects an object with no sources", () => {
+    expect(isAdminTheme({ gradients: [] })).toBe(false)
+  })
+
+  it("rejects sources missing one of the six keys", () => {
+    const sourcesWithoutRadius = {
+      brand: defaultAdminThemeSources.brand,
+      surface: defaultAdminThemeSources.surface,
+      success: defaultAdminThemeSources.success,
+      warning: defaultAdminThemeSources.warning,
+      danger: defaultAdminThemeSources.danger,
+    }
+    expect(
+      isAdminTheme({
+        sources: sourcesWithoutRadius,
+        gradients: theme.gradients,
+      })
+    ).toBe(false)
+  })
+
+  it("rejects a theme whose gradients is not an array", () => {
+    expect(
+      isAdminTheme({ sources: defaultAdminThemeSources, gradients: {} })
+    ).toBe(false)
+  })
+
+  it("rejects a source with the wrong type (brand not a string)", () => {
+    const badSources = { ...defaultAdminThemeSources, brand: 123 }
+    expect(isAdminTheme({ sources: badSources, gradients: [] })).toBe(false)
+  })
+
+  it("rejects a gradient entry that is null", () => {
+    expect(
+      isAdminTheme({ sources: defaultAdminThemeSources, gradients: [null] })
+    ).toBe(false)
+  })
+
+  it("rejects a source that looks like a color but isn't hex", () => {
+    const badSources = { ...defaultAdminThemeSources, brand: "blue" }
+    expect(isAdminTheme({ sources: badSources, gradients: [] })).toBe(false)
+  })
+
+  it("rejects a radius that is a string", () => {
+    const badSources = { ...defaultAdminThemeSources, radius: "0.45" }
+    expect(isAdminTheme({ sources: badSources, gradients: [] })).toBe(false)
+  })
+
+  it("rejects a gradient missing its dark stops", () => {
+    const gradientWithoutDark = {
+      id: revenue.id,
+      name: revenue.name,
+      light: revenue.light,
+    }
+    expect(
+      isAdminTheme({
+        sources: defaultAdminThemeSources,
+        gradients: [gradientWithoutDark],
+      })
+    ).toBe(false)
+  })
+
+  it("rejects a gradient whose angle is a string", () => {
+    const badGradient = {
+      ...revenue,
+      light: { ...revenue.light, angle: "135" },
+    }
+    expect(
+      isAdminTheme({
+        sources: defaultAdminThemeSources,
+        gradients: [badGradient],
+      })
+    ).toBe(false)
+  })
+
+  it("accepts a well-formed theme", () => {
+    expect(isAdminTheme(theme)).toBe(true)
   })
 })
 

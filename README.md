@@ -60,6 +60,16 @@ with everything else. `admin-theme` stays installed either way: it is
 what the panel falls back to before a stored theme is read, and what
 every item's tokens are named after.
 
+A theme read back from storage is untrusted: malformed JSON, a shape
+left over from an older version, or a value edited by hand all reach
+`adminThemeToCss`, which calls into color parsing that throws on
+anything that isn't a valid hex color, with nothing in the kit to catch
+it. Validate what you read back with `isAdminTheme`, exported from
+`admin-theme-tokens`, before it reaches the printer, and fall back to a
+known-good theme when it fails — `{ sources: defaultAdminThemeSources,
+gradients: [] }`, also exported from `admin-theme-tokens`, reproduces
+the shipped palette.
+
 The CLI pulls in whatever the item depends on by itself: shadcn
 primitives (`card`, `table`, `skeleton`, and others), npm packages, and
 the theme itself if it isn't in the project yet. But a theme that arrives
