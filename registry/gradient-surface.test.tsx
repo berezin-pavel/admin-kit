@@ -68,6 +68,8 @@ describe.each(cases)("$name gradient surface", ({ render: renderCase }) => {
     expect(card).toHaveStyle({
       backgroundImage: "var(--gradient-revenue)",
       color: "var(--gradient-revenue-foreground)",
+      "--card-foreground": "var(--gradient-revenue-foreground)",
+      "--muted-foreground": "var(--gradient-revenue-foreground)",
     })
   })
 
@@ -112,6 +114,7 @@ describe.each([
 
     expect(container.firstElementChild).toHaveStyle({
       backgroundImage: "var(--gradient-calm)",
+      "--muted-foreground": "var(--gradient-calm-foreground)",
     })
   })
 })
@@ -131,6 +134,7 @@ describe("page-auth takes a gradient", () => {
 
     expect(container.firstElementChild).toHaveStyle({
       backgroundImage: "var(--gradient-brand)",
+      "--muted-foreground": "var(--gradient-brand-foreground)",
     })
   })
 })

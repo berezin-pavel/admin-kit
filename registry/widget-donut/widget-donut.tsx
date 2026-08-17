@@ -1,5 +1,6 @@
 "use client"
 
+import type { CSSProperties } from "react"
 import { Cell, Pie, PieChart } from "recharts"
 
 import {
@@ -35,11 +36,16 @@ export interface WidgetDonutProps {
   className?: string
 }
 
-function gradientSurfaceStyle(gradient?: string) {
+function gradientSurfaceStyle(
+  gradient?: string
+): (CSSProperties & Record<string, string>) | undefined {
   return gradient
     ? {
         backgroundImage: `var(--gradient-${gradient})`,
         color: `var(--gradient-${gradient}-foreground)`,
+        "--card-foreground": `var(--gradient-${gradient}-foreground)`,
+        "--muted-foreground": `var(--gradient-${gradient}-foreground)`,
+        "--sidebar-foreground": `var(--gradient-${gradient}-foreground)`,
       }
     : undefined
 }

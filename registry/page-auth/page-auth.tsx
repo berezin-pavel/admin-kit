@@ -1,6 +1,6 @@
 "use client"
 
-import type { FormEvent, ReactNode } from "react"
+import type { CSSProperties, FormEvent, ReactNode } from "react"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -27,11 +27,16 @@ export interface PageAuthProps {
   className?: string
 }
 
-function gradientSurfaceStyle(gradient?: string) {
+function gradientSurfaceStyle(
+  gradient?: string
+): (CSSProperties & Record<string, string>) | undefined {
   return gradient
     ? {
         backgroundImage: `var(--gradient-${gradient})`,
         color: `var(--gradient-${gradient}-foreground)`,
+        "--card-foreground": `var(--gradient-${gradient}-foreground)`,
+        "--muted-foreground": `var(--gradient-${gradient}-foreground)`,
+        "--sidebar-foreground": `var(--gradient-${gradient}-foreground)`,
       }
     : undefined
 }

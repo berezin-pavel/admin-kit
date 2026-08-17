@@ -1,6 +1,6 @@
 "use client"
 
-import type { ReactNode } from "react"
+import type { CSSProperties, ReactNode } from "react"
 import { Bar, BarChart, CartesianGrid, Line, LineChart, XAxis } from "recharts"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -35,11 +35,16 @@ export interface WidgetChartProps {
   className?: string
 }
 
-function gradientSurfaceStyle(gradient?: string) {
+function gradientSurfaceStyle(
+  gradient?: string
+): (CSSProperties & Record<string, string>) | undefined {
   return gradient
     ? {
         backgroundImage: `var(--gradient-${gradient})`,
         color: `var(--gradient-${gradient}-foreground)`,
+        "--card-foreground": `var(--gradient-${gradient}-foreground)`,
+        "--muted-foreground": `var(--gradient-${gradient}-foreground)`,
+        "--sidebar-foreground": `var(--gradient-${gradient}-foreground)`,
       }
     : undefined
 }

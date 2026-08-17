@@ -1,4 +1,4 @@
-import type { ComponentType } from "react"
+import type { ComponentType, CSSProperties } from "react"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -21,11 +21,16 @@ export interface WidgetQuickActionsProps {
   className?: string
 }
 
-function gradientSurfaceStyle(gradient?: string) {
+function gradientSurfaceStyle(
+  gradient?: string
+): (CSSProperties & Record<string, string>) | undefined {
   return gradient
     ? {
         backgroundImage: `var(--gradient-${gradient})`,
         color: `var(--gradient-${gradient}-foreground)`,
+        "--card-foreground": `var(--gradient-${gradient}-foreground)`,
+        "--muted-foreground": `var(--gradient-${gradient}-foreground)`,
+        "--sidebar-foreground": `var(--gradient-${gradient}-foreground)`,
       }
     : undefined
 }
