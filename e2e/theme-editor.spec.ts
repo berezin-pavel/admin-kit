@@ -2,6 +2,8 @@ import { expect, test, type Page } from "@playwright/test"
 
 const STORAGE_KEY = "admin-kit-demo-theme"
 const HYDRATION_POLL_TIMEOUT = 15_000
+const BRAND_HEX = "3b82f6"
+const BRAND_PRIMARY = "oklch(0.623 0.188 259.815)"
 
 async function readPrimary(page: Page) {
   return page.evaluate(() =>
@@ -38,9 +40,11 @@ test("a brand colour picked in the demo repaints a widget and survives a reload"
 }) => {
   const defaultPrimary = (await readPrimary(page)).trim()
 
+  expect(defaultPrimary).not.toBe(BRAND_PRIMARY)
+
   await page.goto("/demo/appearance")
   await page.getByLabel("Brand").click()
-  await page.getByLabel("Color HEX code").fill("3b82f6")
+  await page.getByLabel("Color HEX code").fill(BRAND_HEX)
   await page.keyboard.press("Escape")
 
   await page.goto("/demo")
@@ -48,16 +52,14 @@ test("a brand colour picked in the demo repaints a widget and survives a reload"
     .poll(async () => (await readPrimary(page)).trim(), {
       timeout: HYDRATION_POLL_TIMEOUT,
     })
-    .not.toBe(defaultPrimary)
-  const updatedPrimary = (await readPrimary(page)).trim()
-  expect(updatedPrimary).not.toBe("")
+    .toBe(BRAND_PRIMARY)
 
   await page.reload()
   await expect
     .poll(async () => (await readPrimary(page)).trim(), {
       timeout: HYDRATION_POLL_TIMEOUT,
     })
-    .toBe(updatedPrimary)
+    .toBe(BRAND_PRIMARY)
 })
 
 test("a gradient added in the editor becomes a token", async ({ page }) => {
