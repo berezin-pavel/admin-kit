@@ -6,6 +6,7 @@ export interface DemoDictionary {
     overview: string
     orders: string
     order: string
+    appearance: string
   }
   overview: {
     title: string
@@ -33,6 +34,10 @@ export interface DemoDictionary {
     }
     quickActionToastTitle: (label: string) => string
     reloadButton: string
+  }
+  appearance: {
+    title: string
+    description: string
   }
   standaloneTable: {
     title: string
@@ -238,6 +243,7 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       overview: "Overview",
       orders: "Orders",
       order: "Order #4187",
+      appearance: "Appearance",
     },
     overview: {
       title: "Overview",
@@ -265,6 +271,10 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       },
       quickActionToastTitle: (label) => `${label} — demo action`,
       reloadButton: "Reload",
+    },
+    appearance: {
+      title: "Appearance",
+      description: "Adjust the theme's colors and gradients across the panel",
     },
     standaloneTable: {
       title: "Recent orders",
@@ -494,6 +504,7 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       overview: "Обзор",
       orders: "Заказы",
       order: "Заказ №4187",
+      appearance: "Оформление",
     },
     overview: {
       title: "Обзор",
@@ -521,6 +532,10 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       },
       quickActionToastTitle: (label) => `${label} — демо-действие`,
       reloadButton: "Обновить",
+    },
+    appearance: {
+      title: "Оформление",
+      description: "Настройте цвета и градиенты темы для всей панели",
     },
     standaloneTable: {
       title: "Последние заказы",

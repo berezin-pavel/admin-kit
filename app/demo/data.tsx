@@ -11,6 +11,7 @@ import {
   LayoutDashboard,
   Package,
   PackageCheck,
+  Palette,
   Shirt,
   ShoppingCart,
   SportShoe,
@@ -80,17 +81,19 @@ export const orderStatusLabelByLocale: Record<
 
 const NAV_TITLES: Record<
   DemoLocale,
-  { overview: string; orders: string; order: string }
+  { overview: string; orders: string; order: string; appearance: string }
 > = {
   en: {
     overview: "Overview",
     orders: "Orders",
     order: "Order #4187",
+    appearance: "Appearance",
   },
   ru: {
     overview: "Обзор",
     orders: "Заказы",
     order: "Заказ №4187",
+    appearance: "Оформление",
   },
 }
 
@@ -101,6 +104,7 @@ export function getDemoNav(locale: DemoLocale): readonly AdminNavItem[] {
     { href: "/demo", title: titles.overview, icon: LayoutDashboard },
     { href: "/demo/orders", title: titles.orders, icon: ShoppingCart },
     { href: "/demo/order", title: titles.order, icon: Package },
+    { href: "/demo/appearance", title: titles.appearance, icon: Palette },
   ]
 }
 

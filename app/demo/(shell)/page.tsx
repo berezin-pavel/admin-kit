@@ -188,6 +188,7 @@ export default function DemoPage() {
           trendTooltipFormat={(value) => formatDemoNumber(value, locale)}
           hint={strings.metricHint}
           loading={reloading}
+          gradient="orders"
         />
         <WidgetMetric
           title={strings.metricRevenueTitle}
@@ -201,6 +202,7 @@ export default function DemoPage() {
           trendTooltipFormat={(value) => formatDemoCurrency(value, locale)}
           hint={strings.metricHint}
           loading={reloading}
+          gradient="revenue"
         />
         <WidgetMetric
           title={strings.metricAverageOrderTitle}
