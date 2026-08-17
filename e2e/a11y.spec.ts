@@ -24,16 +24,28 @@ function readPreviews() {
   return previews
 }
 
-test("no showcase preview has a WCAG A or AA violation", async ({ page }) => {
+const additionalRoutes = ["/demo/appearance"]
+
+test("no showcase preview or demo route has a WCAG A or AA violation", async ({
+  page,
+}) => {
   test.setTimeout(900_000)
 
   const previews = readPreviews()
   expect(previews.length).toBeGreaterThan(40)
 
+  const routes = [
+    ...previews.map((preview) => ({
+      path: `/preview/${preview.item}/${preview.view}`,
+      label: `${preview.item}/${preview.view}`,
+    })),
+    ...additionalRoutes.map((path) => ({ path, label: path })),
+  ]
+
   const byRule = new Map<string, { count: number; where: Set<string> }>()
 
-  for (const preview of previews) {
-    await page.goto(`/preview/${preview.item}/${preview.view}`)
+  for (const route of routes) {
+    await page.goto(route.path)
     await page.waitForLoadState("networkidle")
 
     const { violations } = await new AxeBuilder({ page })
@@ -44,7 +56,7 @@ test("no showcase preview has a WCAG A or AA violation", async ({ page }) => {
       const entry = byRule.get(violation.id) ?? { count: 0, where: new Set() }
       entry.count += violation.nodes.length
       if (entry.where.size < 5) {
-        entry.where.add(`${preview.item}/${preview.view}`)
+        entry.where.add(route.label)
       }
       byRule.set(violation.id, entry)
     }
