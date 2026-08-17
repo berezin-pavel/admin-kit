@@ -234,7 +234,7 @@ export function ThemeEditorGradients(
                   type="button"
                   variant="ghost"
                   size="icon-sm"
-                  aria-label={`${labels.removeGradient}: ${gradient.name}`}
+                  aria-label={`${labels.removeGradient}: ${gradient.id}`}
                   onClick={() => setDeletingId(gradient.id)}
                 >
                   <Trash2 />
@@ -270,7 +270,7 @@ export function ThemeEditorGradients(
                       type="button"
                       variant="outline"
                       size="sm"
-                      aria-label={`${labels.suggestDark}: ${gradient.name}`}
+                      aria-label={`${labels.suggestDark}: ${gradient.id}`}
                       onClick={() =>
                         updateGradient(gradient.id, (current) => ({
                           ...current,

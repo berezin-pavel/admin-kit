@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react"
+import { fireEvent, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { describe, expect, it, vi } from "vitest"
 
@@ -80,7 +80,7 @@ describe("ThemeEditor gradients", () => {
     )
 
     await userEvent.click(
-      screen.getByRole("button", { name: "Suggest dark: Revenue" })
+      screen.getByRole("button", { name: "Suggest dark: revenue" })
     )
 
     const next = onChange.mock.calls.at(-1)?.[0].gradients[0]
@@ -115,5 +115,47 @@ describe("ThemeEditor gradients", () => {
     )
 
     expect(screen.queryByRole("status")).toBeNull()
+  })
+
+  it("keeps every row individually addressable after adding twice without renaming", async () => {
+    const onChange = vi.fn()
+    const { rerender } = render(
+      <ThemeEditor value={theme} onChange={onChange} />
+    )
+
+    await userEvent.click(screen.getByRole("button", { name: "Add gradient" }))
+    const afterFirstAdd = onChange.mock.calls.at(-1)?.[0]
+    rerender(<ThemeEditor value={afterFirstAdd} onChange={onChange} />)
+
+    await userEvent.click(screen.getByRole("button", { name: "Add gradient" }))
+    const afterSecondAdd = onChange.mock.calls.at(-1)?.[0]
+    rerender(<ThemeEditor value={afterSecondAdd} onChange={onChange} />)
+
+    const [first, second] = afterSecondAdd.gradients
+    expect(first.name).toBe(second.name)
+    expect(first.id).not.toBe(second.id)
+    expect(
+      screen.getByRole("button", { name: `Remove: ${first.id}` })
+    ).toBeInTheDocument()
+    expect(
+      screen.getByRole("button", { name: `Remove: ${second.id}` })
+    ).toBeInTheDocument()
+  })
+
+  it("keeps the id fixed when the name changes", () => {
+    const onChange = vi.fn()
+    render(
+      <ThemeEditor
+        value={{ ...theme, gradients: [revenue] }}
+        onChange={onChange}
+      />
+    )
+
+    const name = screen.getByLabelText("Name")
+    fireEvent.change(name, { target: { value: "Renamed" } })
+
+    const last = onChange.mock.calls.at(-1)?.[0].gradients[0]
+    expect(last.name).toBe("Renamed")
+    expect(last.id).toBe(revenue.id)
   })
 })
