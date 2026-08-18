@@ -218,6 +218,41 @@ describe("page-auth takes a gradient", () => {
     expect(getByText("Store")).not.toHaveClass("text-muted-foreground")
   })
 
+  it("recolours the footer the same way as the app name", () => {
+    const { getByText } = render(
+      <PageAuth
+        appName="Store"
+        title="Sign in"
+        onSubmit={() => {}}
+        gradient="brand"
+        footer={<span>Need help?</span>}
+      >
+        <p>Fields</p>
+      </PageAuth>
+    )
+    const footer = getByText("Need help?").parentElement
+
+    expect(footer).toHaveStyle({ color: "var(--gradient-brand-foreground)" })
+    expect(footer).not.toHaveClass("text-muted-foreground")
+  })
+
+  it("leaves the footer at the theme default without the prop", () => {
+    const { getByText } = render(
+      <PageAuth
+        appName="Store"
+        title="Sign in"
+        onSubmit={() => {}}
+        footer={<span>Need help?</span>}
+      >
+        <p>Fields</p>
+      </PageAuth>
+    )
+    const footer = getByText("Need help?").parentElement
+
+    expect(footer?.getAttribute("style")).toBeNull()
+    expect(footer).toHaveClass("text-muted-foreground")
+  })
+
   it("leaves the opaque card reading the theme's own foreground", () => {
     const { container } = renderAuth("brand")
     const card = container.querySelector('[data-slot="card"]')

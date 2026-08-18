@@ -116,7 +116,13 @@ export function PageAuth({
             </CardContent>
           </Card>
           {footer ? (
-            <div className="text-center text-sm text-muted-foreground">
+            <div
+              className={cn(
+                "text-center text-sm",
+                gradient ? undefined : "text-muted-foreground"
+              )}
+              style={backdropTextStyle(gradient)}
+            >
               {footer}
             </div>
           ) : null}
