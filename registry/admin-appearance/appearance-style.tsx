@@ -5,11 +5,15 @@ export function AppearanceStyle({ value }: { value: AdminAppearance }) {
   return <style dangerouslySetInnerHTML={{ __html: appearanceCss(value) }} />
 }
 
+const THEME_BACKGROUND = { light: "#ffffff", dark: "#0a0a0a" }
+
 export function backdropThemeColors(
-  gradient: GradientId
-): { light: string; dark: string } | undefined {
+  gradient: GradientId | null | undefined
+): { light: string; dark: string } {
   const entry = gradientPalette.find((candidate) => candidate.id === gradient)
-  return entry ? { light: entry.softLight.from, dark: entry.softDark.from } : undefined
+  return entry
+    ? { light: entry.softLight.from, dark: entry.softDark.from }
+    : THEME_BACKGROUND
 }
 
 export function AppearanceThemeColor({
@@ -17,10 +21,7 @@ export function AppearanceThemeColor({
 }: {
   gradient: GradientId | null | undefined
 }) {
-  const colors = gradient ? backdropThemeColors(gradient) : undefined
-  if (!colors) {
-    return null
-  }
+  const colors = backdropThemeColors(gradient)
   return (
     <>
       <meta

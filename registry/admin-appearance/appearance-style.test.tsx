@@ -25,16 +25,19 @@ describe("AppearanceThemeColor", () => {
     const metas = document.head.querySelectorAll('meta[name="theme-color"]')
 
     expect(metas).toHaveLength(2)
-    expect(metas[0]).toHaveAttribute("content", backdropThemeColors("ocean")?.light)
+    expect(metas[0]).toHaveAttribute("content", backdropThemeColors("ocean").light)
     expect(metas[1]).toHaveAttribute("media", "(prefers-color-scheme: dark)")
   })
 
-  it("renders nothing without a backdrop", () => {
+  it("falls back to the theme's own background without a backdrop", () => {
     document.head
       .querySelectorAll('meta[name="theme-color"]')
       .forEach((node) => node.remove())
-    const { container } = render(<AppearanceThemeColor gradient={null} />)
-    expect(container.innerHTML).toBe("")
-    expect(document.head.querySelectorAll('meta[name="theme-color"]')).toHaveLength(0)
+    render(<AppearanceThemeColor gradient={null} />)
+    const metas = document.head.querySelectorAll('meta[name="theme-color"]')
+
+    expect(metas).toHaveLength(2)
+    expect(metas[0]).toHaveAttribute("content", "#ffffff")
+    expect(metas[1]).toHaveAttribute("content", "#0a0a0a")
   })
 })
