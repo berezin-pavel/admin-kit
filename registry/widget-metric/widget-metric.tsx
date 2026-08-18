@@ -8,6 +8,10 @@ import { CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { cn } from "@/lib/utils"
 import { Block } from "@/registry/admin-appearance/block"
+import {
+  resolveBlockGradient,
+  useBlockAppearance,
+} from "@/registry/admin-appearance/appearance-provider"
 import type { GradientId } from "@/registry/admin-appearance/appearance-palette"
 
 export type MetricDirection = "up" | "down"
@@ -55,6 +59,7 @@ export function WidgetMetric({
   const TrendIcon = trend?.direction === "down" ? TrendingDown : TrendingUp
   const tone =
     trend?.tone ?? (trend?.direction === "down" ? "negative" : "positive")
+  const painted = resolveBlockGradient(useBlockAppearance(blockId), gradient)
 
   return (
     <Block id={blockId} gradient={gradient} headings className={className}>
@@ -87,7 +92,7 @@ export function WidgetMetric({
                 <span
                   className={cn(
                     "flex items-center gap-1 text-sm whitespace-nowrap",
-                    !gradient &&
+                    !painted &&
                       (tone === "negative" ? "text-destructive" : "text-primary")
                   )}
                 >

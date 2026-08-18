@@ -121,3 +121,13 @@ export function setBlockAppearance(
 
   return { ...value, blocks }
 }
+
+export function resolveBlockGradient(
+  stored: BlockAppearance,
+  fallback?: GradientId
+): GradientId | undefined {
+  if (stored.gradient === null) {
+    return undefined
+  }
+  return stored.gradient ?? fallback
+}

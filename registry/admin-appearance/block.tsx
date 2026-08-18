@@ -13,6 +13,7 @@ import {
 import { cn } from "@/lib/utils"
 
 import {
+  resolveBlockGradient,
   setBlockAppearance,
   useAppearance,
   useBlockAppearance,
@@ -46,8 +47,7 @@ export function Block({
   const appearance = useAppearance()
   const stored = useBlockAppearance(id)
 
-  const resolvedGradient =
-    stored.gradient === null ? undefined : (stored.gradient ?? gradient)
+  const resolvedGradient = resolveBlockGradient(stored, gradient)
 
   const showMenu = Boolean(appearance?.editable) && id !== undefined
 

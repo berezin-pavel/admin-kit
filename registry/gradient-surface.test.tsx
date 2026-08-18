@@ -403,3 +403,23 @@ describe.each([
     expect(icon?.getAttribute("class")).toMatch(/text-destructive/)
   })
 })
+
+describe("widget-metric trend when the gradient comes from the provider", () => {
+  it("drops the tone colour class for a stored gradient without a gradient prop", () => {
+    const { getByText } = render(
+      <AppearanceProvider
+        value={{ ...defaultAdminAppearance, blocks: { revenue: { gradient: "ember" } } }}
+        onChange={() => {}}
+      >
+        <WidgetMetric
+          blockId="revenue"
+          title="Revenue"
+          value="12"
+          trend={{ direction: "down", value: "-3%", tone: "negative" }}
+        />
+      </AppearanceProvider>
+    )
+
+    expect(getByText("-3%").className).not.toMatch(/text-destructive|text-primary/)
+  })
+})
