@@ -336,7 +336,10 @@ export function WidgetTable<Row>({
           </div>
         </CardHeader>
       ) : null}
-      <CardContent aria-busy={loading || undefined}>
+      <CardContent
+        aria-busy={loading || undefined}
+        className={cn(pagination && !loading && "-mb-(--card-spacing)")}
+      >
         {loading ? (
           <Table>
             <TableHeader>

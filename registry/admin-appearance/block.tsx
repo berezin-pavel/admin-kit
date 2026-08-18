@@ -111,7 +111,7 @@ function BlockMenu({
           <Button
             variant="ghost"
             size="icon"
-            className="absolute top-0.5 right-0.5 z-10 size-5 opacity-0 transition-opacity group-hover/block:opacity-100 focus-visible:opacity-100 data-popup-open:opacity-100"
+            className="absolute top-0 right-0 z-10 size-5 rounded-tr-xl opacity-0 transition-opacity group-hover/block:opacity-100 focus-visible:opacity-100 data-popup-open:opacity-100"
           />
         }
       >
