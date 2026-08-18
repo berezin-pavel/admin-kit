@@ -1,11 +1,14 @@
 import type { ReactNode } from "react"
 
-import { cn } from "@/lib/utils"
+import { CardHeader } from "@/components/ui/card"
+import { Block } from "@/registry/admin-appearance/block"
 
 export interface PageHeaderProps {
   title: string
   description?: string
   actions?: ReactNode
+  breadcrumbs?: ReactNode
+  blockId?: string
   className?: string
 }
 
@@ -13,24 +16,31 @@ export function PageHeader({
   title,
   description,
   actions,
+  breadcrumbs,
+  blockId,
   className,
 }: PageHeaderProps) {
   return (
-    <div
-      className={cn(
-        "flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between",
-        className
-      )}
-    >
-      <div className="flex flex-col gap-1">
-        <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
-        {description ? (
-          <p className="text-sm text-muted-foreground">{description}</p>
-        ) : null}
-      </div>
-      {actions ? (
-        <div className="flex flex-wrap items-center gap-2">{actions}</div>
-      ) : null}
-    </div>
+    <Block id={blockId} headings className={className}>
+      <CardHeader>
+        {breadcrumbs ? <div>{breadcrumbs}</div> : null}
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col gap-1">
+            <h1
+              data-slot="card-title"
+              className="text-2xl font-semibold tracking-tight"
+            >
+              {title}
+            </h1>
+            {description ? (
+              <p className="text-sm text-muted-foreground">{description}</p>
+            ) : null}
+          </div>
+          {actions ? (
+            <div className="flex flex-wrap items-center gap-2">{actions}</div>
+          ) : null}
+        </div>
+      </CardHeader>
+    </Block>
   )
 }

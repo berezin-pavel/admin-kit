@@ -2,8 +2,10 @@
 
 import type { ComponentType, ReactNode } from "react"
 
+import { CardContent } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { cn } from "@/lib/utils"
+import { Block } from "@/registry/admin-appearance/block"
 
 export interface PageTabsItem {
   id: string
@@ -19,6 +21,7 @@ export interface PageTabsProps {
   value: string
   onValueChange: (value: string) => void
   actions?: ReactNode
+  blockId?: string
   className?: string
 }
 
@@ -27,6 +30,7 @@ export function PageTabs({
   value,
   onValueChange,
   actions,
+  blockId,
   className,
 }: PageTabsProps) {
   return (
@@ -35,35 +39,37 @@ export function PageTabs({
       onValueChange={(nextValue) => onValueChange(nextValue)}
       className={cn("gap-4", className)}
     >
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <div className="min-w-0 overflow-x-auto">
-          <TabsList className="gap-1 bg-transparent p-0 group-data-horizontal/tabs:h-auto">
-            {items.map((item) => {
-              const Icon = item.icon
+      <Block id={blockId ? `${blockId}.tabs` : undefined}>
+        <CardContent className="flex flex-wrap items-center justify-between gap-2 py-2">
+          <div className="min-w-0 overflow-x-auto">
+            <TabsList className="gap-1 bg-transparent p-0 group-data-horizontal/tabs:h-auto">
+              {items.map((item) => {
+                const Icon = item.icon
 
-              return (
-                <TabsTrigger
-                  key={item.id}
-                  value={item.id}
-                  disabled={item.disabled}
-                  className="h-9 gap-2 rounded-md px-3 font-normal text-sidebar-foreground hover:bg-sidebar-accent/50 data-active:bg-sidebar-active data-active:text-sidebar-active-foreground data-active:shadow-none dark:data-active:border-transparent dark:data-active:bg-sidebar-active"
-                >
-                  {Icon ? (
-                    <Icon data-icon="inline-start" className="size-4" />
-                  ) : null}
-                  {item.label}
-                  {item.badge != null ? (
-                    <span data-icon="inline-end">{item.badge}</span>
-                  ) : null}
-                </TabsTrigger>
-              )
-            })}
-          </TabsList>
-        </div>
-        {actions ? (
-          <div className="flex items-center gap-2">{actions}</div>
-        ) : null}
-      </div>
+                return (
+                  <TabsTrigger
+                    key={item.id}
+                    value={item.id}
+                    disabled={item.disabled}
+                    className="h-9 gap-2 rounded-md px-3 font-normal text-sidebar-foreground hover:bg-sidebar-accent/50 data-active:bg-sidebar-active data-active:text-sidebar-active-foreground data-active:shadow-none dark:data-active:border-transparent dark:data-active:bg-sidebar-active"
+                  >
+                    {Icon ? (
+                      <Icon data-icon="inline-start" className="size-4" />
+                    ) : null}
+                    {item.label}
+                    {item.badge != null ? (
+                      <span data-icon="inline-end">{item.badge}</span>
+                    ) : null}
+                  </TabsTrigger>
+                )
+              })}
+            </TabsList>
+          </div>
+          {actions ? (
+            <div className="flex items-center gap-2">{actions}</div>
+          ) : null}
+        </CardContent>
+      </Block>
       {items.map((item) => (
         <TabsContent key={item.id} value={item.id}>
           {item.content}

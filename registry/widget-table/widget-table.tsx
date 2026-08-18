@@ -3,7 +3,6 @@ import type { ComponentType, Key, ReactNode } from "react"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
-  Card,
   CardContent,
   CardFooter,
   CardHeader,
@@ -19,6 +18,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { cn } from "@/lib/utils"
+import { Block } from "@/registry/admin-appearance/block"
 import { StateEmpty } from "@/registry/state-empty/state-empty"
 
 import { WidgetTableColumnsMenu } from "./widget-table-columns-menu"
@@ -105,6 +105,7 @@ export const widgetTableLabelDefaults: Required<WidgetTableLabels> = {
 }
 
 export interface WidgetTableProps<Row> {
+  blockId?: string
   title?: string
   columns: readonly WidgetTableColumn<Row>[]
   rows: readonly Row[]
@@ -218,6 +219,7 @@ function getAriaSort(
 const skeletonRowCount = 3
 
 export function WidgetTable<Row>({
+  blockId,
   title,
   columns,
   rows,
@@ -265,7 +267,7 @@ export function WidgetTable<Row>({
   )
 
   return (
-    <Card className={className}>
+    <Block id={blockId} className={className}>
       {hasHeader ? (
         <CardHeader className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex flex-wrap items-center gap-3">
@@ -517,6 +519,6 @@ export function WidgetTable<Row>({
           />
         </CardFooter>
       ) : null}
-    </Card>
+    </Block>
   )
 }

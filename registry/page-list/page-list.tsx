@@ -2,6 +2,7 @@ import type { Key, ReactNode } from "react"
 
 import { cn } from "@/lib/utils"
 import type { DateRangeFieldProps } from "@/registry/date-range-field/date-range-field"
+import { PageHeader } from "@/registry/page-header/page-header"
 import { StateError } from "@/registry/state-error/state-error"
 import { StateForbidden } from "@/registry/state-forbidden/state-forbidden"
 import { StateLoading } from "@/registry/state-loading/state-loading"
@@ -32,6 +33,7 @@ export interface PageListFilter {
 export type PageStatus = "ready" | "loading" | "error" | "forbidden" | "offline"
 
 export interface PageListProps<Row> {
+  blockId?: string
   title: string
   description?: string
   actions?: ReactNode
@@ -77,6 +79,7 @@ function getStatusContent(status: PageStatus): ReactNode {
 }
 
 export function PageList<Row>({
+  blockId,
   title,
   description,
   actions,
@@ -114,21 +117,15 @@ export function PageList<Row>({
 }: PageListProps<Row>) {
   return (
     <div className={cn("flex flex-col gap-6", className)}>
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div className="flex flex-col gap-1">
-          <h1 className="font-heading text-xl font-semibold text-foreground">
-            {title}
-          </h1>
-          {description ? (
-            <p className="text-sm text-muted-foreground">{description}</p>
-          ) : null}
-        </div>
-        {actions ? (
-          <div className="flex shrink-0 items-center gap-2">{actions}</div>
-        ) : null}
-      </div>
+      <PageHeader
+        title={title}
+        description={description}
+        actions={actions}
+        blockId={blockId ? `${blockId}.header` : undefined}
+      />
 
       <WidgetTable
+        blockId={blockId ? `${blockId}.table` : undefined}
         columns={columns}
         rows={status === "ready" ? rows : []}
         getRowKey={getRowKey}

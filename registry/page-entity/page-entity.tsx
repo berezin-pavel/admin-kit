@@ -1,7 +1,9 @@
 import type { ReactNode } from "react"
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
+import { Block } from "@/registry/admin-appearance/block"
+import { PageHeader } from "@/registry/page-header/page-header"
 import { StateError } from "@/registry/state-error/state-error"
 import { StateForbidden } from "@/registry/state-forbidden/state-forbidden"
 import { StateLoading } from "@/registry/state-loading/state-loading"
@@ -29,6 +31,7 @@ const sectionColumnsClassName: Record<1 | 2 | 3, string> = {
 export type PageStatus = "ready" | "loading" | "error" | "forbidden" | "offline"
 
 export interface PageEntityProps {
+  blockId?: string
   title: string
   description?: string
   actions?: ReactNode
@@ -38,6 +41,7 @@ export interface PageEntityProps {
 }
 
 export function PageEntity({
+  blockId,
   title,
   description,
   actions,
@@ -47,17 +51,12 @@ export function PageEntity({
 }: PageEntityProps) {
   return (
     <div className={cn("flex flex-col gap-4", className)}>
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <div className="flex flex-col gap-1">
-          <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
-          {description ? (
-            <p className="text-sm text-muted-foreground">{description}</p>
-          ) : null}
-        </div>
-        {actions ? (
-          <div className="flex flex-wrap items-center gap-2">{actions}</div>
-        ) : null}
-      </div>
+      <PageHeader
+        title={title}
+        description={description}
+        actions={actions}
+        blockId={blockId ? `${blockId}.header` : undefined}
+      />
       {status === "loading" ? (
         <StateLoading />
       ) : status === "error" ? (
@@ -69,7 +68,11 @@ export function PageEntity({
       ) : (
         <div className="flex flex-col gap-4">
           {sections.map((section) => (
-            <Card key={section.id}>
+            <Block
+              key={section.id}
+              id={blockId ? `${blockId}.${section.id}` : undefined}
+              headings
+            >
               {section.title ? (
                 <CardHeader>
                   <CardTitle className="text-sm font-medium text-muted-foreground">
@@ -94,7 +97,7 @@ export function PageEntity({
                   ))}
                 </dl>
               </CardContent>
-            </Card>
+            </Block>
           ))}
         </div>
       )}
