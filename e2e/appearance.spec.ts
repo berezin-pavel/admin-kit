@@ -10,8 +10,13 @@ async function readPrimary(page: Page) {
 }
 
 async function openMenu(page: Page) {
-  await page.getByRole("button", { name: "Appearance", exact: true }).click()
-  return page.getByRole("dialog", { name: "Appearance", exact: true })
+  const trigger = page.getByRole("button", { name: "Appearance", exact: true })
+  const dialog = page.getByRole("dialog", { name: "Appearance", exact: true })
+  await expect(async () => {
+    await trigger.click()
+    await expect(dialog).toBeVisible({ timeout: 2_000 })
+  }).toPass({ timeout: HYDRATION_POLL_TIMEOUT })
+  return dialog
 }
 
 test.beforeEach(async ({ page }) => {
@@ -69,7 +74,7 @@ test("a per-page backdrop chosen in the menu paints only that page", async ({
 }) => {
   const menu = await openMenu(page)
   await menu.getByRole("combobox", { name: "Orders" }).click()
-  await page.getByRole("option", { name: "Grape" }).click()
+  await page.getByRole("option", { name: "Grape", exact: true }).click()
   await page.keyboard.press("Escape")
 
   await page.goto("/demo/orders")

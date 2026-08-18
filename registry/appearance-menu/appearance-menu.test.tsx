@@ -81,7 +81,9 @@ describe("AppearanceMenu sidebar and sign-in selects", () => {
     const user = await openMenu(localeRu.appearanceMenu.label)
     await user.click(screen.getByRole("combobox", { name: localeRu.appearanceMenu.sidebar }))
 
-    expect(await screen.findByText("Самоцветы")).toBeInTheDocument()
+    expect(
+      await screen.findByText(localeRu.appearanceMenu.families.jewel)
+    ).toBeInTheDocument()
   })
 
   it("clears the sidebar gradient with No gradient", async () => {

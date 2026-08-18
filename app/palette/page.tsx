@@ -157,8 +157,10 @@ export default function PalettePage() {
                     </Block>
                     <div className="flex flex-col gap-1">
                       <div
-                        data-backdrop={gradient.id}
                         className="h-6 rounded-md"
+                        style={{
+                          backgroundImage: `var(--gradient-${gradient.id}-soft)`,
+                        }}
                       />
                       <span className="text-xs text-muted-foreground">
                         soft backdrop
