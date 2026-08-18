@@ -176,61 +176,6 @@
     },
     {
       "$schema": "https://ui.shadcn.com/schema/registry-item.json",
-      "name": "admin-theme-tokens",
-      "type": "registry:component",
-      "title": "Admin theme tokens",
-      "description": "The theme as data instead of hand-written CSS: five source colours plus a radius go into deriveAdminTheme, which computes every token admin-theme declares for both schemes in OKLCH, and adminThemeToCss prints the result as custom properties a consumer renders in a style element. Foreground colours are never chosen by hand, they are searched by contrast, so no combination of sources produces text below 4.5:1 — the surface itself is nudged when the text alone cannot save it. The dark scheme is derived rather than stored. Gradients are a separate class of token, named by the consumer and emitted as --gradient-<id> with a matching --gradient-<id>-foreground taken from the gradient's worst stop, because a gradient cannot live in a colour token that also feeds text, borders and oklch algebra. Ids and colours are validated before they reach the CSS text and an unusable gradient is dropped whole rather than half-emitted. Pure TypeScript with no React and no dependencies: suggestDarkStops proposes a dark variant of a gradient and fits its chroma back into the sRGB gamut so a darkened stop keeps its hue instead of collapsing to grey, contrastRatio is the WCAG ratio, and defaultAdminThemeSources reproduces the shipped admin-theme as closely as sRGB allows. Install it with theme-editor, or on its own to generate a theme in a script.",
-      "files": [
-        {
-          "path": "registry/admin-theme-tokens/admin-theme-color.ts",
-          "type": "registry:component",
-          "target": "@components/admin-theme-color.ts"
-        },
-        {
-          "path": "registry/admin-theme-tokens/admin-theme-tokens.ts",
-          "type": "registry:component",
-          "target": "@components/admin-theme-tokens.ts"
-        },
-        {
-          "path": "registry/admin-theme-tokens/admin-theme-css.ts",
-          "type": "registry:component",
-          "target": "@components/admin-theme-css.ts"
-        }
-      ]
-    },
-    {
-      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
-      "name": "theme-editor",
-      "type": "registry:component",
-      "title": "Theme editor",
-      "description": "A controlled form over an AdminTheme: five source colours, a corner radius, and a palette of named gradients the consumer hangs on individual cards. It holds no theme and writes nowhere — value and onChange, the rule theme-toggle established — so the same element is a runtime appearance screen inside a panel and, with showCss, a globals.css generator in a showcase. Every gradient carries a light and a dark variant side by side; the dark one is proposed on demand by suggestDarkStops and then stays editable, because recomputing it whenever the light variant changes would discard a hand-tuned gradient. A gradient's id is derived from its name once, at add time, and never again, so renaming a label cannot orphan the cards already pointing at it. Contrast is reported beside each gradient and warns below 4.5:1 without blocking anything: refusing an owner their own brand colour reads as a broken panel, so the kit states the consequence rather than overruling the choice. Labels are props with English defaults and locale-ru carries the matching themeEditor slice. Requires admin-theme-tokens for the derivation and the kit's colour, number and text fields for the controls.",
-      "registryDependencies": [
-        "berezin-pavel/admin-kit/admin-theme-tokens",
-        "berezin-pavel/admin-kit/color-field",
-        "berezin-pavel/admin-kit/number-field",
-        "berezin-pavel/admin-kit/text-field",
-        "berezin-pavel/admin-kit/confirm-dialog",
-        "button",
-        "card"
-      ],
-      "dependencies": [
-        "lucide-react"
-      ],
-      "files": [
-        {
-          "path": "registry/theme-editor/theme-editor.tsx",
-          "type": "registry:component",
-          "target": "@components/theme-editor.tsx"
-        },
-        {
-          "path": "registry/theme-editor/theme-editor-gradients.tsx",
-          "type": "registry:component",
-          "target": "@components/theme-editor-gradients.tsx"
-        }
-      ]
-    },
-    {
-      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
       "name": "admin-shell",
       "type": "registry:block",
       "title": "Admin shell",

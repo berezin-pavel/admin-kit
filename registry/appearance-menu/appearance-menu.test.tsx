@@ -204,7 +204,7 @@ describe("AppearanceMenu localization", () => {
     )
 
     expect(
-      screen.getByRole("button", { name: "Оформление" })
+      screen.getByRole("button", { name: localeRu.appearanceMenu.label })
     ).toBeInTheDocument()
   })
 })
