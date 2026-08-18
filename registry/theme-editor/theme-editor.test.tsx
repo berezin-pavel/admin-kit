@@ -2,7 +2,10 @@ import { fireEvent, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { describe, expect, it, vi } from "vitest"
 
-import { defaultAdminThemeSources } from "../admin-theme-tokens/admin-theme-tokens"
+import {
+  defaultAdminThemeSources,
+  gradientPresets,
+} from "../admin-theme-tokens/admin-theme-tokens"
 import { ThemeEditor } from "./theme-editor"
 
 const theme = { sources: defaultAdminThemeSources, gradients: [] }
@@ -157,5 +160,83 @@ describe("ThemeEditor gradients", () => {
     const last = onChange.mock.calls.at(-1)?.[0].gradients[0]
     expect(last.name).toBe("Renamed")
     expect(last.id).toBe(revenue.id)
+  })
+})
+
+describe("ThemeEditor gradient presets", () => {
+  it("offers every preset as a swatch a shop owner can pick by name", () => {
+    render(<ThemeEditor value={theme} onChange={() => {}} />)
+
+    for (const preset of gradientPresets) {
+      expect(
+        screen.getByRole("button", { name: `Add preset: ${preset.name}` })
+      ).toBeInTheDocument()
+    }
+  })
+
+  it("appends a preset with its own stops and a fresh id derived from its name", async () => {
+    const onChange = vi.fn()
+    const preset = gradientPresets[0]
+    render(<ThemeEditor value={theme} onChange={onChange} />)
+
+    await userEvent.click(
+      screen.getByRole("button", { name: `Add preset: ${preset.name}` })
+    )
+
+    const added = onChange.mock.calls.at(-1)?.[0].gradients.at(-1)
+    expect(added.name).toBe(preset.name)
+    expect(added.light).toEqual(preset.light)
+    expect(added.dark).toEqual(preset.dark)
+    expect(added.id).toMatch(/^[a-z][a-z0-9-]*$/)
+  })
+
+  it("does not collide ids when the same preset is added twice", async () => {
+    const onChange = vi.fn()
+    const preset = gradientPresets[0]
+    const { rerender } = render(
+      <ThemeEditor value={theme} onChange={onChange} />
+    )
+
+    await userEvent.click(
+      screen.getByRole("button", { name: `Add preset: ${preset.name}` })
+    )
+    const afterFirstAdd = onChange.mock.calls.at(-1)?.[0]
+    rerender(<ThemeEditor value={afterFirstAdd} onChange={onChange} />)
+
+    await userEvent.click(
+      screen.getAllByRole("button", { name: `Add preset: ${preset.name}` })[0]
+    )
+    const afterSecondAdd = onChange.mock.calls.at(-1)?.[0]
+
+    const [first, second] = afterSecondAdd.gradients
+    expect(first.id).not.toBe(second.id)
+    expect(first.name).toBe(second.name)
+  })
+
+  it("never triggers the contrast warning for a freshly added preset", async () => {
+    const onChange = vi.fn()
+    const { rerender } = render(
+      <ThemeEditor value={theme} onChange={onChange} />
+    )
+
+    for (const preset of gradientPresets) {
+      await userEvent.click(
+        screen.getByRole("button", { name: `Add preset: ${preset.name}` })
+      )
+      const next = onChange.mock.calls.at(-1)?.[0]
+      rerender(<ThemeEditor value={next} onChange={onChange} />)
+    }
+
+    expect(screen.queryByRole("status")).toBeNull()
+  })
+
+  it("leaves the hand-rolled add path untouched", async () => {
+    const onChange = vi.fn()
+    render(<ThemeEditor value={theme} onChange={onChange} />)
+
+    await userEvent.click(screen.getByRole("button", { name: "Add gradient" }))
+
+    const added = onChange.mock.calls.at(-1)?.[0].gradients.at(-1)
+    expect(added.name).toBe("New gradient")
   })
 })

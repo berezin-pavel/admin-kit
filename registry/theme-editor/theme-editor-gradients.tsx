@@ -18,8 +18,10 @@ import {
   isGradientId,
 } from "@/registry/admin-theme-tokens/admin-theme-css"
 import {
+  gradientPresets,
   suggestDarkStops,
   type AdminThemeGradient,
+  type GradientPreset,
   type GradientStops,
 } from "@/registry/admin-theme-tokens/admin-theme-tokens"
 import { ColorField } from "@/registry/color-field/color-field"
@@ -161,6 +163,21 @@ export function ThemeEditorGradients(
     ])
   }
 
+  const handleAddPreset = (preset: GradientPreset) => {
+    const existingIds = new Set(gradients.map((gradient) => gradient.id))
+    const id = deriveGradientId(preset.name, existingIds)
+
+    onChange([
+      ...gradients,
+      {
+        id,
+        name: preset.name,
+        light: preset.light,
+        dark: preset.dark,
+      },
+    ])
+  }
+
   const handleRemove = () => {
     if (!deletingGradient) return
     onChange(
@@ -185,6 +202,28 @@ export function ThemeEditorGradients(
         </CardAction>
       </CardHeader>
       <CardContent className="flex flex-col gap-6">
+        <div className="flex flex-col gap-2">
+          <span className="text-sm font-medium">
+            {labels.gradientPresetsLabel}
+          </span>
+          <div className="flex flex-wrap gap-2">
+            {gradientPresets.map((preset) => (
+              <button
+                key={preset.name}
+                type="button"
+                className="flex h-9 items-center rounded-md px-3 text-xs font-medium ring-1 ring-foreground/10 transition-opacity hover:opacity-90"
+                style={{
+                  background: gradientCss(preset.light),
+                  color: gradientForeground(preset.light),
+                }}
+                aria-label={`${labels.addGradientPreset}: ${preset.name}`}
+                onClick={() => handleAddPreset(preset)}
+              >
+                {preset.name}
+              </button>
+            ))}
+          </div>
+        </div>
         {gradients.map((gradient) => {
           const lightContrast = contrastRatioOf(gradient.light)
           const darkContrast = contrastRatioOf(gradient.dark)

@@ -487,3 +487,37 @@ export function suggestDarkStops(light: GradientStops): GradientStops {
     to: darken(light.to),
   }
 }
+
+export interface GradientPreset {
+  name: string
+  light: GradientStops
+  dark: GradientStops
+}
+
+export const gradientPresets: readonly GradientPreset[] = [
+  {
+    name: "Ember",
+    light: { angle: 135, from: "#b91c1c", to: "#9a3412" },
+    dark: { angle: 135, from: "#991b1b", to: "#7c2d12" },
+  },
+  {
+    name: "Meadow",
+    light: { angle: 135, from: "#166534", to: "#065f46" },
+    dark: { angle: 135, from: "#14532d", to: "#064e3b" },
+  },
+  {
+    name: "Ocean",
+    light: { angle: 135, from: "#0369a1", to: "#1d4ed8" },
+    dark: { angle: 135, from: "#075985", to: "#1e40af" },
+  },
+  {
+    name: "Dusk",
+    light: { angle: 135, from: "#4338ca", to: "#6d28d9" },
+    dark: { angle: 135, from: "#3730a3", to: "#5b21b6" },
+  },
+  {
+    name: "Berry",
+    light: { angle: 135, from: "#a21caf", to: "#be185d" },
+    dark: { angle: 135, from: "#86198f", to: "#9d174d" },
+  },
+]

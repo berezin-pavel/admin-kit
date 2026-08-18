@@ -32,6 +32,8 @@ export interface ThemeEditorLabels {
   sourcesTitle?: string
   gradientsTitle?: string
   addGradient?: string
+  gradientPresetsLabel?: string
+  addGradientPreset?: string
   gradientName?: string
   gradientAngle?: string
   gradientFrom?: string
@@ -59,6 +61,8 @@ export const themeEditorLabelDefaults: Required<ThemeEditorLabels> = {
   sourcesTitle: "Colors",
   gradientsTitle: "Gradients",
   addGradient: "Add gradient",
+  gradientPresetsLabel: "Presets",
+  addGradientPreset: "Add preset",
   gradientName: "Name",
   gradientAngle: "Angle",
   gradientFrom: "From",

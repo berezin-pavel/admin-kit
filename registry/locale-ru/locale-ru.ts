@@ -133,6 +133,8 @@ export const localeRu = {
     sourcesTitle: "Цвета",
     gradientsTitle: "Градиенты",
     addGradient: "Добавить градиент",
+    gradientPresetsLabel: "Готовые градиенты",
+    addGradientPreset: "Добавить готовый градиент",
     gradientName: "Название",
     gradientAngle: "Угол",
     gradientFrom: "От",
