@@ -657,9 +657,17 @@ function formatActivityTimestamp(date: Date): string {
   return `${year}-${month}-${day}T${hours}:${minutes}`
 }
 
+const ACTIVITY_ANCHOR_HOUR = 9
+
+function activityAnchor(today: Date): Date {
+  const anchor = new Date(today)
+  anchor.setHours(ACTIVITY_ANCHOR_HOUR, 0, 0, 0)
+  return anchor
+}
+
 export function getDemoActivityEntries(
   locale: DemoLocale,
-  today: Date = new Date()
+  today: Date = activityAnchor(new Date())
 ): readonly WidgetActivityEntry[] {
   const rows = getDemoOrderRows(locale).slice(0, ACTIVITY_ENTRY_COUNT)
   const actionLabel = ACTIVITY_ACTION_LABEL[locale]
