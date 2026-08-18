@@ -8,6 +8,7 @@ import {
   gradientPresets,
   type AdminTheme,
 } from "@/registry/admin-theme-tokens/admin-theme-tokens"
+import { isGradientId, type GradientId } from "@/registry/admin-appearance/appearance-palette"
 
 const STORAGE_KEY = "admin-kit-demo-theme"
 
@@ -70,11 +71,11 @@ export const DEMO_GRADIENT_BLOCK_IDS = ["orders-metric", "revenue-metric"] as co
 export type DemoGradientBlockId = (typeof DEMO_GRADIENT_BLOCK_IDS)[number]
 
 export interface DemoSurfaceGradients {
-  shell?: string
-  signIn?: string
+  shell?: GradientId
+  signIn?: GradientId
 }
 
-export type DemoBlockGradients = Partial<Record<DemoGradientBlockId, string>>
+export type DemoBlockGradients = Partial<Record<DemoGradientBlockId, GradientId>>
 
 export interface DemoGradientAssignment {
   surfaces: DemoSurfaceGradients
@@ -99,8 +100,8 @@ function isDemoGradientBlockId(value: string): value is DemoGradientBlockId {
 function isDemoSurfaceGradients(value: unknown): value is DemoSurfaceGradients {
   return (
     isRecord(value) &&
-    (value.shell === undefined || typeof value.shell === "string") &&
-    (value.signIn === undefined || typeof value.signIn === "string")
+    (value.shell === undefined || isGradientId(value.shell)) &&
+    (value.signIn === undefined || isGradientId(value.signIn))
   )
 }
 
@@ -108,7 +109,7 @@ function isDemoBlockGradients(value: unknown): value is DemoBlockGradients {
   return (
     isRecord(value) &&
     Object.entries(value).every(
-      ([key, entry]) => isDemoGradientBlockId(key) && typeof entry === "string"
+      ([key, entry]) => isDemoGradientBlockId(key) && isGradientId(entry)
     )
   )
 }

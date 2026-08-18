@@ -1,10 +1,12 @@
-import type { ComponentType, CSSProperties, ReactNode } from "react"
+import type { ComponentType, ReactNode } from "react"
 import { format, isSameDay, subDays } from "date-fns"
 import type { Locale } from "date-fns"
 import { enUS } from "date-fns/locale"
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
+import { Block } from "@/registry/admin-appearance/block"
+import type { GradientId } from "@/registry/admin-appearance/appearance-palette"
 import { StateEmpty } from "@/registry/state-empty/state-empty"
 
 export interface WidgetActivityEntry {
@@ -33,30 +35,14 @@ export interface WidgetActivityProps {
   heading?: WidgetActivityHeading
   summary?: ReactNode
   loading?: boolean
-  gradient?: string
+  gradient?: GradientId
+  blockId?: string
   className?: string
 }
 
 const headingClassName: Record<WidgetActivityHeading, string> = {
   muted: "text-sm font-medium text-muted-foreground",
   prominent: "text-xl font-semibold text-foreground",
-}
-
-function gradientSurfaceStyle(
-  gradient?: string
-): (CSSProperties & Record<string, string>) | undefined {
-  return gradient
-    ? {
-        backgroundImage: `var(--gradient-${gradient})`,
-        color: `var(--gradient-${gradient}-foreground)`,
-        "--foreground": `var(--gradient-${gradient}-foreground)`,
-        "--card-foreground": `var(--gradient-${gradient}-foreground)`,
-        "--muted-foreground": `var(--gradient-${gradient}-foreground)`,
-        "--sidebar-foreground": `var(--gradient-${gradient}-foreground)`,
-        "--sidebar-active": `color-mix(in oklch, var(--gradient-${gradient}-foreground) 10%, transparent)`,
-        "--sidebar-active-foreground": `var(--gradient-${gradient}-foreground)`,
-      }
-    : undefined
 }
 
 export interface WidgetActivityGroup {
@@ -158,13 +144,14 @@ export function WidgetActivity({
   summary,
   loading = false,
   gradient,
+  blockId,
   className,
 }: WidgetActivityProps) {
   const groups = groupActivityEntries(entries)
   const now = new Date()
 
   return (
-    <Card className={className} style={gradientSurfaceStyle(gradient)}>
+    <Block id={blockId} gradient={gradient} headings className={className}>
       {title || summary ? (
         <CardHeader
           className={
@@ -234,6 +221,6 @@ export function WidgetActivity({
           </div>
         )}
       </CardContent>
-    </Card>
+    </Block>
   )
 }

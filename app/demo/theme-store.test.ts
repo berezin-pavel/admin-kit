@@ -66,6 +66,15 @@ describe("isDemoGradientAssignment", () => {
     ).toBe(false)
   })
 
+  it("rejects a surface value outside the fixed palette", () => {
+    expect(
+      isDemoGradientAssignment({
+        surfaces: { shell: "cobalt" },
+        blocks: {},
+      })
+    ).toBe(false)
+  })
+
   it("rejects a block id outside the known set", () => {
     expect(
       isDemoGradientAssignment({
@@ -81,6 +90,16 @@ describe("isDemoGradientAssignment", () => {
       isDemoGradientAssignment({
         surfaces: {},
         blocks: { [firstBlockId]: 1 },
+      })
+    ).toBe(false)
+  })
+
+  it("rejects a block value outside the fixed palette", () => {
+    const [firstBlockId] = DEMO_GRADIENT_BLOCK_IDS
+    expect(
+      isDemoGradientAssignment({
+        surfaces: {},
+        blocks: { [firstBlockId]: "coral" },
       })
     ).toBe(false)
   })

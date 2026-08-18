@@ -6,6 +6,7 @@ import { useState } from "react"
 import { cn } from "@/lib/utils"
 import { CheckboxField } from "@/registry/checkbox-field/checkbox-field"
 import { PageAuth } from "@/registry/page-auth/page-auth"
+import type { GradientId } from "@/registry/admin-appearance/appearance-palette"
 import { TextField } from "@/registry/text-field/text-field"
 
 export function PageAuthView({
@@ -15,7 +16,7 @@ export function PageAuthView({
 }: {
   simulateError?: boolean
   aside?: ReactNode
-  gradient?: string
+  gradient?: GradientId
 }) {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")

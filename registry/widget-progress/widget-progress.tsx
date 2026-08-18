@@ -1,9 +1,11 @@
-import type { CSSProperties, ReactNode } from "react"
+import type { ReactNode } from "react"
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 import { Skeleton } from "@/components/ui/skeleton"
 import { cn } from "@/lib/utils"
+import { Block } from "@/registry/admin-appearance/block"
+import type { GradientId } from "@/registry/admin-appearance/appearance-palette"
 
 export type WidgetProgressTone = "default" | "success" | "warning" | "danger"
 export type WidgetProgressHeading = "muted" | "prominent"
@@ -26,30 +28,14 @@ export interface WidgetProgressProps {
   heading?: WidgetProgressHeading
   summary?: ReactNode
   loading?: boolean
-  gradient?: string
+  gradient?: GradientId
+  blockId?: string
   className?: string
 }
 
 const headingClassName: Record<WidgetProgressHeading, string> = {
   muted: "text-sm font-medium text-muted-foreground",
   prominent: "text-xl font-semibold text-foreground",
-}
-
-function gradientSurfaceStyle(
-  gradient?: string
-): (CSSProperties & Record<string, string>) | undefined {
-  return gradient
-    ? {
-        backgroundImage: `var(--gradient-${gradient})`,
-        color: `var(--gradient-${gradient}-foreground)`,
-        "--foreground": `var(--gradient-${gradient}-foreground)`,
-        "--card-foreground": `var(--gradient-${gradient}-foreground)`,
-        "--muted-foreground": `var(--gradient-${gradient}-foreground)`,
-        "--sidebar-foreground": `var(--gradient-${gradient}-foreground)`,
-        "--sidebar-active": `color-mix(in oklch, var(--gradient-${gradient}-foreground) 10%, transparent)`,
-        "--sidebar-active-foreground": `var(--gradient-${gradient}-foreground)`,
-      }
-    : undefined
 }
 
 export function WidgetProgress({
@@ -64,6 +50,7 @@ export function WidgetProgress({
   summary,
   loading = false,
   gradient,
+  blockId,
   className,
 }: WidgetProgressProps) {
   const clampedValue = Math.min(Math.max(value, 0), max)
@@ -74,7 +61,7 @@ export function WidgetProgress({
       : (Math.min(Math.max(target, 0), max) / max) * 100
 
   return (
-    <Card className={className} style={gradientSurfaceStyle(gradient)}>
+    <Block id={blockId} gradient={gradient} headings className={className}>
       <CardHeader
         className={
           summary ? "flex flex-wrap items-center justify-between gap-4" : undefined
@@ -130,6 +117,6 @@ export function WidgetProgress({
           </>
         )}
       </CardContent>
-    </Card>
+    </Block>
   )
 }

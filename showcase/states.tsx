@@ -1,16 +1,8 @@
 import { Button } from "@/components/ui/button"
-import type { GradientStops } from "@/registry/admin-theme-tokens/admin-theme-tokens"
 import { StateEmpty } from "@/registry/state-empty/state-empty"
 import { StateLoading } from "@/registry/state-loading/state-loading"
 
-import { GradientFrame } from "./gradient-frame"
 import type { ShowcaseEntry } from "./types"
-
-const emptyGradientStops: GradientStops = {
-  angle: 135,
-  from: "#bbf7d0",
-  to: "#bae6fd",
-}
 
 export const stateLoadingEntry: ShowcaseEntry = {
   item: "state-loading",
@@ -63,14 +55,12 @@ export const stateEmptyEntry: ShowcaseEntry = {
       id: "gradient",
       name: "With a gradient backdrop",
       render: () => (
-        <GradientFrame id="meadow" stops={emptyGradientStops}>
-          <StateEmpty
-            title="No orders yet"
-            description="They'll show up here as soon as a customer places the first one."
-            actions={<Button>Create order</Button>}
-            gradient="meadow"
-          />
-        </GradientFrame>
+        <StateEmpty
+          title="No orders yet"
+          description="They'll show up here as soon as a customer places the first one."
+          actions={<Button>Create order</Button>}
+          gradient="meadow"
+        />
       ),
     },
   ],

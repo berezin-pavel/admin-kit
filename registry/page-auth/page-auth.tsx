@@ -1,16 +1,17 @@
 "use client"
 
-import type { CSSProperties, FormEvent, ReactNode } from "react"
+import type { FormEvent, ReactNode } from "react"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
-  Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { Block } from "@/registry/admin-appearance/block"
+import type { GradientId } from "@/registry/admin-appearance/appearance-palette"
 
 export interface PageAuthProps {
   appName: string
@@ -23,22 +24,9 @@ export interface PageAuthProps {
   error?: string
   footer?: ReactNode
   aside?: ReactNode
-  gradient?: string
+  gradient?: GradientId
+  blockId?: string
   className?: string
-}
-
-function gradientBackdropStyle(
-  gradient?: string
-): CSSProperties | undefined {
-  return gradient
-    ? { backgroundImage: `var(--gradient-${gradient})` }
-    : undefined
-}
-
-function backdropTextStyle(gradient?: string): CSSProperties | undefined {
-  return gradient
-    ? { color: `var(--gradient-${gradient}-foreground)` }
-    : undefined
 }
 
 export function PageAuth({
@@ -53,12 +41,13 @@ export function PageAuth({
   footer,
   aside,
   gradient,
+  blockId,
   className,
 }: PageAuthProps) {
   return (
     <div
       className={cn("flex min-h-svh flex-col lg:flex-row", className)}
-      style={gradientBackdropStyle(gradient)}
+      data-backdrop={gradient}
     >
       {aside ? (
         <div className="hidden bg-muted lg:flex lg:w-1/2 lg:items-center lg:justify-center lg:p-10">
@@ -75,13 +64,12 @@ export function PageAuth({
           <p
             className={cn(
               "text-center text-sm font-medium",
-              gradient ? undefined : "text-muted-foreground"
+              gradient ? "text-(--backdrop-foreground)" : "text-muted-foreground"
             )}
-            style={backdropTextStyle(gradient)}
           >
             {appName}
           </p>
-          <Card>
+          <Block id={blockId}>
             <CardHeader>
               <CardTitle>{title}</CardTitle>
               {description ? (
@@ -114,14 +102,13 @@ export function PageAuth({
                 </fieldset>
               </form>
             </CardContent>
-          </Card>
+          </Block>
           {footer ? (
             <div
               className={cn(
                 "text-center text-sm",
-                gradient ? undefined : "text-muted-foreground"
+                gradient ? "text-(--backdrop-foreground)" : "text-muted-foreground"
               )}
-              style={backdropTextStyle(gradient)}
             >
               {footer}
             </div>

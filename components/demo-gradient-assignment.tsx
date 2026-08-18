@@ -7,6 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { isGradientId } from "@/registry/admin-appearance/appearance-palette"
 import type { AdminTheme } from "@/registry/admin-theme-tokens/admin-theme-tokens"
 import { SelectField, type SelectFieldOption } from "@/registry/select-field/select-field"
 
@@ -48,18 +49,24 @@ export function DemoGradientAssignment({
   const setShell = (value: string) =>
     setDemoGradientAssignment({
       ...assignment,
-      surfaces: { ...assignment.surfaces, shell: value || undefined },
+      surfaces: {
+        ...assignment.surfaces,
+        shell: isGradientId(value) ? value : undefined,
+      },
     })
 
   const setSignIn = (value: string) =>
     setDemoGradientAssignment({
       ...assignment,
-      surfaces: { ...assignment.surfaces, signIn: value || undefined },
+      surfaces: {
+        ...assignment.surfaces,
+        signIn: isGradientId(value) ? value : undefined,
+      },
     })
 
   const setBlock = (id: DemoGradientBlockId, value: string) => {
     const blocks = { ...assignment.blocks }
-    if (value) {
+    if (isGradientId(value)) {
       blocks[id] = value
     } else {
       delete blocks[id]

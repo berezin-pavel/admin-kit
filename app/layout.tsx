@@ -4,6 +4,8 @@ import { Geist_Mono, Inter } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { cn } from "@/lib/utils"
+import { AppearanceStyle } from "@/registry/admin-appearance/appearance-style"
+import { defaultAdminAppearance } from "@/registry/admin-appearance/appearance-palette"
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" })
 
@@ -35,6 +37,7 @@ export default function RootLayout({
       )}
     >
       <body>
+        <AppearanceStyle value={defaultAdminAppearance} />
         <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
