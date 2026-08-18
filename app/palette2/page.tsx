@@ -58,6 +58,21 @@ const candidates: readonly Candidate[] = [
   { name: "Charcoal", family: "Neutral", stops: ["#18181b", "#3f3f46", "#52525b", "#7c2d12"], text: "light" },
   { name: "Onyx", family: "Neutral", stops: ["#000000", "#1e1b4b", "#111827", "#312e81"], text: "light" },
   { name: "Pearl", family: "Neutral", stops: ["#f5f5f4", "#e7e5e4", "#e0f2fe", "#fce7f3"], text: "dark" },
+  { name: "Ash", family: "Greys", stops: ["#1c1917", "#292524", "#44403c", "#57534e"], text: "light" },
+  { name: "Basalt", family: "Greys", stops: ["#0a0a0a", "#171717", "#262626", "#404040"], text: "light" },
+  { name: "Iron", family: "Greys", stops: ["#1e293b", "#334155", "#475569", "#64748b"], text: "light" },
+  { name: "Pewter", family: "Greys", stops: ["#374151", "#4b5563", "#6b7280", "#9ca3af"], text: "light" },
+  { name: "Smoke", family: "Greys", stops: ["#3f3f46", "#52525b", "#71717a", "#a1a1aa"], text: "light" },
+  { name: "Ink", family: "Greys", stops: ["#020617", "#0f172a", "#1e293b", "#334155"], text: "light" },
+  { name: "Mist", family: "Greys", stops: ["#cbd5e1", "#e2e8f0", "#f1f5f9", "#e2e8f0"], text: "dark" },
+  { name: "Fog", family: "Greys", stops: ["#d6d3d1", "#e7e5e4", "#f5f5f4", "#e7e5e4"], text: "dark" },
+  { name: "Silver", family: "Greys", stops: ["#a1a1aa", "#d4d4d8", "#f4f4f5", "#e4e4e7"], text: "dark" },
+  { name: "Cloud", family: "Greys", stops: ["#f8fafc", "#f1f5f9", "#e2e8f0", "#f8fafc"], text: "dark" },
+  { name: "Concrete", family: "Greys", stops: ["#78716c", "#a8a29e", "#d6d3d1", "#e7e5e4"], text: "dark" },
+  { name: "Slate Mist", family: "Greys", stops: ["#64748b", "#94a3b8", "#cbd5e1", "#e2e8f0"], text: "dark" },
+  { name: "Cool Grey", family: "Greys", stops: ["#111827", "#1f2937", "#1e3a8a", "#374151"], text: "light" },
+  { name: "Warm Grey", family: "Greys", stops: ["#292524", "#44403c", "#78350f", "#57534e"], text: "light" },
+  { name: "Mono", family: "Greys", stops: ["#000000", "#262626", "#525252", "#737373"], text: "light" },
 ]
 
 function gradientOf(candidate: Candidate): string {
