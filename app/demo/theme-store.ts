@@ -5,6 +5,7 @@ import { useSyncExternalStore } from "react"
 import { isAdminTheme } from "@/registry/admin-theme-tokens/admin-theme-css"
 import {
   defaultAdminThemeSources,
+  gradientPresets,
   type AdminTheme,
 } from "@/registry/admin-theme-tokens/admin-theme-tokens"
 
@@ -12,32 +13,12 @@ const STORAGE_KEY = "admin-kit-demo-theme"
 
 export const DEFAULT_DEMO_THEME: AdminTheme = {
   sources: defaultAdminThemeSources,
-  gradients: [
-    {
-      id: "revenue",
-      name: "Revenue",
-      light: {
-        angle: 135,
-        from: "#0369a1",
-        via: "#4338ca",
-        viaPosition: 50,
-        to: "#7e22ce",
-      },
-      dark: {
-        angle: 135,
-        from: "#0b4a66",
-        via: "#2c2f80",
-        viaPosition: 50,
-        to: "#5b1f86",
-      },
-    },
-    {
-      id: "orders",
-      name: "Orders",
-      light: { angle: 135, from: "#c2410c", to: "#9f1239" },
-      dark: { angle: 135, from: "#7c3a08", to: "#7a1027" },
-    },
-  ],
+  gradients: gradientPresets.map((preset) => ({
+    id: preset.name.toLowerCase(),
+    name: preset.name,
+    light: preset.light,
+    dark: preset.dark,
+  })),
 }
 
 type Listener = () => void
@@ -82,4 +63,110 @@ export function setDemoTheme(next: AdminTheme) {
 
 export function useDemoTheme(): AdminTheme {
   return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot)
+}
+
+export const DEMO_GRADIENT_BLOCK_IDS = ["orders-metric", "revenue-metric"] as const
+
+export type DemoGradientBlockId = (typeof DEMO_GRADIENT_BLOCK_IDS)[number]
+
+export interface DemoSurfaceGradients {
+  shell?: string
+  signIn?: string
+}
+
+export type DemoBlockGradients = Partial<Record<DemoGradientBlockId, string>>
+
+export interface DemoGradientAssignment {
+  surfaces: DemoSurfaceGradients
+  blocks: DemoBlockGradients
+}
+
+const ASSIGNMENT_STORAGE_KEY = "admin-kit-demo-gradient-assignment"
+
+export const DEFAULT_DEMO_GRADIENT_ASSIGNMENT: DemoGradientAssignment = {
+  surfaces: { shell: "ocean", signIn: "dusk" },
+  blocks: { "orders-metric": "ember", "revenue-metric": "meadow" },
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null
+}
+
+function isDemoGradientBlockId(value: string): value is DemoGradientBlockId {
+  return DEMO_GRADIENT_BLOCK_IDS.some((id) => id === value)
+}
+
+function isDemoSurfaceGradients(value: unknown): value is DemoSurfaceGradients {
+  return (
+    isRecord(value) &&
+    (value.shell === undefined || typeof value.shell === "string") &&
+    (value.signIn === undefined || typeof value.signIn === "string")
+  )
+}
+
+function isDemoBlockGradients(value: unknown): value is DemoBlockGradients {
+  return (
+    isRecord(value) &&
+    Object.entries(value).every(
+      ([key, entry]) => isDemoGradientBlockId(key) && typeof entry === "string"
+    )
+  )
+}
+
+export function isDemoGradientAssignment(
+  value: unknown
+): value is DemoGradientAssignment {
+  return (
+    isRecord(value) &&
+    isDemoSurfaceGradients(value.surfaces) &&
+    isDemoBlockGradients(value.blocks)
+  )
+}
+
+const assignmentListeners = new Set<Listener>()
+let cachedAssignment: DemoGradientAssignment | undefined
+
+function readStoredAssignment(): DemoGradientAssignment {
+  try {
+    const stored = window.localStorage.getItem(ASSIGNMENT_STORAGE_KEY)
+    if (!stored) {
+      return DEFAULT_DEMO_GRADIENT_ASSIGNMENT
+    }
+    const parsed: unknown = JSON.parse(stored)
+    return isDemoGradientAssignment(parsed)
+      ? parsed
+      : DEFAULT_DEMO_GRADIENT_ASSIGNMENT
+  } catch {
+    return DEFAULT_DEMO_GRADIENT_ASSIGNMENT
+  }
+}
+
+function subscribeAssignment(listener: Listener) {
+  assignmentListeners.add(listener)
+  return () => assignmentListeners.delete(listener)
+}
+
+function getAssignmentSnapshot(): DemoGradientAssignment {
+  if (cachedAssignment === undefined) {
+    cachedAssignment = readStoredAssignment()
+  }
+  return cachedAssignment
+}
+
+function getAssignmentServerSnapshot(): DemoGradientAssignment {
+  return DEFAULT_DEMO_GRADIENT_ASSIGNMENT
+}
+
+export function setDemoGradientAssignment(next: DemoGradientAssignment) {
+  cachedAssignment = next
+  window.localStorage.setItem(ASSIGNMENT_STORAGE_KEY, JSON.stringify(next))
+  assignmentListeners.forEach((listener) => listener())
+}
+
+export function useDemoGradientAssignment(): DemoGradientAssignment {
+  return useSyncExternalStore(
+    subscribeAssignment,
+    getAssignmentSnapshot,
+    getAssignmentServerSnapshot
+  )
 }
