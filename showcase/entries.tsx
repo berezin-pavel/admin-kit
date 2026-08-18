@@ -1,5 +1,7 @@
+import { adminAppearanceEntry } from "./admin-appearance"
 import { adminShellEntry } from "./admin-shell"
 import { adminToasterEntry } from "./admin-toaster"
+import { appearanceMenuEntry } from "./appearance-menu"
 import { breadcrumbsEntry } from "./breadcrumbs"
 import { checkboxFieldEntry } from "./checkbox-field"
 import { colorFieldEntry } from "./color-field"
@@ -30,7 +32,6 @@ import {
   stateForbiddenEntry,
   stateOfflineEntry,
 } from "./states-problem"
-import { themeEditorEntry } from "./theme-editor"
 import { themeToggleEntry } from "./theme-toggle"
 import type { ShowcaseEntry } from "./types"
 import { widgetActivityEntry } from "./widget-activity"
@@ -52,8 +53,9 @@ import { widgetTableEntry } from "./widget-table"
 
 export const showcaseEntries: readonly ShowcaseEntry[] = [
   adminShellEntry,
+  adminAppearanceEntry,
+  appearanceMenuEntry,
   themeToggleEntry,
-  themeEditorEntry,
   sidebarToggleEntry,
   userMenuEntry,
   languageToggleEntry,

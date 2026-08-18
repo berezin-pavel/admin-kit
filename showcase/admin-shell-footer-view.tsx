@@ -16,6 +16,11 @@ import {
   type AdminNavItem,
 } from "@/registry/admin-shell/admin-shell"
 import { AdminToaster, notify } from "@/registry/admin-toaster/admin-toaster"
+import {
+  defaultAdminAppearance,
+  type AdminAppearance,
+} from "@/registry/admin-appearance/appearance-palette"
+import { AppearanceMenu } from "@/registry/appearance-menu/appearance-menu"
 import { LanguageToggle } from "@/registry/language-toggle/language-toggle"
 import { SidebarToggle } from "@/registry/sidebar-toggle/sidebar-toggle"
 import { ThemeToggle } from "@/registry/theme-toggle/theme-toggle"
@@ -24,6 +29,11 @@ import { UserMenu } from "@/registry/user-menu/user-menu"
 const nav: readonly AdminNavItem[] = [
   { href: "/", title: "Overview", icon: LayoutDashboard },
   { href: "/orders", title: "Orders", icon: ShoppingCart },
+]
+
+const appearanceMenuPages = [
+  { id: "overview", label: "Overview" },
+  { id: "orders", label: "Orders" },
 ]
 
 const locales = [
@@ -51,6 +61,9 @@ export function AdminShellFooterView({
   const [collapsed, setCollapsed] = useState(defaultCollapsed)
   const [isDark, setIsDark] = useState(false)
   const [locale, setLocale] = useState("en")
+  const [appearance, setAppearance] = useState<AdminAppearance>(
+    defaultAdminAppearance
+  )
 
   const footer = (
     <>
@@ -63,6 +76,11 @@ export function AdminShellFooterView({
         locale={locale}
         locales={locales}
         onLocaleChange={setLocale}
+      />
+      <AppearanceMenu
+        value={appearance}
+        onChange={setAppearance}
+        pages={appearanceMenuPages}
       />
     </>
   )
