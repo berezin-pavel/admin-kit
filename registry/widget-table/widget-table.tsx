@@ -508,7 +508,7 @@ export function WidgetTable<Row>({
         )}
       </CardContent>
       {pagination && !loading ? (
-        <CardFooter className="justify-center bg-card">
+        <CardFooter className="justify-center bg-card [[data-gradient]_&]:bg-transparent">
           <WidgetTablePaginationControls
             page={pagination.page}
             pageSize={pagination.pageSize}
