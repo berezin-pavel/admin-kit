@@ -1,4 +1,4 @@
-import { render } from "@testing-library/react"
+import { render, within } from "@testing-library/react"
 import { describe, expect, it } from "vitest"
 
 import { AdminShell } from "./admin-shell/admin-shell"
@@ -68,6 +68,7 @@ describe.each(cases)("$name gradient surface", ({ render: renderCase }) => {
     expect(card).toHaveStyle({
       backgroundImage: "var(--gradient-revenue)",
       color: "var(--gradient-revenue-foreground)",
+      "--foreground": "var(--gradient-revenue-foreground)",
       "--card-foreground": "var(--gradient-revenue-foreground)",
       "--muted-foreground": "var(--gradient-revenue-foreground)",
     })
@@ -96,6 +97,7 @@ describe("the shell's sidebar takes a gradient", () => {
 
     expect(container.querySelector("aside")).toHaveStyle({
       backgroundImage: "var(--gradient-brand)",
+      "--foreground": "var(--gradient-brand-foreground)",
       "--card-foreground": "var(--gradient-brand-foreground)",
       "--muted-foreground": "var(--gradient-brand-foreground)",
       "--sidebar-foreground": "var(--gradient-brand-foreground)",
@@ -145,6 +147,26 @@ describe("the shell's sidebar takes a gradient", () => {
       )
     ).toBe("")
   })
+
+  it("carries the gradient foreground down to sidebarProfile content styled with text-foreground", () => {
+    const { container } = render(
+      <AdminShell
+        appName="Store"
+        nav={[]}
+        activeHref="/"
+        sidebarGradient="brand"
+        sidebarProfile={<span className="text-foreground">Alex Morgan</span>}
+      >
+        <p>Work</p>
+      </AdminShell>
+    )
+    const aside = container.querySelector("aside") as HTMLElement
+    const name = within(aside).getByText("Alex Morgan")
+
+    expect(
+      getComputedStyle(name).getPropertyValue("--foreground")
+    ).toBe("var(--gradient-brand-foreground)")
+  })
 })
 
 describe.each([
@@ -160,6 +182,7 @@ describe.each([
 
     expect(container.firstElementChild).toHaveStyle({
       backgroundImage: "var(--gradient-calm)",
+      "--foreground": "var(--gradient-calm-foreground)",
       "--muted-foreground": "var(--gradient-calm-foreground)",
     })
   })

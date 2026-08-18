@@ -49,6 +49,7 @@ function gradientSurfaceStyle(
     ? {
         backgroundImage: `var(--gradient-${gradient})`,
         color: `var(--gradient-${gradient}-foreground)`,
+        "--foreground": `var(--gradient-${gradient}-foreground)`,
         "--card-foreground": `var(--gradient-${gradient}-foreground)`,
         "--muted-foreground": `var(--gradient-${gradient}-foreground)`,
         "--sidebar-foreground": `var(--gradient-${gradient}-foreground)`,
