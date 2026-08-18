@@ -32,7 +32,7 @@ _Avoid_: starter theme, builder theme
 
 **Theme**:
 A registry item that sets the colors and radii for both the light and dark scheme at once.
-_Avoid_: palette, color scheme, styling
+_Avoid_: color scheme, styling
 
 **Shell**:
 A registry item with the admin panel's persistent frame: an optional header, navigation — a sidebar on a wide screen, an icon rail and a burger panel on a narrow one — and an empty work area.
@@ -42,9 +42,13 @@ _Avoid_: layout, wrapper
 A small self-contained shell control — not tied to the work area and doesn't show screen state. Its value and handler arrive as props, and storage stays with the consumer — the same reason widgets don't fetch their own data. Placed in the shell's `sidebarFooter` slot or anywhere else on the page.
 _Avoid_: control widget, toggle, button
 
+**Block**:
+Any card in the work area, addressed by an id: a widget, a page section, a page header, a tab strip. A block carries its own appearance — a gradient and, where it has a title, a heading treatment — chosen by the administrator and stored by the consumer. Nothing in the work area sits outside a block.
+_Avoid_: card, tile, panel
+
 **Widget**:
-A self-contained card in the work area — a metric, a table, a chart, a list. Gets its data from outside and never fetches it itself.
-_Avoid_: block, card, tile
+A block that shows data — a metric, a table, a chart, a list. Gets its data from outside and never fetches it itself.
+_Avoid_: card, tile
 
 **Stub**:
 An empty spot in the work area marking where a widget will go.
@@ -57,3 +61,15 @@ _Avoid_: stub, error screen, fallback
 **Page**:
 A registry item with the work area's content ready-made for a specific task — a list with filters, an entity card.
 _Avoid_: screen, section, view
+
+**Appearance**:
+The administrator's global choice of an accent colour and gradients — for the sidebar, the sign-in screen, each page's backdrop and each block. Picked from fixed, contrast-checked palettes; the kit renders it and the consumer stores it.
+_Avoid_: theme settings, customization, skin
+
+**Backdrop**:
+A gradient painted behind blocks — the work area of a page or the sign-in screen. Soft by default, a light or dark tint of the gradient; vivid on request. Never overrides text tokens, because no text sits on it.
+_Avoid_: page background, wallpaper
+
+**Palette**:
+The fixed set of twenty gradients and twenty accents shipped with the kit, each measured for text contrast, including on hover. The only source of colour choices; nothing is entered by hand.
+_Avoid_: presets, swatches, color list
