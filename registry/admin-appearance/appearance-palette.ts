@@ -62,9 +62,9 @@ export function softStops(
   surface: GradientStops,
   scheme: "light" | "dark"
 ): GradientStops {
-  const targetLightness = scheme === "light" ? 0.983 : 0.22
-  const chromaScale = scheme === "light" ? 0.015 : 0.5
-  const chromaCap = scheme === "light" ? 0.003 : 0.05
+  const targetLightness = scheme === "light" ? 0.965 : 0.22
+  const chromaScale = scheme === "light" ? 0.35 : 0.5
+  const chromaCap = scheme === "light" ? 0.035 : 0.05
 
   const transform = (hex: string): string => {
     const oklch = hexToOklch(hex)
@@ -156,7 +156,7 @@ const gradientAngles: Record<GradientId, number> = {
   meadow: 135,
   forest: 145,
   sand: 120,
-  slate: 140,
+  slate: 160,
   graphite: 135,
 }
 
@@ -165,84 +165,84 @@ const gradientSurfaces: Record<
   { light: [string, string, string]; dark: [string, string, string] }
 > = {
   ember: {
-    light: ["#7a000a", "#731500", "#622900"],
-    dark: ["#6e000b", "#681200", "#582400"],
+    light: ["#af302a", "#ae2f23", "#9a3412"],
+    dark: ["#7c0107", "#86130b", "#8f2400"],
   },
   sunset: {
-    light: ["#6b1f00", "#7a0018", "#740143"],
-    dark: ["#621b00", "#6e0015", "#69003c"],
+    light: ["#aa3100", "#9d1934", "#9d1e4f"],
+    dark: ["#731e00", "#860f29", "#8d1c46"],
   },
   peach: {
-    light: ["#cda58b", "#d4a287", "#d0a390"],
-    dark: ["#582400", "#5b2300", "#5c2100"],
+    light: ["#fed7aa", "#fdba74", "#fecdd3"],
+    dark: ["#5b3700", "#683c00", "#8b223e"],
   },
   amber: {
-    light: ["#c3a36e", "#d19d6b", "#d99a76"],
-    dark: ["#492e00", "#512a00", "#5b2300"],
+    light: ["#fde68a", "#fef08a", "#fcd34d"],
+    dark: ["#4d3f00", "#524800", "#624d00"],
   },
   copper: {
-    light: ["#652602", "#6a2102", "#6a200d"],
-    dark: ["#592304", "#5f1e04", "#601d0d"],
+    light: ["#9a3412", "#92400e", "#854d0e"],
+    dark: ["#741c00", "#772e00", "#764000"],
   },
   rose: {
-    light: ["#730049", "#770032", "#7a0018"],
-    dark: ["#680342", "#6c002e", "#6f0016"],
+    light: ["#a82957", "#a8263c", "#a52521"],
+    dark: ["#790037", "#860f29", "#901f1b"],
   },
   berry: {
-    light: ["#671163", "#5f166e", "#521e7c"],
-    dark: ["#5b1457", "#541861", "#471e6c"],
+    light: ["#8b3693", "#6c3aa4", "#5e3eaa"],
+    dark: ["#63166b", "#582b89", "#553999"],
   },
   grape: {
-    light: ["#4e2573", "#4b237a", "#402880"],
-    dark: ["#442463", "#42226a", "#39266f"],
+    light: ["#66319a", "#5735a1", "#37349d"],
+    dark: ["#3e0d65", "#3b1d75", "#2f2e84"],
   },
   lavender: {
-    light: ["#aea3c5", "#aba2cc", "#a7a5c7"],
-    dark: ["#3f2761", "#3c2768", "#36296a"],
+    light: ["#ddd6fe", "#e9d5ff", "#c7d2fe"],
+    dark: ["#462981", "#5b2c81", "#3a449b"],
   },
   dusk: {
-    light: ["#2c307e", "#402880", "#502177"],
-    dark: ["#272c72", "#392474", "#471e6c"],
+    light: ["#4040a9", "#6141ad", "#6f3da8"],
+    dark: ["#312f8c", "#4d308f", "#603493"],
   },
   midnight: {
-    light: ["#003a6b", "#0f3678", "#243379"],
-    dark: ["#003561", "#0e326c", "#212e6d"],
+    light: ["#1e3a8a", "#37349d", "#312e81"],
+    dark: ["#0b2272", "#29257b", "#312d84"],
   },
   ocean: {
-    light: ["#003a6b", "#003e55", "#004147"],
-    dark: ["#003561", "#00384d", "#00393f"],
+    light: ["#1f45a8", "#005789", "#00627c"],
+    dark: ["#15368d", "#004c79", "#005971"],
   },
   sky: {
-    light: ["#89acc2", "#7dafc3", "#82aeba"],
-    dark: ["#003750", "#003849", "#003a45"],
+    light: ["#bae6fd", "#a5f3fc", "#bfdbfe"],
+    dark: ["#004660", "#00545c", "#004e9a"],
   },
   lagoon: {
-    light: ["#004049", "#004243", "#004339"],
-    dark: ["#003a42", "#003a3a", "#003c33"],
+    light: ["#00645d", "#00627c", "#005789"],
+    dark: ["#004d47", "#005066", "#005586"],
   },
   mint: {
-    light: ["#89b19e", "#86b197", "#91af96"],
-    dark: ["#003c28", "#003d22", "#003c15"],
+    light: ["#a7f3d0", "#bbf7d0", "#99f6e4"],
+    dark: ["#004d34", "#00572f", "#005f52"],
   },
   meadow: {
-    light: ["#004418", "#004400", "#1e4200"],
-    dark: ["#003c15", "#003d00", "#1a3b00"],
+    light: ["#006b2a", "#006345", "#00625a"],
+    dark: ["#004f1d", "#00563c", "#00625a"],
   },
   forest: {
-    light: ["#004422", "#004313", "#074300"],
-    dark: ["#003c1e", "#003d10", "#063e00"],
+    light: ["#166534", "#065f46", "#14532d"],
+    dark: ["#003916", "#00402e", "#004b21"],
   },
   sand: {
-    light: ["#b2a794", "#b7a58d", "#b5a595"],
-    dark: ["#463000", "#492e00", "#4d2d00"],
+    light: ["#fef3c7", "#e7e5e4", "#ffedd5"],
+    dark: ["#4d3f00", "#494746", "#6d4700"],
   },
   slate: {
-    light: ["#253c4f", "#263b4a", "#203d4d"],
-    dark: ["#1f3548", "#203646", "#1a3747"],
+    light: ["#334155", "#475569", "#3b4a63"],
+    dark: ["#212e41", "#293649", "#2f3d56"],
   },
   graphite: {
-    light: ["#363a3e", "#363a3e", "#363a3e"],
-    dark: ["#313437", "#313437", "#313437"],
+    light: ["#404040", "#3f3f46", "#262626"],
+    dark: ["#2e2e2e", "#35353b", "#3d3d3d"],
   },
 }
 

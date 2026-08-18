@@ -120,7 +120,7 @@ const SURFACE_RULE = `[data-gradient] {
   --muted: color-mix(in oklch, var(--surface-foreground) 16%, transparent);
   --accent: color-mix(in oklch, var(--surface-foreground) 16%, transparent);
   --accent-foreground: var(--surface-foreground);
-  --secondary: color-mix(in oklch, var(--surface-foreground) 20%, transparent);
+  --secondary: color-mix(in oklch, var(--surface-foreground) 16%, transparent);
   --secondary-foreground: var(--surface-foreground);
   --border: color-mix(in oklch, var(--surface-foreground) 30%, transparent);
   --input: var(--border);

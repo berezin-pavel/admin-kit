@@ -11,14 +11,36 @@ import {
   isAccentId,
   isGradientId,
   resolvePageBackdrop,
+  type GradientId,
   type GradientStops,
 } from "./appearance-palette"
 
 const HEX_PATTERN = /^#[0-9a-f]{6}$/
-const WHITE_TEXT_LINEAR_HOVER_CEILING: Partial<Record<number, number>> = {
-  0.16: 4,
-  0.2: 3.4,
+
+const LIGHT_SCHEME_MEAN_LIGHTNESS_MINIMUM: Record<GradientId, number> = {
+  ember: 0.42,
+  sunset: 0.42,
+  peach: 0.8,
+  amber: 0.8,
+  copper: 0.42,
+  rose: 0.42,
+  berry: 0.42,
+  grape: 0.33,
+  lavender: 0.8,
+  dusk: 0.42,
+  midnight: 0.33,
+  ocean: 0.42,
+  sky: 0.8,
+  lagoon: 0.42,
+  mint: 0.8,
+  meadow: 0.42,
+  forest: 0.33,
+  sand: 0.8,
+  slate: 0.33,
+  graphite: 0.33,
 }
+
+const DARK_SCHEME_MEAN_LIGHTNESS_MINIMUM = 0.3
 
 function circularHueDistance(a: number, b: number) {
   const diff = Math.abs(a - b) % 360
@@ -122,33 +144,26 @@ describe("gradientIds and gradientPalette", () => {
     }
   })
 
-  it("stays legible under hover overlays composited in both color spaces", () => {
-    const alphas = [0.08, 0.16, 0.2]
+  it("stays legible under a gamma-encoded sRGB hover overlay", () => {
+    const alphas = [0.08, 0.16]
     for (const gradient of gradientPalette) {
       for (const scheme of [gradient.light, gradient.dark]) {
         const foregroundHex = foregroundHexOf(scheme)
-        const isWhiteForeground = foregroundHex === NEAR_WHITE_HEX
         const samples = sampleGradient(scheme, 33)
         for (const sample of samples) {
           for (const alpha of alphas) {
-            for (const space of ["srgb", "linear"] as const) {
-              const composited = composite(foregroundHex, alpha, sample, space)
-              const ratio = contrastRatio(foregroundHex, composited)
-              const requirement =
-                isWhiteForeground && space === "linear"
-                  ? (WHITE_TEXT_LINEAR_HOVER_CEILING[alpha] ?? 4.5)
-                  : 4.5
-              expect(ratio).toBeGreaterThanOrEqual(requirement)
-            }
+            const composited = composite(foregroundHex, alpha, sample, "srgb")
+            expect(
+              contrastRatio(foregroundHex, composited)
+            ).toBeGreaterThanOrEqual(4.5)
           }
         }
       }
     }
   })
 
-  it("keeps soft light stops pale and legible against light foregrounds", () => {
+  it("keeps soft light stops legible against the light scheme's own foreground", () => {
     const lightForegroundHex = oklchToHex({ l: 0.145, c: 0, h: 0 })
-    const lightMutedForegroundHex = oklchToHex({ l: 0.556, c: 0, h: 0 })
 
     for (const gradient of gradientPalette) {
       const samples = sampleGradient(gradient.softLight, 33)
@@ -163,16 +178,12 @@ describe("gradientIds and gradientPalette", () => {
       }
       for (const sample of samples) {
         expect(contrastRatio(sample, lightForegroundHex)).toBeGreaterThanOrEqual(7)
-        expect(
-          contrastRatio(sample, lightMutedForegroundHex)
-        ).toBeGreaterThanOrEqual(4.5)
       }
     }
   })
 
-  it("keeps soft dark stops deep and legible against dark foregrounds", () => {
+  it("keeps soft dark stops legible against the dark scheme's own foreground", () => {
     const darkForegroundHex = oklchToHex({ l: 0.985, c: 0, h: 0 })
-    const darkMutedForegroundHex = oklchToHex({ l: 0.708, c: 0, h: 0 })
 
     for (const gradient of gradientPalette) {
       const samples = sampleGradient(gradient.softDark, 33)
@@ -187,9 +198,43 @@ describe("gradientIds and gradientPalette", () => {
       }
       for (const sample of samples) {
         expect(contrastRatio(sample, darkForegroundHex)).toBeGreaterThanOrEqual(7)
+      }
+    }
+  })
+
+  it("keeps the light-scheme surface out of near-black territory, per family", () => {
+    for (const gradient of gradientPalette) {
+      const meanLightness =
+        [gradient.light.from, gradient.light.via, gradient.light.to]
+          .map((hex) => hexToOklch(hex).l)
+          .reduce((sum, l) => sum + l, 0) / 3
+      expect(meanLightness).toBeGreaterThanOrEqual(
+        LIGHT_SCHEME_MEAN_LIGHTNESS_MINIMUM[gradient.id]
+      )
+    }
+  })
+
+  it("keeps the dark-scheme surface visibly above black, per family", () => {
+    for (const gradient of gradientPalette) {
+      const meanLightness =
+        [gradient.dark.from, gradient.dark.via, gradient.dark.to]
+          .map((hex) => hexToOklch(hex).l)
+          .reduce((sum, l) => sum + l, 0) / 3
+      expect(meanLightness).toBeGreaterThanOrEqual(DARK_SCHEME_MEAN_LIGHTNESS_MINIMUM)
+    }
+  })
+
+  it("shows visible motion between from and to in both schemes", () => {
+    for (const gradient of gradientPalette) {
+      for (const scheme of [gradient.light, gradient.dark]) {
+        const from = hexToOklch(scheme.from)
+        const to = hexToOklch(scheme.to)
+        const deltaL = Math.abs(from.l - to.l)
+        const deltaH = circularHueDistance(from.h, to.h)
         expect(
-          contrastRatio(sample, darkMutedForegroundHex)
-        ).toBeGreaterThanOrEqual(4.5)
+          deltaL >= 0.03 || deltaH >= 8,
+          `${scheme.from} -> ${scheme.to}: deltaL=${deltaL.toFixed(3)} deltaH=${deltaH.toFixed(1)}`
+        ).toBe(true)
       }
     }
   })

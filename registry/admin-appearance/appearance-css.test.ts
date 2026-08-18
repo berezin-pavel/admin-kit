@@ -133,6 +133,12 @@ describe("appearanceCss", () => {
     expect(css).toContain('[data-gradient="ocean"]')
   })
 
+  it("gives --secondary the same tint strength as --muted", () => {
+    expect(css).toContain(
+      "--secondary: color-mix(in oklch, var(--surface-foreground) 16%, transparent);"
+    )
+  })
+
   it("emits backdrop selectors including the soft variant", () => {
     expect(css).toContain('[data-backdrop="ocean"][data-backdrop-soft]')
   })
