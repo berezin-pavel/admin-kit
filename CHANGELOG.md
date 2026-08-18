@@ -62,6 +62,39 @@ itself never clears 4.5:1 at any tint strength. `admin-nav` and `page-tabs` shar
 test now keeps them from drifting apart. If you have overridden `sidebar-accent` to colour the
 active row yourself, that override no longer reaches it — move it to `sidebar-active`.
 
+**New** — `gradientPresets`, a small library of gradients that are known to work. Five named sets
+spread across the hue circle, each with a light and a dark variant, each proved by test to clear
+4.5:1 against its own computed foreground under two independent measurements — the hex-quantised
+one the kit performs internally and the full-precision one a browser actually does. The worst of
+them measures 5.68 and the best 8.73, so no preset sits near the threshold where the two methods
+could disagree. The theme editor offers them as a row of swatches; picking one appends it to your
+palette with a fresh id, and rolling your own by hand still works exactly as before.
+
+**Changed** — the sidebar's navigation reads at a larger type scale: rows are 40px, labels 15px
+at medium weight, and the active row is semibold in the tinted `sidebar-active` pair. Icons grew
+to match. The row grid that keeps every sidebar item on one vertical line is unchanged.
+
+**Changed** — a gradient on the shell's sidebar now recolours the active row instead of leaving
+it as a pale tint from the light theme. The active row becomes a translucent overlay of the
+gradient's own foreground, so it still reads as the current page without importing a palette that
+does not belong on a painted surface, and the footer's toggles become outline controls on a
+transparent surface rather than solid white squares.
+
+**Fixed** — `admin-theme` shipped `sidebar-primary` at 3.47:1, below AA. The derivation had
+already been corrected to darken that surface and keep white text, but the shipped token values
+were never brought in line with it; they are now. Dark `sidebar-active` was nudged from 0.270 to
+0.265 lightness for the same reason: it measured 4.5121 through the kit's own hex-based check and
+4.4877 at the precision a browser uses, which is a pass and a fail of the same pair. Both now
+clear the bar under either measurement, and a test asserts every derived pair does the same, so a
+future edit cannot land in that gap again.
+
+**Changed** — seven widget cards take a second heading treatment. `heading="prominent"` renders
+the title large and in full-strength foreground instead of the small muted default, and `summary`
+fills the opposite end of the header with muted content — a total, a period, a count. Both are
+optional and default to today's look, so nothing changes unless you ask for it. `widget-table` is
+deliberately not among them: its header's opposite end already carries pagination and its left
+side swaps for a selection bar.
+
 **Changed** — `locale-ru` gained a `themeEditor` slice matching `ThemeEditorLabels` exactly.
 
 **Changed** — `page-tabs` now requires `admin-theme`, because its active tab uses the new
