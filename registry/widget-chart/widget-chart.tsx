@@ -129,6 +129,7 @@ export function WidgetChart({
                   tickLine={false}
                   axisLine={false}
                   tickMargin={8}
+                  tick={{ fill: "var(--muted-foreground)" }}
                 />
                 <ChartTooltip
                   isAnimationActive={false}
@@ -159,6 +160,7 @@ export function WidgetChart({
                   tickLine={false}
                   axisLine={false}
                   tickMargin={8}
+                  tick={{ fill: "var(--muted-foreground)" }}
                 />
                 <ChartTooltip
                   isAnimationActive={false}
