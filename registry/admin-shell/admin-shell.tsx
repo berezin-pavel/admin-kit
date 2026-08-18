@@ -53,6 +53,8 @@ function gradientSurfaceStyle(
         "--card-foreground": `var(--gradient-${gradient}-foreground)`,
         "--muted-foreground": `var(--gradient-${gradient}-foreground)`,
         "--sidebar-foreground": `var(--gradient-${gradient}-foreground)`,
+        "--sidebar-active": `color-mix(in oklch, var(--gradient-${gradient}-foreground) 10%, transparent)`,
+        "--sidebar-active-foreground": `var(--gradient-${gradient}-foreground)`,
       }
     : undefined
 }

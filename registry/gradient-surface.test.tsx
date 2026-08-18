@@ -148,6 +148,37 @@ describe("the shell's sidebar takes a gradient", () => {
     ).toBe("")
   })
 
+  const findActiveNavLink = (container: HTMLElement) =>
+    [...container.querySelectorAll("aside nav a")].find((link) =>
+      link.textContent?.includes("Orders")
+    )
+
+  it("overrides the active row with a translucent gradient overlay instead of the light-theme tint", () => {
+    const { container } = render(shellWithNav("brand"))
+    const activeLink = findActiveNavLink(container)
+
+    expect(activeLink).toBeTruthy()
+    const style = getComputedStyle(activeLink as Element)
+    expect(style.getPropertyValue("--sidebar-active")).toBe(
+      "color-mix(in oklch, var(--gradient-brand-foreground) 10%, transparent)"
+    )
+    expect(style.getPropertyValue("--sidebar-active-foreground")).toBe(
+      "var(--gradient-brand-foreground)"
+    )
+  })
+
+  it("leaves the active row at the sidebar default without a gradient", () => {
+    const { container } = render(shellWithNav(undefined))
+    const activeLink = findActiveNavLink(container)
+
+    expect(activeLink).toBeTruthy()
+    expect(
+      getComputedStyle(activeLink as Element).getPropertyValue(
+        "--sidebar-active"
+      )
+    ).toBe("")
+  })
+
   it("carries the gradient foreground down to sidebarProfile content styled with text-foreground", () => {
     const { container } = render(
       <AdminShell

@@ -143,4 +143,53 @@ describe("gradientPresets", () => {
       expect(gradientCss(preset.dark)).toMatch(/^linear-gradient\(/)
     }
   })
+
+  describe("stays legible under the sidebar active-row overlay", () => {
+    const ACTIVE_ROW_OVERLAY_WEIGHT = 0.1
+
+    function blendHex(
+      foreground: string,
+      background: string,
+      foregroundWeight: number
+    ): string {
+      const fg = Number.parseInt(foreground.slice(1), 16)
+      const bg = Number.parseInt(background.slice(1), 16)
+      const channel = (shift: number) => {
+        const foregroundChannel = (fg >> shift) & 255
+        const backgroundChannel = (bg >> shift) & 255
+        return Math.round(
+          foregroundChannel * foregroundWeight +
+            backgroundChannel * (1 - foregroundWeight)
+        )
+      }
+      const toHexByte = (value: number) => value.toString(16).padStart(2, "0")
+      return `#${toHexByte(channel(16))}${toHexByte(channel(8))}${toHexByte(channel(0))}`
+    }
+
+    for (const preset of gradientPresets) {
+      for (const [schemeName, stops] of [
+        ["light", preset.light],
+        ["dark", preset.dark],
+      ] as const) {
+        it(`${preset.name} (${schemeName})`, () => {
+          const foreground = parseOklch(gradientForeground(stops))
+          const foregroundHex = oklchToHex(foreground)
+
+          for (const stopHex of stopsOf(stops)) {
+            const activeRowBackground = blendHex(
+              foregroundHex,
+              stopHex,
+              ACTIVE_ROW_OVERLAY_WEIGHT
+            )
+            const ratio = contrastRatio(activeRowBackground, foregroundHex)
+
+            expect(
+              ratio,
+              `${preset.name} ${schemeName} active row over ${stopHex}`
+            ).toBeGreaterThanOrEqual(LEGIBLE_CONTRAST)
+          }
+        })
+      }
+    }
+  })
 })
