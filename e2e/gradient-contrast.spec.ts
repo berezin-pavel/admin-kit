@@ -45,7 +45,7 @@ function readPreviews() {
     if (itemMatches.length === 0) continue
 
     for (const match of source.matchAll(
-      /\bid:\s*"([a-z0-9-]+)",\s*\n\s*name:/g
+      /\bid:\s*"([a-z0-9-]+)",\s*name:/g
     )) {
       const position = match.index ?? 0
       const owningItem = [...itemMatches]
