@@ -1,9 +1,11 @@
-import type { ComponentType, CSSProperties, ReactNode } from "react"
+import type { ComponentType, ReactNode } from "react"
 
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { cn } from "@/lib/utils"
+import { Block } from "@/registry/admin-appearance/block"
+import type { GradientId } from "@/registry/admin-appearance/appearance-palette"
 
 export interface QuickAction {
   id: string
@@ -12,7 +14,7 @@ export interface QuickAction {
   onSelect: () => void
 }
 
-export type WidgetQuickActionsHeading = "muted" | "prominent"
+export type WidgetQuickActionsHeading = "regular" | "large"
 
 export interface WidgetQuickActionsProps {
   title?: string
@@ -21,30 +23,14 @@ export interface WidgetQuickActionsProps {
   heading?: WidgetQuickActionsHeading
   summary?: ReactNode
   loading?: boolean
-  gradient?: string
+  gradient?: GradientId
+  blockId?: string
   className?: string
 }
 
 const headingClassName: Record<WidgetQuickActionsHeading, string> = {
-  muted: "text-sm font-medium text-muted-foreground",
-  prominent: "text-xl font-semibold text-foreground",
-}
-
-function gradientSurfaceStyle(
-  gradient?: string
-): (CSSProperties & Record<string, string>) | undefined {
-  return gradient
-    ? {
-        backgroundImage: `var(--gradient-${gradient})`,
-        color: `var(--gradient-${gradient}-foreground)`,
-        "--foreground": `var(--gradient-${gradient}-foreground)`,
-        "--card-foreground": `var(--gradient-${gradient}-foreground)`,
-        "--muted-foreground": `var(--gradient-${gradient}-foreground)`,
-        "--sidebar-foreground": `var(--gradient-${gradient}-foreground)`,
-        "--sidebar-active": `color-mix(in oklch, var(--gradient-${gradient}-foreground) 10%, transparent)`,
-        "--sidebar-active-foreground": `var(--gradient-${gradient}-foreground)`,
-      }
-    : undefined
+  regular: "text-[0.84375rem] font-semibold text-foreground",
+  large: "text-[1.15rem] font-semibold text-foreground",
 }
 
 const skeletonActionRowCount = 2
@@ -53,14 +39,15 @@ export function WidgetQuickActions({
   title,
   actions,
   columns = 2,
-  heading = "muted",
+  heading = "regular",
   summary,
   loading = false,
   gradient,
+  blockId,
   className,
 }: WidgetQuickActionsProps) {
   return (
-    <Card className={className} style={gradientSurfaceStyle(gradient)}>
+    <Block id={blockId} gradient={gradient} headings className={className}>
       {title || summary ? (
         <CardHeader
           className={
@@ -97,10 +84,7 @@ export function WidgetQuickActions({
                     key={action.id}
                     type="button"
                     variant="outline"
-                    className={cn(
-                      "w-full min-w-0 justify-start",
-                      gradient && "bg-transparent"
-                    )}
+                    className="w-full min-w-0 justify-start"
                     onClick={action.onSelect}
                   >
                     {Icon ? <Icon className="shrink-0" /> : null}
@@ -110,6 +94,6 @@ export function WidgetQuickActions({
               })}
         </div>
       </CardContent>
-    </Card>
+    </Block>
   )
 }

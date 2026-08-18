@@ -22,17 +22,33 @@ function clampChannel(channel: number) {
   return Math.min(1, Math.max(0, channel))
 }
 
-function toLinearRgb(hex: string) {
+function hexChannels(hex: string): [number, number, number] {
   if (!HEX_PATTERN.test(hex)) {
     throw new Error(`Expected #rrggbb, received ${hex}`)
   }
 
   const value = Number.parseInt(hex.slice(1), 16)
 
+  return [(value >> 16) & 255, (value >> 8) & 255, value & 255]
+}
+
+function channelsToHex(channels: readonly number[]): string {
+  return `#${channels
+    .map((channel) =>
+      Math.round(clampChannel(channel / 255) * 255)
+        .toString(16)
+        .padStart(2, "0")
+    )
+    .join("")}`
+}
+
+function toLinearRgb(hex: string) {
+  const [r, g, b] = hexChannels(hex)
+
   return {
-    r: toLinear(((value >> 16) & 255) / 255),
-    g: toLinear(((value >> 8) & 255) / 255),
-    b: toLinear((value & 255) / 255),
+    r: toLinear(r / 255),
+    g: toLinear(g / 255),
+    b: toLinear(b / 255),
   }
 }
 
@@ -101,4 +117,66 @@ export function contrastRatio(a: string, b: string): number {
   const darker = Math.min(first, second)
 
   return (lighter + 0.05) / (darker + 0.05)
+}
+
+export interface GradientStopsLike {
+  from: string
+  via: string
+  to: string
+}
+
+function mixHex(a: string, b: string, t: number): string {
+  const channelsA = hexChannels(a)
+  const channelsB = hexChannels(b)
+  const mixed = channelsA.map(
+    (channel, index) => channel + (channelsB[index] - channel) * t
+  )
+  return channelsToHex(mixed)
+}
+
+function sampleAt(stops: GradientStopsLike, positionPercent: number): string {
+  if (positionPercent <= 50) {
+    return mixHex(stops.from, stops.via, positionPercent / 50)
+  }
+  return mixHex(stops.via, stops.to, (positionPercent - 50) / 50)
+}
+
+export function sampleGradient(
+  stops: GradientStopsLike,
+  count: number
+): string[] {
+  if (count <= 1) {
+    return [stops.from]
+  }
+
+  return Array.from({ length: count }, (_, index) =>
+    sampleAt(stops, (index / (count - 1)) * 100)
+  )
+}
+
+export function composite(
+  foreground: string,
+  alpha: number,
+  background: string,
+  space: "srgb" | "linear"
+): string {
+  const fg = hexChannels(foreground)
+  const bg = hexChannels(background)
+
+  if (space === "srgb") {
+    const mixed = fg.map(
+      (channel, index) => channel * alpha + bg[index] * (1 - alpha)
+    )
+    return channelsToHex(mixed)
+  }
+
+  const fgLinear = fg.map((channel) => toLinear(channel / 255))
+  const bgLinear = bg.map((channel) => toLinear(channel / 255))
+  const mixedLinear = fgLinear.map(
+    (channel, index) => channel * alpha + bgLinear[index] * (1 - alpha)
+  )
+  const mixedGamma = mixedLinear.map(
+    (channel) => clampChannel(toGamma(clampChannel(channel))) * 255
+  )
+  return channelsToHex(mixedGamma)
 }

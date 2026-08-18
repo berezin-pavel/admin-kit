@@ -17,6 +17,7 @@ export interface AdminMenuProps {
   footer?: ReactNode
   children: ReactNode
   openMenuLabel?: string
+  gradient?: string
 }
 
 export function AdminMenu({
@@ -24,6 +25,7 @@ export function AdminMenu({
   footer,
   children,
   openMenuLabel = "Open navigation menu",
+  gradient,
 }: AdminMenuProps) {
   const [open, setOpen] = useState(false)
 
@@ -41,7 +43,7 @@ export function AdminMenu({
       >
         <Menu className="size-4" />
       </SheetTrigger>
-      <SheetContent side="left">
+      <SheetContent side="left" data-gradient={gradient || undefined}>
         <SheetTitle className="sr-only">{appName}</SheetTitle>
         <div className="flex min-h-0 flex-1 flex-col pt-11">
           <div

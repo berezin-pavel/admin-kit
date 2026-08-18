@@ -188,7 +188,7 @@ export function DemoOrders() {
               id: "edit",
               label: strings.editOrderAction,
               icon: Pencil,
-              onSelect: () => router.push("/demo/order/edit"),
+              onSelect: () => router.push("/demo/order?tab=edit"),
             },
             {
               id: "delete",
@@ -300,6 +300,7 @@ export function DemoOrders() {
   return (
     <>
       <PageList
+        blockId="orders"
         title={strings.title}
         description={strings.description}
         actions={

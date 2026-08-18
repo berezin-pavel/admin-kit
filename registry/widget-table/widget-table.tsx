@@ -3,7 +3,6 @@ import type { ComponentType, Key, ReactNode } from "react"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
-  Card,
   CardContent,
   CardFooter,
   CardHeader,
@@ -19,6 +18,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { cn } from "@/lib/utils"
+import { Block } from "@/registry/admin-appearance/block"
 import { StateEmpty } from "@/registry/state-empty/state-empty"
 
 import { WidgetTableColumnsMenu } from "./widget-table-columns-menu"
@@ -105,6 +105,7 @@ export const widgetTableLabelDefaults: Required<WidgetTableLabels> = {
 }
 
 export interface WidgetTableProps<Row> {
+  blockId?: string
   title?: string
   columns: readonly WidgetTableColumn<Row>[]
   rows: readonly Row[]
@@ -218,6 +219,7 @@ function getAriaSort(
 const skeletonRowCount = 3
 
 export function WidgetTable<Row>({
+  blockId,
   title,
   columns,
   rows,
@@ -265,7 +267,7 @@ export function WidgetTable<Row>({
   )
 
   return (
-    <Card className={className}>
+    <Block id={blockId} headings className={className}>
       {hasHeader ? (
         <CardHeader className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex flex-wrap items-center gap-3">
@@ -287,7 +289,7 @@ export function WidgetTable<Row>({
             ) : (
               <>
                 {title ? (
-                  <CardTitle className="text-sm font-medium text-muted-foreground">
+                  <CardTitle className="text-[0.84375rem] font-semibold">
                     {title}
                   </CardTitle>
                 ) : null}
@@ -334,7 +336,10 @@ export function WidgetTable<Row>({
           </div>
         </CardHeader>
       ) : null}
-      <CardContent aria-busy={loading || undefined}>
+      <CardContent
+        aria-busy={loading || undefined}
+        className={cn(pagination && !loading && "-mb-(--card-spacing)")}
+      >
         {loading ? (
           <Table>
             <TableHeader>
@@ -410,7 +415,7 @@ export function WidgetTable<Row>({
                     <TableHead
                       className={cn(
                         "w-px [&:has([role=checkbox])]:pr-4",
-                        stickyHeader && "sticky top-0 z-10 bg-card"
+                        stickyHeader && "sticky top-0 z-10 bg-card [[data-gradient]_&]:bg-transparent"
                       )}
                     >
                       <Checkbox
@@ -443,7 +448,7 @@ export function WidgetTable<Row>({
                       className={cn(
                         column.align === "right" && "text-right",
                         column.sortable && onSortChange && "p-0",
-                        stickyHeader && "sticky top-0 z-10 bg-card"
+                        stickyHeader && "sticky top-0 z-10 bg-card [[data-gradient]_&]:bg-transparent"
                       )}
                     >
                       {column.sortable && onSortChange ? (
@@ -506,7 +511,7 @@ export function WidgetTable<Row>({
         )}
       </CardContent>
       {pagination && !loading ? (
-        <CardFooter className="justify-center bg-card">
+        <CardFooter className="justify-center bg-card [[data-gradient]_&]:bg-transparent">
           <WidgetTablePaginationControls
             page={pagination.page}
             pageSize={pagination.pageSize}
@@ -517,6 +522,6 @@ export function WidgetTable<Row>({
           />
         </CardFooter>
       ) : null}
-    </Card>
+    </Block>
   )
 }

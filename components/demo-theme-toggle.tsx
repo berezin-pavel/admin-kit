@@ -17,7 +17,7 @@ function useMounted() {
   )
 }
 
-export function DemoThemeToggle({ className }: { className?: string }) {
+export function DemoThemeToggle() {
   const { resolvedTheme, setTheme } = useTheme()
   const mounted = useMounted()
   const locale = useDemoLocale()
@@ -31,7 +31,6 @@ export function DemoThemeToggle({ className }: { className?: string }) {
       isDark={resolvedTheme === "dark"}
       onToggle={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
       labels={locale === "ru" ? localeRu.themeToggle : undefined}
-      className={className}
     />
   )
 }

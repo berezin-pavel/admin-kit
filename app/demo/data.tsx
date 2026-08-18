@@ -11,8 +11,8 @@ import {
   LayoutDashboard,
   Package,
   PackageCheck,
-  Palette,
   Shirt,
+  UserRound,
   ShoppingCart,
   SportShoe,
   Truck,
@@ -22,12 +22,14 @@ import { format } from "date-fns"
 import type { Locale } from "date-fns"
 import { enUS, ru } from "date-fns/locale"
 
-import { cn } from "@/lib/utils"
 import type { AdminNavItem } from "@/registry/admin-shell/admin-shell"
 import type { ComboboxFieldOption } from "@/registry/combobox-field/combobox-field"
 import type { DateRange } from "@/registry/date-range-field/date-range-field"
 import type { SelectFieldOption } from "@/registry/select-field/select-field"
-import type { StatusTone } from "@/registry/status-badge/status-badge"
+import {
+  StatusBadge,
+  type StatusTone,
+} from "@/registry/status-badge/status-badge"
 import type { WidgetActivityEntry } from "@/registry/widget-activity/widget-activity"
 import type { WidgetChartSeries } from "@/registry/widget-chart/widget-chart"
 import type { WidgetDonutSlice } from "@/registry/widget-donut/widget-donut"
@@ -54,13 +56,6 @@ export const orderStatusTone: Record<OrderStatus, StatusTone> = {
   cancelled: "danger",
 }
 
-const orderStatusClassName: Record<OrderStatus, string> = {
-  delivered: "text-primary",
-  "in-transit": "text-muted-foreground",
-  paid: "text-muted-foreground",
-  cancelled: "text-destructive",
-}
-
 export const orderStatusLabelByLocale: Record<
   DemoLocale,
   Record<OrderStatus, string>
@@ -81,19 +76,17 @@ export const orderStatusLabelByLocale: Record<
 
 const NAV_TITLES: Record<
   DemoLocale,
-  { overview: string; orders: string; order: string; appearance: string }
+  { overview: string; orders: string; order: string }
 > = {
   en: {
     overview: "Overview",
     orders: "Orders",
     order: "Order #4187",
-    appearance: "Appearance",
   },
   ru: {
     overview: "Обзор",
     orders: "Заказы",
     order: "Заказ №4187",
-    appearance: "Оформление",
   },
 }
 
@@ -104,7 +97,6 @@ export function getDemoNav(locale: DemoLocale): readonly AdminNavItem[] {
     { href: "/demo", title: titles.overview, icon: LayoutDashboard },
     { href: "/demo/orders", title: titles.orders, icon: ShoppingCart },
     { href: "/demo/order", title: titles.order, icon: Package },
-    { href: "/demo/appearance", title: titles.appearance, icon: Palette },
   ]
 }
 
@@ -457,9 +449,9 @@ export function getDemoOrderColumns(
       id: "status",
       title: titles.status,
       cell: (row) => (
-        <span className={cn("font-medium", orderStatusClassName[row.status])}>
+        <StatusBadge tone={orderStatusTone[row.status]}>
           {statusLabel[row.status]}
-        </span>
+        </StatusBadge>
       ),
     },
     {
@@ -772,6 +764,59 @@ export function getDemoProductItems(
     description: copy.description,
     meta: copy.meta,
     icon: PRODUCT_ICONS[index],
+  }))
+}
+
+const PAYMENT_METHOD_IDS = ["card", "wallet", "cash"] as const
+const PAYMENT_METHOD_SHARES = [58, 27, 15]
+const PAYMENT_METHOD_LABELS: Record<DemoLocale, readonly string[]> = {
+  en: ["Bank card", "Wallet", "Cash on delivery"],
+  ru: ["Банковская карта", "Кошелёк", "Наличные при получении"],
+}
+
+export function getDemoPaymentSlices(
+  locale: DemoLocale
+): readonly WidgetDonutSlice[] {
+  return PAYMENT_METHOD_IDS.map((id, index) => ({
+    id,
+    label: PAYMENT_METHOD_LABELS[locale][index],
+    value: PAYMENT_METHOD_SHARES[index],
+  }))
+}
+
+interface DemoTopCustomerCopy {
+  title: string
+  description: string
+  meta: string
+}
+
+const TOP_CUSTOMER_IDS = ["carter", "morgan", "novak", "frost", "sanders"] as const
+const TOP_CUSTOMER_COPY: Record<DemoLocale, readonly DemoTopCustomerCopy[]> = {
+  en: [
+    { title: "Emily Carter", description: "Austin, since 2023", meta: "42 orders" },
+    { title: "Alex Morgan", description: "Denver, since 2022", meta: "37 orders" },
+    { title: "Olga Novak", description: "Prague, since 2024", meta: "29 orders" },
+    { title: "Tom Frost", description: "Oslo, since 2021", meta: "24 orders" },
+    { title: "Mia Sanders", description: "Leeds, since 2024", meta: "19 orders" },
+  ],
+  ru: [
+    { title: "Емельянова Е.", description: "Казань, с 2023", meta: "42 заказа" },
+    { title: "Морозов А.", description: "Тверь, с 2022", meta: "37 заказов" },
+    { title: "Новикова О.", description: "Прага, с 2024", meta: "29 заказов" },
+    { title: "Фролов Т.", description: "Осло, с 2021", meta: "24 заказа" },
+    { title: "Сандерс М.", description: "Лидс, с 2024", meta: "19 заказов" },
+  ],
+}
+
+export function getDemoTopCustomerItems(
+  locale: DemoLocale
+): readonly WidgetListItem[] {
+  return TOP_CUSTOMER_COPY[locale].map((copy, index) => ({
+    id: TOP_CUSTOMER_IDS[index],
+    title: copy.title,
+    description: copy.description,
+    meta: copy.meta,
+    icon: UserRound,
   }))
 }
 

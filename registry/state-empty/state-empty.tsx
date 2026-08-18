@@ -1,30 +1,14 @@
-import type { CSSProperties, ReactNode } from "react"
+import type { ReactNode } from "react"
 
 import { cn } from "@/lib/utils"
+import type { GradientId } from "@/registry/admin-appearance/appearance-palette"
 
 export interface StateEmptyProps {
   title: string
   description?: string
   actions?: ReactNode
-  gradient?: string
+  gradient?: GradientId
   className?: string
-}
-
-function gradientSurfaceStyle(
-  gradient?: string
-): (CSSProperties & Record<string, string>) | undefined {
-  return gradient
-    ? {
-        backgroundImage: `var(--gradient-${gradient})`,
-        color: `var(--gradient-${gradient}-foreground)`,
-        "--foreground": `var(--gradient-${gradient}-foreground)`,
-        "--card-foreground": `var(--gradient-${gradient}-foreground)`,
-        "--muted-foreground": `var(--gradient-${gradient}-foreground)`,
-        "--sidebar-foreground": `var(--gradient-${gradient}-foreground)`,
-        "--sidebar-active": `color-mix(in oklch, var(--gradient-${gradient}-foreground) 10%, transparent)`,
-        "--sidebar-active-foreground": `var(--gradient-${gradient}-foreground)`,
-      }
-    : undefined
 }
 
 export function StateEmpty({
@@ -40,7 +24,7 @@ export function StateEmpty({
         "flex flex-col items-center gap-3 px-6 py-12 text-center",
         className
       )}
-      style={gradientSurfaceStyle(gradient)}
+      data-gradient={gradient}
     >
       <span className="font-medium">{title}</span>
       {description ? (

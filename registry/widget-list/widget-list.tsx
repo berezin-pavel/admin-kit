@@ -1,7 +1,9 @@
-import type { ComponentType, CSSProperties, ReactNode } from "react"
+import type { ComponentType, ReactNode } from "react"
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
+import { Block } from "@/registry/admin-appearance/block"
+import type { GradientId } from "@/registry/admin-appearance/appearance-palette"
 import { StateEmpty } from "@/registry/state-empty/state-empty"
 
 export interface WidgetListItem {
@@ -12,7 +14,7 @@ export interface WidgetListItem {
   icon?: ComponentType<{ className?: string }>
 }
 
-export type WidgetListHeading = "muted" | "prominent"
+export type WidgetListHeading = "regular" | "large"
 
 export interface WidgetListProps {
   title: string
@@ -22,30 +24,14 @@ export interface WidgetListProps {
   empty?: ReactNode
   emptyTitle?: string
   loading?: boolean
-  gradient?: string
+  gradient?: GradientId
+  blockId?: string
   className?: string
 }
 
 const headingClassName: Record<WidgetListHeading, string> = {
-  muted: "text-sm font-medium text-muted-foreground",
-  prominent: "text-xl font-semibold text-foreground",
-}
-
-function gradientSurfaceStyle(
-  gradient?: string
-): (CSSProperties & Record<string, string>) | undefined {
-  return gradient
-    ? {
-        backgroundImage: `var(--gradient-${gradient})`,
-        color: `var(--gradient-${gradient}-foreground)`,
-        "--foreground": `var(--gradient-${gradient}-foreground)`,
-        "--card-foreground": `var(--gradient-${gradient}-foreground)`,
-        "--muted-foreground": `var(--gradient-${gradient}-foreground)`,
-        "--sidebar-foreground": `var(--gradient-${gradient}-foreground)`,
-        "--sidebar-active": `color-mix(in oklch, var(--gradient-${gradient}-foreground) 10%, transparent)`,
-        "--sidebar-active-foreground": `var(--gradient-${gradient}-foreground)`,
-      }
-    : undefined
+  regular: "text-[0.84375rem] font-semibold text-foreground",
+  large: "text-[1.15rem] font-semibold text-foreground",
 }
 
 const skeletonItemCount = 3
@@ -53,16 +39,17 @@ const skeletonItemCount = 3
 export function WidgetList({
   title,
   items,
-  heading = "muted",
+  heading = "regular",
   summary,
   empty,
   emptyTitle = "No data",
   loading = false,
   gradient,
+  blockId,
   className,
 }: WidgetListProps) {
   return (
-    <Card className={className} style={gradientSurfaceStyle(gradient)}>
+    <Block id={blockId} gradient={gradient} headings className={className}>
       <CardHeader
         className={
           summary ? "flex flex-wrap items-center justify-between gap-4" : undefined
@@ -124,6 +111,6 @@ export function WidgetList({
           </ul>
         )}
       </CardContent>
-    </Card>
+    </Block>
   )
 }

@@ -7,7 +7,7 @@ mkdir -p "$RUN_DIR"
 
 NAME="showcase"
 PORT=3000
-HEAP_MB="${DEV_HEAP_MB:-4096}"
+HEAP_MB="${DEV_HEAP_MB:-2048}"
 START_CMD="NODE_OPTIONS=--max-old-space-size=$HEAP_MB pnpm dev"
 PROC_PATTERN="admin-kit/node_modules/[^ ]*next[^ ]* dev"
 

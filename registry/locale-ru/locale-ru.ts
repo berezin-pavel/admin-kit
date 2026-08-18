@@ -1,6 +1,8 @@
 import { ru } from "date-fns/locale"
 
 import { defaultDateRangePresets } from "@/registry/date-range-field/date-range-field"
+import type { AppearanceLabels } from "@/registry/admin-appearance/appearance-provider"
+import type { AppearanceMenuLabels } from "@/registry/appearance-menu/appearance-menu"
 
 const dateRangePresetLabelsRu: Record<string, string> = {
   today: "Сегодня",
@@ -12,6 +14,76 @@ const dateRangePresetLabelsRu: Record<string, string> = {
   "last-month": "Прошлый месяц",
   "last-year": "Прошлый год",
 }
+
+const gradientNamesRu = {
+  ember: "Жар",
+  sunset: "Закат",
+  peach: "Персик",
+  amber: "Янтарь",
+  copper: "Медь",
+  rose: "Роза",
+  berry: "Ягода",
+  grape: "Виноград",
+  lavender: "Лаванда",
+  dusk: "Сумерки",
+  midnight: "Полночь",
+  ocean: "Океан",
+  sky: "Небо",
+  lagoon: "Лагуна",
+  mint: "Мята",
+  meadow: "Луг",
+  forest: "Лес",
+  sand: "Песок",
+  slate: "Сланец",
+  graphite: "Графит",
+}
+
+const accentNamesRu = {
+  emerald: "Изумруд",
+  green: "Зелёный",
+  lime: "Лайм",
+  teal: "Бирюза",
+  cyan: "Циан",
+  sky: "Небесный",
+  blue: "Синий",
+  cobalt: "Кобальт",
+  indigo: "Индиго",
+  violet: "Фиолетовый",
+  purple: "Пурпур",
+  fuchsia: "Фуксия",
+  pink: "Розовый",
+  rose: "Малиновый",
+  red: "Красный",
+  orange: "Оранжевый",
+  amber: "Янтарный",
+  brown: "Коричневый",
+  slate: "Сланец",
+  graphite: "Графит",
+}
+
+const adminAppearanceRu = {
+  blockMenu: "Оформление блока",
+  gradient: "Градиент",
+  none: "Без градиента",
+  heading: "Заголовок",
+  headingRegular: "Обычный",
+  headingLarge: "Большой",
+  headingNone: "Без заголовка",
+  gradients: gradientNamesRu,
+} satisfies AppearanceLabels
+
+const appearanceMenuRu = {
+  label: "Оформление",
+  accent: "Акцентный цвет",
+  sidebar: "Сайдбар",
+  signIn: "Экран входа",
+  page: "Фон страниц",
+  pages: "По страницам",
+  inherit: "Как по умолчанию",
+  none: "Без градиента",
+  gradients: gradientNamesRu,
+  accents: accentNamesRu,
+} satisfies AppearanceMenuLabels
 
 export const localeRu = {
   widgetTable: {
@@ -123,35 +195,8 @@ export const localeRu = {
   languageToggle: { label: "Переключить язык" },
   userMenu: { label: "Открыть меню пользователя" },
   breadcrumbs: { label: "Хлебные крошки" },
-  themeEditor: {
-    brand: "Фирменный цвет",
-    surface: "Фон",
-    success: "Успех",
-    warning: "Предупреждение",
-    danger: "Опасность",
-    radius: "Скругление углов",
-    sourcesTitle: "Цвета",
-    gradientsTitle: "Градиенты",
-    addGradient: "Добавить градиент",
-    gradientPresetsLabel: "Готовые градиенты",
-    addGradientPreset: "Добавить готовый градиент",
-    gradientName: "Название",
-    gradientAngle: "Угол",
-    gradientFrom: "От",
-    gradientVia: "Через",
-    gradientTo: "До",
-    lightScheme: "Светлая",
-    darkScheme: "Тёмная",
-    suggestDark: "Подобрать тёмный",
-    removeGradient: "Удалить",
-    removeGradientTitle: "Удалить градиент",
-    removeGradientDescription:
-      "Градиент будет убран из темы. Отменить это действие нельзя.",
-    contrastWarning: "Контраст слишком низкий, текст будет плохо читаться",
-    cssTitle: "Готовый CSS",
-    copyCss: "Скопировать CSS",
-    copiedCss: "Скопировано",
-  },
+  adminAppearance: adminAppearanceRu,
+  appearanceMenu: appearanceMenuRu,
 } as const
 
 export type LocaleRu = typeof localeRu

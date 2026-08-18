@@ -33,7 +33,7 @@ function readPreviews() {
   return previews
 }
 
-const additionalRoutes = ["/demo/appearance"]
+const additionalRoutes = ["/palette", "/demo", "/demo/orders", "/demo/order", "/demo/sign-in"]
 
 test("no showcase preview or demo route has a WCAG A or AA violation", async ({
   page,

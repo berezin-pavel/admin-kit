@@ -8,7 +8,7 @@ items changed, and what breaks if you pull them.
 **Install an item, pinned to a release:**
 
 ```bash
-pnpm dlx shadcn@latest add berezin-pavel/admin-kit/widget-table#v0.27.0
+pnpm dlx shadcn@latest add berezin-pavel/admin-kit/widget-table#v0.28.0
 ```
 
 **See what an update would change before taking it:**
@@ -24,6 +24,67 @@ say yes; `-o` overwrites deliberately. Items you have edited in place are yours 
 Sections used below: **New** (items you can now install), **Changed** (installed items worth
 re-pulling), **Breaking** (props or files that changed shape — read before overwriting), and
 **Project** (showcase, CI, docs — nothing that reaches your project).
+
+## 0.28.0 — 2026-08-18
+
+**Breaking** — the hand-driven theme editor is gone. `theme-editor` and `admin-theme-tokens` are
+removed; the six-source derivation, `adminThemeToCss`, `suggestDarkStops` and hand-made gradients
+with them. If you installed either, delete the files — nothing else in the kit imports them — and
+move whatever theme value you stored to an `AdminAppearance` (below). The reason is in
+`docs/adr/0004-appearance-from-fixed-palettes.md`: every hand-picked gradient needed a round of
+contrast fixes found by eye, because no automated check sees text over `background-image`.
+
+**Breaking** — nothing in the work area sits outside a card any more. `page-header` renders a card
+(with a new `breadcrumbs` slot above the title); `page-list`, `page-entity` and `page-form` render
+their heading through it, so the three headings now share `page-header`'s typography;
+`page-form`'s Cancel/Save row is its own card at the bottom; `page-tabs`' strip and `actions` sit
+in a card. If your layout relied on a bare heading above the first card, expect one more card.
+
+**Breaking** — `gradient` on the seven widgets, the four states, `page-auth` and `sidebarGradient`
+on `admin-shell` now take a palette id (`GradientId`: ember, sunset, peach, amber, copper, rose,
+berry, grape, lavender, dusk, midnight, ocean, sky, lagoon, mint, meadow, forest, sand, slate,
+graphite) instead of any string, and paint through `data-gradient` attributes and the stylesheet
+`admin-appearance` emits — the thirteen inline `gradientSurfaceStyle` helpers are gone. Render
+`<AppearanceStyle value={…} />` in your layout or no gradient paints. `widget-quick-actions` no
+longer forces `bg-transparent` on its buttons and the shell's footer controls no longer need a
+`bg-transparent` class on a gradient sidebar: the stylesheet redefines `--background`, `--muted`,
+`--border`, `--ring` and the sidebar tokens on every gradient surface, so outline buttons, hover
+tints, borders and focus rings stay visible.
+
+**New** — `admin-appearance`: twenty three-stop gradients (each with a light and a dark variant and
+a derived soft tint for page backdrops) and twenty accent colours, all measured in tests — text
+against 33 points along the gradient, text on hovered controls (8 % and 16 % overlays), every
+filled accent pair both through 8-bit hex and in continuous precision. `AdminAppearance` is one
+value: `accent`, `sidebar`, `signIn`, `page` (a gradient id or null; backdrops are always the soft
+tint), `pages` per page id, `blocks` per block id (`{ gradient, heading }`); `isAdminAppearance`
+validates what you read back, `defaultAdminAppearance` is the shipped look, `resolvePageBackdrop`
+picks a page's backdrop. `AppearanceProvider` (`value`/`onChange`/`editable`) hands it to `Block`,
+the card of the work area: it resolves its gradient by id, and in edit mode shows a corner button
+with the swatch grid and — on widgets — the heading choice (regular — 13.5 px semibold, large — 1.15 rem, or hidden). Every
+widget, `widget-table`, `page-header`, page sections, the form's actions, the tab strip and
+`page-auth`'s card take a `blockId`.
+
+**New** — `appearance-menu`, the fourth footer control: accent swatches, one select each for the
+sidebar, the sign-in screen and the default page backdrop, and a row per page. `admin-shell` gained
+`backdrop={gradientId}` for the page backdrop; the burger panel now receives the sidebar gradient
+(it never did). `locale-ru` gained `adminAppearance` and `appearanceMenu` slices with Russian names
+for all forty palette entries.
+
+**Changed** — a popup opened from a control on a gradient surface (a select, a dropdown, a popover,
+a combobox) is painted with that surface's gradient through a `body:has(...)` rule, so the user
+menu opened from a green sidebar stays green; the seven widgets' default title became the block's
+"regular" heading (13.5 px, semibold, full-strength foreground) and section titles in
+`page-entity`, `page-form` and `widget-table` follow it; `page-tabs` draws its tabs exactly like
+the sidebar's nav rows (same height, icon box, hover tint) with no shadow; `page-list` spaces its
+blocks like the overview (`gap-4`); `widget-table`'s sticky header and footer paint nothing on a
+gradient block and the body is clipped at the footer line; chart tooltips sit on a frosted card
+tint instead of a see-through box.
+
+**Project** — the showcase has a `/palette` page with every gradient and accent on live controls;
+the demo stores one appearance in localStorage, edits it through the menu and the corner buttons,
+and is painted by default; `e2e/gradient-contrast.spec.ts` now finds surfaces by attribute and
+hovers every control on them in both schemes; the dev server heap is capped at 2 GB and vitest at
+three workers.
 
 ## 0.27.0 — 2026-08-17
 
@@ -88,7 +149,7 @@ were never brought in line with it; they are now. Dark `sidebar-active` was nudg
 clear the bar under either measurement, and a test asserts every derived pair does the same, so a
 future edit cannot land in that gap again.
 
-**Changed** — seven widget cards take a second heading treatment. `heading="prominent"` renders
+**Changed** — seven widget cards take a second heading treatment. `heading="large"` renders
 the title large and in full-strength foreground instead of the small muted default, and `summary`
 fills the opposite end of the header with muted content — a total, a period, a count. Both are
 optional and default to today's look, so nothing changes unless you ask for it. `widget-table` is

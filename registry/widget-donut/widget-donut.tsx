@@ -1,10 +1,9 @@
 "use client"
 
-import type { CSSProperties, ReactNode } from "react"
+import type { ReactNode } from "react"
 import { Cell, Pie, PieChart } from "recharts"
 
 import {
-  Card,
   CardContent,
   CardDescription,
   CardHeader,
@@ -17,6 +16,8 @@ import {
   type ChartConfig,
 } from "@/components/ui/chart"
 import { Skeleton } from "@/components/ui/skeleton"
+import { Block } from "@/registry/admin-appearance/block"
+import type { GradientId } from "@/registry/admin-appearance/appearance-palette"
 import { StateEmpty } from "@/registry/state-empty/state-empty"
 
 export interface WidgetDonutSlice {
@@ -25,7 +26,7 @@ export interface WidgetDonutSlice {
   value: number
 }
 
-export type WidgetDonutHeading = "muted" | "prominent"
+export type WidgetDonutHeading = "regular" | "large"
 
 export interface WidgetDonutProps {
   title?: string
@@ -36,30 +37,14 @@ export interface WidgetDonutProps {
   summary?: ReactNode
   emptyTitle?: string
   loading?: boolean
-  gradient?: string
+  gradient?: GradientId
+  blockId?: string
   className?: string
 }
 
 const headingClassName: Record<WidgetDonutHeading, string> = {
-  muted: "text-sm font-medium text-muted-foreground",
-  prominent: "text-xl font-semibold text-foreground",
-}
-
-function gradientSurfaceStyle(
-  gradient?: string
-): (CSSProperties & Record<string, string>) | undefined {
-  return gradient
-    ? {
-        backgroundImage: `var(--gradient-${gradient})`,
-        color: `var(--gradient-${gradient}-foreground)`,
-        "--foreground": `var(--gradient-${gradient}-foreground)`,
-        "--card-foreground": `var(--gradient-${gradient}-foreground)`,
-        "--muted-foreground": `var(--gradient-${gradient}-foreground)`,
-        "--sidebar-foreground": `var(--gradient-${gradient}-foreground)`,
-        "--sidebar-active": `color-mix(in oklch, var(--gradient-${gradient}-foreground) 10%, transparent)`,
-        "--sidebar-active-foreground": `var(--gradient-${gradient}-foreground)`,
-      }
-    : undefined
+  regular: "text-[0.84375rem] font-semibold text-foreground",
+  large: "text-[1.15rem] font-semibold text-foreground",
 }
 
 const sliceColorCount = 5
@@ -104,18 +89,19 @@ export function WidgetDonut({
   hint,
   slices,
   valueFormat = defaultValueFormat,
-  heading = "muted",
+  heading = "regular",
   summary,
   emptyTitle = "No data",
   loading = false,
   gradient,
+  blockId,
   className,
 }: WidgetDonutProps) {
   const { total, shares } = computeDonutShares(slices)
   const isEmpty = slices.length === 0 || total === 0
 
   return (
-    <Card className={className} style={gradientSurfaceStyle(gradient)}>
+    <Block id={blockId} gradient={gradient} headings className={className}>
       {title || hint || summary ? (
         <CardHeader
           className={
@@ -171,7 +157,13 @@ export function WidgetDonut({
               <PieChart>
                 <ChartTooltip
                   isAnimationActive={false}
-                  content={<ChartTooltipContent hideLabel nameKey="label" />}
+                  content={
+                    <ChartTooltipContent
+                      hideLabel
+                      nameKey="label"
+                      className="bg-card backdrop-blur-lg"
+                    />
+                  }
                 />
                 <Pie
                   data={shares}
@@ -208,6 +200,6 @@ export function WidgetDonut({
           </div>
         )}
       </CardContent>
-    </Card>
+    </Block>
   )
 }

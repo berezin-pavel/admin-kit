@@ -6,7 +6,6 @@ export interface DemoDictionary {
     overview: string
     orders: string
     order: string
-    appearance: string
   }
   overview: {
     title: string
@@ -25,26 +24,10 @@ export interface DemoDictionary {
     progressOrdersTitle: string
     progressHint: (value: string, max: string) => string
     progressOrdersHint: (value: string, max: string) => string
-    quickActionsTitle: string
-    quickActionLabels: {
-      createOrder: string
-      exportCsv: string
-      inviteUser: string
-      openReports: string
-    }
-    quickActionToastTitle: (label: string) => string
+    metricRefundsTitle: string
+    paymentsDonutTitle: string
+    topCustomersTitle: string
     reloadButton: string
-  }
-  appearance: {
-    title: string
-    description: string
-    gradientAssignmentTitle: string
-    gradientAssignmentDescription: string
-    noneOption: string
-    shellSurfaceLabel: string
-    signInSurfaceLabel: string
-    ordersMetricBlockLabel: string
-    revenueMetricBlockLabel: string
   }
   standaloneTable: {
     title: string
@@ -227,9 +210,6 @@ export interface DemoDictionary {
     signOutAction: string
     profileToastTitle: string
   }
-  breadcrumbs: {
-    editLabel: string
-  }
   signIn: {
     title: string
     description: string
@@ -250,7 +230,6 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       overview: "Overview",
       orders: "Orders",
       order: "Order #4187",
-      appearance: "Appearance",
     },
     overview: {
       title: "Overview",
@@ -269,27 +248,10 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       progressOrdersTitle: "Monthly orders goal",
       progressHint: (value, max) => `${value} of ${max}`,
       progressOrdersHint: (value, max) => `${value} of ${max} orders`,
-      quickActionsTitle: "Quick actions",
-      quickActionLabels: {
-        createOrder: "Create order",
-        exportCsv: "Export to CSV",
-        inviteUser: "Invite user",
-        openReports: "Open reports",
-      },
-      quickActionToastTitle: (label) => `${label} — demo action`,
+      metricRefundsTitle: "Refunds",
+      paymentsDonutTitle: "Payment methods",
+      topCustomersTitle: "Top customers",
       reloadButton: "Reload",
-    },
-    appearance: {
-      title: "Appearance",
-      description: "Adjust the theme's colors and gradients across the panel",
-      gradientAssignmentTitle: "Gradient assignment",
-      gradientAssignmentDescription:
-        "Paint the panel's own surfaces and a few dashboard cards with a gradient from the palette above",
-      noneOption: "None",
-      shellSurfaceLabel: "Sidebar",
-      signInSurfaceLabel: "Sign-in screen",
-      ordersMetricBlockLabel: "Orders metric",
-      revenueMetricBlockLabel: "Revenue metric",
     },
     standaloneTable: {
       title: "Recent orders",
@@ -497,9 +459,6 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       signOutAction: "Sign out",
       profileToastTitle: "Opened profile",
     },
-    breadcrumbs: {
-      editLabel: "Edit",
-    },
     signIn: {
       title: "Sign in",
       description:
@@ -519,7 +478,6 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       overview: "Обзор",
       orders: "Заказы",
       order: "Заказ №4187",
-      appearance: "Оформление",
     },
     overview: {
       title: "Обзор",
@@ -538,27 +496,10 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       progressOrdersTitle: "Цель по заказам за месяц",
       progressHint: (value, max) => `${value} из ${max}`,
       progressOrdersHint: (value, max) => `${value} из ${max} заказов`,
-      quickActionsTitle: "Быстрые действия",
-      quickActionLabels: {
-        createOrder: "Создать заказ",
-        exportCsv: "Выгрузить в CSV",
-        inviteUser: "Пригласить пользователя",
-        openReports: "Открыть отчёты",
-      },
-      quickActionToastTitle: (label) => `${label} — демо-действие`,
+      metricRefundsTitle: "Возвраты",
+      paymentsDonutTitle: "Способы оплаты",
+      topCustomersTitle: "Лучшие клиенты",
       reloadButton: "Обновить",
-    },
-    appearance: {
-      title: "Оформление",
-      description: "Настройте цвета и градиенты темы для всей панели",
-      gradientAssignmentTitle: "Назначение градиентов",
-      gradientAssignmentDescription:
-        "Раскрасьте собственные поверхности панели и несколько карточек дашборда градиентом из палитры выше",
-      noneOption: "Нет",
-      shellSurfaceLabel: "Боковая панель",
-      signInSurfaceLabel: "Экран входа",
-      ordersMetricBlockLabel: "Метрика заказов",
-      revenueMetricBlockLabel: "Метрика выручки",
     },
     standaloneTable: {
       title: "Последние заказы",
@@ -762,9 +703,6 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       profileAction: "Профиль",
       signOutAction: "Выйти",
       profileToastTitle: "Открыт профиль",
-    },
-    breadcrumbs: {
-      editLabel: "Редактирование",
     },
     signIn: {
       title: "Вход",

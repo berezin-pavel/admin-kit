@@ -16,9 +16,8 @@ import { WidgetDonut } from "@/registry/widget-donut/widget-donut"
 import { WidgetList } from "@/registry/widget-list/widget-list"
 import { WidgetMetric } from "@/registry/widget-metric/widget-metric"
 import { WidgetProgress } from "@/registry/widget-progress/widget-progress"
-import { WidgetQuickActions } from "@/registry/widget-quick-actions/widget-quick-actions"
-import { notify } from "@/registry/admin-toaster/admin-toaster"
-import { Download, FileChartColumn, Plus, RotateCw, UserPlus } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { RotateCw } from "lucide-react"
 
 import {
   formatDemoCurrency,
@@ -34,13 +33,14 @@ import {
   getDemoOrderStatusSlices,
   getDemoOrdersByChannelSeries,
   getDemoPreviousRange,
+  getDemoPaymentSlices,
   getDemoProductItems,
+  getDemoTopCustomerItems,
   getDemoRevenueChartData,
   summarizeDemoMetrics,
 } from "@/app/demo/data"
 import { demoDictionary } from "@/app/demo/locale"
 import { useDemoLocale } from "@/app/demo/locale-store"
-import { useDemoGradientAssignment } from "@/app/demo/theme-store"
 
 function getDefaultOverviewRangeValue(): string {
   const today = new Date()
@@ -83,7 +83,6 @@ function buildDemoMetricTrend(
 export default function DemoPage() {
   const locale = useDemoLocale()
   const strings = demoDictionary[locale].overview
-  const gradientAssignment = useDemoGradientAssignment()
   const emptyTitle = locale === "ru" ? localeRu.widgetList.emptyTitle : undefined
   const chartEmptyTitle =
     locale === "ru" ? localeRu.widgetChart.emptyTitle : undefined
@@ -142,6 +141,12 @@ export default function DemoPage() {
     () => getDemoOrderStatusSlices(locale, range),
     [locale, range]
   )
+  const paymentSlices = useMemo(() => getDemoPaymentSlices(locale), [locale])
+  const refundsTrend = useMemo(
+    () => periodMetrics.map((metric) => Math.round(metric.orders * 0.018)),
+    [periodMetrics]
+  )
+  const refunds = refundsTrend.reduce((sum, value) => sum + value, 0)
   const activityEntries = useMemo(
     () => getDemoActivityEntries(locale),
     [locale]
@@ -160,21 +165,6 @@ export default function DemoPage() {
     window.setTimeout(() => setReloading(false), 1200)
   }
 
-  const quickActions = [
-    { id: "create-order", label: strings.quickActionLabels.createOrder, icon: Plus },
-    { id: "export-csv", label: strings.quickActionLabels.exportCsv, icon: Download },
-    { id: "invite-user", label: strings.quickActionLabels.inviteUser, icon: UserPlus },
-    { id: "open-reports", label: strings.quickActionLabels.openReports, icon: FileChartColumn },
-  ].map((action) => ({
-    ...action,
-    onSelect: () => notify.info(strings.quickActionToastTitle(action.label)),
-  }))
-
-  const overviewActions = [
-    { id: "reload", label: strings.reloadButton, icon: RotateCw, onSelect: reload },
-    ...quickActions,
-  ]
-
   return (
     <div className="flex flex-col gap-4">
       <div className="grid gap-4 sm:grid-cols-3">
@@ -190,7 +180,7 @@ export default function DemoPage() {
           trendTooltipFormat={(value) => formatDemoNumber(value, locale)}
           hint={strings.metricHint}
           loading={reloading}
-          gradient={gradientAssignment.blocks["orders-metric"]}
+          blockId="overview.orders"
         />
         <WidgetMetric
           title={strings.metricRevenueTitle}
@@ -204,7 +194,7 @@ export default function DemoPage() {
           trendTooltipFormat={(value) => formatDemoCurrency(value, locale)}
           hint={strings.metricHint}
           loading={reloading}
-          gradient={gradientAssignment.blocks["revenue-metric"]}
+          blockId="overview.revenue"
         />
         <WidgetMetric
           title={strings.metricAverageOrderTitle}
@@ -221,6 +211,7 @@ export default function DemoPage() {
           trendTooltipFormat={(value) => formatDemoCurrency(value, locale)}
           hint={strings.metricHint}
           loading={reloading}
+          blockId="overview.average"
         />
       </div>
       <div className="grid gap-4 md:grid-cols-3">
@@ -236,6 +227,7 @@ export default function DemoPage() {
             formatDemoCurrency(monthlyGoal.max, locale)
           )}
           loading={reloading}
+          blockId="overview.goal-revenue"
         />
         <WidgetProgress
           title={strings.progressOrdersTitle}
@@ -249,11 +241,16 @@ export default function DemoPage() {
             formatDemoNumber(monthlyOrdersGoal.max, locale)
           )}
           loading={reloading}
+          blockId="overview.goal-orders"
         />
-        <WidgetQuickActions
-          title={strings.quickActionsTitle}
-          actions={overviewActions}
+        <WidgetMetric
+          title={strings.metricRefundsTitle}
+          value={formatDemoNumber(refunds, locale)}
+          hint={strings.metricHint}
+          trend={{ direction: "down", value: "-0.4%", tone: "positive" }}
+          trendValues={refundsTrend}
           loading={reloading}
+          blockId="overview.refunds"
         />
       </div>
       <WidgetChart
@@ -263,8 +260,14 @@ export default function DemoPage() {
         hint={strings.financeChartHint}
         emptyTitle={chartEmptyTitle}
         loading={reloading}
+        blockId="overview.finance"
         toolbar={
-          <DateRangeField
+          <>
+            <Button variant="outline" onClick={reload} disabled={reloading}>
+              <RotateCw className={reloading ? "size-4 animate-spin" : "size-4"} />
+              {strings.reloadButton}
+            </Button>
+            <DateRangeField
             value={rangeValue}
             onChange={setRangeValue}
             className="w-64"
@@ -279,6 +282,7 @@ export default function DemoPage() {
               locale === "ru" ? localeRu.dateRangeField.presets : undefined
             }
           />
+          </>
         }
       />
       <div className="grid gap-4 md:grid-cols-2">
@@ -289,6 +293,7 @@ export default function DemoPage() {
           kind="bar"
           emptyTitle={chartEmptyTitle}
           loading={reloading}
+          blockId="overview.channel"
         />
         <WidgetChart
           title={strings.newCustomersChartTitle}
@@ -296,36 +301,61 @@ export default function DemoPage() {
           series={getDemoNewCustomersSeries(locale)}
           emptyTitle={chartEmptyTitle}
           loading={reloading}
+          blockId="overview.customers"
+        />
+      </div>
+      <div className="grid gap-4 md:grid-cols-2">
+        <WidgetDonut
+          title={strings.donutTitle}
+          hint={strings.metricHint}
+          slices={donutSlices}
+          emptyTitle={donutEmptyTitle}
+          loading={reloading}
+          blockId="overview.split"
+        />
+        <WidgetDonut
+          title={strings.paymentsDonutTitle}
+          hint={strings.metricHint}
+          slices={paymentSlices}
+          emptyTitle={donutEmptyTitle}
+          loading={reloading}
+          blockId="overview.payments"
         />
       </div>
       <div className="grid gap-4 lg:grid-cols-2">
-        <DemoStandaloneTable loading={reloading} />
         <div className="flex flex-col gap-4">
+          <DemoStandaloneTable loading={reloading} blockId="overview.recent-orders" />
           <WidgetList
             title={strings.productsTitle}
             items={getDemoProductItems(locale)}
             emptyTitle={emptyTitle}
             loading={reloading}
+            blockId="overview.products"
+            className="flex-1"
           />
-          <WidgetDonut
-            title={strings.donutTitle}
-            hint={strings.metricHint}
-            slices={donutSlices}
-            emptyTitle={donutEmptyTitle}
+        </div>
+        <div className="flex flex-col gap-4">
+          <WidgetActivity
+            title={strings.activityTitle}
+            entries={activityEntries}
+            labels={activityLabels}
+            locale={locale === "ru" ? localeRu.widgetActivity.locale : undefined}
+            dayFormat={
+              locale === "ru" ? localeRu.widgetActivity.dayFormat : undefined
+            }
             loading={reloading}
+            blockId="overview.activity"
+          />
+          <WidgetList
+            title={strings.topCustomersTitle}
+            items={getDemoTopCustomerItems(locale)}
+            emptyTitle={emptyTitle}
+            loading={reloading}
+            blockId="overview.top-customers"
+            className="flex-1"
           />
         </div>
       </div>
-      <WidgetActivity
-        title={strings.activityTitle}
-        entries={activityEntries}
-        labels={activityLabels}
-        locale={locale === "ru" ? localeRu.widgetActivity.locale : undefined}
-        dayFormat={
-          locale === "ru" ? localeRu.widgetActivity.dayFormat : undefined
-        }
-        loading={reloading}
-      />
     </div>
   )
 }

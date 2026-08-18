@@ -1,7 +1,7 @@
 "use client"
 
 import { useMemo, useState } from "react"
-import { useRouter } from "next/navigation"
+import { useSearchParams } from "next/navigation"
 import {
   History,
   LayoutDashboard,
@@ -12,6 +12,7 @@ import {
 
 import { Button } from "@/components/ui/button"
 import { DemoOrderBreadcrumbs } from "@/components/demo-order-breadcrumbs"
+import { DemoOrderEdit } from "@/components/demo-order-edit"
 import { cn } from "@/lib/utils"
 import { notify } from "@/registry/admin-toaster/admin-toaster"
 import { ConfirmDialog } from "@/registry/confirm-dialog/confirm-dialog"
@@ -44,7 +45,6 @@ const RELOAD_DELAY_MS = 1200
 const EDIT_TAB = "edit"
 
 export function DemoOrderEntity() {
-  const router = useRouter()
   const [cancelling, setCancelling] = useState(false)
   const [confirmOpen, setConfirmOpen] = useState(false)
   const [cancelled, setCancelled] = useState(false)
@@ -54,7 +54,10 @@ export function DemoOrderEntity() {
   const [channel, setChannel] = useState("online")
   const [draftTotal, setDraftTotal] = useState(total)
   const [draftChannel, setDraftChannel] = useState(channel)
-  const [tab, setTab] = useState("overview")
+  const searchParams = useSearchParams()
+  const [tab, setTab] = useState(
+    searchParams.get("tab") === EDIT_TAB ? EDIT_TAB : "overview"
+  )
   const [reloading, setReloading] = useState(false)
   const locale = useDemoLocale()
   const strings = demoDictionary[locale].orderEntity
@@ -166,6 +169,7 @@ export function DemoOrderEntity() {
       icon: LayoutDashboard,
       content: (
         <PageEntity
+          blockId="order"
           title={strings.title}
           description={strings.description}
           status={reloading ? "loading" : "ready"}
@@ -187,6 +191,7 @@ export function DemoOrderEntity() {
             locale === "ru" ? localeRu.widgetActivity.dayFormat : undefined
           }
           loading={reloading}
+          blockId="order.history"
         />
       ),
     },
@@ -202,6 +207,7 @@ export function DemoOrderEntity() {
             locale === "ru" ? localeRu.widgetList.emptyTitle : undefined
           }
           loading={reloading}
+          blockId="order.related"
         />
       ),
     },
@@ -209,24 +215,18 @@ export function DemoOrderEntity() {
       id: EDIT_TAB,
       label: strings.tabEditLabel,
       icon: Pencil,
-      content: null,
+      content: <DemoOrderEdit onDone={() => setTab("overview")} />,
     },
   ]
 
   return (
     <div className="flex flex-col gap-4">
-      <DemoOrderBreadcrumbs />
       <PageTabs
+        blockId="order"
+        breadcrumbs={<DemoOrderBreadcrumbs />}
         items={tabItems}
         value={tab}
-        onValueChange={(next) => {
-          if (next === EDIT_TAB) {
-            router.push("/demo/order/edit")
-            return
-          }
-
-          setTab(next)
-        }}
+        onValueChange={setTab}
         actions={
           <>
             <Button
@@ -258,7 +258,7 @@ export function DemoOrderEntity() {
               {strings.sendReceiptButton}
             </Button>
             <Button
-              variant="destructive"
+              variant="outline"
               disabled={cancelled}
               onClick={() => setConfirmOpen(true)}
             >

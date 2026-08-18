@@ -41,8 +41,10 @@ function sortOrderRows(
 
 export function DemoStandaloneTable({
   loading = false,
+  blockId,
 }: {
   loading?: boolean
+  blockId?: string
 }) {
   const [search, setSearch] = useState("")
   const [page, setPage] = useState(1)
@@ -67,6 +69,7 @@ export function DemoStandaloneTable({
 
   return (
     <WidgetTable
+      blockId={blockId}
       title={strings.title}
       columns={getDemoOrderColumns(locale)}
       rows={matched.slice((currentPage - 1) * pageSize, currentPage * pageSize)}

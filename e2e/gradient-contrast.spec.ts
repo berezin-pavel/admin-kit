@@ -185,19 +185,17 @@ function measureGradientContrast(minimumRatio: number): GradientContrastResult {
   let measuredCount = 0
   let gradientCount = 0
 
-  const roots = Array.from(document.querySelectorAll("*")).filter(
-    (el): el is HTMLElement =>
-      el instanceof HTMLElement &&
-      el.style.backgroundImage.includes("var(--gradient-")
+  const roots = Array.from(
+    document.querySelectorAll<HTMLElement>("[data-gradient], [data-backdrop]")
   )
 
   for (const root of roots) {
-    const idMatch = root.style.backgroundImage.match(
-      /var\(--gradient-([a-z0-9-]+)\)/
-    )
-    if (!idMatch) continue
+    const gradientId =
+      root.getAttribute("data-gradient") ??
+      root.getAttribute("data-backdrop") ??
+      ""
+    if (gradientId.length === 0) continue
 
-    const gradientId = idMatch[1]
     const computedImage = getComputedStyle(root).backgroundImage
     const stopStrings = extractColorFunctions(computedImage)
     if (stopStrings.length === 0) continue
@@ -264,6 +262,162 @@ async function measureRoute(page: Page): Promise<GradientContrastResult> {
   return page.evaluate(measureGradientContrast, CONTRAST_MINIMUM)
 }
 
+const HOVER_TARGETS =
+  '[data-gradient] :is(button, a[href], input, textarea, [role="radio"], [role="tab"], [role="checkbox"], [role="combobox"], [role="menuitem"]):not([aria-hidden="true"])'
+const HOVERS_PER_ROUTE = 120
+
+interface HoverSample {
+  gradientId: string
+  text: string
+  ink: string
+  surface: string
+  stops: string[]
+}
+
+function sampleHoveredElement(el: Element): HoverSample | null {
+  const probe = document.createElement("div")
+  probe.style.position = "fixed"
+  probe.style.top = "-9999px"
+  document.body.appendChild(probe)
+
+  const normalize = (colorString: string): string => {
+    probe.style.color = ""
+    probe.style.color = `color-mix(in srgb, ${colorString} 100%, transparent 0%)`
+    return getComputedStyle(probe).color
+  }
+
+  try {
+    const root = el.closest("[data-gradient]")
+    if (!root) return null
+    const style = getComputedStyle(el)
+    if (style.display === "none" || style.visibility === "hidden") return null
+    if (Number.parseFloat(style.opacity) === 0) return null
+    const text = (el.textContent ?? "").trim()
+    const placeholder = el.getAttribute("placeholder") ?? ""
+    const inkSource =
+      text.length > 0
+        ? style.color
+        : placeholder.length > 0
+          ? getComputedStyle(el, "::placeholder").color
+          : null
+    if (!inkSource) return null
+
+    const stops =
+      getComputedStyle(root).backgroundImage.match(
+        /(?:rgba?|hsla?|oklch|oklab|lab|lch|color)\([^)]*\)/gi
+      ) ?? []
+
+    return {
+      gradientId: root.getAttribute("data-gradient") ?? "",
+      text: (text || placeholder).slice(0, 40),
+      ink: normalize(inkSource),
+      surface: normalize(style.backgroundColor),
+      stops: stops.map(normalize),
+    }
+  } finally {
+    document.body.removeChild(probe)
+  }
+}
+
+function parseSrgb(resolved: string): Rgba {
+  const spaceMatch = resolved.match(
+    /color\(srgb\s+([-\d.]+)\s+([-\d.]+)\s+([-\d.]+)(?:\s*\/\s*([-\d.]+))?\)/
+  )
+  if (spaceMatch) {
+    return {
+      r: Number.parseFloat(spaceMatch[1]) * 255,
+      g: Number.parseFloat(spaceMatch[2]) * 255,
+      b: Number.parseFloat(spaceMatch[3]) * 255,
+      a: spaceMatch[4] === undefined ? 1 : Number.parseFloat(spaceMatch[4]),
+    }
+  }
+  const rgbMatch = resolved.match(/rgba?\(([^)]+)\)/)
+  if (rgbMatch) {
+    const parts = rgbMatch[1].split(",").map((part) => Number.parseFloat(part))
+    return { r: parts[0], g: parts[1], b: parts[2], a: parts.length === 4 ? parts[3] : 1 }
+  }
+  return { r: 0, g: 0, b: 0, a: 0 }
+}
+
+function luminance(color: Rgba): number {
+  const channel = (value: number) => {
+    const normalized = value / 255
+    return normalized <= 0.04045
+      ? normalized / 12.92
+      : ((normalized + 0.055) / 1.055) ** 2.4
+  }
+  return 0.2126 * channel(color.r) + 0.7152 * channel(color.g) + 0.0722 * channel(color.b)
+}
+
+function ratioOf(a: Rgba, b: Rgba): number {
+  const lighter = Math.max(luminance(a), luminance(b))
+  const darker = Math.min(luminance(a), luminance(b))
+  return (lighter + 0.05) / (darker + 0.05)
+}
+
+function over(foreground: Rgba, background: Rgba): Rgba {
+  const alpha = foreground.a
+  return {
+    r: foreground.r * alpha + background.r * (1 - alpha),
+    g: foreground.g * alpha + background.g * (1 - alpha),
+    b: foreground.b * alpha + background.b * (1 - alpha),
+    a: 1,
+  }
+}
+
+function worstHoverRatio(sample: HoverSample): number {
+  const ink = parseSrgb(sample.ink)
+  const surface = parseSrgb(sample.surface)
+  const stops = sample.stops.map(parseSrgb)
+  if (stops.length === 0) return Number.POSITIVE_INFINITY
+  return Math.min(
+    ...stops.map((stop) => {
+      const backdrop = over(surface, stop)
+      return ratioOf(over(ink, backdrop), backdrop)
+    })
+  )
+}
+
+interface HoverFailure {
+  route: string
+  gradientId: string
+  text: string
+  ratio: number
+}
+
+async function measureHovers(page: Page, route: string) {
+  const failures: HoverFailure[] = []
+  const targets = page.locator(HOVER_TARGETS)
+  const count = Math.min(await targets.count(), HOVERS_PER_ROUTE)
+  let measured = 0
+
+  for (let index = 0; index < count; index += 1) {
+    const target = targets.nth(index)
+    if (!(await target.isVisible())) continue
+    try {
+      await target.hover({ force: true, timeout: 3_000 })
+    } catch {
+      continue
+    }
+    const sample = await target.evaluate(sampleHoveredElement)
+    if (!sample) continue
+    measured += 1
+    const ratio = worstHoverRatio(sample)
+    if (ratio < CONTRAST_MINIMUM) {
+      failures.push({
+        route,
+        gradientId: sample.gradientId,
+        text: sample.text,
+        ratio: Math.round(ratio * 100) / 100,
+      })
+    }
+  }
+
+  return { measured, failures }
+}
+
+const additionalRoutes = ["/palette", "/demo", "/demo/orders", "/demo/order", "/demo/sign-in"]
+
 test("the colour converter reports black on white as 21 to 1", async ({
   page,
 }) => {
@@ -275,7 +429,7 @@ test("the colour converter reports black on white as 21 to 1", async ({
   expect(result.selfTestRatio).toBeCloseTo(21, 1)
 })
 
-test("no showcase preview leaves text under 4.5 to 1 against its gradient backdrop", async ({
+test("no preview or demo route leaves text under 4.5 to 1 against its gradient", async ({
   page,
 }) => {
   test.setTimeout(900_000)
@@ -283,12 +437,16 @@ test("no showcase preview leaves text under 4.5 to 1 against its gradient backdr
   const previews = readPreviews()
   expect(previews.length).toBeGreaterThan(40)
 
+  const routes = [
+    ...previews.map((preview) => `/preview/${preview.item}/${preview.view}`),
+    ...additionalRoutes,
+  ]
+
   const allFailures: Array<GradientFailure & { route: string }> = []
   let totalMeasured = 0
   let routesWithGradients = 0
 
-  for (const preview of previews) {
-    const route = `/preview/${preview.item}/${preview.view}`
+  for (const route of routes) {
     await page.goto(route)
     await page.waitForLoadState("networkidle")
 
@@ -306,5 +464,30 @@ test("no showcase preview leaves text under 4.5 to 1 against its gradient backdr
 
   expect(routesWithGradients).toBeGreaterThanOrEqual(MINIMUM_GRADIENT_ROUTES)
   expect(totalMeasured).toBeGreaterThan(0)
+  expect(allFailures).toEqual([])
+})
+
+test("hovered controls on a gradient keep their text at 4.5 to 1 in both schemes", async ({
+  page,
+}) => {
+  test.setTimeout(900_000)
+
+  const hoverRoutes = ["/palette", "/demo", "/demo/orders", "/preview/admin-shell/sidebar-gradient"]
+  const allFailures: HoverFailure[] = []
+  let totalMeasured = 0
+
+  for (const colorScheme of ["light", "dark"] as const) {
+    await page.emulateMedia({ colorScheme })
+    for (const route of hoverRoutes) {
+      const response = await page.goto(route)
+      if (!response || response.status() === 404) continue
+      await page.waitForLoadState("networkidle")
+      const { measured, failures } = await measureHovers(page, `${route} (${colorScheme})`)
+      totalMeasured += measured
+      allFailures.push(...failures)
+    }
+  }
+
+  expect(totalMeasured).toBeGreaterThan(40)
   expect(allFailures).toEqual([])
 })

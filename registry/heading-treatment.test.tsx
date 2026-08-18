@@ -2,6 +2,7 @@ import { render } from "@testing-library/react"
 import type { ReactElement } from "react"
 import { describe, expect, it } from "vitest"
 
+import type { GradientId } from "./admin-appearance/appearance-palette"
 import { WidgetActivity } from "./widget-activity/widget-activity"
 import { WidgetChart } from "./widget-chart/widget-chart"
 import { WidgetDonut } from "./widget-donut/widget-donut"
@@ -11,9 +12,9 @@ import { WidgetProgress } from "./widget-progress/widget-progress"
 import { WidgetQuickActions } from "./widget-quick-actions/widget-quick-actions"
 
 interface HeadingProps {
-  heading?: "muted" | "prominent"
+  heading?: "regular" | "large"
   summary?: ReactElement | string
-  gradient?: string
+  gradient?: GradientId
 }
 
 const cases: readonly {
@@ -90,21 +91,21 @@ const cases: readonly {
 ]
 
 describe.each(cases)("$name heading and summary", ({ render: renderCase, title }) => {
-  it("renders the muted title treatment by default", () => {
+  it("renders the regular title treatment by default", () => {
     const { getByText } = render(renderCase({}))
 
     expect(getByText(title)).toHaveClass(
-      "text-sm",
-      "font-medium",
-      "text-muted-foreground"
+      "text-[0.84375rem]",
+      "font-semibold",
+      "text-foreground"
     )
   })
 
-  it("renders a prominent title in full-strength foreground", () => {
-    const { getByText } = render(renderCase({ heading: "prominent" }))
+  it("renders a large title in full-strength foreground", () => {
+    const { getByText } = render(renderCase({ heading: "large" }))
     const titleNode = getByText(title)
 
-    expect(titleNode).toHaveClass("text-xl", "font-semibold", "text-foreground")
+    expect(titleNode).toHaveClass("text-[1.15rem]", "font-semibold", "text-foreground")
     expect(titleNode).not.toHaveClass("text-muted-foreground")
   })
 
@@ -125,15 +126,14 @@ describe.each(cases)("$name heading and summary", ({ render: renderCase, title }
     expect(summaryNode.closest("button, a")).toBeNull()
   })
 
-  it("carries the gradient foreground down to the summary text", () => {
+  it("keeps the summary inside the block the gradient paints", () => {
     const { getByText } = render(
-      renderCase({ summary: "486 200 over 30 days", gradient: "revenue" })
+      renderCase({ summary: "486 200 over 30 days", gradient: "ocean" })
     )
     const summaryNode = getByText("486 200 over 30 days")
+    const card = summaryNode.closest('[data-slot="card"]')
 
-    expect(
-      getComputedStyle(summaryNode).getPropertyValue("--muted-foreground")
-    ).toBe("var(--gradient-revenue-foreground)")
+    expect(card).toHaveAttribute("data-gradient", "ocean")
   })
 })
 

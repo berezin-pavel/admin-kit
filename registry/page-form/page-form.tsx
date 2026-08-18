@@ -1,6 +1,7 @@
 import type { ReactNode } from "react"
 
 import { cn } from "@/lib/utils"
+import { PageHeader } from "@/registry/page-header/page-header"
 import { StateError } from "@/registry/state-error/state-error"
 import { StateForbidden } from "@/registry/state-forbidden/state-forbidden"
 import { StateLoading } from "@/registry/state-loading/state-loading"
@@ -9,6 +10,7 @@ import { StateOffline } from "@/registry/state-offline/state-offline"
 import { PageFormBody } from "./page-form-body"
 
 export interface PageFormSection {
+  id?: string
   title?: string
   description?: string
   columns?: 1 | 2 | 3
@@ -18,9 +20,11 @@ export interface PageFormSection {
 export type PageStatus = "ready" | "loading" | "error" | "forbidden" | "offline"
 
 export interface PageFormProps {
+  blockId?: string
   title: string
   description?: string
   actions?: ReactNode
+  breadcrumbs?: ReactNode
   sections: readonly PageFormSection[]
   onSubmit?: () => void
   onCancel?: () => void
@@ -32,9 +36,11 @@ export interface PageFormProps {
 }
 
 export function PageForm({
+  blockId,
   title,
   description,
   actions,
+  breadcrumbs,
   sections,
   onSubmit,
   onCancel,
@@ -46,17 +52,13 @@ export function PageForm({
 }: PageFormProps) {
   return (
     <div className={cn("flex flex-col gap-4", className)}>
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <div className="flex flex-col gap-1">
-          <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
-          {description ? (
-            <p className="text-sm text-muted-foreground">{description}</p>
-          ) : null}
-        </div>
-        {actions ? (
-          <div className="flex flex-wrap items-center gap-2">{actions}</div>
-        ) : null}
-      </div>
+      <PageHeader
+        title={title}
+        description={description}
+        actions={actions}
+        breadcrumbs={breadcrumbs}
+        blockId={blockId ? `${blockId}.header` : undefined}
+      />
       {status === "loading" ? (
         <StateLoading />
       ) : status === "error" ? (
@@ -67,6 +69,7 @@ export function PageForm({
         <StateOffline />
       ) : (
         <PageFormBody
+          blockId={blockId}
           sections={sections}
           onSubmit={onSubmit}
           onCancel={onCancel}

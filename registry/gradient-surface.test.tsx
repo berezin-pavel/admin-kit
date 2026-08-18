@@ -1,7 +1,11 @@
-import { render, within } from "@testing-library/react"
+import { render, screen } from "@testing-library/react"
+import userEvent from "@testing-library/user-event"
 import { describe, expect, it } from "vitest"
 
 import { AdminShell } from "./admin-shell/admin-shell"
+import { AppearanceProvider } from "./admin-appearance/appearance-provider"
+import { defaultAdminAppearance } from "./admin-appearance/appearance-palette"
+import type { GradientId } from "./admin-appearance/appearance-palette"
 import { PageAuth } from "./page-auth/page-auth"
 import { StateEmpty } from "./state-empty/state-empty"
 import { StateError } from "./state-error/state-error"
@@ -16,10 +20,10 @@ import { WidgetProgress } from "./widget-progress/widget-progress"
 import { WidgetQuickActions } from "./widget-quick-actions/widget-quick-actions"
 
 const cases = [
-  { name: "widget-metric", render: (gradient?: string) => (
+  { name: "widget-metric", render: (gradient?: GradientId) => (
       <WidgetMetric title="Revenue" value="12" gradient={gradient} />
     ) },
-  { name: "widget-chart", render: (gradient?: string) => (
+  { name: "widget-chart", render: (gradient?: GradientId) => (
       <WidgetChart
         title="Sales"
         labels={["Jan", "Feb"]}
@@ -27,31 +31,31 @@ const cases = [
         gradient={gradient}
       />
     ) },
-  { name: "widget-list", render: (gradient?: string) => (
+  { name: "widget-list", render: (gradient?: GradientId) => (
       <WidgetList
         title="Products"
         items={[{ id: "a", title: "One" }]}
         gradient={gradient}
       />
     ) },
-  { name: "widget-progress", render: (gradient?: string) => (
+  { name: "widget-progress", render: (gradient?: GradientId) => (
       <WidgetProgress title="Goal" value={40} gradient={gradient} />
     ) },
-  { name: "widget-donut", render: (gradient?: string) => (
+  { name: "widget-donut", render: (gradient?: GradientId) => (
       <WidgetDonut
         title="Split"
         slices={[{ id: "a", label: "A", value: 1 }]}
         gradient={gradient}
       />
     ) },
-  { name: "widget-activity", render: (gradient?: string) => (
+  { name: "widget-activity", render: (gradient?: GradientId) => (
       <WidgetActivity
         title="Feed"
         entries={[{ id: "a", title: "Placed", timestamp: "2026-08-17T10:00" }]}
         gradient={gradient}
       />
     ) },
-  { name: "widget-quick-actions", render: (gradient?: string) => (
+  { name: "widget-quick-actions", render: (gradient?: GradientId) => (
       <WidgetQuickActions
         title="Actions"
         actions={[{ id: "a", label: "New", onSelect: () => {} }]}
@@ -61,142 +65,157 @@ const cases = [
 ]
 
 describe.each(cases)("$name gradient surface", ({ render: renderCase }) => {
-  it("paints the card from the named gradient", () => {
-    const { container } = render(renderCase("revenue"))
+  it("marks the card with the named gradient", () => {
+    const { container } = render(renderCase("ocean"))
     const card = container.querySelector('[data-slot="card"]')
 
-    expect(card).toHaveStyle({
-      backgroundImage: "var(--gradient-revenue)",
-      color: "var(--gradient-revenue-foreground)",
-      "--foreground": "var(--gradient-revenue-foreground)",
-      "--card-foreground": "var(--gradient-revenue-foreground)",
-      "--muted-foreground": "var(--gradient-revenue-foreground)",
-    })
+    expect(card).toHaveAttribute("data-gradient", "ocean")
   })
 
-  it("sets no inline colour without the prop", () => {
+  it("sets no data-gradient without the prop", () => {
     const { container } = render(renderCase(undefined))
     const card = container.querySelector('[data-slot="card"]')
 
-    expect(card?.getAttribute("style")).toBeNull()
+    expect(card).not.toHaveAttribute("data-gradient")
+  })
+
+  it("carries no opaque card nested inside the gradient block", () => {
+    const { container } = render(renderCase("ocean"))
+    const cards = container.querySelectorAll('[data-slot="card"]')
+    const opaque = Array.from(cards).filter(
+      (card) => !card.hasAttribute("data-gradient")
+    )
+
+    expect(opaque).toHaveLength(0)
   })
 })
 
-describe("the shell's sidebar takes a gradient", () => {
-  it("paints the sidebar and leaves the work area alone", () => {
+describe("widget-metric lets the stored block choice win over the prop", () => {
+  it("resolves the gradient from the provider's blocks entry by id", () => {
+    const { container } = render(
+      <AppearanceProvider
+        value={{
+          ...defaultAdminAppearance,
+          blocks: { revenue: { gradient: "ember" } },
+        }}
+        onChange={() => {}}
+      >
+        <WidgetMetric
+          title="Revenue"
+          value="12"
+          blockId="revenue"
+          gradient="ocean"
+        />
+      </AppearanceProvider>
+    )
+    const card = container.querySelector('[data-slot="card"]')
+
+    expect(card).toHaveAttribute("data-gradient", "ember")
+  })
+})
+
+describe("the shell paints its surfaces through data attributes", () => {
+  it("sets data-gradient on the sidebar when sidebarGradient is given", () => {
     const { container } = render(
       <AdminShell
         appName="Store"
         nav={[]}
         activeHref="/"
-        sidebarGradient="brand"
+        sidebarGradient="ocean"
       >
         <p>Work</p>
       </AdminShell>
     )
 
-    expect(container.querySelector("aside")).toHaveStyle({
-      backgroundImage: "var(--gradient-brand)",
-      "--foreground": "var(--gradient-brand-foreground)",
-      "--card-foreground": "var(--gradient-brand-foreground)",
-      "--muted-foreground": "var(--gradient-brand-foreground)",
-      "--sidebar-foreground": "var(--gradient-brand-foreground)",
+    expect(container.querySelector("aside")).toHaveAttribute(
+      "data-gradient",
+      "ocean"
+    )
+  })
+
+  it("leaves the sidebar and the work area without data-gradient otherwise", () => {
+    const { container } = render(
+      <AdminShell appName="Store" nav={[]} activeHref="/">
+        <p>Work</p>
+      </AdminShell>
+    )
+
+    expect(container.querySelector("aside")).not.toHaveAttribute(
+      "data-gradient"
+    )
+    expect(container.querySelector("main")).not.toHaveAttribute(
+      "data-gradient"
+    )
+  })
+
+  it("sets data-backdrop on the work area for a chosen gradient", () => {
+    const { container } = render(
+      <AdminShell
+        appName="Store"
+        nav={[]}
+        activeHref="/"
+        backdrop="ocean"
+      >
+        <p>Work</p>
+      </AdminShell>
+    )
+
+    const main = container.firstElementChild
+
+    expect(main).toHaveAttribute("data-backdrop", "ocean")
+  })
+
+  it("sets no data-backdrop when the backdrop is null or omitted", () => {
+    const { container: withNullGradient } = render(
+      <AdminShell
+        appName="Store"
+        nav={[]}
+        activeHref="/"
+        backdrop={null}
+      >
+        <p>Work</p>
+      </AdminShell>
+    )
+
+    expect(withNullGradient.firstElementChild).not.toHaveAttribute(
+      "data-backdrop"
+    )
+
+    const { container: withoutBackdrop } = render(
+      <AdminShell appName="Store" nav={[]} activeHref="/">
+        <p>Work</p>
+      </AdminShell>
+    )
+
+    expect(withoutBackdrop.firstElementChild).not.toHaveAttribute(
+      "data-backdrop"
+    )
+  })
+
+  it("carries sidebarGradient into the burger panel's sheet", async () => {
+    const user = userEvent.setup()
+    render(
+      <AdminShell
+        appName="Store"
+        nav={[]}
+        activeHref="/"
+        header={false}
+        sidebarGradient="ocean"
+      >
+        <p>Work</p>
+      </AdminShell>
+    )
+
+    await user.click(
+      screen.getByRole("button", { name: "Open navigation menu" })
+    )
+
+    const dialog = await screen.findByText("Store", {
+      selector: '[data-slot="sheet-title"]',
     })
-    expect(container.querySelector("main")?.getAttribute("style")).toBeNull()
-  })
+    const sheetContent = dialog.closest('[data-slot="sheet-content"]')
 
-  const shellWithNav = (sidebarGradient?: string) => (
-    <AdminShell
-      appName="Store"
-      nav={[
-        { href: "/orders", title: "Orders" },
-        { href: "/settings", title: "Settings" },
-      ]}
-      activeHref="/orders"
-      sidebarGradient={sidebarGradient}
-    >
-      <p>Work</p>
-    </AdminShell>
-  )
-
-  const findInactiveNavLink = (container: HTMLElement) =>
-    [...container.querySelectorAll("aside nav a")].find((link) =>
-      link.textContent?.includes("Settings")
-    )
-
-  it("carries the gradient foreground down to an inactive nav row", () => {
-    const { container } = render(shellWithNav("brand"))
-    const inactiveLink = findInactiveNavLink(container)
-
-    expect(inactiveLink).toBeTruthy()
-    expect(
-      getComputedStyle(inactiveLink as Element).getPropertyValue(
-        "--sidebar-foreground"
-      )
-    ).toBe("var(--gradient-brand-foreground)")
-  })
-
-  it("leaves an inactive nav row at the sidebar default without a gradient", () => {
-    const { container } = render(shellWithNav(undefined))
-    const inactiveLink = findInactiveNavLink(container)
-
-    expect(inactiveLink).toBeTruthy()
-    expect(
-      getComputedStyle(inactiveLink as Element).getPropertyValue(
-        "--sidebar-foreground"
-      )
-    ).toBe("")
-  })
-
-  const findActiveNavLink = (container: HTMLElement) =>
-    [...container.querySelectorAll("aside nav a")].find((link) =>
-      link.textContent?.includes("Orders")
-    )
-
-  it("overrides the active row with a translucent gradient overlay instead of the light-theme tint", () => {
-    const { container } = render(shellWithNav("brand"))
-    const activeLink = findActiveNavLink(container)
-
-    expect(activeLink).toBeTruthy()
-    const style = getComputedStyle(activeLink as Element)
-    expect(style.getPropertyValue("--sidebar-active")).toBe(
-      "color-mix(in oklch, var(--gradient-brand-foreground) 10%, transparent)"
-    )
-    expect(style.getPropertyValue("--sidebar-active-foreground")).toBe(
-      "var(--gradient-brand-foreground)"
-    )
-  })
-
-  it("leaves the active row at the sidebar default without a gradient", () => {
-    const { container } = render(shellWithNav(undefined))
-    const activeLink = findActiveNavLink(container)
-
-    expect(activeLink).toBeTruthy()
-    expect(
-      getComputedStyle(activeLink as Element).getPropertyValue(
-        "--sidebar-active"
-      )
-    ).toBe("")
-  })
-
-  it("carries the gradient foreground down to sidebarProfile content styled with text-foreground", () => {
-    const { container } = render(
-      <AdminShell
-        appName="Store"
-        nav={[]}
-        activeHref="/"
-        sidebarGradient="brand"
-        sidebarProfile={<span className="text-foreground">Alex Morgan</span>}
-      >
-        <p>Work</p>
-      </AdminShell>
-    )
-    const aside = container.querySelector("aside") as HTMLElement
-    const name = within(aside).getByText("Alex Morgan")
-
-    expect(
-      getComputedStyle(name).getPropertyValue("--foreground")
-    ).toBe("var(--gradient-brand-foreground)")
+    expect(sheetContent).toHaveAttribute("data-gradient", "ocean")
   })
 })
 
@@ -206,21 +225,26 @@ describe.each([
   { name: "state-forbidden", Component: StateForbidden },
   { name: "state-offline", Component: StateOffline },
 ])("$name gradient surface", ({ Component }) => {
-  it("paints its frame from the named gradient", () => {
+  it("marks its frame with the named gradient", () => {
     const { container } = render(
-      <Component title="Nothing here" gradient="calm" />
+      <Component title="Nothing here" gradient="ocean" />
     )
 
-    expect(container.firstElementChild).toHaveStyle({
-      backgroundImage: "var(--gradient-calm)",
-      "--foreground": "var(--gradient-calm-foreground)",
-      "--muted-foreground": "var(--gradient-calm-foreground)",
-    })
+    expect(container.firstElementChild).toHaveAttribute(
+      "data-gradient",
+      "ocean"
+    )
+  })
+
+  it("sets no data-gradient without the prop", () => {
+    const { container } = render(<Component title="Nothing here" />)
+
+    expect(container.firstElementChild).not.toHaveAttribute("data-gradient")
   })
 })
 
 describe("page-auth takes a gradient", () => {
-  const renderAuth = (gradient?: string) =>
+  const renderAuth = (gradient?: GradientId) =>
     render(
       <PageAuth
         appName="Store"
@@ -232,20 +256,23 @@ describe("page-auth takes a gradient", () => {
       </PageAuth>
     )
 
-  it("paints the screen behind the card", () => {
-    const { container } = renderAuth("brand")
+  it("marks the wrapper behind the card with the named gradient, vivid", () => {
+    const { container } = renderAuth("dusk")
 
-    expect(container.firstElementChild).toHaveStyle({
-      backgroundImage: "var(--gradient-brand)",
-    })
+    expect(container.firstElementChild).toHaveAttribute(
+      "data-backdrop",
+      "dusk"
+    )
+    expect(container.firstElementChild).toHaveAttribute(
+      "data-backdrop-vivid",
+      ""
+    )
   })
 
   it("recolours only the text that sits on the backdrop", () => {
-    const { getByText } = renderAuth("brand")
+    const { getByText } = renderAuth("dusk")
 
-    expect(getByText("Store")).toHaveStyle({
-      color: "var(--gradient-brand-foreground)",
-    })
+    expect(getByText("Store")).toHaveClass("text-(--backdrop-foreground)")
     expect(getByText("Store")).not.toHaveClass("text-muted-foreground")
   })
 
@@ -255,7 +282,7 @@ describe("page-auth takes a gradient", () => {
         appName="Store"
         title="Sign in"
         onSubmit={() => {}}
-        gradient="brand"
+        gradient="dusk"
         footer={<span>Need help?</span>}
       >
         <p>Fields</p>
@@ -263,7 +290,7 @@ describe("page-auth takes a gradient", () => {
     )
     const footer = getByText("Need help?").parentElement
 
-    expect(footer).toHaveStyle({ color: "var(--gradient-brand-foreground)" })
+    expect(footer).toHaveClass("text-(--backdrop-foreground)")
     expect(footer).not.toHaveClass("text-muted-foreground")
   })
 
@@ -280,24 +307,24 @@ describe("page-auth takes a gradient", () => {
     )
     const footer = getByText("Need help?").parentElement
 
-    expect(footer?.getAttribute("style")).toBeNull()
     expect(footer).toHaveClass("text-muted-foreground")
+    expect(footer).not.toHaveClass("text-(--backdrop-foreground)")
   })
 
-  it("leaves the opaque card reading the theme's own foreground", () => {
-    const { container } = renderAuth("brand")
+  it("leaves the opaque card without data-gradient", () => {
+    const { container } = renderAuth("dusk")
     const card = container.querySelector('[data-slot="card"]')
 
-    expect(card?.getAttribute("style")).toBeNull()
-    expect(container.firstElementChild).not.toHaveStyle({
-      "--card-foreground": "var(--gradient-brand-foreground)",
-    })
+    expect(card).not.toHaveAttribute("data-gradient")
   })
 
-  it("carries no inline style at all without the prop", () => {
+  it("carries no backdrop attribute at all without the prop", () => {
     const { container } = renderAuth(undefined)
 
-    expect(container.firstElementChild?.getAttribute("style")).toBeNull()
+    expect(container.firstElementChild).not.toHaveAttribute("data-backdrop")
+    expect(container.firstElementChild).not.toHaveAttribute(
+      "data-backdrop-vivid"
+    )
     expect(getByTextIn(container, "Store")).toHaveClass("text-muted-foreground")
   })
 })
@@ -313,7 +340,7 @@ function getByTextIn(container: HTMLElement, text: string) {
 }
 
 describe("widget-metric trend on a gradient surface", () => {
-  const renderTrend = (gradient?: string) =>
+  const renderTrend = (gradient?: GradientId) =>
     render(
       <WidgetMetric
         title="Revenue"
@@ -324,7 +351,7 @@ describe("widget-metric trend on a gradient surface", () => {
     )
 
   it("drops the tone colour class once a gradient replaces the card background", () => {
-    const { getByText } = renderTrend("revenue")
+    const { getByText } = renderTrend("ocean")
 
     expect(getByText("-3%").className).not.toMatch(/text-destructive|text-primary/)
   })
@@ -342,7 +369,7 @@ describe.each([
 ])("$name icon on a gradient surface", ({ Component }) => {
   it("drops the fixed destructive colour once a gradient replaces the frame background", () => {
     const { container } = render(
-      <Component title="Nothing here" gradient="calm" />
+      <Component title="Nothing here" gradient="ocean" />
     )
     const icon = container.querySelector("svg")
 
@@ -356,5 +383,25 @@ describe.each([
 
     expect(icon).toBeTruthy()
     expect(icon?.getAttribute("class")).toMatch(/text-destructive/)
+  })
+})
+
+describe("widget-metric trend when the gradient comes from the provider", () => {
+  it("drops the tone colour class for a stored gradient without a gradient prop", () => {
+    const { getByText } = render(
+      <AppearanceProvider
+        value={{ ...defaultAdminAppearance, blocks: { revenue: { gradient: "ember" } } }}
+        onChange={() => {}}
+      >
+        <WidgetMetric
+          blockId="revenue"
+          title="Revenue"
+          value="12"
+          trend={{ direction: "down", value: "-3%", tone: "negative" }}
+        />
+      </AppearanceProvider>
+    )
+
+    expect(getByText("-3%").className).not.toMatch(/text-destructive|text-primary/)
   })
 })

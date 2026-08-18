@@ -1,16 +1,22 @@
 "use client"
 
-import type { CSSProperties, ReactNode } from "react"
+import type { ReactNode } from "react"
 import { TrendingDown, TrendingUp } from "lucide-react"
 import { Line, LineChart, ResponsiveContainer, Tooltip } from "recharts"
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { cn } from "@/lib/utils"
+import { Block } from "@/registry/admin-appearance/block"
+import {
+  resolveBlockGradient,
+  useBlockAppearance,
+} from "@/registry/admin-appearance/appearance-provider"
+import type { GradientId } from "@/registry/admin-appearance/appearance-palette"
 
 export type MetricDirection = "up" | "down"
 export type MetricTone = "positive" | "negative"
-export type WidgetMetricHeading = "muted" | "prominent"
+export type WidgetMetricHeading = "regular" | "large"
 
 export interface WidgetMetricProps {
   title: string
@@ -26,30 +32,14 @@ export interface WidgetMetricProps {
   heading?: WidgetMetricHeading
   summary?: ReactNode
   loading?: boolean
-  gradient?: string
+  gradient?: GradientId
+  blockId?: string
   className?: string
 }
 
 const headingClassName: Record<WidgetMetricHeading, string> = {
-  muted: "text-sm font-medium text-muted-foreground",
-  prominent: "text-xl font-semibold text-foreground",
-}
-
-function gradientSurfaceStyle(
-  gradient?: string
-): (CSSProperties & Record<string, string>) | undefined {
-  return gradient
-    ? {
-        backgroundImage: `var(--gradient-${gradient})`,
-        color: `var(--gradient-${gradient}-foreground)`,
-        "--foreground": `var(--gradient-${gradient}-foreground)`,
-        "--card-foreground": `var(--gradient-${gradient}-foreground)`,
-        "--muted-foreground": `var(--gradient-${gradient}-foreground)`,
-        "--sidebar-foreground": `var(--gradient-${gradient}-foreground)`,
-        "--sidebar-active": `color-mix(in oklch, var(--gradient-${gradient}-foreground) 10%, transparent)`,
-        "--sidebar-active-foreground": `var(--gradient-${gradient}-foreground)`,
-      }
-    : undefined
+  regular: "text-[0.84375rem] font-semibold text-foreground",
+  large: "text-[1.15rem] font-semibold text-foreground",
 }
 
 export function WidgetMetric({
@@ -59,18 +49,20 @@ export function WidgetMetric({
   trend,
   trendValues,
   trendTooltipFormat = String,
-  heading = "muted",
+  heading = "regular",
   summary,
   loading = false,
   gradient,
+  blockId,
   className,
 }: WidgetMetricProps) {
   const TrendIcon = trend?.direction === "down" ? TrendingDown : TrendingUp
   const tone =
     trend?.tone ?? (trend?.direction === "down" ? "negative" : "positive")
+  const painted = resolveBlockGradient(useBlockAppearance(blockId), gradient)
 
   return (
-    <Card className={className} style={gradientSurfaceStyle(gradient)}>
+    <Block id={blockId} gradient={gradient} headings className={className}>
       <CardHeader
         className={
           summary ? "flex flex-wrap items-center justify-between gap-4" : undefined
@@ -100,7 +92,7 @@ export function WidgetMetric({
                 <span
                   className={cn(
                     "flex items-center gap-1 text-sm whitespace-nowrap",
-                    !gradient &&
+                    !painted &&
                       (tone === "negative" ? "text-destructive" : "text-primary")
                   )}
                 >
@@ -142,6 +134,6 @@ export function WidgetMetric({
           </>
         )}
       </CardContent>
-    </Card>
+    </Block>
   )
 }

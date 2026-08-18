@@ -96,56 +96,81 @@
     },
     {
       "$schema": "https://ui.shadcn.com/schema/registry-item.json",
-      "name": "admin-theme-tokens",
+      "name": "admin-appearance",
       "type": "registry:component",
-      "title": "Admin theme tokens",
-      "description": "The theme as data instead of hand-written CSS: five source colours plus a radius go into deriveAdminTheme, which computes every token admin-theme declares for both schemes in OKLCH, and adminThemeToCss prints the result as custom properties a consumer renders in a style element. Foreground colours are never chosen by hand, they are searched by contrast, so no combination of sources produces text below 4.5:1 — the surface itself is nudged when the text alone cannot save it. The dark scheme is derived rather than stored. Gradients are a separate class of token, named by the consumer and emitted as --gradient-<id> with a matching --gradient-<id>-foreground taken from the gradient's worst stop, because a gradient cannot live in a colour token that also feeds text, borders and oklch algebra. Ids and colours are validated before they reach the CSS text and an unusable gradient is dropped whole rather than half-emitted. Pure TypeScript with no React and no dependencies: suggestDarkStops proposes a dark variant of a gradient and fits its chroma back into the sRGB gamut so a darkened stop keeps its hue instead of collapsing to grey, contrastRatio is the WCAG ratio, and defaultAdminThemeSources reproduces the shipped admin-theme as closely as sRGB allows. Install it with theme-editor, or on its own to generate a theme in a script.",
-      "files": [
-        {
-          "path": "registry/admin-theme-tokens/admin-theme-color.ts",
-          "type": "registry:component",
-          "target": "@components/admin-theme-color.ts"
-        },
-        {
-          "path": "registry/admin-theme-tokens/admin-theme-tokens.ts",
-          "type": "registry:component",
-          "target": "@components/admin-theme-tokens.ts"
-        },
-        {
-          "path": "registry/admin-theme-tokens/admin-theme-css.ts",
-          "type": "registry:component",
-          "target": "@components/admin-theme-css.ts"
-        }
-      ]
-    },
-    {
-      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
-      "name": "theme-editor",
-      "type": "registry:component",
-      "title": "Theme editor",
-      "description": "A controlled form over an AdminTheme: five source colours, a corner radius, and a palette of named gradients the consumer hangs on individual cards. It holds no theme and writes nowhere — value and onChange, the rule theme-toggle established — so the same element is a runtime appearance screen inside a panel and, with showCss, a globals.css generator in a showcase. Every gradient carries a light and a dark variant side by side; the dark one is proposed on demand by suggestDarkStops and then stays editable, because recomputing it whenever the light variant changes would discard a hand-tuned gradient. A gradient's id is derived from its name once, at add time, and never again, so renaming a label cannot orphan the cards already pointing at it. Contrast is reported beside each gradient and warns below 4.5:1 without blocking anything: refusing an owner their own brand colour reads as a broken panel, so the kit states the consequence rather than overruling the choice. Labels are props with English defaults and locale-ru carries the matching themeEditor slice. Requires admin-theme-tokens for the derivation and the kit's colour, number and text fields for the controls.",
+      "title": "Appearance",
+      "description": "The administrator's global look, chosen from fixed palettes instead of typed in: twenty three-stop gradients and twenty accent colours, each measured in tests for text contrast along the whole gradient, on hovered controls and, for accents, on every filled pair the derivation produces. AdminAppearance is one serializable value — accent, sidebar and sign-in gradients, a page backdrop (soft tint by default, vivid on request, overridable per page) and a per-block record of gradient and heading choices — that the consumer stores server-side and hands to AppearanceProvider (value/onChange, editable for administrators). AppearanceStyle emits the stylesheet: any element with data-gradient=\"<id>\" is painted and gets its tokens redefined so text, borders, hover and focus stay legible; data-backdrop paints only the image. Block is the card of the work area: it resolves its gradient by id from the provider, falls back to its gradient prop, and in edit mode shows a corner button with the swatch grid and, for widgets, the heading choice — muted, prominent or hidden. Widgets, page sections and page headers are Blocks; nothing in the work area sits outside one. Never nest an opaque card inside a gradient block. Requires the admin-theme theme.",
       "registryDependencies": [
-        "berezin-pavel/admin-kit/admin-theme-tokens",
-        "berezin-pavel/admin-kit/color-field",
-        "berezin-pavel/admin-kit/number-field",
-        "berezin-pavel/admin-kit/text-field",
-        "berezin-pavel/admin-kit/confirm-dialog",
+        "card",
         "button",
-        "card"
+        "popover",
+        "berezin-pavel/admin-kit/admin-theme"
       ],
       "dependencies": [
         "lucide-react"
       ],
       "files": [
         {
-          "path": "registry/theme-editor/theme-editor.tsx",
+          "path": "registry/admin-appearance/appearance-color.ts",
           "type": "registry:component",
-          "target": "@components/theme-editor.tsx"
+          "target": "@components/appearance-color.ts"
         },
         {
-          "path": "registry/theme-editor/theme-editor-gradients.tsx",
+          "path": "registry/admin-appearance/appearance-accent.ts",
           "type": "registry:component",
-          "target": "@components/theme-editor-gradients.tsx"
+          "target": "@components/appearance-accent.ts"
+        },
+        {
+          "path": "registry/admin-appearance/appearance-palette.ts",
+          "type": "registry:component",
+          "target": "@components/appearance-palette.ts"
+        },
+        {
+          "path": "registry/admin-appearance/appearance-css.ts",
+          "type": "registry:component",
+          "target": "@components/appearance-css.ts"
+        },
+        {
+          "path": "registry/admin-appearance/appearance-provider.tsx",
+          "type": "registry:component",
+          "target": "@components/appearance-provider.tsx"
+        },
+        {
+          "path": "registry/admin-appearance/appearance-style.tsx",
+          "type": "registry:component",
+          "target": "@components/appearance-style.tsx"
+        },
+        {
+          "path": "registry/admin-appearance/block.tsx",
+          "type": "registry:component",
+          "target": "@components/block.tsx"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "appearance-menu",
+      "type": "registry:component",
+      "title": "Appearance menu",
+      "description": "The control that lets an administrator pick the admin panel's look, built like theme-toggle: value and onChange arrive as props, nothing is stored inside. An outline icon button for the shell's sidebarFooter opens a popover with the accent colour swatches, one select each for the sidebar gradient, the sign-in screen and the default page backdrop with its soft-tint checkbox, and, given a list of pages, one row per page that inherits the default or overrides it. Every choice comes from the admin-appearance palettes — there are no colour inputs, angles or radii — so whatever is picked has already passed the contrast tests. Names of gradients and accents are props, so locale-ru localizes them. Requires admin-appearance and the admin-theme theme.",
+      "registryDependencies": [
+        "button",
+        "popover",
+        "select",
+        "checkbox",
+        "label",
+        "berezin-pavel/admin-kit/hint",
+        "berezin-pavel/admin-kit/admin-appearance",
+        "berezin-pavel/admin-kit/admin-theme"
+      ],
+      "dependencies": [
+        "lucide-react"
+      ],
+      "files": [
+        {
+          "path": "registry/appearance-menu/appearance-menu.tsx",
+          "type": "registry:component",
+          "target": "@components/appearance-menu.tsx"
         }
       ]
     },
@@ -157,7 +182,8 @@
       "description": "The admin's permanent frame at full viewport height: an optional header, a side navigation, and a work area with its own scroll — the sidebar and its footer stay put while the content scrolls. Navigation lives in one place per width, never two: on a wide screen it is the sidebar, on a narrow one the sidebar is gone and the burger panel carries every section with its label and the sidebarFooter. The brand and the account are not repeated inside that panel — on a narrow screen they sit on the top bar, the logo and app name on the left and sidebarProfile on the right. That is why a phone gets the full width for the work area instead of a strip of unlabelled icons duplicating a panel. The controlled collapsed prop shrinks the sidebar to a rail of icons on a wide screen; the consumer holds the state, and the sidebar toggle that expands it again is right there in the footer, so no burger appears next to it. Every row of the sidebar shares one grid: the logo, the account avatar and the nav icons all sit in the same 24px box, and its centre stays on the same vertical line whether the sidebar is expanded or collapsed. The sidebar is drawn as a card — a separate panel with rounding and inset. The header prop turns the header off entirely, and then a narrow screen gets that same compact top bar. An optional logo slot renders before appName on the brand row and stays visible in the icon rail once the name itself is hidden. Directly under the brand row, sidebarProfile renders a full-width account row separated from the navigation by a divider — the recommended home for user-menu's variant=\"row\", because an icon in a corner reads as decoration rather than as who is signed in; in the icon rail it collapses to the trigger's avatar. sidebarActions still sits next to the app name for anything else that belongs at the top, such as a notifications button, and joins the account on the narrow top bar; sidebarFooter lives at the bottom of the sidebar and in the burger panel, and the shell — not the content — controls its layout. Nav items support icons and swapping the link render for your own router; an item without an icon shows the first letter of its title when collapsed, and the accessible name stays the section title. The burger panel remounts on every open, so slot content must be controlled from the outside — the same rule the whole kit lives by. Requires the admin-theme theme.",
       "registryDependencies": [
         "sheet",
-        "berezin-pavel/admin-kit/admin-theme"
+        "berezin-pavel/admin-kit/admin-theme",
+        "berezin-pavel/admin-kit/admin-appearance"
       ],
       "dependencies": [
         "lucide-react"
@@ -318,7 +344,8 @@
       "registryDependencies": [
         "card",
         "skeleton",
-        "berezin-pavel/admin-kit/admin-theme"
+        "berezin-pavel/admin-kit/admin-theme",
+        "berezin-pavel/admin-kit/admin-appearance"
       ],
       "dependencies": [
         "lucide-react",
@@ -349,7 +376,8 @@
         "table",
         "berezin-pavel/admin-kit/admin-theme",
         "berezin-pavel/admin-kit/hint",
-        "berezin-pavel/admin-kit/state-empty"
+        "berezin-pavel/admin-kit/state-empty",
+        "berezin-pavel/admin-kit/admin-appearance"
       ],
       "files": [
         {
@@ -403,7 +431,8 @@
         "chart",
         "skeleton",
         "berezin-pavel/admin-kit/admin-theme",
-        "berezin-pavel/admin-kit/state-empty"
+        "berezin-pavel/admin-kit/state-empty",
+        "berezin-pavel/admin-kit/admin-appearance"
       ],
       "dependencies": [
         "recharts"
@@ -426,7 +455,8 @@
         "card",
         "skeleton",
         "berezin-pavel/admin-kit/admin-theme",
-        "berezin-pavel/admin-kit/state-empty"
+        "berezin-pavel/admin-kit/state-empty",
+        "berezin-pavel/admin-kit/admin-appearance"
       ],
       "files": [
         {
@@ -478,7 +508,8 @@
       "title": "Empty state",
       "description": "The screen a user sees in place of content when there's no data: a title, an optional description, and an optional actions slot. No data is normal, so there's no icon by default. Requires the admin-theme theme.",
       "registryDependencies": [
-        "berezin-pavel/admin-kit/admin-theme"
+        "berezin-pavel/admin-kit/admin-theme",
+        "berezin-pavel/admin-kit/admin-appearance"
       ],
       "files": [
         {
@@ -495,7 +526,8 @@
       "title": "Error state",
       "description": "A screen for a loading or request failure: a title, an optional description, and an optional actions slot, with an error icon by default — the failure should read before the text does. Not for missing data — state-empty covers that. Requires the admin-theme theme.",
       "registryDependencies": [
-        "berezin-pavel/admin-kit/admin-theme"
+        "berezin-pavel/admin-kit/admin-theme",
+        "berezin-pavel/admin-kit/admin-appearance"
       ],
       "dependencies": [
         "lucide-react"
@@ -515,7 +547,8 @@
       "title": "Forbidden state",
       "description": "A screen for access denial: a title, an optional description, and an optional actions slot, with a muted lock icon by default — lacking permissions is a denial, not a breakage, so the color isn't alarming. Requires the admin-theme theme.",
       "registryDependencies": [
-        "berezin-pavel/admin-kit/admin-theme"
+        "berezin-pavel/admin-kit/admin-theme",
+        "berezin-pavel/admin-kit/admin-appearance"
       ],
       "dependencies": [
         "lucide-react"
@@ -535,7 +568,8 @@
       "title": "Offline state",
       "description": "A screen for a lost connection: a title, an optional description, and an optional actions slot, with a network-disconnect icon by default — the failure should read before the text does. Not for a server error — state-error covers that. Requires the admin-theme theme.",
       "registryDependencies": [
-        "berezin-pavel/admin-kit/admin-theme"
+        "berezin-pavel/admin-kit/admin-theme",
+        "berezin-pavel/admin-kit/admin-appearance"
       ],
       "dependencies": [
         "lucide-react"
@@ -560,7 +594,8 @@
         "berezin-pavel/admin-kit/state-loading",
         "berezin-pavel/admin-kit/state-error",
         "berezin-pavel/admin-kit/state-forbidden",
-        "berezin-pavel/admin-kit/state-offline"
+        "berezin-pavel/admin-kit/state-offline",
+        "berezin-pavel/admin-kit/admin-appearance"
       ],
       "files": [
         {
@@ -577,7 +612,8 @@
       "type": "registry:component",
       "description": "A page title, an optional description under it, and an actions slot on the right. A building block for every admin page, not a dashboard widget. Requires the admin-theme theme.",
       "registryDependencies": [
-        "berezin-pavel/admin-kit/admin-theme"
+        "berezin-pavel/admin-kit/admin-theme",
+        "berezin-pavel/admin-kit/admin-appearance"
       ],
       "files": [
         {
@@ -983,7 +1019,8 @@
         "berezin-pavel/admin-kit/state-loading",
         "berezin-pavel/admin-kit/state-error",
         "berezin-pavel/admin-kit/state-forbidden",
-        "berezin-pavel/admin-kit/state-offline"
+        "berezin-pavel/admin-kit/state-offline",
+        "berezin-pavel/admin-kit/admin-appearance"
       ],
       "files": [
         {
@@ -1006,7 +1043,8 @@
         "card",
         "progress",
         "skeleton",
-        "berezin-pavel/admin-kit/admin-theme"
+        "berezin-pavel/admin-kit/admin-theme",
+        "berezin-pavel/admin-kit/admin-appearance"
       ],
       "files": [
         {
@@ -1026,7 +1064,8 @@
         "card",
         "skeleton",
         "berezin-pavel/admin-kit/admin-theme",
-        "berezin-pavel/admin-kit/state-empty"
+        "berezin-pavel/admin-kit/state-empty",
+        "berezin-pavel/admin-kit/admin-appearance"
       ],
       "dependencies": [
         "date-fns"
@@ -1050,7 +1089,8 @@
         "chart",
         "skeleton",
         "berezin-pavel/admin-kit/admin-theme",
-        "berezin-pavel/admin-kit/state-empty"
+        "berezin-pavel/admin-kit/state-empty",
+        "berezin-pavel/admin-kit/admin-appearance"
       ],
       "dependencies": [
         "recharts"
@@ -1073,7 +1113,8 @@
         "button",
         "card",
         "skeleton",
-        "berezin-pavel/admin-kit/admin-theme"
+        "berezin-pavel/admin-kit/admin-theme",
+        "berezin-pavel/admin-kit/admin-appearance"
       ],
       "files": [
         {
@@ -1102,7 +1143,8 @@
         "berezin-pavel/admin-kit/state-forbidden",
         "berezin-pavel/admin-kit/state-loading",
         "berezin-pavel/admin-kit/state-offline",
-        "berezin-pavel/admin-kit/widget-table"
+        "berezin-pavel/admin-kit/widget-table",
+        "berezin-pavel/admin-kit/admin-appearance"
       ],
       "dependencies": [
         "lucide-react"
@@ -1150,7 +1192,8 @@
       "description": "The sign-in screen, and the one common admin screen that lives outside the shell: a centered card on an empty full-height page, with no header, sidebar or navigation. appName sits above the card title — the only place the product names itself here. The item ships no email or password field of its own, because which fields a sign-in needs (email, phone, one-time code, tenant picker) differs per project and the kit already has fields for all of them: they go in as children. The card body is a real form and onSubmit receives the raw submit event — the item never calls preventDefault for you. submitLabel defaults to \"Sign in\" on a full-width button; while submitting is true that button and every field inside are disabled together through a wrapping fieldset, so a second submit cannot race the first, and the form is marked aria-busy. error renders above the button as an assertive role=alert live region, so a failed sign-in reaches a screen reader. footer sits under the card for a forgot-password or sign-up link. aside, when given, renders a second panel beside the card from the lg breakpoint up — the illustration half of a split sign-in screen — and is hidden below it, leaving the card simply centered.",
       "registryDependencies": [
         "button",
-        "card"
+        "card",
+        "berezin-pavel/admin-kit/admin-appearance"
       ],
       "files": [
         {
@@ -1190,7 +1233,8 @@
       "description": "Section navigation inside a single page — the tabs that split an order or customer screen into Overview, History and Settings without navigating away. Controlled like every item in the kit: value and onValueChange come from props, so the active tab can be routed through a URL query string; the item stores nothing itself. Only the active panel's content mounts — the underlying Base UI panel defaults to keepMounted false and unmounts a hidden panel's subtree instead of hiding it, so a heavy table on a hidden tab never renders while another tab is open. Each item's icon renders before the label and badge after it (a count or a status dot); disabled disables a trigger without removing it from the strip. actions renders on the same row as the tab strip, pushed to the far end, for a page-level button that belongs beside the tabs rather than inside a panel — on a narrow screen the row wraps instead of pushing the actions off screen, and the strip itself scrolls horizontally when the labels do not fit. Keyboard movement and ARIA (role=tablist, arrow keys, aria-selected) come from the primitive rather than being hand-rolled.",
       "registryDependencies": [
         "tabs",
-        "berezin-pavel/admin-kit/admin-theme"
+        "berezin-pavel/admin-kit/admin-theme",
+        "berezin-pavel/admin-kit/admin-appearance"
       ],
       "files": [
         {
