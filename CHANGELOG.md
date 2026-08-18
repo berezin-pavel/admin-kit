@@ -60,7 +60,7 @@ tint), `pages` per page id, `blocks` per block id (`{ gradient, heading }`); `is
 validates what you read back, `defaultAdminAppearance` is the shipped look, `resolvePageBackdrop`
 picks a page's backdrop. `AppearanceProvider` (`value`/`onChange`/`editable`) hands it to `Block`,
 the card of the work area: it resolves its gradient by id, and in edit mode shows a corner button
-with the swatch grid and — on widgets — the heading choice (muted, prominent, hidden). Every
+with the swatch grid and — on widgets — the heading choice (regular — 13.5 px semibold, large — 1.15 rem, or hidden). Every
 widget, `widget-table`, `page-header`, page sections, the form's actions, the tab strip and
 `page-auth`'s card take a `blockId`.
 
@@ -69,6 +69,16 @@ sidebar, the sign-in screen and the default page backdrop, and a row per page. `
 `backdrop={gradientId}` for the page backdrop; the burger panel now receives the sidebar gradient
 (it never did). `locale-ru` gained `adminAppearance` and `appearanceMenu` slices with Russian names
 for all forty palette entries.
+
+**Changed** — a popup opened from a control on a gradient surface (a select, a dropdown, a popover,
+a combobox) is painted with that surface's gradient through a `body:has(...)` rule, so the user
+menu opened from a green sidebar stays green; the seven widgets' default title became the block's
+"regular" heading (13.5 px, semibold, full-strength foreground) and section titles in
+`page-entity`, `page-form` and `widget-table` follow it; `page-tabs` draws its tabs exactly like
+the sidebar's nav rows (same height, icon box, hover tint) with no shadow; `page-list` spaces its
+blocks like the overview (`gap-4`); `widget-table`'s sticky header and footer paint nothing on a
+gradient block and the body is clipped at the footer line; chart tooltips sit on a frosted card
+tint instead of a see-through box.
 
 **Project** — the showcase has a `/palette` page with every gradient and accent on live controls;
 the demo stores one appearance in localStorage, edits it through the menu and the corner buttons,
