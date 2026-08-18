@@ -38,6 +38,13 @@ export interface DemoDictionary {
   appearance: {
     title: string
     description: string
+    gradientAssignmentTitle: string
+    gradientAssignmentDescription: string
+    noneOption: string
+    shellSurfaceLabel: string
+    signInSurfaceLabel: string
+    ordersMetricBlockLabel: string
+    revenueMetricBlockLabel: string
   }
   standaloneTable: {
     title: string
@@ -275,6 +282,14 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
     appearance: {
       title: "Appearance",
       description: "Adjust the theme's colors and gradients across the panel",
+      gradientAssignmentTitle: "Gradient assignment",
+      gradientAssignmentDescription:
+        "Paint the panel's own surfaces and a few dashboard cards with a gradient from the palette above",
+      noneOption: "None",
+      shellSurfaceLabel: "Sidebar",
+      signInSurfaceLabel: "Sign-in screen",
+      ordersMetricBlockLabel: "Orders metric",
+      revenueMetricBlockLabel: "Revenue metric",
     },
     standaloneTable: {
       title: "Recent orders",
@@ -536,6 +551,14 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
     appearance: {
       title: "Оформление",
       description: "Настройте цвета и градиенты темы для всей панели",
+      gradientAssignmentTitle: "Назначение градиентов",
+      gradientAssignmentDescription:
+        "Раскрасьте собственные поверхности панели и несколько карточек дашборда градиентом из палитры выше",
+      noneOption: "Нет",
+      shellSurfaceLabel: "Боковая панель",
+      signInSurfaceLabel: "Экран входа",
+      ordersMetricBlockLabel: "Метрика заказов",
+      revenueMetricBlockLabel: "Метрика выручки",
     },
     standaloneTable: {
       title: "Последние заказы",

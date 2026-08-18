@@ -1,5 +1,6 @@
 "use client"
 
+import { DemoGradientAssignment } from "@/components/demo-gradient-assignment"
 import { localeRu } from "@/registry/locale-ru/locale-ru"
 import { PageHeader } from "@/registry/page-header/page-header"
 import { ThemeEditor } from "@/registry/theme-editor/theme-editor"
@@ -20,6 +21,18 @@ export function DemoAppearance() {
         value={theme}
         onChange={setDemoTheme}
         labels={locale === "ru" ? localeRu.themeEditor : undefined}
+      />
+      <DemoGradientAssignment
+        theme={theme}
+        labels={{
+          title: strings.gradientAssignmentTitle,
+          description: strings.gradientAssignmentDescription,
+          noneOption: strings.noneOption,
+          shellSurfaceLabel: strings.shellSurfaceLabel,
+          signInSurfaceLabel: strings.signInSurfaceLabel,
+          ordersMetricBlockLabel: strings.ordersMetricBlockLabel,
+          revenueMetricBlockLabel: strings.revenueMetricBlockLabel,
+        }}
       />
     </div>
   )
