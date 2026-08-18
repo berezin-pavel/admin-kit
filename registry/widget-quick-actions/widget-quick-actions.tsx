@@ -77,7 +77,10 @@ export function WidgetQuickActions({
                     key={action.id}
                     type="button"
                     variant="outline"
-                    className="w-full min-w-0 justify-start"
+                    className={cn(
+                      "w-full min-w-0 justify-start",
+                      gradient && "bg-transparent"
+                    )}
                     onClick={action.onSelect}
                   >
                     {Icon ? <Icon className="shrink-0" /> : null}

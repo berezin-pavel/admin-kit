@@ -63,6 +63,7 @@ export function AdminShellFooterView({
         locale={locale}
         locales={locales}
         onLocaleChange={setLocale}
+        className={sidebarGradient ? "bg-transparent" : undefined}
       />
     </>
   )
