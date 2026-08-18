@@ -21,21 +21,14 @@ const renderDemoBreadcrumbLink: BreadcrumbsLinkRenderer = ({
   </Link>
 )
 
-export function DemoOrderBreadcrumbs({ current }: { current?: "edit" }) {
+export function DemoOrderBreadcrumbs() {
   const locale = useDemoLocale()
   const strings = demoDictionary[locale]
 
-  const items =
-    current === "edit"
-      ? [
-          { label: strings.nav.orders, href: "/demo/orders" },
-          { label: strings.nav.order, href: "/demo/order" },
-          { label: strings.breadcrumbs.editLabel },
-        ]
-      : [
-          { label: strings.nav.orders, href: "/demo/orders" },
-          { label: strings.nav.order },
-        ]
+  const items = [
+    { label: strings.nav.orders, href: "/demo/orders" },
+    { label: strings.nav.order },
+  ]
 
   return (
     <Breadcrumbs

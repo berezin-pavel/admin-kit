@@ -23,7 +23,7 @@ export interface WidgetActivityLabels {
   emptyTitle?: string
 }
 
-export type WidgetActivityHeading = "muted" | "prominent"
+export type WidgetActivityHeading = "regular" | "large"
 
 export interface WidgetActivityProps {
   title?: string
@@ -41,8 +41,8 @@ export interface WidgetActivityProps {
 }
 
 const headingClassName: Record<WidgetActivityHeading, string> = {
-  muted: "text-sm font-medium text-muted-foreground",
-  prominent: "text-xl font-semibold text-foreground",
+  regular: "text-[0.84375rem] font-semibold text-foreground",
+  large: "text-[1.15rem] font-semibold text-foreground",
 }
 
 export interface WidgetActivityGroup {
@@ -140,7 +140,7 @@ export function WidgetActivity({
   locale = enUS,
   dayFormat = "MMMM d",
   timeFormat = "HH:mm",
-  heading = "muted",
+  heading = "regular",
   summary,
   loading = false,
   gradient,

@@ -8,7 +8,7 @@ import { Block } from "@/registry/admin-appearance/block"
 import type { GradientId } from "@/registry/admin-appearance/appearance-palette"
 
 export type WidgetProgressTone = "default" | "success" | "warning" | "danger"
-export type WidgetProgressHeading = "muted" | "prominent"
+export type WidgetProgressHeading = "regular" | "large"
 
 const toneClassName: Record<WidgetProgressTone, string | undefined> = {
   default: undefined,
@@ -34,8 +34,8 @@ export interface WidgetProgressProps {
 }
 
 const headingClassName: Record<WidgetProgressHeading, string> = {
-  muted: "text-sm font-medium text-muted-foreground",
-  prominent: "text-xl font-semibold text-foreground",
+  regular: "text-[0.84375rem] font-semibold text-foreground",
+  large: "text-[1.15rem] font-semibold text-foreground",
 }
 
 export function WidgetProgress({
@@ -46,7 +46,7 @@ export function WidgetProgress({
   targetLabel = "Goal",
   tone = "default",
   hint,
-  heading = "muted",
+  heading = "regular",
   summary,
   loading = false,
   gradient,

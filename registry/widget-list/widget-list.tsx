@@ -14,7 +14,7 @@ export interface WidgetListItem {
   icon?: ComponentType<{ className?: string }>
 }
 
-export type WidgetListHeading = "muted" | "prominent"
+export type WidgetListHeading = "regular" | "large"
 
 export interface WidgetListProps {
   title: string
@@ -30,8 +30,8 @@ export interface WidgetListProps {
 }
 
 const headingClassName: Record<WidgetListHeading, string> = {
-  muted: "text-sm font-medium text-muted-foreground",
-  prominent: "text-xl font-semibold text-foreground",
+  regular: "text-[0.84375rem] font-semibold text-foreground",
+  large: "text-[1.15rem] font-semibold text-foreground",
 }
 
 const skeletonItemCount = 3
@@ -39,7 +39,7 @@ const skeletonItemCount = 3
 export function WidgetList({
   title,
   items,
-  heading = "muted",
+  heading = "regular",
   summary,
   empty,
   emptyTitle = "No data",

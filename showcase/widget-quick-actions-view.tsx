@@ -75,13 +75,13 @@ export function EmptyView() {
   return <WidgetQuickActions title="Quick actions" actions={[]} />
 }
 
-export function ProminentHeadingView() {
+export function LargeHeadingView() {
   return (
     <div>
       <WidgetQuickActions
         title="Quick actions"
         actions={buildActions()}
-        heading="prominent"
+        heading="large"
         summary="4 available"
       />
       <AdminToaster />

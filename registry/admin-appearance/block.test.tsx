@@ -241,10 +241,10 @@ describe("Block corner menu interaction", () => {
     )
 
     await user.click(screen.getByRole("button", { name: "Block appearance" }))
-    await user.click(screen.getByRole("radio", { name: "Prominent" }))
+    await user.click(screen.getByRole("radio", { name: "Large" }))
 
     const last = onChangeSpy.mock.calls.at(-1)?.[0]
-    expect(last?.blocks.a.heading).toBe("prominent")
+    expect(last?.blocks.a.heading).toBe("large")
     expect(last?.blocks.a.gradient).toBe("ember")
   })
 
@@ -279,7 +279,7 @@ describe("Block heading attribute", () => {
       <AppearanceProvider
         value={{
           ...defaultAdminAppearance,
-          blocks: { a: { heading: "prominent" } },
+          blocks: { a: { heading: "large" } },
         }}
         onChange={() => {}}
       >
@@ -291,7 +291,7 @@ describe("Block heading attribute", () => {
 
     expect(container.querySelector("[data-block]")).toHaveAttribute(
       "data-heading",
-      "prominent"
+      "large"
     )
   })
 

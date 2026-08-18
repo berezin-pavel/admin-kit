@@ -60,7 +60,7 @@ your layout, and put the menu in the shell's footer:
 <AppearanceProvider value={appearance} onChange={save} editable={isAdmin}>
   <AdminShell
     sidebarGradient={appearance.sidebar ?? undefined}
-    workArea={resolvePageBackdrop(appearance, pageId)}
+    backdrop={resolvePageBackdrop(appearance, pageId)}
     sidebarFooter={<AppearanceMenu value={appearance} onChange={save} pages={pages} />}
   >
     …

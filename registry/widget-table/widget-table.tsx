@@ -289,7 +289,7 @@ export function WidgetTable<Row>({
             ) : (
               <>
                 {title ? (
-                  <CardTitle className="text-sm font-medium text-muted-foreground">
+                  <CardTitle className="text-[0.84375rem] font-semibold">
                     {title}
                   </CardTitle>
                 ) : null}

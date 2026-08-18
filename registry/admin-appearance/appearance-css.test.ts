@@ -101,7 +101,7 @@ describe("isAdminAppearance", () => {
     expect(
       isAdminAppearance({
         ...defaultAdminAppearance,
-        blocks: { revenue: "muted" },
+        blocks: { revenue: "regular" },
       })
     ).toBe(false)
   })
@@ -114,7 +114,7 @@ describe("isAdminAppearance", () => {
         signIn: "midnight",
         page: { gradient: null, soft: true },
         pages: { orders: { gradient: "ocean", soft: false } },
-        blocks: { revenue: { gradient: "meadow", heading: "prominent" } },
+        blocks: { revenue: { gradient: "meadow", heading: "large" } },
       })
     ).toBe(true)
   })
@@ -135,9 +135,28 @@ describe("appearanceCss", () => {
 
   it("restyles a block title from the stored heading choice", () => {
     const css = appearanceCss(defaultAdminAppearance)
-    expect(css).toContain('[data-block][data-heading="prominent"] [data-slot="card-title"]')
-    expect(css).toContain('[data-block][data-heading="muted"] [data-slot="card-title"]')
+    expect(css).toContain('[data-block][data-heading="large"] [data-slot="card-title"]')
+    expect(css).toContain('[data-block][data-heading="regular"] [data-slot="card-title"]')
     expect(css).toMatch(/\[data-heading="none"\] \[data-slot="card-title"\] \{[^}]*clip: rect\(0, 0, 0, 0\)/)
+  })
+
+  it("paints the whole document behind a backdrop so the browser canvas matches", () => {
+    const css = appearanceCss(defaultAdminAppearance)
+    expect(css).toContain('html:has([data-backdrop="ocean"][data-backdrop-soft]) {\n  background-image: var(--gradient-ocean-soft);')
+    expect(css).toContain('html:has([data-backdrop="ocean"]:not([data-backdrop-soft])) {\n  background-image: var(--gradient-ocean);')
+  })
+
+  it("paints a popup opened from a gradient surface with that surface's gradient", () => {
+    const css = appearanceCss(defaultAdminAppearance)
+    expect(css).toContain('body:has([data-gradient] :is([aria-haspopup], [role="combobox"])[aria-expanded="true"]) :is([data-slot="popover-content"], [data-slot="select-content"], [data-slot="dropdown-menu-content"], [data-slot="dropdown-menu-sub-content"], [data-slot="combobox-content"]) {')
+    expect(css).toContain(
+      'body:has([data-gradient="ember"] :is([aria-haspopup], [role="combobox"])[aria-expanded="true"]) :is([data-slot="popover-content"], [data-slot="select-content"], [data-slot="dropdown-menu-content"], [data-slot="dropdown-menu-sub-content"], [data-slot="combobox-content"]) {\n  --surface-gradient: var(--gradient-ember);'
+    )
+  })
+
+  it("makes nested card surfaces transparent on a gradient", () => {
+    const css = appearanceCss(defaultAdminAppearance)
+    expect(css).toMatch(/\[data-gradient\] \{[^}]*--card: transparent;/)
   })
 
   it("gives --secondary the same tint strength as --muted", () => {
@@ -178,7 +197,7 @@ describe("appearanceCss", () => {
   it("never lets a block id with special characters reach the emitted css", () => {
     const malicious = appearanceCss({
       ...defaultAdminAppearance,
-      blocks: { 'revenue"}malicious{color': { heading: "muted" } },
+      blocks: { 'revenue"}malicious{color': { heading: "regular" } },
     })
     expect(malicious).not.toContain("}malicious{")
   })

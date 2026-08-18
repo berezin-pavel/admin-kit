@@ -26,14 +26,14 @@ export const DEMO_APPEARANCE_DEFAULT: AdminAppearance = {
     "overview.goal-revenue": { gradient: "copper" },
     "overview.goal-orders": { gradient: "peach" },
     "overview.actions": { gradient: "amber" },
-    "overview.finance": { gradient: "midnight", heading: "prominent" },
+    "overview.finance": { gradient: "midnight", heading: "large" },
     "overview.channel": { gradient: "grape" },
     "overview.customers": { gradient: "sky" },
     "overview.recent-orders": { gradient: "rose" },
     "overview.products": { gradient: "sand" },
     "overview.split": { gradient: "berry" },
     "overview.activity": { gradient: "slate" },
-    "orders.header": { heading: "prominent" },
+    "orders.header": { heading: "large" },
     "order.order": { gradient: "sky" },
     "order.customer": { gradient: "mint" },
     "order.delivery": { gradient: "graphite" },
@@ -55,7 +55,7 @@ export function demoPageId(pathname: string): string | undefined {
   if (pathname === "/demo/orders") {
     return "orders"
   }
-  if (pathname === "/demo/order" || pathname === "/demo/order/edit") {
+  if (pathname === "/demo/order") {
     return "order"
   }
   return undefined
@@ -66,7 +66,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 function isBlockHeading(value: unknown): value is BlockHeading {
-  return value === "muted" || value === "prominent" || value === "none"
+  return value === "regular" || value === "large" || value === "none"
 }
 
 function isBlockAppearance(value: unknown): value is BlockAppearance {

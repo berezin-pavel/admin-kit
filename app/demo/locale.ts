@@ -215,9 +215,6 @@ export interface DemoDictionary {
     signOutAction: string
     profileToastTitle: string
   }
-  breadcrumbs: {
-    editLabel: string
-  }
   signIn: {
     title: string
     description: string
@@ -472,9 +469,6 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       signOutAction: "Sign out",
       profileToastTitle: "Opened profile",
     },
-    breadcrumbs: {
-      editLabel: "Edit",
-    },
     signIn: {
       title: "Sign in",
       description:
@@ -724,9 +718,6 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       profileAction: "Профиль",
       signOutAction: "Выйти",
       profileToastTitle: "Открыт профиль",
-    },
-    breadcrumbs: {
-      editLabel: "Редактирование",
     },
     signIn: {
       title: "Вход",

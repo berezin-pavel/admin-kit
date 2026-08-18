@@ -1,7 +1,7 @@
 "use client"
 
 import type { ComponentProps, ReactElement } from "react"
-import { Ban, Brush, Check } from "lucide-react"
+import { Ban, Check, Settings2 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
@@ -29,10 +29,10 @@ export interface BlockProps extends ComponentProps<typeof Card> {
 
 const headingChoices: readonly {
   value: BlockHeading
-  labelKey: "headingMuted" | "headingProminent" | "headingNone"
+  labelKey: "headingRegular" | "headingLarge" | "headingNone"
 }[] = [
-  { value: "muted", labelKey: "headingMuted" },
-  { value: "prominent", labelKey: "headingProminent" },
+  { value: "regular", labelKey: "headingRegular" },
+  { value: "large", labelKey: "headingLarge" },
   { value: "none", labelKey: "headingNone" },
 ]
 
@@ -109,13 +109,13 @@ function BlockMenu({
         aria-label={labels.blockMenu}
         render={
           <Button
-            variant="outline"
+            variant="ghost"
             size="icon"
-            className="absolute -top-2.5 -right-2.5 z-10 size-7 rounded-full opacity-0 shadow-sm transition-opacity group-hover/block:opacity-100 focus-visible:opacity-100 data-popup-open:opacity-100"
+            className="absolute top-1 right-1 z-10 size-5 opacity-0 transition-opacity group-hover/block:opacity-100 focus-visible:opacity-100 data-popup-open:opacity-100"
           />
         }
       >
-        <Brush className="size-3.5" aria-hidden="true" />
+        <Settings2 className="size-3" aria-hidden="true" />
       </PopoverTrigger>
       <PopoverContent aria-label={labels.blockMenu} className="w-auto">
         <div className="flex flex-col gap-1.5">

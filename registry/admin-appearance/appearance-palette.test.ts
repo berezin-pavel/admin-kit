@@ -173,8 +173,8 @@ describe("gradientIds and gradientPalette", () => {
         gradient.softLight.to,
       ]) {
         const l = hexToOklch(hex).l
-        expect(l).toBeGreaterThanOrEqual(0.94)
-        expect(l).toBeLessThanOrEqual(0.985)
+        expect(l).toBeGreaterThanOrEqual(0.84)
+        expect(l).toBeLessThanOrEqual(0.92)
       }
       for (const sample of samples) {
         expect(contrastRatio(sample, lightForegroundHex)).toBeGreaterThanOrEqual(7)
@@ -193,8 +193,8 @@ describe("gradientIds and gradientPalette", () => {
         gradient.softDark.to,
       ]) {
         const l = hexToOklch(hex).l
-        expect(l).toBeGreaterThanOrEqual(0.19)
-        expect(l).toBeLessThanOrEqual(0.25)
+        expect(l).toBeGreaterThanOrEqual(0.26)
+        expect(l).toBeLessThanOrEqual(0.34)
       }
       for (const sample of samples) {
         expect(contrastRatio(sample, darkForegroundHex)).toBeGreaterThanOrEqual(7)

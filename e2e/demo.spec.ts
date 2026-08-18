@@ -55,7 +55,7 @@ test("the order screen splits into working tabs", async ({ page }) => {
 test("the order edit form picks a customer by search and saves", async ({
   page,
 }) => {
-  await page.goto("/demo/order/edit")
+  await page.goto("/demo/order?tab=edit")
 
   const customer = page.getByRole("combobox").first()
   await customer.click()

@@ -16,10 +16,10 @@ describe("setBlockAppearance", () => {
     const value = setBlockAppearance(defaultAdminAppearance, "a", {
       gradient: "ember",
     })
-    const next = setBlockAppearance(value, "a", { heading: "prominent" })
+    const next = setBlockAppearance(value, "a", { heading: "large" })
 
     expect(next.blocks).toEqual({
-      a: { gradient: "ember", heading: "prominent" },
+      a: { gradient: "ember", heading: "large" },
     })
   })
 
@@ -35,11 +35,11 @@ describe("setBlockAppearance", () => {
   it("removes a key from the stored entry when the patch sets it to undefined", () => {
     const value = setBlockAppearance(defaultAdminAppearance, "a", {
       gradient: "ember",
-      heading: "prominent",
+      heading: "large",
     })
     const next = setBlockAppearance(value, "a", { gradient: undefined })
 
-    expect(next.blocks.a).toEqual({ heading: "prominent" })
+    expect(next.blocks.a).toEqual({ heading: "large" })
     expect(next.blocks.a).not.toHaveProperty("gradient")
   })
 
@@ -59,7 +59,7 @@ describe("setBlockAppearance", () => {
     })
     const before = JSON.stringify(value)
 
-    setBlockAppearance(value, "a", { heading: "prominent" })
+    setBlockAppearance(value, "a", { heading: "large" })
     setBlockAppearance(value, "b", { gradient: "ocean" })
 
     expect(JSON.stringify(value)).toBe(before)

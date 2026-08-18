@@ -62,9 +62,9 @@ export function softStops(
   surface: GradientStops,
   scheme: "light" | "dark"
 ): GradientStops {
-  const targetLightness = scheme === "light" ? 0.965 : 0.22
-  const chromaScale = scheme === "light" ? 0.35 : 0.5
-  const chromaCap = scheme === "light" ? 0.035 : 0.05
+  const targetLightness = scheme === "light" ? 0.88 : 0.3
+  const chromaScale = scheme === "light" ? 0.75 : 0.7
+  const chromaCap = scheme === "light" ? 0.09 : 0.08
 
   const transform = (hex: string): string => {
     const oklch = hexToOklch(hex)
@@ -371,7 +371,7 @@ export function isAccentId(value: unknown): value is AccentId {
   )
 }
 
-export type BlockHeading = "muted" | "prominent" | "none"
+export type BlockHeading = "regular" | "large" | "none"
 
 export interface BlockAppearance {
   gradient?: GradientId | null

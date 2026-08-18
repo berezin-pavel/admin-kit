@@ -44,30 +44,28 @@ export function PageTabs({
       <Block id={blockId ? `${blockId}.tabs` : undefined}>
         <CardContent className="flex flex-wrap items-center justify-between gap-2 py-2">
           {breadcrumbs ? <div className="w-full pb-2">{breadcrumbs}</div> : null}
-          <div className="min-w-0 overflow-x-auto">
-            <TabsList className="gap-1 bg-transparent p-0 group-data-horizontal/tabs:h-auto">
-              {items.map((item) => {
-                const Icon = item.icon
+          <TabsList className="h-auto flex-wrap justify-start gap-1 bg-transparent p-0 group-data-horizontal/tabs:h-auto">
+            {items.map((item) => {
+              const Icon = item.icon
 
-                return (
-                  <TabsTrigger
-                    key={item.id}
-                    value={item.id}
-                    disabled={item.disabled}
-                    className="h-9 gap-2 rounded-md px-3 font-normal text-sidebar-foreground hover:bg-sidebar-accent/50 data-active:bg-sidebar-active data-active:text-sidebar-active-foreground data-active:shadow-none dark:data-active:border-transparent dark:data-active:bg-sidebar-active"
-                  >
-                    {Icon ? (
-                      <Icon data-icon="inline-start" className="size-4" />
-                    ) : null}
-                    {item.label}
-                    {item.badge != null ? (
-                      <span data-icon="inline-end">{item.badge}</span>
-                    ) : null}
-                  </TabsTrigger>
-                )
-              })}
-            </TabsList>
-          </div>
+              return (
+                <TabsTrigger
+                  key={item.id}
+                  value={item.id}
+                  disabled={item.disabled}
+                  className="h-10 flex-none gap-3 rounded-md border-transparent px-2 text-[0.9375rem] font-medium text-sidebar-foreground shadow-none hover:bg-sidebar-active/50 hover:text-sidebar-active-foreground data-active:bg-sidebar-active data-active:font-semibold data-active:text-sidebar-active-foreground data-active:shadow-none dark:data-active:border-transparent dark:data-active:bg-sidebar-active"
+                >
+                  {Icon ? (
+                    <span className="flex size-6 shrink-0 items-center justify-center">
+                      <Icon className="size-[1.125rem]" />
+                    </span>
+                  ) : null}
+                  {item.label}
+                  {item.badge != null ? <span>{item.badge}</span> : null}
+                </TabsTrigger>
+              )
+            })}
+          </TabsList>
           {actions ? (
             <div className="flex items-center gap-2">{actions}</div>
           ) : null}

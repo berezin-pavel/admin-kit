@@ -16,7 +16,7 @@ import type { GradientId } from "@/registry/admin-appearance/appearance-palette"
 
 export type MetricDirection = "up" | "down"
 export type MetricTone = "positive" | "negative"
-export type WidgetMetricHeading = "muted" | "prominent"
+export type WidgetMetricHeading = "regular" | "large"
 
 export interface WidgetMetricProps {
   title: string
@@ -38,8 +38,8 @@ export interface WidgetMetricProps {
 }
 
 const headingClassName: Record<WidgetMetricHeading, string> = {
-  muted: "text-sm font-medium text-muted-foreground",
-  prominent: "text-xl font-semibold text-foreground",
+  regular: "text-[0.84375rem] font-semibold text-foreground",
+  large: "text-[1.15rem] font-semibold text-foreground",
 }
 
 export function WidgetMetric({
@@ -49,7 +49,7 @@ export function WidgetMetric({
   trend,
   trendValues,
   trendTooltipFormat = String,
-  heading = "muted",
+  heading = "regular",
   summary,
   loading = false,
   gradient,

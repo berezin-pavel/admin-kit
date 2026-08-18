@@ -57,7 +57,7 @@ export function PageFormBody({
             {section.title || section.description ? (
               <CardHeader>
                 {section.title ? (
-                  <CardTitle className="text-sm font-medium text-muted-foreground">
+                  <CardTitle className="text-[0.84375rem] font-semibold">
                     {section.title}
                   </CardTitle>
                 ) : null}

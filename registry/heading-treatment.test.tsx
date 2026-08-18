@@ -12,7 +12,7 @@ import { WidgetProgress } from "./widget-progress/widget-progress"
 import { WidgetQuickActions } from "./widget-quick-actions/widget-quick-actions"
 
 interface HeadingProps {
-  heading?: "muted" | "prominent"
+  heading?: "regular" | "large"
   summary?: ReactElement | string
   gradient?: GradientId
 }
@@ -91,21 +91,21 @@ const cases: readonly {
 ]
 
 describe.each(cases)("$name heading and summary", ({ render: renderCase, title }) => {
-  it("renders the muted title treatment by default", () => {
+  it("renders the regular title treatment by default", () => {
     const { getByText } = render(renderCase({}))
 
     expect(getByText(title)).toHaveClass(
-      "text-sm",
-      "font-medium",
-      "text-muted-foreground"
+      "text-[0.84375rem]",
+      "font-semibold",
+      "text-foreground"
     )
   })
 
-  it("renders a prominent title in full-strength foreground", () => {
-    const { getByText } = render(renderCase({ heading: "prominent" }))
+  it("renders a large title in full-strength foreground", () => {
+    const { getByText } = render(renderCase({ heading: "large" }))
     const titleNode = getByText(title)
 
-    expect(titleNode).toHaveClass("text-xl", "font-semibold", "text-foreground")
+    expect(titleNode).toHaveClass("text-[1.15rem]", "font-semibold", "text-foreground")
     expect(titleNode).not.toHaveClass("text-muted-foreground")
   })
 

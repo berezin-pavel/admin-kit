@@ -66,7 +66,7 @@ and — on widgets — the heading choice (muted, prominent, hidden). Every widg
 
 **New** — `appearance-menu`, the fourth footer control: accent swatches, one select each for the
 sidebar, the sign-in screen and the default page backdrop (with a soft-tint checkbox), and a row
-per page. `admin-shell` gained `workArea={{ gradient, soft }}` for the page backdrop; the burger
+per page. `admin-shell` gained `backdrop={{ gradient, soft }}` for the page backdrop; the burger
 panel now receives the sidebar gradient (it never did). `locale-ru` gained `adminAppearance` and
 `appearanceMenu` slices with Russian names for all forty palette entries.
 
@@ -139,7 +139,7 @@ were never brought in line with it; they are now. Dark `sidebar-active` was nudg
 clear the bar under either measurement, and a test asserts every derived pair does the same, so a
 future edit cannot land in that gap again.
 
-**Changed** — seven widget cards take a second heading treatment. `heading="prominent"` renders
+**Changed** — seven widget cards take a second heading treatment. `heading="large"` renders
 the title large and in full-strength foreground instead of the small muted default, and `summary`
 fills the opposite end of the header with muted content — a total, a period, a count. Both are
 optional and default to today's look, so nothing changes unless you ask for it. `widget-table` is

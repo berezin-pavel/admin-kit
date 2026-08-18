@@ -127,7 +127,7 @@ test("a sticky-header list scrolls inside the table, not the page", async ({
 test("a long form does not add a second scrollbar to the page", async ({
   page,
 }) => {
-  await page.goto("/demo/order/edit")
+  await page.goto("/demo/order?tab=edit")
   await expect(page.getByRole("button", { name: /save/i })).toBeVisible()
 
   const documentScroll = await page.evaluate(

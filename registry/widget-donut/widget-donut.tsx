@@ -26,7 +26,7 @@ export interface WidgetDonutSlice {
   value: number
 }
 
-export type WidgetDonutHeading = "muted" | "prominent"
+export type WidgetDonutHeading = "regular" | "large"
 
 export interface WidgetDonutProps {
   title?: string
@@ -43,8 +43,8 @@ export interface WidgetDonutProps {
 }
 
 const headingClassName: Record<WidgetDonutHeading, string> = {
-  muted: "text-sm font-medium text-muted-foreground",
-  prominent: "text-xl font-semibold text-foreground",
+  regular: "text-[0.84375rem] font-semibold text-foreground",
+  large: "text-[1.15rem] font-semibold text-foreground",
 }
 
 const sliceColorCount = 5
@@ -89,7 +89,7 @@ export function WidgetDonut({
   hint,
   slices,
   valueFormat = defaultValueFormat,
-  heading = "muted",
+  heading = "regular",
   summary,
   emptyTitle = "No data",
   loading = false,

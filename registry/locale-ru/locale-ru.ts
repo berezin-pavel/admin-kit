@@ -66,8 +66,8 @@ const adminAppearanceRu = {
   gradient: "Градиент",
   none: "Без градиента",
   heading: "Заголовок",
-  headingMuted: "Обычный",
-  headingProminent: "Заметный",
+  headingRegular: "Обычный",
+  headingLarge: "Большой",
   headingNone: "Без заголовка",
   gradients: gradientNamesRu,
 } satisfies AppearanceLabels

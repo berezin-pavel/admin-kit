@@ -73,13 +73,13 @@ test("a per-page backdrop chosen in the menu paints only that page", async ({
   await page.keyboard.press("Escape")
 
   await page.goto("/demo/orders")
-  await expect(page.locator("main")).toHaveAttribute("data-backdrop", "grape", {
+  await expect(page.locator("[data-backdrop]").first()).toHaveAttribute("data-backdrop", "grape", {
     timeout: HYDRATION_POLL_TIMEOUT,
   })
-  await expect(page.locator("main")).toHaveAttribute("data-backdrop-soft", "")
+  await expect(page.locator("[data-backdrop]").first()).toHaveAttribute("data-backdrop-soft", "")
 
   await page.goto("/demo")
-  await expect(page.locator("main")).toHaveAttribute("data-backdrop", "ocean", {
+  await expect(page.locator("[data-backdrop]").first()).toHaveAttribute("data-backdrop", "ocean", {
     timeout: HYDRATION_POLL_TIMEOUT,
   })
 })

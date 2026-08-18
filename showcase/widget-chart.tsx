@@ -150,27 +150,27 @@ export const widgetChartEntry: ShowcaseEntry = {
       ),
     },
     {
-      id: "prominent-heading",
-      name: "Prominent heading with a summary",
+      id: "large-heading",
+      name: "Large heading with a summary",
       render: () => (
         <WidgetChart
           title="Revenue by month"
           labels={months}
           series={revenueSeries}
-          heading="prominent"
+          heading="large"
           summary="$2,040 this month"
         />
       ),
     },
     {
-      id: "prominent-heading-with-toolbar",
-      name: "Prominent heading, summary, and a toolbar",
+      id: "large-heading-with-toolbar",
+      name: "Large heading, summary, and a toolbar",
       render: () => (
         <WidgetChart
           title="Revenue by month"
           labels={months}
           series={revenueSeries}
-          heading="prominent"
+          heading="large"
           summary="$2,040 this month"
           toolbar={
             <Button type="button" variant="outline" size="sm">

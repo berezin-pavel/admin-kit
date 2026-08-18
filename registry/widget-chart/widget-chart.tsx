@@ -23,7 +23,7 @@ export interface WidgetChartSeries {
   values: readonly number[]
 }
 
-export type WidgetChartHeading = "muted" | "prominent"
+export type WidgetChartHeading = "regular" | "large"
 
 export interface WidgetChartProps {
   title: string
@@ -43,8 +43,8 @@ export interface WidgetChartProps {
 }
 
 const headingClassName: Record<WidgetChartHeading, string> = {
-  muted: "text-sm font-medium text-muted-foreground",
-  prominent: "text-xl font-semibold text-foreground",
+  regular: "text-[0.84375rem] font-semibold text-foreground",
+  large: "text-[1.15rem] font-semibold text-foreground",
 }
 
 const seriesColorCount = 5
@@ -84,7 +84,7 @@ export function WidgetChart({
   kind = "line",
   hint,
   toolbar,
-  heading = "muted",
+  heading = "regular",
   summary,
   empty,
   emptyTitle = "No data",

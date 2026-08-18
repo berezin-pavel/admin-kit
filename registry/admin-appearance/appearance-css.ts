@@ -18,7 +18,7 @@ import {
   type PageBackdrop,
 } from "./appearance-palette"
 
-const BLOCK_HEADINGS: readonly BlockHeading[] = ["muted", "prominent", "none"]
+const BLOCK_HEADINGS: readonly BlockHeading[] = ["regular", "large", "none"]
 
 export function gradientCss(stops: GradientStops): string {
   const from = stops.from.toLowerCase()
@@ -110,10 +110,11 @@ function gradientVariableBlock(scheme: "light" | "dark"): string {
   return lines.join("\n")
 }
 
-const SURFACE_RULE = `[data-gradient] {
+const SURFACE_DECLARATIONS = `
   background-image: var(--surface-gradient);
   color: var(--surface-foreground);
   --foreground: var(--surface-foreground);
+  --card: transparent;
   --card-foreground: var(--surface-foreground);
   --muted-foreground: var(--surface-foreground);
   --background: color-mix(in oklch, var(--surface-foreground) 8%, transparent);
@@ -129,19 +130,39 @@ const SURFACE_RULE = `[data-gradient] {
   --sidebar-border: var(--border);
   --sidebar-accent: var(--muted);
   --sidebar-active: color-mix(in oklch, var(--surface-foreground) 14%, transparent);
-  --sidebar-active-foreground: var(--surface-foreground);
+  --sidebar-active-foreground: var(--surface-foreground);`
+
+const SURFACE_RULE = `[data-gradient] {${SURFACE_DECLARATIONS}
 }`
 
-const HEADING_RULE = `[data-block][data-heading="muted"] [data-slot="card-title"] {
-  font-size: 0.875rem;
-  line-height: 1.25rem;
-  font-weight: 500;
-  color: var(--muted-foreground);
+const POPUP_SLOTS =
+  ':is([data-slot="popover-content"], [data-slot="select-content"], [data-slot="dropdown-menu-content"], [data-slot="dropdown-menu-sub-content"], [data-slot="combobox-content"])'
+const OPEN_TRIGGER = ':is([aria-haspopup], [role="combobox"])[aria-expanded="true"]'
+
+const POPUP_RULE = `body:has([data-gradient] ${OPEN_TRIGGER}) ${POPUP_SLOTS} {${SURFACE_DECLARATIONS}
+  --popover: transparent;
+  --popover-foreground: var(--surface-foreground);
+}`
+
+function popupSelectorBlocks(): string {
+  return gradientIds
+    .map(
+      (id) =>
+        `body:has([data-gradient="${id}"] ${OPEN_TRIGGER}) ${POPUP_SLOTS} {\n  --surface-gradient: var(--gradient-${id});\n  --surface-foreground: var(--gradient-${id}-foreground);\n}`
+    )
+    .join("\n\n")
 }
 
-[data-block][data-heading="prominent"] [data-slot="card-title"] {
-  font-size: 1.25rem;
-  line-height: 1.75rem;
+const HEADING_RULE = `[data-block][data-heading="regular"] [data-slot="card-title"] {
+  font-size: 0.84375rem;
+  line-height: 1.25rem;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+[data-block][data-heading="large"] [data-slot="card-title"] {
+  font-size: 1.15rem;
+  line-height: 1.6rem;
   font-weight: 600;
   color: var(--foreground);
 }
@@ -170,7 +191,7 @@ function surfaceSelectorBlocks(): string {
 function backdropSelectorBlocks(): string {
   const blocks = gradientIds.map(
     (id) =>
-      `[data-backdrop="${id}"] {\n  --backdrop-gradient: var(--gradient-${id});\n  --backdrop-text: var(--gradient-${id}-foreground);\n}\n\n[data-backdrop="${id}"][data-backdrop-soft] {\n  --backdrop-gradient: var(--gradient-${id}-soft);\n  --backdrop-text: var(--foreground);\n}`
+      `[data-backdrop="${id}"] {\n  --backdrop-gradient: var(--gradient-${id});\n  --backdrop-text: var(--gradient-${id}-foreground);\n}\n\n[data-backdrop="${id}"][data-backdrop-soft] {\n  --backdrop-gradient: var(--gradient-${id}-soft);\n  --backdrop-text: var(--foreground);\n}\n\nhtml:has([data-backdrop="${id}"]:not([data-backdrop-soft])) {\n  background-image: var(--gradient-${id});\n}\n\nhtml:has([data-backdrop="${id}"][data-backdrop-soft]) {\n  background-image: var(--gradient-${id}-soft);\n}`
   )
   return blocks.join("\n\n")
 }
@@ -197,6 +218,8 @@ export function appearanceCss(appearance: AdminAppearance): string {
     darkBlock,
     SURFACE_RULE,
     surfaceSelectorBlocks(),
+    POPUP_RULE,
+    popupSelectorBlocks(),
     `[data-backdrop] {\n  background-image: var(--backdrop-gradient);\n  --backdrop-foreground: var(--backdrop-text);\n}`,
     backdropSelectorBlocks(),
     HEADING_RULE,

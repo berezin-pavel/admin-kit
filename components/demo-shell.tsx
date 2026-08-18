@@ -69,7 +69,7 @@ export function DemoShell({ children }: { children: ReactNode }) {
       sidebarProfile={<DemoUserMenu variant="row" />}
       collapsed={collapsed}
       sidebarGradient={appearance.sidebar ?? undefined}
-      workArea={resolvePageBackdrop(appearance, demoPageId(pathname))}
+      backdrop={resolvePageBackdrop(appearance, demoPageId(pathname))}
       labels={locale === "ru" ? localeRu.adminShell : undefined}
       sidebarFooter={
         <>

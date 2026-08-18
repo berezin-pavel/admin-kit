@@ -14,7 +14,7 @@ export interface QuickAction {
   onSelect: () => void
 }
 
-export type WidgetQuickActionsHeading = "muted" | "prominent"
+export type WidgetQuickActionsHeading = "regular" | "large"
 
 export interface WidgetQuickActionsProps {
   title?: string
@@ -29,8 +29,8 @@ export interface WidgetQuickActionsProps {
 }
 
 const headingClassName: Record<WidgetQuickActionsHeading, string> = {
-  muted: "text-sm font-medium text-muted-foreground",
-  prominent: "text-xl font-semibold text-foreground",
+  regular: "text-[0.84375rem] font-semibold text-foreground",
+  large: "text-[1.15rem] font-semibold text-foreground",
 }
 
 const skeletonActionRowCount = 2
@@ -39,7 +39,7 @@ export function WidgetQuickActions({
   title,
   actions,
   columns = 2,
-  heading = "muted",
+  heading = "regular",
   summary,
   loading = false,
   gradient,

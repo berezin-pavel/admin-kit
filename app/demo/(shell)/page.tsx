@@ -304,7 +304,18 @@ export default function DemoPage() {
         />
       </div>
       <div className="grid gap-4 lg:grid-cols-2">
-        <DemoStandaloneTable loading={reloading} blockId="overview.recent-orders" />
+        <div className="flex flex-col gap-4">
+          <DemoStandaloneTable loading={reloading} blockId="overview.recent-orders" />
+          <WidgetDonut
+            title={strings.donutTitle}
+            hint={strings.metricHint}
+            slices={donutSlices}
+            emptyTitle={donutEmptyTitle}
+            loading={reloading}
+            blockId="overview.split"
+            className="flex-1"
+          />
+        </div>
         <div className="flex flex-col gap-4">
           <WidgetList
             title={strings.productsTitle}
@@ -313,27 +324,20 @@ export default function DemoPage() {
             loading={reloading}
             blockId="overview.products"
           />
-          <WidgetDonut
-            title={strings.donutTitle}
-            hint={strings.metricHint}
-            slices={donutSlices}
-            emptyTitle={donutEmptyTitle}
+          <WidgetActivity
+            title={strings.activityTitle}
+            entries={activityEntries}
+            labels={activityLabels}
+            locale={locale === "ru" ? localeRu.widgetActivity.locale : undefined}
+            dayFormat={
+              locale === "ru" ? localeRu.widgetActivity.dayFormat : undefined
+            }
             loading={reloading}
-            blockId="overview.split"
+            blockId="overview.activity"
+            className="flex-1"
           />
         </div>
       </div>
-      <WidgetActivity
-        title={strings.activityTitle}
-        entries={activityEntries}
-        labels={activityLabels}
-        locale={locale === "ru" ? localeRu.widgetActivity.locale : undefined}
-        dayFormat={
-          locale === "ru" ? localeRu.widgetActivity.dayFormat : undefined
-        }
-        loading={reloading}
-        blockId="overview.activity"
-      />
     </div>
   )
 }

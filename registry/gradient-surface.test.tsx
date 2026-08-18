@@ -154,13 +154,13 @@ describe("the shell paints its surfaces through data attributes", () => {
         appName="Store"
         nav={[]}
         activeHref="/"
-        workArea={{ gradient: "ocean", soft: true }}
+        backdrop={{ gradient: "ocean", soft: true }}
       >
         <p>Work</p>
       </AdminShell>
     )
 
-    const main = container.querySelector("main")
+    const main = container.firstElementChild
 
     expect(main).toHaveAttribute("data-backdrop", "ocean")
     expect(main).toHaveAttribute("data-backdrop-soft", "")
@@ -172,47 +172,47 @@ describe("the shell paints its surfaces through data attributes", () => {
         appName="Store"
         nav={[]}
         activeHref="/"
-        workArea={{ gradient: "ocean", soft: false }}
+        backdrop={{ gradient: "ocean", soft: false }}
       >
         <p>Work</p>
       </AdminShell>
     )
 
-    const main = container.querySelector("main")
+    const main = container.firstElementChild
 
     expect(main).toHaveAttribute("data-backdrop", "ocean")
     expect(main).not.toHaveAttribute("data-backdrop-soft")
   })
 
-  it("sets neither attribute when workArea has no gradient or is omitted", () => {
+  it("sets neither attribute when backdrop has no gradient or is omitted", () => {
     const { container: withNullGradient } = render(
       <AdminShell
         appName="Store"
         nav={[]}
         activeHref="/"
-        workArea={{ gradient: null }}
+        backdrop={{ gradient: null }}
       >
         <p>Work</p>
       </AdminShell>
     )
 
-    expect(withNullGradient.querySelector("main")).not.toHaveAttribute(
+    expect(withNullGradient.firstElementChild).not.toHaveAttribute(
       "data-backdrop"
     )
-    expect(withNullGradient.querySelector("main")).not.toHaveAttribute(
+    expect(withNullGradient.firstElementChild).not.toHaveAttribute(
       "data-backdrop-soft"
     )
 
-    const { container: withoutWorkArea } = render(
+    const { container: withoutBackdrop } = render(
       <AdminShell appName="Store" nav={[]} activeHref="/">
         <p>Work</p>
       </AdminShell>
     )
 
-    expect(withoutWorkArea.querySelector("main")).not.toHaveAttribute(
+    expect(withoutBackdrop.firstElementChild).not.toHaveAttribute(
       "data-backdrop"
     )
-    expect(withoutWorkArea.querySelector("main")).not.toHaveAttribute(
+    expect(withoutBackdrop.firstElementChild).not.toHaveAttribute(
       "data-backdrop-soft"
     )
   })

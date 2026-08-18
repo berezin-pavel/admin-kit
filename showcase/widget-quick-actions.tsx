@@ -3,7 +3,7 @@ import { WidgetQuickActions } from "@/registry/widget-quick-actions/widget-quick
 import {
   EmptyView,
   GradientView,
-  ProminentHeadingView,
+  LargeHeadingView,
   ThreeColumnsView,
   TwoColumnsView,
 } from "./widget-quick-actions-view"
@@ -26,9 +26,9 @@ export const widgetQuickActionsEntry: ShowcaseEntry = {
       render: () => <ThreeColumnsView />,
     },
     {
-      id: "prominent-heading",
-      name: "Prominent heading with a summary",
-      render: () => <ProminentHeadingView />,
+      id: "large-heading",
+      name: "Large heading with a summary",
+      render: () => <LargeHeadingView />,
     },
     {
       id: "empty",

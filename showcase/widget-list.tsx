@@ -99,13 +99,13 @@ export const widgetListEntry: ShowcaseEntry = {
       render: () => <WidgetList title="Team" items={[]} />,
     },
     {
-      id: "prominent-heading",
-      name: "Prominent heading with a summary",
+      id: "large-heading",
+      name: "Large heading with a summary",
       render: () => (
         <WidgetList
           title="Recent transactions"
           items={orderItemsWithMeta}
-          heading="prominent"
+          heading="large"
           summary="$6,940 total"
         />
       ),

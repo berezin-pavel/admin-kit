@@ -1,9 +1,7 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import { useRouter } from "next/navigation"
 
-import { DemoOrderBreadcrumbs } from "@/components/demo-order-breadcrumbs"
 import { notify } from "@/registry/admin-toaster/admin-toaster"
 import { CheckboxField } from "@/registry/checkbox-field/checkbox-field"
 import { ColorField } from "@/registry/color-field/color-field"
@@ -48,8 +46,7 @@ const MAX_UPLOAD_BYTES = 3 * 1024 * 1024
 const UPLOAD_DURATION_MS = 2400
 const UPLOAD_TICK_MS = 120
 
-export function DemoOrderEdit() {
-  const router = useRouter()
+export function DemoOrderEdit({ onDone }: { onDone: () => void }) {
   const locale = useDemoLocale()
   const strings = demoDictionary[locale].orderEdit
   const productOptions = getDemoProductOptions(locale)
@@ -129,7 +126,6 @@ export function DemoOrderEdit() {
     <div className="flex flex-col gap-4">
       <PageForm
         blockId="order.edit"
-        breadcrumbs={<DemoOrderBreadcrumbs current="edit" />}
         title={strings.title}
         description={strings.description}
         submitLabel={locale === "ru" ? localeRu.pageForm.submitLabel : undefined}
@@ -305,10 +301,10 @@ export function DemoOrderEdit() {
             notify.success(strings.saveToastTitle, {
               description: strings.saveToastDescription,
             })
-            router.push("/demo/orders")
+            onDone()
           }, 700)
         }}
-        onCancel={() => router.push("/demo/orders")}
+        onCancel={onDone}
       />
     </div>
   )

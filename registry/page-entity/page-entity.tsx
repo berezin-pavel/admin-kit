@@ -78,7 +78,7 @@ export function PageEntity({
             >
               {section.title ? (
                 <CardHeader>
-                  <CardTitle className="text-sm font-medium text-muted-foreground">
+                  <CardTitle className="text-[0.84375rem] font-semibold">
                     {section.title}
                   </CardTitle>
                 </CardHeader>

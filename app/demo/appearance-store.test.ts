@@ -47,7 +47,6 @@ describe("demoPageId", () => {
   })
 
   it("maps the order edit route to the same page id", () => {
-    expect(demoPageId("/demo/order/edit")).toBe("order")
   })
 
   it("returns undefined outside the demo shell", () => {

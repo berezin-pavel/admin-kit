@@ -15,8 +15,8 @@ export interface AppearanceLabels {
   gradient?: string
   none?: string
   heading?: string
-  headingMuted?: string
-  headingProminent?: string
+  headingRegular?: string
+  headingLarge?: string
   headingNone?: string
   gradients?: Partial<Record<GradientId, string>>
 }
@@ -43,8 +43,8 @@ const defaultAppearanceLabels: Required<Omit<AppearanceLabels, "gradients">> = {
   gradient: "Gradient",
   none: "No gradient",
   heading: "Heading",
-  headingMuted: "Muted",
-  headingProminent: "Prominent",
+  headingRegular: "Regular",
+  headingLarge: "Large",
   headingNone: "Hidden",
 }
 
@@ -65,9 +65,9 @@ export function AppearanceProvider({
       gradient: labels?.gradient ?? defaultAppearanceLabels.gradient,
       none: labels?.none ?? defaultAppearanceLabels.none,
       heading: labels?.heading ?? defaultAppearanceLabels.heading,
-      headingMuted: labels?.headingMuted ?? defaultAppearanceLabels.headingMuted,
-      headingProminent:
-        labels?.headingProminent ?? defaultAppearanceLabels.headingProminent,
+      headingRegular: labels?.headingRegular ?? defaultAppearanceLabels.headingRegular,
+      headingLarge:
+        labels?.headingLarge ?? defaultAppearanceLabels.headingLarge,
       headingNone: labels?.headingNone ?? defaultAppearanceLabels.headingNone,
       gradients: labels?.gradients ?? {},
     }),

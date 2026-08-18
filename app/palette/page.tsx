@@ -81,7 +81,7 @@ function AccentSchemeSample({
       </div>
       <div className="flex items-center gap-3">
         <Checkbox aria-label={`${id} ${scheme} sample checkbox`} defaultChecked />
-        <Progress value={60} className="flex-1" />
+        <Progress value={60} aria-label="Progress sample" className="flex-1" />
       </div>
     </div>
   )
