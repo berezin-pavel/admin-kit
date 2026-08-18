@@ -39,36 +39,52 @@ After that, any registry item installs with the same command and its name:
 pnpm dlx shadcn@latest add berezin-pavel/admin-kit/admin-shell
 ```
 
-### Letting the panel's owner change the colors
+### Letting the panel's owner change the look
 
 The theme above is a build-time artifact: it lands in your CSS file and
-only changes when you edit it. If the person who owns the panel should be
-able to pick its colors from inside it, install `theme-editor`, which
-brings `admin-theme-tokens` with it, and render the CSS the theme
-produces:
+only changes when you edit it. What the panel's administrator changes at
+runtime is its **appearance**: an accent colour, a gradient for the
+sidebar and the sign-in screen, a backdrop for every page and a gradient
+(and heading treatment) for every block. All of it is picked from fixed
+palettes — twenty gradients and twenty accents shipped by
+`admin-appearance` — because every entry has passed the kit's contrast
+tests, along the whole gradient and on hovered controls; there is no
+colour input anywhere.
+
+The appearance is one serializable value. Store it wherever you store
+the rest of your settings, hand it to the provider and the stylesheet in
+your layout, and put the menu in the shell's footer:
 
 ```tsx
-<style dangerouslySetInnerHTML={{ __html: adminThemeToCss(theme) }} />
+<AppearanceStyle value={appearance} />
+<AppearanceProvider value={appearance} onChange={save} editable={isAdmin}>
+  <AdminShell
+    sidebarGradient={appearance.sidebar ?? undefined}
+    workArea={resolvePageBackdrop(appearance, pageId)}
+    sidebarFooter={<AppearanceMenu value={appearance} onChange={save} pages={pages} />}
+  >
+    …
+  </AdminShell>
+</AppearanceProvider>
 ```
 
-Put that in your layout and store `theme` wherever you store the rest of
-your settings — the kit holds no theme of its own. Rendering it on the
-server means the colors arrive in the first HTML, so there is no flash of
-the installed palette; putting the variables on `:root` means toasts and
-dialogs, which render through a portal into `body`, are painted along
-with everything else. `admin-theme` stays installed either way: it is
-what the panel falls back to before a stored theme is read, and what
-every item's tokens are named after.
+Rendering the style on the server means the colours arrive in the first
+HTML, so there is no flash of the installed palette. Every card in the
+work area is a `Block` with an id — widgets, page sections and page
+headers already are, through their `blockId` prop — and while
+`editable` is on, hovering a block reveals a corner button with the
+swatch grid, so a new block gets its colour by a click, not by a code
+change. `admin-theme` stays installed either way: it is what the panel
+falls back to before a stored appearance is read, and what every item's
+tokens are named after.
 
-A theme read back from storage is untrusted: malformed JSON, a shape
-left over from an older version, or a value edited by hand all reach
-`adminThemeToCss`, which calls into color parsing that throws on
-anything that isn't a valid hex color, with nothing in the kit to catch
-it. Validate what you read back with `isAdminTheme`, exported from
-`admin-theme-tokens`, before it reaches the printer, and fall back to a
-known-good theme when it fails — `{ sources: defaultAdminThemeSources,
-gradients: [] }`, also exported from `admin-theme-tokens`, reproduces
-the shipped palette.
+An appearance read back from storage is untrusted: validate it with
+`isAdminAppearance` and fall back to `defaultAdminAppearance` when it
+fails. Two rules keep the result legible: never nest an opaque card
+inside a block that has a gradient (it would inherit the gradient's
+white text on its own white surface), and put nothing in the work area
+outside a block — a page backdrop paints only the image and does not
+recolour text.
 
 The CLI pulls in whatever the item depends on by itself: shadcn
 primitives (`card`, `table`, `skeleton`, and others), npm packages, and
@@ -86,8 +102,8 @@ as they were.
 | --------------------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `admin-theme`        | `registry:theme`     | Colors and radii for the admin panel, for the light and dark schemes, including the `sidebar-active` pair that paints the current nav row and tab. Installed first — the other items rely on its tokens                                                                                                                                                                                                                                            |
 | `admin-shell`        | `registry:block`     | A persistent full-height frame for the admin panel: an optional header, side navigation (on a wide screen a sidebar, or an icon rail with `collapsed`; on a narrow one no sidebar at all — a compact top bar with the burger, the logo, the app name and the account, and the panel behind the burger holds the sections), a `logo` slot before the app name, a `sidebarProfile` row under it for the account, a `sidebarActions` slot next to the app name, a `sidebarFooter` slot at the bottom, and a work area with its own scrolling. Every sidebar row shares one grid, so the logo, the avatar and the nav icons keep the same centre expanded or collapsed. Installed once per project |
-| `admin-theme-tokens` | `registry:component` | The theme as data: six sources go into `deriveAdminTheme`, which computes every token for both schemes in OKLCH, and `adminThemeToCss` prints them as custom properties you render in a `<style>` element. Foregrounds are searched by contrast rather than chosen, and the surface is nudged when the text alone cannot clear 4.5:1, so no combination of sources produces unreadable text. Gradients are their own class of token, validated before they reach the CSS text. Pure TypeScript, no React |
-| `theme-editor`       | `registry:component` | A controlled form over that theme: the sources and a palette of named gradients, each with a light and a dark variant. The dark one is proposed on demand and stays editable; a gradient's id is fixed at add time so renaming never orphans the cards pointing at it. Contrast is reported and warned on, never enforced. With `showCss` it prints the CSS for your `globals.css`, which is how the same element serves both a panel's owner and its developer |
+| `admin-appearance`   | `registry:component` | The administrator's look from fixed palettes: twenty three-stop gradients and twenty accents, each measured for contrast along the gradient and on hovered controls. `AdminAppearance` is one value — accent, sidebar and sign-in gradients, page backdrops, per-block gradient and heading — that you store; `AppearanceStyle` emits the stylesheet that paints any `data-gradient` element and redefines its tokens, `AppearanceProvider` hands the value to blocks, `Block` is the card of the work area with a corner button in edit mode |
+| `appearance-menu`    | `registry:component` | The footer control that edits the appearance: accent swatches, one select each for the sidebar, the sign-in screen and the default page backdrop with its soft-tint checkbox, and a row per page that inherits or overrides. Nothing is typed in; names of gradients and accents are props, so `locale-ru` localizes them |
 | `theme-toggle`       | `registry:component` | A theme-switch button that doesn't store the theme itself: the `isDark` state and the `onToggle` handler arrive as props. Fits the shell's `sidebarFooter` slot or anywhere else on the page                                                                                                                                                                          |
 | `sidebar-toggle`     | `registry:component` | A button that collapses the shell's sidebar into the icon rail, built the same way as `theme-toggle`: `collapsed` and `onToggle` arrive as props. Visible only on a wide screen — a narrow one has no sidebar to collapse. Its place is the `sidebarFooter` slot next to the theme toggle                                             |
 | `language-toggle`    | `registry:component` | A locale-switch button built the same way as `theme-toggle`: `locale`, `locales`, and `onLocaleChange` arrive as props. Shows the current locale's short label, cycling to the next one in the list on click. Its place is the `sidebarFooter` slot next to the theme toggle                                                                                        |
@@ -107,7 +123,7 @@ as they were.
 | `state-forbidden`    | `registry:component` | A forbidden screen: a title, an explanation, an actions slot, a muted lock icon — missing permissions is a denial, not a breakage                                                                                                                                                                                                                                       |
 | `state-offline`      | `registry:component` | A connection-lost screen: a title, an explanation, an actions slot, a red network-outage icon by default                                                                                                                                                                                                                                                                |
 | `page-entity`        | `registry:component` | A single-record page: a heading with actions and fields grouped into sections, with the field value being `ReactNode` rather than a string. A section's `columns` (1, 2 or 3) sets how densely its fields sit. The `status` prop swaps the fields for a loading, error, forbidden, or offline state, while the heading stays visible                                                                                                     |
-| `page-header`        | `registry:component` | A section header: a title, an explanation, an actions slot on the right — a page building block, not a dashboard widget                                                                                                                                                                                                                                                |
+| `page-header`        | `registry:component` | A page header as a block: a title, an explanation, an actions slot on the right and a breadcrumbs slot above — the first card of every page, not a dashboard widget                                                                                                                                                                                                                                                |
 | `breadcrumbs`        | `registry:component` | A trail of section links above a page's heading: every entry but the last renders as a link when it has an `href` (through `renderLink`, or a plain `<a>` otherwise), and the last entry is always the current page, never a link. Server-compatible — no client state                                                                                              |
 | `status-badge`       | `registry:component` | A record-status badge with tone `neutral`, `success`, `warning`, `danger`; the `success` and `warning` tones depend on admin-kit's theme tokens                                                                                                                                                                                                                        |
 | `hint`               | `registry:component` | A tooltip hint next to a field label, column header, or metric: without `children` a question-mark icon, with `children` a wrapper around your own element; opens on hover and from the keyboard                                                                                                                                                                      |
