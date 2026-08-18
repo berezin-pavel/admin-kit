@@ -12,7 +12,7 @@ export function backdropThemeColors(
 ): { light: string; dark: string } {
   const entry = gradientPalette.find((candidate) => candidate.id === gradient)
   return entry
-    ? { light: entry.softLight.from, dark: entry.softDark.from }
+    ? { light: entry.softLight.stops[0], dark: entry.softDark.stops[0] }
     : THEME_BACKGROUND
 }
 

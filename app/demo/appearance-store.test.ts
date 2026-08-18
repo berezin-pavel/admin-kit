@@ -71,7 +71,7 @@ describe("isAdminAppearance", () => {
 
   it("rejects an unknown sidebar gradient", () => {
     expect(
-      isAdminAppearance({ ...DEMO_APPEARANCE_DEFAULT, sidebar: "coral" })
+      isAdminAppearance({ ...DEMO_APPEARANCE_DEFAULT, sidebar: "nonexistent" })
     ).toBe(false)
   })
 
@@ -85,7 +85,7 @@ describe("isAdminAppearance", () => {
     expect(
       isAdminAppearance({
         ...DEMO_APPEARANCE_DEFAULT,
-        page: "coral",
+        page: "nonexistent",
       })
     ).toBe(false)
   })
@@ -109,7 +109,7 @@ describe("isAdminAppearance", () => {
     expect(
       isAdminAppearance({
         ...DEMO_APPEARANCE_DEFAULT,
-        blocks: { "overview.orders": { gradient: "coral" } },
+        blocks: { "overview.orders": { gradient: "nonexistent" } },
       })
     ).toBe(false)
   })

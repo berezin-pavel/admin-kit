@@ -40,21 +40,33 @@ describe("contrastRatio", () => {
 })
 
 describe("sampleGradient", () => {
-  const stops = { angle: 135, from: "#ff0000", via: "#00ff00", to: "#0000ff" }
+  const threeStops = ["#ff0000", "#00ff00", "#0000ff"]
+  const fiveStops = ["#ff0000", "#ff8800", "#00ff00", "#0088ff", "#0000ff"]
 
   it("returns the requested number of samples", () => {
-    expect(sampleGradient(stops, 33)).toHaveLength(33)
+    expect(sampleGradient(threeStops, 33)).toHaveLength(33)
   })
 
-  it("starts at from and ends at to", () => {
-    const samples = sampleGradient(stops, 11)
-    expect(samples[0]).toBe(stops.from.toLowerCase())
-    expect(samples[samples.length - 1]).toBe(stops.to.toLowerCase())
+  it("starts at the first stop and ends at the last stop", () => {
+    const samples = sampleGradient(threeStops, 11)
+    expect(samples[0]).toBe(threeStops[0].toLowerCase())
+    expect(samples[samples.length - 1]).toBe(
+      threeStops[threeStops.length - 1].toLowerCase()
+    )
   })
 
-  it("hits via at the midpoint for an odd count", () => {
-    const samples = sampleGradient(stops, 33)
-    expect(samples[16]).toBe(stops.via.toLowerCase())
+  it("hits the middle stop at the midpoint for an odd count", () => {
+    const samples = sampleGradient(threeStops, 33)
+    expect(samples[16]).toBe(threeStops[1].toLowerCase())
+  })
+
+  it("hits every stop exactly at its evenly spaced position for a five-stop gradient", () => {
+    const samples = sampleGradient(fiveStops, 33)
+    expect(samples[0]).toBe(fiveStops[0].toLowerCase())
+    expect(samples[8]).toBe(fiveStops[1].toLowerCase())
+    expect(samples[16]).toBe(fiveStops[2].toLowerCase())
+    expect(samples[24]).toBe(fiveStops[3].toLowerCase())
+    expect(samples[32]).toBe(fiveStops[4].toLowerCase())
   })
 })
 

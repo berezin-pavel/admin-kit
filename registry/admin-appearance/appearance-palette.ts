@@ -1,10 +1,16 @@
-import { hexToOklch, oklchToHex, type Oklch } from "./appearance-color"
+import { NEAR_BLACK_HEX, NEAR_WHITE_HEX } from "./appearance-accent"
+import {
+  composite,
+  contrastRatio,
+  hexToOklch,
+  oklchToHex,
+  sampleGradient,
+  type Oklch,
+} from "./appearance-color"
 
 export interface GradientStops {
   angle: number
-  from: string
-  via: string
-  to: string
+  stops: readonly string[]
 }
 
 const HUE_DRIFT_TOLERANCE = 1.5
@@ -58,16 +64,12 @@ function fitChromaToGamut(color: Oklch): Oklch {
   return bestCandidate ?? color
 }
 
-const SOFT_STOP_LIGHTNESS: Record<"light" | "dark", { from: number; via: number; to: number }> = {
-  light: { from: 0.86, via: 0.91, to: 0.84 },
-  dark: { from: 0.27, via: 0.32, to: 0.25 },
+const SOFT_LIGHTNESS_PATTERN: Record<"light" | "dark", readonly number[]> = {
+  light: [0.86, 0.91, 0.84, 0.89, 0.87],
+  dark: [0.27, 0.32, 0.25, 0.3, 0.28],
 }
 
-const SOFT_STOP_HUE_SHIFT: { from: number; via: number; to: number } = {
-  from: -18,
-  via: 0,
-  to: 18,
-}
+const SOFT_HUE_SPREAD = 18
 
 export function softStops(
   surface: GradientStops,
@@ -75,200 +77,387 @@ export function softStops(
 ): GradientStops {
   const chromaScale = scheme === "light" ? 0.9 : 0.8
   const chromaCap = scheme === "light" ? 0.1 : 0.09
-  const lightness = SOFT_STOP_LIGHTNESS[scheme]
+  const pattern = SOFT_LIGHTNESS_PATTERN[scheme]
+  const count = surface.stops.length
 
-  const transform = (hex: string, stop: "from" | "via" | "to"): string => {
+  const stops = surface.stops.map((hex, index) => {
     const oklch = hexToOklch(hex)
+    const lightness = pattern[index % pattern.length]
     const chroma = Math.min(oklch.c * chromaScale, chromaCap)
-    const hue = (oklch.h + SOFT_STOP_HUE_SHIFT[stop] + 360) % 360
-    return oklchToHex(fitChromaToGamut({ l: lightness[stop], c: chroma, h: hue }))
+    const hueShift =
+      count > 1
+        ? -SOFT_HUE_SPREAD + (2 * SOFT_HUE_SPREAD * index) / (count - 1)
+        : 0
+    const hue = (oklch.h + hueShift + 360) % 360
+    return oklchToHex(fitChromaToGamut({ l: lightness, c: chroma, h: hue }))
+  })
+
+  return { angle: surface.angle, stops }
+}
+
+const FIT_CONTRAST_MIN = 4.5
+const FIT_SAMPLE_COUNT = 33
+const FIT_HOVER_ALPHAS = [0.08, 0.16]
+const FIT_LIGHTNESS_STEP = 0.004
+const FIT_MAX_ITERATIONS = 150
+const FIT_LIGHT_TEXT_MIN_L = 0.05
+const FIT_DARK_TEXT_MAX_L = 0.97
+const FIT_DARK_TEXT_L_CEILING_FOR_CHROMA_CUT = 0.9
+const FIT_DARK_TEXT_CHROMA_STEP = 0.004
+
+function passesLegibility(
+  backgroundHex: string,
+  foregroundHex: string,
+  oppositeForegroundHex: string
+): boolean {
+  const ownContrast = contrastRatio(backgroundHex, foregroundHex)
+  if (ownContrast < FIT_CONTRAST_MIN) {
+    return false
+  }
+  if (ownContrast <= contrastRatio(backgroundHex, oppositeForegroundHex)) {
+    return false
+  }
+  return FIT_HOVER_ALPHAS.every((alpha) => {
+    const composited = composite(foregroundHex, alpha, backgroundHex, "srgb")
+    return contrastRatio(foregroundHex, composited) >= FIT_CONTRAST_MIN
+  })
+}
+
+function segmentBoundsForSample(
+  sampleIndex: number,
+  sampleCount: number,
+  stopCount: number
+): [number, number] {
+  const segments = stopCount - 1
+  const position = (sampleIndex / (sampleCount - 1)) * segments
+  const start = Math.min(Math.floor(position), segments - 1)
+  return [start, start + 1]
+}
+
+export function fitStopsForText(
+  stops: readonly string[],
+  text: "light" | "dark"
+): string[] {
+  const foregroundHex = text === "light" ? NEAR_WHITE_HEX : NEAR_BLACK_HEX
+  const oppositeForegroundHex = text === "light" ? NEAR_BLACK_HEX : NEAR_WHITE_HEX
+  let current = stops.map((hex) => hexToOklch(hex))
+
+  for (let iteration = 0; iteration < FIT_MAX_ITERATIONS; iteration++) {
+    const hexStops = current.map((oklch) => oklchToHex(oklch))
+    const samples = sampleGradient(hexStops, FIT_SAMPLE_COUNT)
+
+    const failingStops = new Set<number>()
+    samples.forEach((sample, index) => {
+      if (!passesLegibility(sample, foregroundHex, oppositeForegroundHex)) {
+        const [start, end] = segmentBoundsForSample(
+          index,
+          FIT_SAMPLE_COUNT,
+          hexStops.length
+        )
+        const culprit =
+          text === "light"
+            ? current[start].l >= current[end].l
+              ? start
+              : end
+            : current[start].l <= current[end].l
+              ? start
+              : end
+        failingStops.add(culprit)
+      }
+    })
+
+    if (failingStops.size === 0) {
+      return hexStops
+    }
+
+    current = current.map((oklch, index) => {
+      if (!failingStops.has(index)) {
+        return oklch
+      }
+      if (text === "light") {
+        const l = Math.max(oklch.l - FIT_LIGHTNESS_STEP, FIT_LIGHT_TEXT_MIN_L)
+        return fitChromaToGamut({ ...oklch, l })
+      }
+      if (oklch.l < FIT_DARK_TEXT_L_CEILING_FOR_CHROMA_CUT) {
+        const l = Math.min(oklch.l + FIT_LIGHTNESS_STEP, FIT_DARK_TEXT_MAX_L)
+        return fitChromaToGamut({ ...oklch, l })
+      }
+      const c = Math.max(oklch.c - FIT_DARK_TEXT_CHROMA_STEP, 0)
+      return fitChromaToGamut({ ...oklch, c })
+    })
   }
 
-  return {
-    angle: surface.angle,
-    from: transform(surface.from, "from"),
-    via: transform(surface.via, "via"),
-    to: transform(surface.to, "to"),
-  }
+  return current.map((oklch) => oklchToHex(oklch))
+}
+
+export const gradientFamilies = [
+  "jewel",
+  "vivid",
+  "fresh",
+  "night",
+  "earth",
+  "metal",
+  "pastel",
+  "neutral",
+] as const
+
+export type GradientFamily = (typeof gradientFamilies)[number]
+
+export const gradientFamilyNames: Record<GradientFamily, string> = {
+  jewel: "Jewel",
+  vivid: "Vivid",
+  fresh: "Fresh",
+  night: "Night",
+  earth: "Earth",
+  metal: "Metal",
+  pastel: "Pastel",
+  neutral: "Neutral",
 }
 
 export const gradientIds = [
   "ember",
-  "sunset",
-  "peach",
-  "amber",
-  "copper",
+  "cherry",
+  "wine",
   "rose",
-  "berry",
   "grape",
-  "lavender",
-  "dusk",
-  "midnight",
-  "ocean",
-  "sky",
-  "lagoon",
-  "mint",
-  "meadow",
+  "plum",
+  "cobalt",
   "forest",
+  "ivy",
+  "amethyst",
+  "magenta",
+  "sapphire",
+  "emerald",
+  "ruby",
+  "topaz",
+  "garnet",
+  "volcano",
+  "sunset",
+  "sunrise",
+  "mango",
+  "berry",
+  "nebula",
+  "northern",
+  "aurora",
+  "tropic",
+  "orchid",
+  "neon",
+  "vapor",
+  "grapefruit",
+  "prism",
+  "reef",
+  "candy",
+  "ocean",
+  "lagoon",
+  "ice",
+  "sky",
+  "meadow",
+  "mint",
+  "sage",
+  "arctic",
+  "cyan",
+  "lime",
+  "jungle",
+  "pistachio",
+  "dusk",
+  "storm",
+  "midnight",
+  "denim",
+  "steel",
+  "charcoal",
+  "onyx",
+  "cool-grey",
+  "copper",
+  "moss",
   "sand",
+  "brick",
+  "honey",
+  "mustard",
+  "terracotta",
+  "mocha",
+  "clay",
+  "olive",
+  "cocoa",
+  "bronze",
+  "rose-gold",
+  "platinum",
+  "brass",
+  "concrete",
+  "coral",
+  "flamingo",
+  "lemon",
+  "amber",
+  "peach",
+  "lavender",
+  "rosewater",
+  "pearl",
+  "apricot",
+  "lilac",
+  "buttercup",
+  "sherbet",
   "slate",
   "graphite",
+  "ash",
+  "basalt",
+  "pewter",
+  "mono",
 ] as const
 
 export type GradientId = (typeof gradientIds)[number]
 
+export interface GradientIntent {
+  name: string
+  family: GradientFamily
+  angle: number
+  stops: readonly string[]
+  text: "light" | "dark"
+}
+
+const DEFAULT_ANGLE = 135
+
+export const gradientIntents: Record<GradientId, GradientIntent> = {
+  ember: { name: "Ember", family: "jewel", angle: DEFAULT_ANGLE, stops: ["#7f1d1d", "#b91c1c", "#dc2626", "#ea580c", "#f59e0b"], text: "light" },
+  cherry: { name: "Cherry", family: "jewel", angle: DEFAULT_ANGLE, stops: ["#881337", "#be123c", "#e11d48", "#f472b6"], text: "light" },
+  wine: { name: "Wine", family: "jewel", angle: DEFAULT_ANGLE, stops: ["#4a044e", "#831843", "#9f1239", "#7c2d12"], text: "light" },
+  rose: { name: "Rose", family: "jewel", angle: DEFAULT_ANGLE, stops: ["#9d174d", "#db2777", "#a21caf", "#6d28d9"], text: "light" },
+  grape: { name: "Grape", family: "jewel", angle: DEFAULT_ANGLE, stops: ["#312e81", "#5b21b6", "#9333ea", "#c026d3"], text: "light" },
+  plum: { name: "Plum", family: "jewel", angle: 160, stops: ["#3b0764", "#6b21a8", "#be185d", "#0f172a"], text: "light" },
+  cobalt: { name: "Cobalt", family: "jewel", angle: DEFAULT_ANGLE, stops: ["#1e1b4b", "#3730a3", "#2563eb", "#38bdf8"], text: "light" },
+  forest: { name: "Forest", family: "jewel", angle: DEFAULT_ANGLE, stops: ["#132b16", "#345c2d", "#475e09", "#605800", "#327555"], text: "light" },
+  ivy: { name: "Ivy", family: "jewel", angle: DEFAULT_ANGLE, stops: ["#052e16", "#15803d", "#0f766e", "#155e75"], text: "light" },
+  amethyst: { name: "Amethyst", family: "jewel", angle: DEFAULT_ANGLE, stops: ["#2e1065", "#6d28d9", "#a855f7", "#f0abfc"], text: "light" },
+  magenta: { name: "Magenta", family: "jewel", angle: DEFAULT_ANGLE, stops: ["#701a75", "#c026d3", "#db2777", "#fb7185"], text: "light" },
+  sapphire: { name: "Sapphire", family: "jewel", angle: DEFAULT_ANGLE, stops: ["#172554", "#1e40af", "#4f46e5", "#a5b4fc"], text: "light" },
+  emerald: { name: "Emerald", family: "jewel", angle: DEFAULT_ANGLE, stops: ["#002b2e", "#007777", "#00b9b2", "#95f3ef"], text: "light" },
+  ruby: { name: "Ruby", family: "jewel", angle: DEFAULT_ANGLE, stops: ["#450932", "#931b6b", "#d3278f", "#f2a5d2"], text: "light" },
+  topaz: { name: "Topaz", family: "jewel", angle: DEFAULT_ANGLE, stops: ["#431210", "#c43c32", "#fe972e", "#ffea87"], text: "light" },
+  garnet: { name: "Garnet", family: "jewel", angle: DEFAULT_ANGLE, stops: ["#450a0a", "#7f1d1d", "#be123c", "#7e22ce"], text: "light" },
+
+  volcano: { name: "Volcano", family: "vivid", angle: DEFAULT_ANGLE, stops: ["#3a0919", "#7c1b3c", "#c33949", "#ff685b", "#ffbc2e"], text: "light" },
+  sunset: { name: "Sunset", family: "vivid", angle: DEFAULT_ANGLE, stops: ["#c2410c", "#e11d48", "#be185d", "#7e22ce"], text: "light" },
+  sunrise: { name: "Sunrise", family: "vivid", angle: DEFAULT_ANGLE, stops: ["#f59e0b", "#f97316", "#ef4444", "#db2777"], text: "light" },
+  mango: { name: "Mango", family: "vivid", angle: DEFAULT_ANGLE, stops: ["#ae5a00", "#e46100", "#e7a700", "#54d351"], text: "light" },
+  berry: { name: "Berry", family: "vivid", angle: DEFAULT_ANGLE, stops: ["#701a75", "#a21caf", "#e11d48", "#f97316"], text: "light" },
+  nebula: { name: "Nebula", family: "vivid", angle: DEFAULT_ANGLE, stops: ["#1e1b4b", "#7e22ce", "#db2777", "#f97316"], text: "light" },
+  northern: { name: "Northern", family: "vivid", angle: DEFAULT_ANGLE, stops: ["#154c58", "#3d6c9d", "#741db3", "#a4009f"], text: "light" },
+  aurora: { name: "Aurora", family: "vivid", angle: DEFAULT_ANGLE, stops: ["#064e3b", "#0d9488", "#4f46e5", "#a21caf"], text: "light" },
+  tropic: { name: "Tropic", family: "vivid", angle: DEFAULT_ANGLE, stops: ["#facc15", "#84cc16", "#10b981", "#06b6d4"], text: "dark" },
+  orchid: { name: "Orchid", family: "vivid", angle: DEFAULT_ANGLE, stops: ["#c026d3", "#e879f9", "#818cf8", "#38bdf8"], text: "light" },
+  neon: { name: "Neon", family: "vivid", angle: DEFAULT_ANGLE, stops: ["#22d3ee", "#a855f7", "#ec4899", "#f97316"], text: "light" },
+  vapor: { name: "Vapor", family: "vivid", angle: DEFAULT_ANGLE, stops: ["#f472b6", "#c084fc", "#60a5fa", "#2dd4bf"], text: "light" },
+  grapefruit: { name: "Grapefruit", family: "vivid", angle: DEFAULT_ANGLE, stops: ["#da2053", "#fe6b4b", "#ffb437", "#cbdb00"], text: "light" },
+  prism: { name: "Prism", family: "vivid", angle: DEFAULT_ANGLE, stops: ["#2563eb", "#7c3aed", "#db2777", "#f59e0b", "#84cc16"], text: "light" },
+  reef: { name: "Reef", family: "vivid", angle: DEFAULT_ANGLE, stops: ["#0e7490", "#10b981", "#facc15", "#f97316"], text: "light" },
+
+  candy: { name: "Candy", family: "fresh", angle: DEFAULT_ANGLE, stops: ["#f9a8d4", "#c4b5fd", "#67e8f9", "#a7f3d0"], text: "dark" },
+  ocean: { name: "Ocean", family: "fresh", angle: DEFAULT_ANGLE, stops: ["#1e3a8a", "#1d4ed8", "#0284c7", "#06b6d4", "#14b8a6"], text: "light" },
+  lagoon: { name: "Lagoon", family: "fresh", angle: DEFAULT_ANGLE, stops: ["#134e4a", "#0f766e", "#0891b2", "#22d3ee", "#a3e635"], text: "light" },
+  ice: { name: "Ice", family: "fresh", angle: DEFAULT_ANGLE, stops: ["#bae6fd", "#c7d2fe", "#e9d5ff", "#f0fdfa"], text: "dark" },
+  sky: { name: "Sky", family: "fresh", angle: DEFAULT_ANGLE, stops: ["#7dd3fc", "#38bdf8", "#818cf8", "#c4b5fd"], text: "dark" },
+  meadow: { name: "Meadow", family: "fresh", angle: DEFAULT_ANGLE, stops: ["#14532d", "#15803d", "#65a30d", "#eab308"], text: "light" },
+  mint: { name: "Mint", family: "fresh", angle: DEFAULT_ANGLE, stops: ["#a7f3d0", "#6ee7b7", "#67e8f9", "#bae6fd"], text: "dark" },
+  sage: { name: "Sage", family: "fresh", angle: DEFAULT_ANGLE, stops: ["#d9f99d", "#bbf7d0", "#99f6e4", "#e0e7ff"], text: "dark" },
+  arctic: { name: "Arctic", family: "fresh", angle: DEFAULT_ANGLE, stops: ["#0c4a6e", "#0369a1", "#38bdf8", "#e0f2fe"], text: "light" },
+  cyan: { name: "Cyan", family: "fresh", angle: DEFAULT_ANGLE, stops: ["#1c2f49", "#34577f", "#54abeb", "#b0edff"], text: "light" },
+  lime: { name: "Lime", family: "fresh", angle: DEFAULT_ANGLE, stops: ["#2c2900", "#605800", "#c9b800", "#ffec89"], text: "light" },
+  jungle: { name: "Jungle", family: "fresh", angle: DEFAULT_ANGLE, stops: ["#002f1e", "#006743", "#009395", "#e5d629"], text: "light" },
+  pistachio: { name: "Pistachio", family: "fresh", angle: DEFAULT_ANGLE, stops: ["#bef264", "#86efac", "#5eead4", "#fef9c3"], text: "dark" },
+
+  dusk: { name: "Dusk", family: "night", angle: DEFAULT_ANGLE, stops: ["#0f172a", "#312e81", "#7e22ce", "#f472b6"], text: "light" },
+  storm: { name: "Storm", family: "night", angle: DEFAULT_ANGLE, stops: ["#1f2937", "#4c1d95", "#6d28d9", "#64748b"], text: "light" },
+  midnight: { name: "Midnight", family: "night", angle: DEFAULT_ANGLE, stops: ["#020617", "#1e3a8a", "#1d4ed8", "#0e7490"], text: "light" },
+  denim: { name: "Denim", family: "night", angle: 160, stops: ["#0f172a", "#1e40af", "#334155", "#0ea5e9"], text: "light" },
+  steel: { name: "Steel", family: "night", angle: DEFAULT_ANGLE, stops: ["#272637", "#525168", "#4a5da7", "#9f9fb7"], text: "light" },
+  charcoal: { name: "Charcoal", family: "night", angle: DEFAULT_ANGLE, stops: ["#18181b", "#3f3f46", "#52525b", "#7c2d12"], text: "light" },
+  onyx: { name: "Onyx", family: "night", angle: DEFAULT_ANGLE, stops: ["#000000", "#1e1b4b", "#111827", "#312e81"], text: "light" },
+  "cool-grey": { name: "Cool Grey", family: "night", angle: DEFAULT_ANGLE, stops: ["#111827", "#1f2937", "#1e3a8a", "#374151"], text: "light" },
+
+  copper: { name: "Copper", family: "earth", angle: DEFAULT_ANGLE, stops: ["#431214", "#7d2929", "#b84d32", "#e16f38", "#a85c25"], text: "light" },
+  moss: { name: "Moss", family: "earth", angle: DEFAULT_ANGLE, stops: ["#365314", "#4d7c0f", "#a16207", "#78350f"], text: "light" },
+  sand: { name: "Sand", family: "earth", angle: DEFAULT_ANGLE, stops: ["#fef3c7", "#e7e5e4", "#d6d3d1", "#fde68a"], text: "dark" },
+  brick: { name: "Brick", family: "earth", angle: DEFAULT_ANGLE, stops: ["#420923", "#931952", "#992e49", "#ad563a"], text: "light" },
+  honey: { name: "Honey", family: "earth", angle: DEFAULT_ANGLE, stops: ["#936b00", "#c98300", "#dfcd2e", "#e3f998"], text: "light" },
+  mustard: { name: "Mustard", family: "earth", angle: DEFAULT_ANGLE, stops: ["#763a27", "#ab592e", "#da7e34", "#ffa431"], text: "light" },
+  terracotta: { name: "Terracotta", family: "earth", angle: DEFAULT_ANGLE, stops: ["#7c2d12", "#9a3412", "#c2410c", "#d6d3d1"], text: "light" },
+  mocha: { name: "Mocha", family: "earth", angle: DEFAULT_ANGLE, stops: ["#292524", "#57534e", "#78350f", "#a8a29e"], text: "light" },
+  clay: { name: "Clay", family: "earth", angle: DEFAULT_ANGLE, stops: ["#78350f", "#b45309", "#a8a29e", "#fde68a"], text: "light" },
+  olive: { name: "Olive", family: "earth", angle: DEFAULT_ANGLE, stops: ["#0e300f", "#296527", "#3ba83f", "#a3a3a3"], text: "light" },
+  cocoa: { name: "Cocoa", family: "earth", angle: DEFAULT_ANGLE, stops: ["#1c1917", "#44403c", "#7c2d12", "#a16207"], text: "light" },
+
+  bronze: { name: "Bronze", family: "metal", angle: DEFAULT_ANGLE, stops: ["#401f00", "#894a00", "#c78500", "#e2f095"], text: "light" },
+  "rose-gold": { name: "Rose Gold", family: "metal", angle: DEFAULT_ANGLE, stops: ["#9f1239", "#e11d48", "#fda4af", "#fef3c7"], text: "light" },
+  platinum: { name: "Platinum", family: "metal", angle: DEFAULT_ANGLE, stops: ["#a1a1aa", "#e4e4e7", "#f4f4f5", "#d4d4d8"], text: "dark" },
+  brass: { name: "Brass", family: "metal", angle: DEFAULT_ANGLE, stops: ["#634900", "#a89c07", "#c4f372", "#f5f5f4"], text: "light" },
+  concrete: { name: "Concrete", family: "metal", angle: DEFAULT_ANGLE, stops: ["#78716c", "#a8a29e", "#d6d3d1", "#e7e5e4"], text: "dark" },
+
+  coral: { name: "Coral", family: "pastel", angle: DEFAULT_ANGLE, stops: ["#f43f5e", "#fb7185", "#f97316", "#facc15"], text: "dark" },
+  flamingo: { name: "Flamingo", family: "pastel", angle: DEFAULT_ANGLE, stops: ["#db2777", "#f472b6", "#fb923c", "#fde68a"], text: "dark" },
+  lemon: { name: "Lemon", family: "pastel", angle: DEFAULT_ANGLE, stops: ["#fef08a", "#fde047", "#bef264", "#86efac"], text: "dark" },
+  amber: { name: "Amber", family: "pastel", angle: DEFAULT_ANGLE, stops: ["#fde68a", "#fbbf24", "#fb923c", "#fda4af"], text: "dark" },
+  peach: { name: "Peach", family: "pastel", angle: DEFAULT_ANGLE, stops: ["#fed7aa", "#fdba74", "#fda4af", "#f9a8d4"], text: "dark" },
+  lavender: { name: "Lavender", family: "pastel", angle: DEFAULT_ANGLE, stops: ["#ddd6fe", "#c4b5fd", "#f5d0fe", "#bfdbfe"], text: "dark" },
+  rosewater: { name: "Rosewater", family: "pastel", angle: DEFAULT_ANGLE, stops: ["#fecdd3", "#fbcfe8", "#e9d5ff", "#fef3c7"], text: "dark" },
+  pearl: { name: "Pearl", family: "pastel", angle: DEFAULT_ANGLE, stops: ["#f5f5f4", "#e7e5e4", "#e0f2fe", "#fce7f3"], text: "dark" },
+  apricot: { name: "Apricot", family: "pastel", angle: DEFAULT_ANGLE, stops: ["#fdba74", "#fb923c", "#fde68a", "#fecaca"], text: "dark" },
+  lilac: { name: "Lilac", family: "pastel", angle: DEFAULT_ANGLE, stops: ["#e9d5ff", "#f0abfc", "#f9a8d4", "#fecdd3"], text: "dark" },
+  buttercup: { name: "Buttercup", family: "pastel", angle: DEFAULT_ANGLE, stops: ["#fef9c3", "#fde68a", "#fcd34d", "#fdba74"], text: "dark" },
+  sherbet: { name: "Sherbet", family: "pastel", angle: DEFAULT_ANGLE, stops: ["#fdba74", "#f9a8d4", "#c4b5fd", "#a5f3fc"], text: "dark" },
+
+  slate: { name: "Slate", family: "neutral", angle: DEFAULT_ANGLE, stops: ["#0f172a", "#334155", "#475569", "#0369a1"], text: "light" },
+  graphite: { name: "Graphite", family: "neutral", angle: DEFAULT_ANGLE, stops: ["#111827", "#374151", "#1f2937", "#4b5563", "#0f766e"], text: "light" },
+  ash: { name: "Ash", family: "neutral", angle: DEFAULT_ANGLE, stops: ["#1c1917", "#292524", "#44403c", "#57534e"], text: "light" },
+  basalt: { name: "Basalt", family: "neutral", angle: DEFAULT_ANGLE, stops: ["#0a0a0a", "#171717", "#262626", "#404040"], text: "light" },
+  pewter: { name: "Pewter", family: "neutral", angle: DEFAULT_ANGLE, stops: ["#374151", "#4b5563", "#6b7280", "#9ca3af"], text: "light" },
+  mono: { name: "Mono", family: "neutral", angle: DEFAULT_ANGLE, stops: ["#000000", "#262626", "#525252", "#737373"], text: "light" },
+}
+
+const DARK_TEXT_LOWER_STEP = 0.1
+const DARK_TEXT_LOWER_MIN_L = 0.18
+const PASTEL_DEEP_L_LOW = 0.3
+const PASTEL_DEEP_L_HIGH = 0.38
+const PASTEL_DEEP_CHROMA_SCALE = 0.8
+
+export function darkVariant(intent: GradientIntent): GradientStops {
+  if (intent.text === "light") {
+    const stops = intent.stops.map((hex) => {
+      const oklch = hexToOklch(hex)
+      const l = Math.max(oklch.l - DARK_TEXT_LOWER_STEP, DARK_TEXT_LOWER_MIN_L)
+      return oklchToHex(fitChromaToGamut({ ...oklch, l }))
+    })
+    return { angle: intent.angle, stops: fitStopsForText(stops, "light") }
+  }
+
+  const stops = intent.stops.map((hex, index) => {
+    const oklch = hexToOklch(hex)
+    const l = index % 2 === 0 ? PASTEL_DEEP_L_LOW : PASTEL_DEEP_L_HIGH
+    const c = oklch.c * PASTEL_DEEP_CHROMA_SCALE
+    return oklchToHex(fitChromaToGamut({ l, c, h: oklch.h }))
+  })
+  return { angle: intent.angle, stops: fitStopsForText(stops, "light") }
+}
+
 export interface GradientDefinition {
   id: GradientId
   name: string
+  family: GradientFamily
   light: GradientStops
   dark: GradientStops
   softLight: GradientStops
   softDark: GradientStops
 }
 
-const gradientNames: Record<GradientId, string> = {
-  ember: "Ember",
-  sunset: "Sunset",
-  peach: "Peach",
-  amber: "Amber",
-  copper: "Copper",
-  rose: "Rose",
-  berry: "Berry",
-  grape: "Grape",
-  lavender: "Lavender",
-  dusk: "Dusk",
-  midnight: "Midnight",
-  ocean: "Ocean",
-  sky: "Sky",
-  lagoon: "Lagoon",
-  mint: "Mint",
-  meadow: "Meadow",
-  forest: "Forest",
-  sand: "Sand",
-  slate: "Slate",
-  graphite: "Graphite",
-}
-
-const gradientAngles: Record<GradientId, number> = {
-  ember: 140,
-  sunset: 130,
-  peach: 125,
-  amber: 135,
-  copper: 145,
-  rose: 130,
-  berry: 140,
-  grape: 135,
-  lavender: 125,
-  dusk: 140,
-  midnight: 150,
-  ocean: 135,
-  sky: 120,
-  lagoon: 140,
-  mint: 125,
-  meadow: 135,
-  forest: 145,
-  sand: 120,
-  slate: 160,
-  graphite: 135,
-}
-
-const gradientSurfaces: Record<
-  GradientId,
-  { light: [string, string, string]; dark: [string, string, string] }
-> = {
-  ember: {
-    light: ["#af302a", "#ae2f23", "#9a3412"],
-    dark: ["#7c0107", "#86130b", "#8f2400"],
-  },
-  sunset: {
-    light: ["#aa3100", "#9d1934", "#9d1e4f"],
-    dark: ["#731e00", "#860f29", "#8d1c46"],
-  },
-  peach: {
-    light: ["#fed7aa", "#fdba74", "#fecdd3"],
-    dark: ["#5b3700", "#683c00", "#8b223e"],
-  },
-  amber: {
-    light: ["#fde68a", "#fef08a", "#fcd34d"],
-    dark: ["#4d3f00", "#524800", "#624d00"],
-  },
-  copper: {
-    light: ["#9a3412", "#92400e", "#854d0e"],
-    dark: ["#741c00", "#772e00", "#764000"],
-  },
-  rose: {
-    light: ["#a82957", "#a8263c", "#a52521"],
-    dark: ["#790037", "#860f29", "#901f1b"],
-  },
-  berry: {
-    light: ["#8b3693", "#6c3aa4", "#5e3eaa"],
-    dark: ["#63166b", "#582b89", "#553999"],
-  },
-  grape: {
-    light: ["#66319a", "#5735a1", "#37349d"],
-    dark: ["#3e0d65", "#3b1d75", "#2f2e84"],
-  },
-  lavender: {
-    light: ["#ddd6fe", "#e9d5ff", "#c7d2fe"],
-    dark: ["#462981", "#5b2c81", "#3a449b"],
-  },
-  dusk: {
-    light: ["#4040a9", "#6141ad", "#6f3da8"],
-    dark: ["#312f8c", "#4d308f", "#603493"],
-  },
-  midnight: {
-    light: ["#1e3a8a", "#37349d", "#312e81"],
-    dark: ["#0b2272", "#29257b", "#312d84"],
-  },
-  ocean: {
-    light: ["#1f45a8", "#005789", "#00627c"],
-    dark: ["#15368d", "#004c79", "#005971"],
-  },
-  sky: {
-    light: ["#bae6fd", "#a5f3fc", "#bfdbfe"],
-    dark: ["#004660", "#00545c", "#004e9a"],
-  },
-  lagoon: {
-    light: ["#00645d", "#00627c", "#005789"],
-    dark: ["#004d47", "#005066", "#005586"],
-  },
-  mint: {
-    light: ["#a7f3d0", "#bbf7d0", "#99f6e4"],
-    dark: ["#004d34", "#00572f", "#005f52"],
-  },
-  meadow: {
-    light: ["#006b2a", "#006345", "#00625a"],
-    dark: ["#004f1d", "#00563c", "#00625a"],
-  },
-  forest: {
-    light: ["#166534", "#065f46", "#14532d"],
-    dark: ["#003916", "#00402e", "#004b21"],
-  },
-  sand: {
-    light: ["#fef3c7", "#e7e5e4", "#ffedd5"],
-    dark: ["#4d3f00", "#494746", "#6d4700"],
-  },
-  slate: {
-    light: ["#334155", "#475569", "#3b4a63"],
-    dark: ["#212e41", "#293649", "#2f3d56"],
-  },
-  graphite: {
-    light: ["#404040", "#3f3f46", "#262626"],
-    dark: ["#2e2e2e", "#35353b", "#3d3d3d"],
-  },
-}
-
 function buildGradient(id: GradientId): GradientDefinition {
-  const angle = gradientAngles[id]
-  const [lightFrom, lightVia, lightTo] = gradientSurfaces[id].light
-  const [darkFrom, darkVia, darkTo] = gradientSurfaces[id].dark
-
-  const light: GradientStops = { angle, from: lightFrom, via: lightVia, to: lightTo }
-  const dark: GradientStops = { angle, from: darkFrom, via: darkVia, to: darkTo }
+  const intent = gradientIntents[id]
+  const light: GradientStops = {
+    angle: intent.angle,
+    stops: fitStopsForText(intent.stops, intent.text),
+  }
+  const dark = darkVariant(intent)
 
   return {
     id,
-    name: gradientNames[id],
+    name: intent.name,
+    family: intent.family,
     light,
     dark,
     softLight: softStops(light, "light"),

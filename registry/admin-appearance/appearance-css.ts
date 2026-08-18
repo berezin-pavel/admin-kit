@@ -21,14 +21,16 @@ import {
 const BLOCK_HEADINGS: readonly BlockHeading[] = ["regular", "large", "none"]
 
 export function gradientCss(stops: GradientStops): string {
-  const from = stops.from.toLowerCase()
-  const via = stops.via.toLowerCase()
-  const to = stops.to.toLowerCase()
-  return `linear-gradient(${stops.angle}deg, ${from} 0%, ${via} 50%, ${to} 100%)`
+  const count = stops.stops.length
+  const parts = stops.stops.map((hex, index) => {
+    const position = count === 1 ? 0 : Math.round((index / (count - 1)) * 100)
+    return `${hex.toLowerCase()} ${position}%`
+  })
+  return `linear-gradient(${stops.angle}deg, ${parts.join(", ")})`
 }
 
 export function gradientForeground(stops: GradientStops): string {
-  const samples = sampleGradient(stops, 33)
+  const samples = sampleGradient(stops.stops, 33)
 
   const worstAgainst = (candidateHex: string) =>
     Math.min(...samples.map((sample) => contrastRatio(sample, candidateHex)))

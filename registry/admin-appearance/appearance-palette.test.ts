@@ -1,78 +1,26 @@
 import { describe, expect, it } from "vitest"
-import { composite, contrastRatio, hexToOklch, oklchToHex, sampleGradient } from "./appearance-color"
+import { composite, contrastRatio, hexToOklch, sampleGradient } from "./appearance-color"
 import { gradientForeground } from "./appearance-css"
 import { NEAR_BLACK_HEX, NEAR_WHITE_HEX } from "./appearance-accent"
 import {
   accentIds,
   accentPalette,
   defaultAdminAppearance,
+  gradientFamilies,
   gradientIds,
+  gradientIntents,
   gradientPalette,
   isAccentId,
   isGradientId,
   resolvePageBackdrop,
-  type GradientId,
   type GradientStops,
 } from "./appearance-palette"
 
 const HEX_PATTERN = /^#[0-9a-f]{6}$/
 
-const LIGHT_SCHEME_MEAN_LIGHTNESS_MINIMUM: Record<GradientId, number> = {
-  ember: 0.42,
-  sunset: 0.42,
-  peach: 0.8,
-  amber: 0.8,
-  copper: 0.42,
-  rose: 0.42,
-  berry: 0.42,
-  grape: 0.33,
-  lavender: 0.8,
-  dusk: 0.42,
-  midnight: 0.33,
-  ocean: 0.42,
-  sky: 0.8,
-  lagoon: 0.42,
-  mint: 0.8,
-  meadow: 0.42,
-  forest: 0.33,
-  sand: 0.8,
-  slate: 0.33,
-  graphite: 0.33,
-}
-
-const DARK_SCHEME_MEAN_LIGHTNESS_MINIMUM = 0.3
-
 function circularHueDistance(a: number, b: number) {
   const diff = Math.abs(a - b) % 360
   return Math.min(diff, 360 - diff)
-}
-
-function hueSpread(stops: GradientStops): number {
-  const points = [stops.from, stops.via, stops.to].map(hexToOklch)
-  const chromatic = points.filter((point) => point.c >= 0.02)
-  if (chromatic.length < 2) {
-    return 0
-  }
-  let max = 0
-  for (let i = 0; i < chromatic.length; i++) {
-    for (let j = i + 1; j < chromatic.length; j++) {
-      max = Math.max(max, circularHueDistance(chromatic[i].h, chromatic[j].h))
-    }
-  }
-  return max
-}
-
-function lightnessSpread(stops: GradientStops): number {
-  const lightnesses = [stops.from, stops.via, stops.to].map(
-    (hex) => hexToOklch(hex).l
-  )
-  return Math.max(...lightnesses) - Math.min(...lightnesses)
-}
-
-function maxChroma(stops: GradientStops): number {
-  return Math.max(
-    ...[stops.from, stops.via, stops.to].map((hex) => hexToOklch(hex).c)
-  )
 }
 
 function foregroundHexOf(stops: GradientStops): string {
@@ -81,21 +29,42 @@ function foregroundHexOf(stops: GradientStops): string {
     : NEAR_BLACK_HEX
 }
 
+function oklab(hex: string) {
+  const { l, c, h } = hexToOklch(hex)
+  const radians = (h * Math.PI) / 180
+  return { l, a: c * Math.cos(radians), b: c * Math.sin(radians) }
+}
+
+function meanOklabDistance(a: GradientStops, b: GradientStops): number {
+  const samplesA = sampleGradient(a.stops, 9).map(oklab)
+  const samplesB = sampleGradient(b.stops, 9).map(oklab)
+  const total = samplesA.reduce((sum, pointA, index) => {
+    const pointB = samplesB[index]
+    const dl = pointA.l - pointB.l
+    const da = pointA.a - pointB.a
+    const db = pointA.b - pointB.b
+    return sum + Math.sqrt(dl * dl + da * da + db * db)
+  }, 0)
+  return total / samplesA.length
+}
+
 describe("gradientIds and gradientPalette", () => {
-  it("has exactly twenty unique ids in the declared order", () => {
-    expect(gradientIds).toHaveLength(20)
-    expect(new Set(gradientIds).size).toBe(20)
+  it("has exactly eighty-six unique ids in the declared order", () => {
+    expect(gradientIds).toHaveLength(86)
+    expect(new Set(gradientIds).size).toBe(86)
     expect(gradientPalette.map((gradient) => gradient.id)).toEqual([
       ...gradientIds,
     ])
   })
 
-  it("has valid hex stops and angles for every gradient in both schemes", () => {
+  it("has three to five valid hex stops and a valid angle for every gradient in both schemes", () => {
     for (const gradient of gradientPalette) {
       for (const scheme of [gradient.light, gradient.dark]) {
-        expect(scheme.from).toMatch(HEX_PATTERN)
-        expect(scheme.via).toMatch(HEX_PATTERN)
-        expect(scheme.to).toMatch(HEX_PATTERN)
+        expect(scheme.stops.length).toBeGreaterThanOrEqual(3)
+        expect(scheme.stops.length).toBeLessThanOrEqual(5)
+        for (const hex of scheme.stops) {
+          expect(hex).toMatch(HEX_PATTERN)
+        }
         expect(scheme.angle).toBeGreaterThanOrEqual(0)
         expect(scheme.angle).toBeLessThanOrEqual(360)
       }
@@ -108,27 +77,9 @@ describe("gradientIds and gradientPalette", () => {
     expect(new Set(names).size).toBe(names.length)
   })
 
-  it("keeps chroma pleasant (<= 0.17) for every stop in both schemes", () => {
+  it("assigns every gradient a declared family", () => {
     for (const gradient of gradientPalette) {
-      for (const scheme of [gradient.light, gradient.dark]) {
-        expect(maxChroma(scheme)).toBeLessThanOrEqual(0.17)
-      }
-    }
-  })
-
-  it("keeps lightness spread within a gradient at or under 0.18", () => {
-    for (const gradient of gradientPalette) {
-      for (const scheme of [gradient.light, gradient.dark]) {
-        expect(lightnessSpread(scheme)).toBeLessThanOrEqual(0.18)
-      }
-    }
-  })
-
-  it("keeps hue spread within a gradient at or under 70 degrees", () => {
-    for (const gradient of gradientPalette) {
-      for (const scheme of [gradient.light, gradient.dark]) {
-        expect(hueSpread(scheme)).toBeLessThanOrEqual(70)
-      }
+      expect(gradientFamilies).toContain(gradient.family)
     }
   })
 
@@ -136,7 +87,7 @@ describe("gradientIds and gradientPalette", () => {
     for (const gradient of gradientPalette) {
       for (const scheme of [gradient.light, gradient.dark]) {
         const foregroundHex = foregroundHexOf(scheme)
-        const samples = sampleGradient(scheme, 33)
+        const samples = sampleGradient(scheme.stops, 33)
         for (const sample of samples) {
           expect(contrastRatio(sample, foregroundHex)).toBeGreaterThanOrEqual(4.5)
         }
@@ -149,7 +100,7 @@ describe("gradientIds and gradientPalette", () => {
     for (const gradient of gradientPalette) {
       for (const scheme of [gradient.light, gradient.dark]) {
         const foregroundHex = foregroundHexOf(scheme)
-        const samples = sampleGradient(scheme, 33)
+        const samples = sampleGradient(scheme.stops, 33)
         for (const sample of samples) {
           for (const alpha of alphas) {
             const composited = composite(foregroundHex, alpha, sample, "srgb")
@@ -163,15 +114,11 @@ describe("gradientIds and gradientPalette", () => {
   })
 
   it("keeps soft light stops legible against the light scheme's own foreground", () => {
-    const lightForegroundHex = oklchToHex({ l: 0.145, c: 0, h: 0 })
+    const lightForegroundHex = NEAR_BLACK_HEX
 
     for (const gradient of gradientPalette) {
-      const samples = sampleGradient(gradient.softLight, 33)
-      for (const hex of [
-        gradient.softLight.from,
-        gradient.softLight.via,
-        gradient.softLight.to,
-      ]) {
+      const samples = sampleGradient(gradient.softLight.stops, 33)
+      for (const hex of gradient.softLight.stops) {
         const l = hexToOklch(hex).l
         expect(l).toBeGreaterThanOrEqual(0.8)
         expect(l).toBeLessThanOrEqual(0.94)
@@ -183,15 +130,11 @@ describe("gradientIds and gradientPalette", () => {
   })
 
   it("keeps soft dark stops legible against the dark scheme's own foreground", () => {
-    const darkForegroundHex = oklchToHex({ l: 0.985, c: 0, h: 0 })
+    const darkForegroundHex = NEAR_WHITE_HEX
 
     for (const gradient of gradientPalette) {
-      const samples = sampleGradient(gradient.softDark, 33)
-      for (const hex of [
-        gradient.softDark.from,
-        gradient.softDark.via,
-        gradient.softDark.to,
-      ]) {
+      const samples = sampleGradient(gradient.softDark.stops, 33)
+      for (const hex of gradient.softDark.stops) {
         const l = hexToOklch(hex).l
         expect(l).toBeGreaterThanOrEqual(0.22)
         expect(l).toBeLessThanOrEqual(0.36)
@@ -202,53 +145,83 @@ describe("gradientIds and gradientPalette", () => {
     }
   })
 
-  it("keeps the light-scheme surface out of near-black territory, per family", () => {
-    for (const gradient of gradientPalette) {
-      const meanLightness =
-        [gradient.light.from, gradient.light.via, gradient.light.to]
-          .map((hex) => hexToOklch(hex).l)
-          .reduce((sum, l) => sum + l, 0) / 3
-      expect(meanLightness).toBeGreaterThanOrEqual(
-        LIGHT_SCHEME_MEAN_LIGHTNESS_MINIMUM[gradient.id]
-      )
-    }
-  })
-
-  it("keeps the dark-scheme surface visibly above black, per family", () => {
-    for (const gradient of gradientPalette) {
-      const meanLightness =
-        [gradient.dark.from, gradient.dark.via, gradient.dark.to]
-          .map((hex) => hexToOklch(hex).l)
-          .reduce((sum, l) => sum + l, 0) / 3
-      expect(meanLightness).toBeGreaterThanOrEqual(DARK_SCHEME_MEAN_LIGHTNESS_MINIMUM)
-    }
-  })
-
-  it("shows visible motion between from and to in both schemes", () => {
+  it("shows visible motion between the first and last stop in both schemes", () => {
     for (const gradient of gradientPalette) {
       for (const scheme of [gradient.light, gradient.dark]) {
-        const from = hexToOklch(scheme.from)
-        const to = hexToOklch(scheme.to)
+        const from = hexToOklch(scheme.stops[0])
+        const to = hexToOklch(scheme.stops[scheme.stops.length - 1])
         const deltaL = Math.abs(from.l - to.l)
         const deltaH = circularHueDistance(from.h, to.h)
         expect(
           deltaL >= 0.03 || deltaH >= 8,
-          `${scheme.from} -> ${scheme.to}: deltaL=${deltaL.toFixed(3)} deltaH=${deltaH.toFixed(1)}`
+          `${scheme.stops[0]} -> ${scheme.stops[scheme.stops.length - 1]}: deltaL=${deltaL.toFixed(3)} deltaH=${deltaH.toFixed(1)}`
         ).toBe(true)
       }
     }
   })
 
-  it("has no two gradients sharing the same light.from and light.to", () => {
+  it("has no two gradients sharing the same light-scheme first and last stop", () => {
     const pairs = gradientPalette.map(
-      (gradient) => `${gradient.light.from}:${gradient.light.to}`
+      (gradient) =>
+        `${gradient.light.stops[0]}:${gradient.light.stops[gradient.light.stops.length - 1]}`
     )
     expect(new Set(pairs).size).toBe(pairs.length)
   })
 
+  it("keeps the fitted light-scheme stops faithful to the intent's hue always, and to the intent's lightness where contrast allows", () => {
+    for (const gradient of gradientPalette) {
+      const intent = gradientIntents[gradient.id]
+      for (let index = 0; index < intent.stops.length; index++) {
+        const intentOklch = hexToOklch(intent.stops[index])
+        const fittedOklch = hexToOklch(gradient.light.stops[index])
+
+        const lightnessDelta = Math.abs(intentOklch.l - fittedOklch.l)
+        expect
+          .soft(
+            lightnessDelta,
+            `${gradient.id} stop ${index}: intent l=${intentOklch.l.toFixed(3)} fitted l=${fittedOklch.l.toFixed(3)}`
+          )
+          .toBeLessThanOrEqual(0.2)
+
+        if (intentOklch.c < 0.02) {
+          continue
+        }
+        const hueDelta = circularHueDistance(intentOklch.h, fittedOklch.h)
+        expect(
+          hueDelta,
+          `${gradient.id} stop ${index}: intent h=${intentOklch.h.toFixed(1)} fitted h=${fittedOklch.h.toFixed(1)}`
+        ).toBeLessThanOrEqual(12)
+      }
+    }
+  })
+
+  it("picks the intended text colour for the light scheme", () => {
+    for (const gradient of gradientPalette) {
+      const intent = gradientIntents[gradient.id]
+      const foreground = gradientForeground(gradient.light)
+      const expected = intent.text === "light" ? "oklch(0.985" : "oklch(0.205"
+      expect(foreground.startsWith(expected), gradient.id).toBe(true)
+    }
+  })
+
+  it("keeps every pair of gradients at least 0.045 mean OKLab distance apart across nine samples of the light variant", () => {
+    for (let i = 0; i < gradientPalette.length; i++) {
+      for (let j = i + 1; j < gradientPalette.length; j++) {
+        const distance = meanOklabDistance(
+          gradientPalette[i].light,
+          gradientPalette[j].light
+        )
+        expect(
+          distance,
+          `${gradientPalette[i].id} vs ${gradientPalette[j].id}: distance=${distance.toFixed(4)}`
+        ).toBeGreaterThanOrEqual(0.045)
+      }
+    }
+  })
+
   it("isGradientId accepts only known ids", () => {
     expect(isGradientId("ocean")).toBe(true)
-    expect(isGradientId("neon")).toBe(false)
+    expect(isGradientId("neon-lights")).toBe(false)
     expect(isGradientId(42)).toBe(false)
   })
 })

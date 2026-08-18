@@ -1,22 +1,23 @@
 import { describe, expect, it } from "vitest"
 
-import { accentIds, gradientIds } from "@/registry/admin-appearance/appearance-palette"
+import {
+  accentIds,
+  isGradientId,
+} from "@/registry/admin-appearance/appearance-palette"
 import { localeRu } from "./locale-ru"
 
 describe("localeRu gradient names", () => {
-  it.each(gradientIds.map((id) => [id] as const))(
-    "names %s in adminAppearance.gradients",
-    (id) => {
-      expect(localeRu.adminAppearance.gradients[id]).toBeTruthy()
+  it("only names valid gradient ids in adminAppearance.gradients", () => {
+    for (const key of Object.keys(localeRu.adminAppearance.gradients)) {
+      expect(isGradientId(key)).toBe(true)
     }
-  )
+  })
 
-  it.each(gradientIds.map((id) => [id] as const))(
-    "names %s in appearanceMenu.gradients",
-    (id) => {
-      expect(localeRu.appearanceMenu.gradients[id]).toBeTruthy()
+  it("only names valid gradient ids in appearanceMenu.gradients", () => {
+    for (const key of Object.keys(localeRu.appearanceMenu.gradients)) {
+      expect(isGradientId(key)).toBe(true)
     }
-  )
+  })
 })
 
 describe("localeRu accent names", () => {

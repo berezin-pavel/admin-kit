@@ -11,11 +11,19 @@ describe("gradientCss", () => {
   it("formats a linear-gradient with three stops at 0/50/100 percent", () => {
     const css = gradientCss({
       angle: 135,
-      from: "#AABBCC",
-      via: "#112233",
-      to: "#FFFFFF",
+      stops: ["#AABBCC", "#112233", "#FFFFFF"],
     })
     expect(css).toBe("linear-gradient(135deg, #aabbcc 0%, #112233 50%, #ffffff 100%)")
+  })
+
+  it("formats a linear-gradient with five stops at evenly spaced percentages", () => {
+    const css = gradientCss({
+      angle: 140,
+      stops: ["#111111", "#222222", "#333333", "#444444", "#555555"],
+    })
+    expect(css).toBe(
+      "linear-gradient(140deg, #111111 0%, #222222 25%, #333333 50%, #444444 75%, #555555 100%)"
+    )
   })
 })
 
@@ -23,9 +31,7 @@ describe("gradientForeground", () => {
   it("picks near-white text for a dark gradient", () => {
     const foreground = gradientForeground({
       angle: 135,
-      from: "#1a1a1a",
-      via: "#101010",
-      to: "#050505",
+      stops: ["#1a1a1a", "#101010", "#050505"],
     })
     expect(foreground).toBe("oklch(0.985 0 0)")
   })
@@ -33,9 +39,7 @@ describe("gradientForeground", () => {
   it("picks near-black text for a pale gradient", () => {
     const foreground = gradientForeground({
       angle: 135,
-      from: "#fdf6ec",
-      via: "#fbeee0",
-      to: "#f8e6d4",
+      stops: ["#fdf6ec", "#fbeee0", "#f8e6d4"],
     })
     expect(foreground).toBe("oklch(0.205 0 0)")
   })
@@ -54,24 +58,24 @@ describe("isAdminAppearance", () => {
 
   it("rejects an unknown gradient id in sidebar, signIn, page, pages, or blocks", () => {
     expect(
-      isAdminAppearance({ ...defaultAdminAppearance, sidebar: "neon" })
+      isAdminAppearance({ ...defaultAdminAppearance, sidebar: "nonexistent" })
     ).toBe(false)
     expect(
-      isAdminAppearance({ ...defaultAdminAppearance, signIn: "neon" })
+      isAdminAppearance({ ...defaultAdminAppearance, signIn: "nonexistent" })
     ).toBe(false)
     expect(
-      isAdminAppearance({ ...defaultAdminAppearance, page: "neon" })
+      isAdminAppearance({ ...defaultAdminAppearance, page: "nonexistent" })
     ).toBe(false)
     expect(
       isAdminAppearance({
         ...defaultAdminAppearance,
-        pages: { orders: "neon" },
+        pages: { orders: "nonexistent" },
       })
     ).toBe(false)
     expect(
       isAdminAppearance({
         ...defaultAdminAppearance,
-        blocks: { revenue: { gradient: "neon" } },
+        blocks: { revenue: { gradient: "nonexistent" } },
       })
     ).toBe(false)
   })
@@ -182,7 +186,7 @@ describe("appearanceCss", () => {
     expect(css).toContain('[data-backdrop="ocean"][data-backdrop-vivid]')
   })
 
-  it("emits gradient variables for all twenty gradients", () => {
+  it("emits gradient variables for all eighty-six gradients", () => {
     for (const id of gradientIds) {
       expect(css).toContain(`--gradient-${id}:`)
     }

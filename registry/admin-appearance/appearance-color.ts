@@ -119,12 +119,6 @@ export function contrastRatio(a: string, b: string): number {
   return (lighter + 0.05) / (darker + 0.05)
 }
 
-export interface GradientStopsLike {
-  from: string
-  via: string
-  to: string
-}
-
 function mixHex(a: string, b: string, t: number): string {
   const channelsA = hexChannels(a)
   const channelsB = hexChannels(b)
@@ -134,24 +128,22 @@ function mixHex(a: string, b: string, t: number): string {
   return channelsToHex(mixed)
 }
 
-function sampleAt(stops: GradientStopsLike, positionPercent: number): string {
-  if (positionPercent <= 50) {
-    return mixHex(stops.from, stops.via, positionPercent / 50)
-  }
-  return mixHex(stops.via, stops.to, (positionPercent - 50) / 50)
-}
-
 export function sampleGradient(
-  stops: GradientStopsLike,
+  stops: readonly string[],
   count: number
 ): string[] {
   if (count <= 1) {
-    return [stops.from]
+    return [stops[0]]
   }
 
-  return Array.from({ length: count }, (_, index) =>
-    sampleAt(stops, (index / (count - 1)) * 100)
-  )
+  const segments = stops.length - 1
+
+  return Array.from({ length: count }, (_, index) => {
+    const position = (index / (count - 1)) * segments
+    const segmentIndex = Math.min(Math.floor(position), segments - 1)
+    const t = position - segmentIndex
+    return mixHex(stops[segmentIndex], stops[segmentIndex + 1], t)
+  })
 }
 
 export function composite(
