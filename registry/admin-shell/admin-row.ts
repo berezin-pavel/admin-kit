@@ -5,8 +5,8 @@ export const adminRowIconClassName =
 
 export function adminRowClassName(collapsed: boolean) {
   return cn(
-    "flex items-center gap-2 rounded-md",
-    collapsed ? "size-10 justify-center" : "h-9 w-full justify-start px-2"
+    "flex items-center gap-3 rounded-md",
+    collapsed ? "size-10 justify-center" : "h-10 w-full justify-start px-2"
   )
 }
 
