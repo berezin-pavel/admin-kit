@@ -60,6 +60,7 @@ your layout, and put the menu in the shell's footer:
 
 ```tsx
 <AppearanceStyle value={appearance} />
+<AppearanceThemeColor gradient={resolvePageBackdrop(appearance, pageId)} />
 <AppearanceProvider value={appearance} onChange={save} editable={isAdmin}>
   <AdminShell
     sidebarGradient={appearance.sidebar ?? undefined}
@@ -72,7 +73,11 @@ your layout, and put the menu in the shell's footer:
 ```
 
 Rendering the style on the server means the colours arrive in the first
-HTML, so there is no flash of the installed palette. Every card in the
+HTML, so there is no flash of the installed palette. The backdrop is
+painted on the shell, on the document canvas behind it (the body goes
+transparent while a backdrop is on) and, through `AppearanceThemeColor`,
+into a `theme-color` meta per scheme — that is what colours Safari's
+toolbar and the mobile status bar to match the page. Every card in the
 work area is a `Block` with an id — widgets, page sections and page
 headers already are, through their `blockId` prop — and while
 `editable` is on, hovering a block reveals a corner button with the

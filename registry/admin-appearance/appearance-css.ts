@@ -213,6 +213,7 @@ export function appearanceCss(appearance: AdminAppearance): string {
     POPUP_RULE,
     popupSelectorBlocks(),
     `[data-backdrop] {\n  background-image: var(--backdrop-gradient);\n  --backdrop-foreground: var(--backdrop-text);\n}`,
+    `body:has([data-backdrop]) {\n  background-color: transparent;\n}`,
     backdropSelectorBlocks(),
     HEADING_RULE,
   ].join("\n\n")

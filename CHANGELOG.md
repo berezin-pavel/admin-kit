@@ -80,6 +80,11 @@ blocks like the overview (`gap-4`); `widget-table`'s sticky header and footer pa
 gradient block and the body is clipped at the footer line; chart tooltips sit on a frosted card
 tint instead of a see-through box.
 
+**Added** — `AppearanceThemeColor` in `admin-appearance`: two `theme-color` metas (light and dark)
+taken from the backdrop's soft tint, so browsers that tint their chrome from the page — Safari's
+toolbar, mobile status bars — follow the chosen backdrop; the stylesheet also clears the body's
+background while a backdrop is on, so the document canvas shows the same gradient on overscroll.
+
 **Project** — the showcase has a `/palette` page with every gradient and accent on live controls;
 the demo stores one appearance in localStorage, edits it through the menu and the corner buttons,
 and is painted by default; `e2e/gradient-contrast.spec.ts` now finds surfaces by attribute and

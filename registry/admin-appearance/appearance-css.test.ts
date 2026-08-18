@@ -161,6 +161,12 @@ describe("appearanceCss", () => {
     )
   })
 
+  it("lets the document canvas show through the body while a backdrop is on", () => {
+    expect(appearanceCss(defaultAdminAppearance)).toContain(
+      "body:has([data-backdrop]) {\n  background-color: transparent;\n}"
+    )
+  })
+
   it("makes nested card surfaces transparent on a gradient", () => {
     const css = appearanceCss(defaultAdminAppearance)
     expect(css).toMatch(/\[data-gradient\] \{[^}]*--card: color-mix\(in oklch, var\(--surface-foreground\) 20%, transparent\);/)
