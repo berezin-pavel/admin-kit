@@ -412,7 +412,7 @@ export function WidgetTable<Row>({
                     <TableHead
                       className={cn(
                         "w-px [&:has([role=checkbox])]:pr-4",
-                        stickyHeader && "sticky top-0 z-10 bg-card backdrop-blur-md"
+                        stickyHeader && "sticky top-0 z-10 bg-card [[data-gradient]_&]:bg-transparent"
                       )}
                     >
                       <Checkbox
@@ -445,7 +445,7 @@ export function WidgetTable<Row>({
                       className={cn(
                         column.align === "right" && "text-right",
                         column.sortable && onSortChange && "p-0",
-                        stickyHeader && "sticky top-0 z-10 bg-card backdrop-blur-md"
+                        stickyHeader && "sticky top-0 z-10 bg-card [[data-gradient]_&]:bg-transparent"
                       )}
                     >
                       {column.sortable && onSortChange ? (
