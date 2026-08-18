@@ -104,14 +104,14 @@ const candidates: readonly Candidate[] = [
   { name: "Fog", family: "Pastel", stops: ["#d6d3d1", "#e7e5e4", "#f5f5f4", "#e7e5e4"], text: "dark" },
   { name: "Cloud", family: "Pastel", stops: ["#f8fafc", "#f1f5f9", "#e2e8f0", "#f8fafc"], text: "dark" },
   { name: "Slate Mist", family: "Pastel", stops: ["#64748b", "#94a3b8", "#cbd5e1", "#e2e8f0"], text: "dark" },
-  { name: "Slate", family: "Greys", stops: ["#0f172a", "#334155", "#475569", "#0369a1"], text: "light" },
-  { name: "Graphite", family: "Greys", stops: ["#111827", "#374151", "#1f2937", "#4b5563", "#0f766e"], text: "light" },
-  { name: "Ash", family: "Greys", stops: ["#1c1917", "#292524", "#44403c", "#57534e"], text: "light" },
-  { name: "Basalt", family: "Greys", stops: ["#0a0a0a", "#171717", "#262626", "#404040"], text: "light" },
-  { name: "Iron", family: "Greys", stops: ["#1e293b", "#334155", "#475569", "#64748b"], text: "light" },
-  { name: "Pewter", family: "Greys", stops: ["#374151", "#4b5563", "#6b7280", "#9ca3af"], text: "light" },
-  { name: "Smoke", family: "Greys", stops: ["#3f3f46", "#52525b", "#71717a", "#a1a1aa"], text: "light" },
-  { name: "Mono", family: "Greys", stops: ["#000000", "#262626", "#525252", "#737373"], text: "light" },
+  { name: "Slate", family: "Neutral", stops: ["#0f172a", "#334155", "#475569", "#0369a1"], text: "light" },
+  { name: "Graphite", family: "Neutral", stops: ["#111827", "#374151", "#1f2937", "#4b5563", "#0f766e"], text: "light" },
+  { name: "Ash", family: "Neutral", stops: ["#1c1917", "#292524", "#44403c", "#57534e"], text: "light" },
+  { name: "Basalt", family: "Neutral", stops: ["#0a0a0a", "#171717", "#262626", "#404040"], text: "light" },
+  { name: "Iron", family: "Neutral", stops: ["#1e293b", "#334155", "#475569", "#64748b"], text: "light" },
+  { name: "Pewter", family: "Neutral", stops: ["#374151", "#4b5563", "#6b7280", "#9ca3af"], text: "light" },
+  { name: "Smoke", family: "Neutral", stops: ["#3f3f46", "#52525b", "#71717a", "#a1a1aa"], text: "light" },
+  { name: "Mono", family: "Neutral", stops: ["#000000", "#262626", "#525252", "#737373"], text: "light" },
 ]
 
 function gradientOf(candidate: Candidate): string {
