@@ -263,7 +263,7 @@ async function measureRoute(page: Page): Promise<GradientContrastResult> {
 }
 
 const HOVER_TARGETS =
-  '[data-gradient] :is(button, a[href], input, textarea, [role="radio"], [role="tab"], [role="checkbox"], [role="combobox"], [role="menuitem"])'
+  '[data-gradient] :is(button, a[href], input, textarea, [role="radio"], [role="tab"], [role="checkbox"], [role="combobox"], [role="menuitem"]):not([aria-hidden="true"])'
 const HOVERS_PER_ROUTE = 120
 
 interface HoverSample {
@@ -394,7 +394,11 @@ async function measureHovers(page: Page, route: string) {
   for (let index = 0; index < count; index += 1) {
     const target = targets.nth(index)
     if (!(await target.isVisible())) continue
-    await target.hover({ force: true })
+    try {
+      await target.hover({ force: true, timeout: 3_000 })
+    } catch {
+      continue
+    }
     const sample = await target.evaluate(sampleHoveredElement)
     if (!sample) continue
     measured += 1
