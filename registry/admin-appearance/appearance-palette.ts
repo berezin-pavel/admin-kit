@@ -97,7 +97,7 @@ export function softStops(
 
 const FIT_CONTRAST_MIN = 4.5
 const FIT_SAMPLE_COUNT = 33
-const FIT_HOVER_ALPHAS = [0.08, 0.16]
+export const hoverOverlayAlphas: readonly number[] = [0.08, 0.16, 0.202]
 const FIT_LIGHTNESS_STEP = 0.004
 const FIT_MAX_ITERATIONS = 150
 const FIT_LIGHT_TEXT_MIN_L = 0.05
@@ -117,7 +117,7 @@ function passesLegibility(
   if (ownContrast <= contrastRatio(backgroundHex, oppositeForegroundHex)) {
     return false
   }
-  return FIT_HOVER_ALPHAS.every((alpha) => {
+  return hoverOverlayAlphas.every((alpha) => {
     const composited = composite(foregroundHex, alpha, backgroundHex, "srgb")
     return contrastRatio(foregroundHex, composited) >= FIT_CONTRAST_MIN
   })
@@ -358,14 +358,14 @@ export const gradientIntents: Record<GradientId, GradientIntent> = {
   mint: { name: "Mint", family: "fresh", angle: DEFAULT_ANGLE, stops: ["#a7f3d0", "#6ee7b7", "#67e8f9", "#bae6fd"], text: "dark" },
   sage: { name: "Sage", family: "fresh", angle: DEFAULT_ANGLE, stops: ["#d9f99d", "#bbf7d0", "#99f6e4", "#e0e7ff"], text: "dark" },
   arctic: { name: "Arctic", family: "fresh", angle: DEFAULT_ANGLE, stops: ["#0c4a6e", "#0369a1", "#38bdf8", "#e0f2fe"], text: "light" },
-  cyan: { name: "Cyan", family: "fresh", angle: DEFAULT_ANGLE, stops: ["#1c2f49", "#34577f", "#54abeb", "#b0edff"], text: "light" },
+  cyan: { name: "Cyan", family: "fresh", angle: DEFAULT_ANGLE, stops: ["#112840", "#265075", "#3fa4de", "#a5e4f2"], text: "light" },
   lime: { name: "Lime", family: "fresh", angle: DEFAULT_ANGLE, stops: ["#2c2900", "#605800", "#c9b800", "#ffec89"], text: "light" },
   jungle: { name: "Jungle", family: "fresh", angle: DEFAULT_ANGLE, stops: ["#002f1e", "#006743", "#009395", "#e5d629"], text: "light" },
   pistachio: { name: "Pistachio", family: "fresh", angle: DEFAULT_ANGLE, stops: ["#bef264", "#86efac", "#5eead4", "#fef9c3"], text: "dark" },
 
   dusk: { name: "Dusk", family: "night", angle: DEFAULT_ANGLE, stops: ["#0f172a", "#312e81", "#7e22ce", "#f472b6"], text: "light" },
   storm: { name: "Storm", family: "night", angle: DEFAULT_ANGLE, stops: ["#1f2937", "#4c1d95", "#6d28d9", "#64748b"], text: "light" },
-  midnight: { name: "Midnight", family: "night", angle: DEFAULT_ANGLE, stops: ["#020617", "#1e3a8a", "#1d4ed8", "#0e7490"], text: "light" },
+  midnight: { name: "Midnight", family: "night", angle: DEFAULT_ANGLE, stops: ["#020617", "#1e3a8a", "#1d4ed8", "#0f766e"], text: "light" },
   denim: { name: "Denim", family: "night", angle: 160, stops: ["#0f172a", "#1e40af", "#334155", "#0ea5e9"], text: "light" },
   steel: { name: "Steel", family: "night", angle: DEFAULT_ANGLE, stops: ["#272637", "#525168", "#4a5da7", "#9f9fb7"], text: "light" },
   charcoal: { name: "Charcoal", family: "night", angle: DEFAULT_ANGLE, stops: ["#18181b", "#3f3f46", "#52525b", "#7c2d12"], text: "light" },
@@ -375,7 +375,7 @@ export const gradientIntents: Record<GradientId, GradientIntent> = {
   copper: { name: "Copper", family: "earth", angle: DEFAULT_ANGLE, stops: ["#431214", "#7d2929", "#b84d32", "#e16f38", "#a85c25"], text: "light" },
   moss: { name: "Moss", family: "earth", angle: DEFAULT_ANGLE, stops: ["#365314", "#4d7c0f", "#a16207", "#78350f"], text: "light" },
   sand: { name: "Sand", family: "earth", angle: DEFAULT_ANGLE, stops: ["#fef3c7", "#e7e5e4", "#d6d3d1", "#fde68a"], text: "dark" },
-  brick: { name: "Brick", family: "earth", angle: DEFAULT_ANGLE, stops: ["#420923", "#931952", "#992e49", "#ad563a"], text: "light" },
+  brick: { name: "Brick", family: "earth", angle: DEFAULT_ANGLE, stops: ["#330003", "#6b0216", "#8b1824", "#9d4334"], text: "light" },
   honey: { name: "Honey", family: "earth", angle: DEFAULT_ANGLE, stops: ["#936b00", "#c98300", "#dfcd2e", "#e3f998"], text: "light" },
   mustard: { name: "Mustard", family: "earth", angle: DEFAULT_ANGLE, stops: ["#763a27", "#ab592e", "#da7e34", "#ffa431"], text: "light" },
   terracotta: { name: "Terracotta", family: "earth", angle: DEFAULT_ANGLE, stops: ["#7c2d12", "#9a3412", "#c2410c", "#d6d3d1"], text: "light" },

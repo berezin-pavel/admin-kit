@@ -31,7 +31,8 @@ re-pulling), **Breaking** (props or files that changed shape — read before ove
 twenty three-stop ones. Every gradient's shipped stops are fitted from its design intent to keep
 4.5:1 text and hover contrast (hue preserved, lightness moved only where legibility demands it, at
 most 0.55), and the soft backdrops sweep hue and lightness across the stops rather than tinting a
-single color. The block menu and the appearance menu now group gradient choices by family — a
+single color. The hover check now covers the secondary button's hovered fill too — the exported
+`hoverOverlayAlphas` (8 %, 16 %, 20.2 %) is the list both the fitter and the tests use. The block menu and the appearance menu now group gradient choices by family — a
 captioned swatch grid in the block popover, a `SelectGroup`/`SelectLabel` per family in every
 gradient select.
 

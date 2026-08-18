@@ -10,6 +10,7 @@ import {
   gradientIds,
   gradientIntents,
   gradientPalette,
+  hoverOverlayAlphas,
   isAccentId,
   isGradientId,
   resolvePageBackdrop,
@@ -96,13 +97,12 @@ describe("gradientIds and gradientPalette", () => {
   })
 
   it("stays legible under a gamma-encoded sRGB hover overlay", () => {
-    const alphas = [0.08, 0.16]
     for (const gradient of gradientPalette) {
       for (const scheme of [gradient.light, gradient.dark]) {
         const foregroundHex = foregroundHexOf(scheme)
         const samples = sampleGradient(scheme.stops, 33)
         for (const sample of samples) {
-          for (const alpha of alphas) {
+          for (const alpha of hoverOverlayAlphas) {
             const composited = composite(foregroundHex, alpha, sample, "srgb")
             expect(
               contrastRatio(foregroundHex, composited)
