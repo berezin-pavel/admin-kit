@@ -71,5 +71,5 @@ A gradient painted behind blocks — the work area of a page or the sign-in scre
 _Avoid_: page background, wallpaper
 
 **Palette**:
-The fixed set of eighty-six gradients and twenty accents shipped with the kit, each measured for text contrast, including on hover. The only source of colour choices; nothing is entered by hand.
+The fixed set of eighty-six gradients, grouped into eight families, and twenty accents shipped with the kit, each measured for text contrast, including on hover. The only source of colour choices; nothing is entered by hand.
 _Avoid_: presets, swatches, color list

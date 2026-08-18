@@ -46,13 +46,16 @@ only changes when you edit it. What the panel's administrator changes at
 runtime is its **appearance**: an accent colour, a gradient for the
 sidebar and the sign-in screen, a backdrop for every page and a gradient
 (and heading treatment) for every block. All of it is picked from fixed
-palettes — eighty-six gradients and twenty accents shipped by
+palettes — eighty-six four-to-five-stop gradients, grouped into eight
+families (`gradientFamilies`), and twenty accents shipped by
 `admin-appearance` — because every entry has passed the kit's contrast
 tests, along the whole gradient and on hovered controls; there is no
-colour input anywhere. A page backdrop is always the soft tint of the
-chosen gradient — the vivid variant reads as garish behind a page — and
-only the sign-in screen, reached through `page-auth`, paints its
-backdrop vivid.
+colour input anywhere. Both the block menu's swatch grid and the
+appearance menu's gradient selects present the eighty-six choices
+grouped by family instead of one flat list. A page backdrop is always
+the soft tint of the chosen gradient — the vivid variant reads as
+garish behind a page — and only the sign-in screen, reached through
+`page-auth`, paints its backdrop vivid.
 
 The appearance is one serializable value. Store it wherever you store
 the rest of your settings, hand it to the provider and the stylesheet in

@@ -5,7 +5,12 @@ import { describe, expect, it, vi } from "vitest"
 
 import { Block } from "./block"
 import { AppearanceProvider, useBlockAppearance } from "./appearance-provider"
-import { defaultAdminAppearance, type AdminAppearance } from "./appearance-palette"
+import {
+  defaultAdminAppearance,
+  gradientFamilies,
+  gradientFamilyNames,
+  type AdminAppearance,
+} from "./appearance-palette"
 
 function ReadBlockAppearance({ id }: { id?: string }) {
   const appearance = useBlockAppearance(id)
@@ -270,6 +275,21 @@ describe("Block corner menu interaction", () => {
 
     const headingGroup = screen.getByRole("radiogroup", { name: "Heading" })
     expect(within(headingGroup).getAllByRole("radio")).toHaveLength(3)
+  })
+
+  it("groups the gradient swatches under a caption per family", async () => {
+    const user = userEvent.setup()
+    const onChangeSpy = vi.fn<(next: AdminAppearance) => void>()
+    render(<Harness onChangeSpy={onChangeSpy} />)
+
+    await user.click(screen.getByRole("button", { name: "Block appearance" }))
+
+    const gradientGroup = screen.getByRole("radiogroup", { name: "Gradient" })
+    for (const family of gradientFamilies) {
+      expect(
+        within(gradientGroup).getByText(gradientFamilyNames[family])
+      ).toBeInTheDocument()
+    }
   })
 })
 

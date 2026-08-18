@@ -8,7 +8,7 @@ items changed, and what breaks if you pull them.
 **Install an item, pinned to a release:**
 
 ```bash
-pnpm dlx shadcn@latest add berezin-pavel/admin-kit/widget-table#v0.28.0
+pnpm dlx shadcn@latest add berezin-pavel/admin-kit/widget-table#v0.29.0
 ```
 
 **See what an update would change before taking it:**
@@ -24,6 +24,23 @@ say yes; `-o` overwrites deliberately. Items you have edited in place are yours 
 Sections used below: **New** (items you can now install), **Changed** (installed items worth
 re-pulling), **Breaking** (props or files that changed shape — read before overwriting), and
 **Project** (showcase, CI, docs — nothing that reaches your project).
+
+## 0.29.0 — 2026-08-19
+
+**Changed** — the palette is 86 multi-stop (4–5 stops) gradients in eight families instead of
+twenty three-stop ones. Every gradient's shipped stops are fitted from its design intent to keep
+4.5:1 text and hover contrast (hue preserved, lightness moved only where legibility demands it, at
+most 0.55), and the soft backdrops sweep hue and lightness across the stops rather than tinting a
+single color. The block menu and the appearance menu now group gradient choices by family — a
+captioned swatch grid in the block popover, a `SelectGroup`/`SelectLabel` per family in every
+gradient select.
+
+**Breaking** — `GradientStops` is `{ angle, stops }`; anyone reading the earlier
+`from`/`via`/`to` shape needs to switch to `stops`.
+
+**Project** — `locale-ru` names all 86 gradients and the eight families; `/palette` groups the
+gradient section by family; `/palette2`, the scratch page used to pick the 86 candidates, is gone
+now that its job is done.
 
 ## 0.28.0 — 2026-08-18
 

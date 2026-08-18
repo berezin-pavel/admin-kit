@@ -19,7 +19,12 @@ import {
   useBlockAppearance,
   type AppearanceContextValue,
 } from "./appearance-provider"
-import { gradientPalette, type BlockHeading, type GradientId } from "./appearance-palette"
+import {
+  gradientFamilies,
+  gradientPalette,
+  type BlockHeading,
+  type GradientId,
+} from "./appearance-palette"
 
 export interface BlockProps extends ComponentProps<typeof Card> {
   id?: string
@@ -117,46 +122,66 @@ function BlockMenu({
       >
         <Settings2 className="size-3" aria-hidden="true" />
       </PopoverTrigger>
-      <PopoverContent aria-label={labels.blockMenu} className="w-auto">
+      <PopoverContent
+        aria-label={labels.blockMenu}
+        className="max-h-[70vh] w-auto overflow-y-auto"
+      >
         <div className="flex flex-col gap-1.5">
           <span className="text-xs font-medium text-muted-foreground">
             {labels.gradient}
           </span>
-          <div role="radiogroup" aria-label={labels.gradient} className="grid grid-cols-5 gap-1.5">
-            <button
-              type="button"
-              role="radio"
-              aria-checked={gradient === null}
-              aria-label={labels.none}
-              onClick={() => selectGradient(null)}
-              className="flex size-8 items-center justify-center rounded-md bg-muted ring-1 ring-foreground/10"
-            >
-              <Ban className="size-3.5 text-muted-foreground" aria-hidden="true" />
-            </button>
-            {gradientPalette.map((entry) => {
-              const selected = gradient === entry.id
-              const name = labels.gradients[entry.id] ?? entry.name
-              return (
-                <button
-                  key={entry.id}
-                  type="button"
-                  role="radio"
-                  aria-checked={selected}
-                  aria-label={name}
-                  onClick={() => selectGradient(entry.id)}
-                  className="flex size-8 items-center justify-center rounded-md ring-1 ring-foreground/10"
-                  style={{ backgroundImage: `var(--gradient-${entry.id})` }}
-                >
-                  {selected ? (
-                    <Check
-                      className="size-3.5"
-                      style={{ color: `var(--gradient-${entry.id}-foreground)` }}
-                      aria-hidden="true"
-                    />
-                  ) : null}
-                </button>
-              )
-            })}
+          <div
+            role="radiogroup"
+            aria-label={labels.gradient}
+            className="flex flex-col gap-2"
+          >
+            <div className="grid grid-cols-8 gap-1.5">
+              <button
+                type="button"
+                role="radio"
+                aria-checked={gradient === null}
+                aria-label={labels.none}
+                onClick={() => selectGradient(null)}
+                className="flex size-7 items-center justify-center rounded-md bg-muted ring-1 ring-foreground/10"
+              >
+                <Ban className="size-3.5 text-muted-foreground" aria-hidden="true" />
+              </button>
+            </div>
+            {gradientFamilies.map((family) => (
+              <div key={family} className="flex flex-col gap-1">
+                <span className="text-xs font-medium text-muted-foreground">
+                  {labels.families[family]}
+                </span>
+                <div className="grid grid-cols-8 gap-1.5">
+                  {gradientPalette
+                    .filter((entry) => entry.family === family)
+                    .map((entry) => {
+                      const selected = gradient === entry.id
+                      const name = labels.gradients[entry.id] ?? entry.name
+                      return (
+                        <button
+                          key={entry.id}
+                          type="button"
+                          role="radio"
+                          aria-checked={selected}
+                          aria-label={name}
+                          onClick={() => selectGradient(entry.id)}
+                          className="flex size-7 items-center justify-center rounded-md ring-1 ring-foreground/10"
+                          style={{ backgroundImage: `var(--gradient-${entry.id})` }}
+                        >
+                          {selected ? (
+                            <Check
+                              className="size-3.5"
+                              style={{ color: `var(--gradient-${entry.id}-foreground)` }}
+                              aria-hidden="true"
+                            />
+                          ) : null}
+                        </button>
+                      )
+                    })}
+                </div>
+              </div>
+            ))}
           </div>
           {headings ? (
             <>

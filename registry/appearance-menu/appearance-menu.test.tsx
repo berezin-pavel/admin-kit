@@ -60,6 +60,30 @@ describe("AppearanceMenu sidebar and sign-in selects", () => {
     expect(last?.sidebar).toBe("ember")
   })
 
+  it("groups the sidebar gradient options under a family label", async () => {
+    render(<AppearanceMenu value={defaultAdminAppearance} onChange={() => {}} />)
+
+    const user = await openMenu()
+    await user.click(screen.getByRole("combobox", { name: "Sidebar" }))
+
+    expect(await screen.findByText("Jewel")).toBeInTheDocument()
+  })
+
+  it("groups the sidebar gradient options with the Russian family label", async () => {
+    render(
+      <AppearanceMenu
+        value={defaultAdminAppearance}
+        onChange={() => {}}
+        labels={localeRu.appearanceMenu}
+      />
+    )
+
+    const user = await openMenu(localeRu.appearanceMenu.label)
+    await user.click(screen.getByRole("combobox", { name: localeRu.appearanceMenu.sidebar }))
+
+    expect(await screen.findByText("Самоцветы")).toBeInTheDocument()
+  })
+
   it("clears the sidebar gradient with No gradient", async () => {
     const onChange = vi.fn<(next: AdminAppearance) => void>()
     render(

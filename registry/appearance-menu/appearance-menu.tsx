@@ -13,7 +13,9 @@ import {
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
@@ -22,9 +24,12 @@ import { cn } from "@/lib/utils"
 
 import {
   accentPalette,
+  gradientFamilies,
+  gradientFamilyNames,
   gradientPalette,
   type AccentId,
   type AdminAppearance,
+  type GradientFamily,
   type GradientId,
 } from "@/registry/admin-appearance/appearance-palette"
 
@@ -39,6 +44,7 @@ export interface AppearanceMenuLabels {
   none?: string
   gradients?: Partial<Record<GradientId, string>>
   accents?: Partial<Record<AccentId, string>>
+  families?: Partial<Record<GradientFamily, string>>
 }
 
 export interface AppearanceMenuPage {
@@ -57,12 +63,17 @@ export interface AppearanceMenuProps {
 type GradientChoice = GradientId | "none"
 type PageGradientChoice = GradientChoice | "inherit"
 
-type ResolvedLabels = Required<Omit<AppearanceMenuLabels, "gradients" | "accents">> & {
+type ResolvedLabels = Required<
+  Omit<AppearanceMenuLabels, "gradients" | "accents" | "families">
+> & {
   gradients: Partial<Record<GradientId, string>>
   accents: Partial<Record<AccentId, string>>
+  families: Record<GradientFamily, string>
 }
 
-const defaultLabels: Required<Omit<AppearanceMenuLabels, "gradients" | "accents">> = {
+const defaultLabels: Required<
+  Omit<AppearanceMenuLabels, "gradients" | "accents" | "families">
+> = {
   label: "Appearance",
   accent: "Accent color",
   sidebar: "Sidebar",
@@ -85,6 +96,7 @@ function resolveLabels(labels: AppearanceMenuLabels | undefined): ResolvedLabels
     none: labels?.none ?? defaultLabels.none,
     gradients: labels?.gradients ?? {},
     accents: labels?.accents ?? {},
+    families: { ...gradientFamilyNames, ...labels?.families },
   }
 }
 
@@ -148,10 +160,17 @@ function renderPageGradientChoice(
 function GradientSelectItems({ labels }: { labels: ResolvedLabels }): ReactElement {
   return (
     <>
-      {gradientPalette.map((entry) => (
-        <SelectItem key={entry.id} value={entry.id}>
-          <GradientOption id={entry.id} name={gradientName(entry.id, labels)} />
-        </SelectItem>
+      {gradientFamilies.map((family) => (
+        <SelectGroup key={family}>
+          <SelectLabel>{labels.families[family]}</SelectLabel>
+          {gradientPalette
+            .filter((entry) => entry.family === family)
+            .map((entry) => (
+              <SelectItem key={entry.id} value={entry.id}>
+                <GradientOption id={entry.id} name={gradientName(entry.id, labels)} />
+              </SelectItem>
+            ))}
+        </SelectGroup>
       ))}
     </>
   )

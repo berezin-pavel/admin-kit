@@ -18,6 +18,8 @@ import { cn } from "@/lib/utils"
 import { deriveAccentTokens } from "@/registry/admin-appearance/appearance-accent"
 import {
   accentPalette,
+  gradientFamilies,
+  gradientFamilyNames,
   gradientPalette,
   type AccentId,
 } from "@/registry/admin-appearance/appearance-palette"
@@ -115,51 +117,58 @@ export default function PalettePage() {
         <ThemeToggle />
       </header>
 
-      <section className="flex flex-col gap-6">
+      <section className="flex flex-col gap-8">
         <h2 className="text-2xl font-semibold">Gradients</h2>
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
-          {gradientPalette.map((gradient) => (
-            <div key={gradient.id} className="flex flex-col gap-2">
-              <Block gradient={gradient.id}>
-                <CardHeader>
-                  <CardTitle>{gradient.name}</CardTitle>
-                  <CardDescription>Revenue 12,480 · +8.2%</CardDescription>
-                </CardHeader>
-                <CardContent className="flex flex-wrap items-center gap-2">
-                  <Button variant="outline" size="sm">
-                    Outline
-                  </Button>
-                  <Button variant="ghost" size="sm">
-                    Ghost
-                  </Button>
-                  <Button variant="secondary" size="sm">
-                    Secondary
-                  </Button>
-                  <Input
-                    placeholder="Search"
-                    aria-label={`Search ${gradient.name}`}
-                    className="w-32"
-                  />
-                  <div className="flex items-center gap-2">
-                    <Checkbox id={`${gradient.id}-checkbox`} />
-                    <Label htmlFor={`${gradient.id}-checkbox`}>Checkbox</Label>
+        {gradientFamilies.map((family) => (
+          <div key={family} className="flex flex-col gap-4">
+            <h3 className="text-lg font-semibold">{gradientFamilyNames[family]}</h3>
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+              {gradientPalette
+                .filter((gradient) => gradient.family === family)
+                .map((gradient) => (
+                  <div key={gradient.id} className="flex flex-col gap-2">
+                    <Block gradient={gradient.id}>
+                      <CardHeader>
+                        <CardTitle>{gradient.name}</CardTitle>
+                        <CardDescription>Revenue 12,480 · +8.2%</CardDescription>
+                      </CardHeader>
+                      <CardContent className="flex flex-wrap items-center gap-2">
+                        <Button variant="outline" size="sm">
+                          Outline
+                        </Button>
+                        <Button variant="ghost" size="sm">
+                          Ghost
+                        </Button>
+                        <Button variant="secondary" size="sm">
+                          Secondary
+                        </Button>
+                        <Input
+                          placeholder="Search"
+                          aria-label={`Search ${gradient.name}`}
+                          className="w-32"
+                        />
+                        <div className="flex items-center gap-2">
+                          <Checkbox id={`${gradient.id}-checkbox`} />
+                          <Label htmlFor={`${gradient.id}-checkbox`}>Checkbox</Label>
+                        </div>
+                        <Badge variant="outline">Badge</Badge>
+                        <Skeleton className="h-3 w-24" />
+                      </CardContent>
+                    </Block>
+                    <div className="flex flex-col gap-1">
+                      <div
+                        data-backdrop={gradient.id}
+                        className="h-6 rounded-md"
+                      />
+                      <span className="text-xs text-muted-foreground">
+                        soft backdrop
+                      </span>
+                    </div>
                   </div>
-                  <Badge variant="outline">Badge</Badge>
-                  <Skeleton className="h-3 w-24" />
-                </CardContent>
-              </Block>
-              <div className="flex flex-col gap-1">
-                <div
-                  data-backdrop={gradient.id}
-                  className="h-6 rounded-md"
-                />
-                <span className="text-xs text-muted-foreground">
-                  soft backdrop
-                </span>
-              </div>
+                ))}
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
       </section>
 
       <section className="flex flex-col gap-6">

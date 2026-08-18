@@ -8,7 +8,13 @@ import {
   type ReactNode,
 } from "react"
 
-import type { AdminAppearance, BlockAppearance, GradientId } from "./appearance-palette"
+import {
+  gradientFamilyNames,
+  type AdminAppearance,
+  type BlockAppearance,
+  type GradientFamily,
+  type GradientId,
+} from "./appearance-palette"
 
 export interface AppearanceLabels {
   blockMenu?: string
@@ -19,6 +25,7 @@ export interface AppearanceLabels {
   headingLarge?: string
   headingNone?: string
   gradients?: Partial<Record<GradientId, string>>
+  families?: Partial<Record<GradientFamily, string>>
 }
 
 export interface AppearanceProviderProps {
@@ -33,12 +40,15 @@ export interface AppearanceContextValue {
   value: AdminAppearance
   onChange: (next: AdminAppearance) => void
   editable: boolean
-  labels: Required<Omit<AppearanceLabels, "gradients">> & {
+  labels: Required<Omit<AppearanceLabels, "gradients" | "families">> & {
     gradients: Partial<Record<GradientId, string>>
+    families: Record<GradientFamily, string>
   }
 }
 
-const defaultAppearanceLabels: Required<Omit<AppearanceLabels, "gradients">> = {
+const defaultAppearanceLabels: Required<
+  Omit<AppearanceLabels, "gradients" | "families">
+> = {
   blockMenu: "Block appearance",
   gradient: "Gradient",
   none: "No gradient",
@@ -70,6 +80,7 @@ export function AppearanceProvider({
         labels?.headingLarge ?? defaultAppearanceLabels.headingLarge,
       headingNone: labels?.headingNone ?? defaultAppearanceLabels.headingNone,
       gradients: labels?.gradients ?? {},
+      families: { ...gradientFamilyNames, ...labels?.families },
     }),
     [labels]
   )
