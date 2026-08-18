@@ -3,10 +3,19 @@
 import { CreditCard, FileDown, Truck, UserPlus } from "lucide-react"
 
 import { AdminToaster, notify } from "@/registry/admin-toaster/admin-toaster"
+import type { GradientStops } from "@/registry/admin-theme-tokens/admin-theme-tokens"
 import {
   WidgetQuickActions,
   type QuickAction,
 } from "@/registry/widget-quick-actions/widget-quick-actions"
+
+import { GradientFrame } from "./gradient-frame"
+
+const quickActionsGradientStops: GradientStops = {
+  angle: 135,
+  from: "#7f1d1d",
+  to: "#854d0e",
+}
 
 function buildActions(): readonly QuickAction[] {
   return [
@@ -73,4 +82,33 @@ export function ThreeColumnsView() {
 
 export function EmptyView() {
   return <WidgetQuickActions title="Quick actions" actions={[]} />
+}
+
+export function ProminentHeadingView() {
+  return (
+    <div>
+      <WidgetQuickActions
+        title="Quick actions"
+        actions={buildActions()}
+        heading="prominent"
+        summary="4 available"
+      />
+      <AdminToaster />
+    </div>
+  )
+}
+
+export function GradientView() {
+  return (
+    <GradientFrame id="flare" stops={quickActionsGradientStops}>
+      <div>
+        <WidgetQuickActions
+          title="Quick actions"
+          actions={buildActions()}
+          gradient="flare"
+        />
+        <AdminToaster />
+      </div>
+    </GradientFrame>
+  )
 }

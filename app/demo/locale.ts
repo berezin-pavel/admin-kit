@@ -6,6 +6,7 @@ export interface DemoDictionary {
     overview: string
     orders: string
     order: string
+    appearance: string
   }
   overview: {
     title: string
@@ -33,6 +34,17 @@ export interface DemoDictionary {
     }
     quickActionToastTitle: (label: string) => string
     reloadButton: string
+  }
+  appearance: {
+    title: string
+    description: string
+    gradientAssignmentTitle: string
+    gradientAssignmentDescription: string
+    noneOption: string
+    shellSurfaceLabel: string
+    signInSurfaceLabel: string
+    ordersMetricBlockLabel: string
+    revenueMetricBlockLabel: string
   }
   standaloneTable: {
     title: string
@@ -238,6 +250,7 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       overview: "Overview",
       orders: "Orders",
       order: "Order #4187",
+      appearance: "Appearance",
     },
     overview: {
       title: "Overview",
@@ -265,6 +278,18 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       },
       quickActionToastTitle: (label) => `${label} — demo action`,
       reloadButton: "Reload",
+    },
+    appearance: {
+      title: "Appearance",
+      description: "Adjust the theme's colors and gradients across the panel",
+      gradientAssignmentTitle: "Gradient assignment",
+      gradientAssignmentDescription:
+        "Paint the panel's own surfaces and a few dashboard cards with a gradient from the palette above",
+      noneOption: "None",
+      shellSurfaceLabel: "Sidebar",
+      signInSurfaceLabel: "Sign-in screen",
+      ordersMetricBlockLabel: "Orders metric",
+      revenueMetricBlockLabel: "Revenue metric",
     },
     standaloneTable: {
       title: "Recent orders",
@@ -494,6 +519,7 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       overview: "Обзор",
       orders: "Заказы",
       order: "Заказ №4187",
+      appearance: "Оформление",
     },
     overview: {
       title: "Обзор",
@@ -521,6 +547,18 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       },
       quickActionToastTitle: (label) => `${label} — демо-действие`,
       reloadButton: "Обновить",
+    },
+    appearance: {
+      title: "Оформление",
+      description: "Настройте цвета и градиенты темы для всей панели",
+      gradientAssignmentTitle: "Назначение градиентов",
+      gradientAssignmentDescription:
+        "Раскрасьте собственные поверхности панели и несколько карточек дашборда градиентом из палитры выше",
+      noneOption: "Нет",
+      shellSurfaceLabel: "Боковая панель",
+      signInSurfaceLabel: "Экран входа",
+      ordersMetricBlockLabel: "Метрика заказов",
+      revenueMetricBlockLabel: "Метрика выручки",
     },
     standaloneTable: {
       title: "Последние заказы",

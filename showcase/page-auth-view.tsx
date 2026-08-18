@@ -3,6 +3,7 @@
 import type { ReactNode } from "react"
 import { useState } from "react"
 
+import { cn } from "@/lib/utils"
 import { CheckboxField } from "@/registry/checkbox-field/checkbox-field"
 import { PageAuth } from "@/registry/page-auth/page-auth"
 import { TextField } from "@/registry/text-field/text-field"
@@ -10,9 +11,11 @@ import { TextField } from "@/registry/text-field/text-field"
 export function PageAuthView({
   simulateError,
   aside,
+  gradient,
 }: {
   simulateError?: boolean
   aside?: ReactNode
+  gradient?: string
 }) {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -28,6 +31,7 @@ export function PageAuthView({
       submitting={submitting}
       error={error}
       aside={aside}
+      gradient={gradient}
       onSubmit={(event) => {
         event.preventDefault()
         setSubmitting(true)
@@ -39,12 +43,21 @@ export function PageAuthView({
       }}
       footer={
         <div className="flex flex-col items-center gap-2">
-          <a href="#" className="text-primary underline">
+          <a
+            href="#"
+            className={cn("underline", gradient ? undefined : "text-primary")}
+          >
             Forgot your password?
           </a>
           <p>
             No account?{" "}
-            <a href="#" className="text-primary underline">
+            <a
+              href="#"
+              className={cn(
+                "underline",
+                gradient ? undefined : "text-primary"
+              )}
+            >
               Request access
             </a>
           </p>

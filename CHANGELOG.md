@@ -8,7 +8,7 @@ items changed, and what breaks if you pull them.
 **Install an item, pinned to a release:**
 
 ```bash
-pnpm dlx shadcn@latest add berezin-pavel/admin-kit/widget-table#v0.26.0
+pnpm dlx shadcn@latest add berezin-pavel/admin-kit/widget-table#v0.27.0
 ```
 
 **See what an update would change before taking it:**
@@ -24,6 +24,97 @@ say yes; `-o` overwrites deliberately. Items you have edited in place are yours 
 Sections used below: **New** (items you can now install), **Changed** (installed items worth
 re-pulling), **Breaking** (props or files that changed shape — read before overwriting), and
 **Project** (showcase, CI, docs — nothing that reaches your project).
+
+## 0.27.0 — 2026-08-17
+
+**New** — `admin-theme-tokens`, the theme as data rather than hand-written CSS. Six source values
+(five `#rrggbb` colours and a corner radius) go into `deriveAdminTheme`, which computes every
+token `admin-theme` declares for both schemes in OKLCH, and `adminThemeToCss` prints the result as
+custom properties you render in a `<style>` element. Foreground colours are never chosen, they are
+searched by contrast, and the surface itself is nudged when the text alone cannot clear 4.5:1 — so
+no combination of sources produces unreadable text. The dark scheme is derived, never stored.
+Gradients are a separate class of token, named by you and emitted as `--gradient-<id>` with a
+matching `--gradient-<id>-foreground` taken from the gradient's worst stop, because a gradient
+cannot live in a colour token that also feeds text, borders and `oklch()` algebra. Pure
+TypeScript, no React, no dependencies.
+
+**New** — `theme-editor`, a controlled form over that theme: the six sources and a palette of
+named gradients, each carrying a light and a dark variant. The dark one is proposed on demand and
+then stays editable, because recomputing it whenever the light variant changes would discard a
+hand-tuned gradient. A gradient's id is derived from its name once, at add time, and never again,
+so renaming a label cannot orphan the cards already pointing at it. Contrast is reported beside
+each gradient and warns below 4.5:1 without blocking anything — refusing an owner their own brand
+colour reads as a broken panel. With `showCss` the same element prints the CSS for your
+`globals.css`, which is how it doubles as a generator for a developer; without it, it is an
+appearance screen for whoever owns the panel.
+
+**Changed** — thirteen items take an optional gradient. `widget-metric`, `widget-chart`,
+`widget-list`, `widget-progress`, `widget-donut`, `widget-activity` and `widget-quick-actions`
+take `gradient`; `admin-shell` takes `sidebarGradient`; `page-auth`, `state-empty`, `state-error`,
+`state-forbidden` and `state-offline` take `gradient`. The value names a gradient from your theme
+and is applied as an inline style rather than a Tailwind class, because a class name assembled at
+runtime never reaches the bundle. Omit the prop and every one of these renders exactly as before.
+
+**Changed** — the active navigation row and the active tab are now coloured rather than neutral
+grey, so the current page is obvious at a glance. `admin-theme` gained a `sidebar-active` pair for
+it: a tint of the brand behind a darker shade of the brand, since the brand colour over a tint of
+itself never clears 4.5:1 at any tint strength. `admin-nav` and `page-tabs` share the pair, and a
+test now keeps them from drifting apart. If you have overridden `sidebar-accent` to colour the
+active row yourself, that override no longer reaches it — move it to `sidebar-active`.
+
+**New** — `gradientPresets`, a small library of gradients that are known to work. Five named sets
+spread across the hue circle, each with a light and a dark variant, each proved by test to clear
+4.5:1 against its own computed foreground under two independent measurements — the hex-quantised
+one the kit performs internally and the full-precision one a browser actually does. The worst of
+them measures 5.68 and the best 8.73, so no preset sits near the threshold where the two methods
+could disagree. The theme editor offers them as a row of swatches; picking one appends it to your
+palette with a fresh id, and rolling your own by hand still works exactly as before.
+
+**Changed** — the sidebar's navigation reads at a larger type scale: rows are 40px, labels 15px
+at medium weight, and the active row is semibold in the tinted `sidebar-active` pair. Icons grew
+to match. The row grid that keeps every sidebar item on one vertical line is unchanged.
+
+**Changed** — a gradient on the shell's sidebar now recolours the active row instead of leaving
+it as a pale tint from the light theme. The active row becomes a translucent overlay of the
+gradient's own foreground, so it still reads as the current page without importing a palette that
+does not belong on a painted surface, and the footer's toggles become outline controls on a
+transparent surface rather than solid white squares.
+
+**Fixed** — `admin-theme` shipped `sidebar-primary` at 3.47:1, below AA. The derivation had
+already been corrected to darken that surface and keep white text, but the shipped token values
+were never brought in line with it; they are now. Dark `sidebar-active` was nudged from 0.270 to
+0.265 lightness for the same reason: it measured 4.5121 through the kit's own hex-based check and
+4.4877 at the precision a browser uses, which is a pass and a fail of the same pair. Both now
+clear the bar under either measurement, and a test asserts every derived pair does the same, so a
+future edit cannot land in that gap again.
+
+**Changed** — seven widget cards take a second heading treatment. `heading="prominent"` renders
+the title large and in full-strength foreground instead of the small muted default, and `summary`
+fills the opposite end of the header with muted content — a total, a period, a count. Both are
+optional and default to today's look, so nothing changes unless you ask for it. `widget-table` is
+deliberately not among them: its header's opposite end already carries pagination and its left
+side swaps for a selection bar.
+
+**Changed** — `locale-ru` gained a `themeEditor` slice matching `ThemeEditorLabels` exactly.
+
+**Changed** — `page-tabs` now requires `admin-theme`, because its active tab uses the new
+`sidebar-active` pair. The CLI pulls the theme in for you; an existing install that only ever had
+`tabs` should re-pull the item so the dependency is recorded.
+
+**Note on file locations** — the two new items land in `components/` rather than
+`components/admin/`, unlike the fifty-three items that came before. That is deliberate: with a
+subdirectory in the target, the CLI writes a file to one path and rewrites its imports to another,
+so any item importing a sibling item resolves to a path that does not exist. The remaining items
+move to the same flat layout in a separate patch release. Until then a project holding both will
+have admin-kit files in two places; the imports are correct either way.
+
+**Project** — a showcase section for the editor with its CSS output on, a `/demo/appearance` page
+that repaints the demo for real and persists across reloads, 42 end-to-end checks, and 371 unit
+tests. Two CSS-injection holes were found and closed during the round: a gradient's `viaPosition`
+and the theme's `radius` both reached the emitted CSS text without validation, and either could
+close its declaration and open a sibling one. Both are now gated where the ids and colours already
+were. Nothing here reaches your project, but the two fixes are the reason to prefer `0.27.0` over
+building `admin-theme-tokens` yourself from an earlier tag.
 
 ## 0.26.0 — 2026-08-16
 

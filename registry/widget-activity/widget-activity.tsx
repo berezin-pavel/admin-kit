@@ -1,4 +1,4 @@
-import type { ComponentType, ReactNode } from "react"
+import type { ComponentType, CSSProperties, ReactNode } from "react"
 import { format, isSameDay, subDays } from "date-fns"
 import type { Locale } from "date-fns"
 import { enUS } from "date-fns/locale"
@@ -21,6 +21,8 @@ export interface WidgetActivityLabels {
   emptyTitle?: string
 }
 
+export type WidgetActivityHeading = "muted" | "prominent"
+
 export interface WidgetActivityProps {
   title?: string
   entries: readonly WidgetActivityEntry[]
@@ -28,8 +30,33 @@ export interface WidgetActivityProps {
   locale?: Locale
   dayFormat?: string
   timeFormat?: string
+  heading?: WidgetActivityHeading
+  summary?: ReactNode
   loading?: boolean
+  gradient?: string
   className?: string
+}
+
+const headingClassName: Record<WidgetActivityHeading, string> = {
+  muted: "text-sm font-medium text-muted-foreground",
+  prominent: "text-xl font-semibold text-foreground",
+}
+
+function gradientSurfaceStyle(
+  gradient?: string
+): (CSSProperties & Record<string, string>) | undefined {
+  return gradient
+    ? {
+        backgroundImage: `var(--gradient-${gradient})`,
+        color: `var(--gradient-${gradient}-foreground)`,
+        "--foreground": `var(--gradient-${gradient}-foreground)`,
+        "--card-foreground": `var(--gradient-${gradient}-foreground)`,
+        "--muted-foreground": `var(--gradient-${gradient}-foreground)`,
+        "--sidebar-foreground": `var(--gradient-${gradient}-foreground)`,
+        "--sidebar-active": `color-mix(in oklch, var(--gradient-${gradient}-foreground) 10%, transparent)`,
+        "--sidebar-active-foreground": `var(--gradient-${gradient}-foreground)`,
+      }
+    : undefined
 }
 
 export interface WidgetActivityGroup {
@@ -127,19 +154,29 @@ export function WidgetActivity({
   locale = enUS,
   dayFormat = "MMMM d",
   timeFormat = "HH:mm",
+  heading = "muted",
+  summary,
   loading = false,
+  gradient,
   className,
 }: WidgetActivityProps) {
   const groups = groupActivityEntries(entries)
   const now = new Date()
 
   return (
-    <Card className={className}>
-      {title ? (
-        <CardHeader>
-          <CardTitle className="text-sm font-medium text-muted-foreground">
-            {title}
-          </CardTitle>
+    <Card className={className} style={gradientSurfaceStyle(gradient)}>
+      {title || summary ? (
+        <CardHeader
+          className={
+            summary ? "flex flex-wrap items-center justify-between gap-4" : undefined
+          }
+        >
+          {title ? (
+            <CardTitle className={headingClassName[heading]}>{title}</CardTitle>
+          ) : null}
+          {summary ? (
+            <span className="text-sm text-muted-foreground">{summary}</span>
+          ) : null}
         </CardHeader>
       ) : null}
       <CardContent aria-busy={loading || undefined}>

@@ -63,18 +63,18 @@ export function AdminNav({
               href: item.href,
               isActive,
               className: cn(
-                "cursor-default text-sm font-normal transition-colors",
+                "cursor-default text-[0.9375rem] transition-colors",
                 adminRowClassName(collapsed),
                 isActive
-                  ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                  : "text-sidebar-foreground hover:bg-sidebar-accent/50"
+                  ? "bg-sidebar-active font-semibold text-sidebar-active-foreground"
+                  : "font-medium text-sidebar-foreground hover:bg-sidebar-accent/50"
               ),
               children: (
                 <>
                   {Icon || collapsed ? (
                     <span aria-hidden="true" className={adminRowIconClassName}>
                       {Icon ? (
-                        <Icon className="size-4" />
+                        <Icon className="size-[1.125rem]" />
                       ) : (
                         item.title.charAt(0).toUpperCase()
                       )}

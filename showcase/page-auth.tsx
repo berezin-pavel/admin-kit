@@ -1,5 +1,14 @@
+import type { GradientStops } from "@/registry/admin-theme-tokens/admin-theme-tokens"
+
+import { GradientFrame } from "./gradient-frame"
 import { PageAuthAside, PageAuthView } from "./page-auth-view"
 import type { ShowcaseEntry } from "./types"
+
+const authGradientStops: GradientStops = {
+  angle: 150,
+  from: "#0f766e",
+  to: "#1e1b4b",
+}
 
 export const pageAuthEntry: ShowcaseEntry = {
   item: "page-auth",
@@ -21,6 +30,15 @@ export const pageAuthEntry: ShowcaseEntry = {
       id: "split",
       name: "Split with an aside panel",
       render: () => <PageAuthView aside={<PageAuthAside />} />,
+    },
+    {
+      id: "gradient",
+      name: "With a gradient backdrop",
+      render: () => (
+        <GradientFrame id="harbor" stops={authGradientStops}>
+          <PageAuthView gradient="harbor" />
+        </GradientFrame>
+      ),
     },
   ],
 }

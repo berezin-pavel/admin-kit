@@ -46,7 +46,7 @@ export function PageTabs({
                   key={item.id}
                   value={item.id}
                   disabled={item.disabled}
-                  className="h-9 gap-2 rounded-md px-3 font-normal text-sidebar-foreground hover:bg-sidebar-accent/50 data-active:bg-sidebar-accent data-active:text-sidebar-accent-foreground data-active:shadow-none dark:data-active:border-transparent dark:data-active:bg-sidebar-accent"
+                  className="h-9 gap-2 rounded-md px-3 font-normal text-sidebar-foreground hover:bg-sidebar-accent/50 data-active:bg-sidebar-active data-active:text-sidebar-active-foreground data-active:shadow-none dark:data-active:border-transparent dark:data-active:bg-sidebar-active"
                 >
                   {Icon ? (
                     <Icon data-icon="inline-start" className="size-4" />

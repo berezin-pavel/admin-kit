@@ -1,6 +1,6 @@
 "use client"
 
-import type { ReactNode } from "react"
+import type { CSSProperties, ReactNode } from "react"
 import { Bar, BarChart, CartesianGrid, Line, LineChart, XAxis } from "recharts"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -21,6 +21,8 @@ export interface WidgetChartSeries {
   values: readonly number[]
 }
 
+export type WidgetChartHeading = "muted" | "prominent"
+
 export interface WidgetChartProps {
   title: string
   labels: readonly string[]
@@ -28,10 +30,35 @@ export interface WidgetChartProps {
   kind?: "line" | "bar"
   hint?: string
   toolbar?: ReactNode
+  heading?: WidgetChartHeading
+  summary?: ReactNode
   empty?: ReactNode
   emptyTitle?: string
   loading?: boolean
+  gradient?: string
   className?: string
+}
+
+const headingClassName: Record<WidgetChartHeading, string> = {
+  muted: "text-sm font-medium text-muted-foreground",
+  prominent: "text-xl font-semibold text-foreground",
+}
+
+function gradientSurfaceStyle(
+  gradient?: string
+): (CSSProperties & Record<string, string>) | undefined {
+  return gradient
+    ? {
+        backgroundImage: `var(--gradient-${gradient})`,
+        color: `var(--gradient-${gradient}-foreground)`,
+        "--foreground": `var(--gradient-${gradient}-foreground)`,
+        "--card-foreground": `var(--gradient-${gradient}-foreground)`,
+        "--muted-foreground": `var(--gradient-${gradient}-foreground)`,
+        "--sidebar-foreground": `var(--gradient-${gradient}-foreground)`,
+        "--sidebar-active": `color-mix(in oklch, var(--gradient-${gradient}-foreground) 10%, transparent)`,
+        "--sidebar-active-foreground": `var(--gradient-${gradient}-foreground)`,
+      }
+    : undefined
 }
 
 const seriesColorCount = 5
@@ -71,20 +98,26 @@ export function WidgetChart({
   kind = "line",
   hint,
   toolbar,
+  heading = "muted",
+  summary,
   empty,
   emptyTitle = "No data",
   loading = false,
+  gradient,
   className,
 }: WidgetChartProps) {
   const isEmpty = labels.length === 0 || series.length === 0
 
   return (
-    <Card className={className}>
+    <Card className={className} style={gradientSurfaceStyle(gradient)}>
       <CardHeader className="flex flex-wrap items-center justify-between gap-4">
-        <CardTitle className="text-sm font-medium text-muted-foreground">
-          {title}
-        </CardTitle>
-        {toolbar ? (
+        <CardTitle className={headingClassName[heading]}>{title}</CardTitle>
+        {summary ? (
+          <div className="flex flex-wrap items-center gap-3">
+            <span className="text-sm text-muted-foreground">{summary}</span>
+            {toolbar}
+          </div>
+        ) : toolbar ? (
           <div className="flex items-center gap-2">{toolbar}</div>
         ) : null}
       </CardHeader>
@@ -112,6 +145,7 @@ export function WidgetChart({
                   tickLine={false}
                   axisLine={false}
                   tickMargin={8}
+                  tick={{ fill: "var(--muted-foreground)" }}
                 />
                 <ChartTooltip
                   isAnimationActive={false}
@@ -142,6 +176,7 @@ export function WidgetChart({
                   tickLine={false}
                   axisLine={false}
                   tickMargin={8}
+                  tick={{ fill: "var(--muted-foreground)" }}
                 />
                 <ChartTooltip
                   isAnimationActive={false}

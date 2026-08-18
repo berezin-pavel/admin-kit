@@ -1,10 +1,18 @@
+import type { GradientStops } from "@/registry/admin-theme-tokens/admin-theme-tokens"
 import {
   WidgetDonut,
   type WidgetDonutSlice,
 } from "@/registry/widget-donut/widget-donut"
 
+import { GradientFrame } from "./gradient-frame"
 import { CustomValueFormatView } from "./widget-donut-view"
 import type { ShowcaseEntry } from "./types"
+
+const donutGradientStops: GradientStops = {
+  angle: 135,
+  from: "#701a75",
+  to: "#7c2d12",
+}
 
 const orderStatusSlices: readonly WidgetDonutSlice[] = [
   { id: "delivered", label: "Delivered", value: 48 },
@@ -51,6 +59,18 @@ export const widgetDonutEntry: ShowcaseEntry = {
       render: () => <CustomValueFormatView />,
     },
     {
+      id: "prominent-heading",
+      name: "Prominent heading with a summary",
+      render: () => (
+        <WidgetDonut
+          title="Orders by status"
+          slices={orderStatusSlices}
+          heading="prominent"
+          summary="112 orders"
+        />
+      ),
+    },
+    {
       id: "empty",
       name: "No data",
       render: () => <WidgetDonut title="Orders by status" slices={[]} />,
@@ -64,6 +84,20 @@ export const widgetDonutEntry: ShowcaseEntry = {
           slices={orderStatusSlices}
           loading
         />
+      ),
+    },
+    {
+      id: "gradient",
+      name: "With a gradient backdrop",
+      render: () => (
+        <GradientFrame id="coral" stops={donutGradientStops}>
+          <WidgetDonut
+            title="Traffic sources"
+            hint="Sessions over the last 30 days"
+            slices={trafficSourceSlices}
+            gradient="coral"
+          />
+        </GradientFrame>
       ),
     },
   ],

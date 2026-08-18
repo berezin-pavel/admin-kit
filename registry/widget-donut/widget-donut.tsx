@@ -1,5 +1,6 @@
 "use client"
 
+import type { CSSProperties, ReactNode } from "react"
 import { Cell, Pie, PieChart } from "recharts"
 
 import {
@@ -24,14 +25,41 @@ export interface WidgetDonutSlice {
   value: number
 }
 
+export type WidgetDonutHeading = "muted" | "prominent"
+
 export interface WidgetDonutProps {
   title?: string
   hint?: string
   slices: readonly WidgetDonutSlice[]
   valueFormat?: (value: number, share: number) => string
+  heading?: WidgetDonutHeading
+  summary?: ReactNode
   emptyTitle?: string
   loading?: boolean
+  gradient?: string
   className?: string
+}
+
+const headingClassName: Record<WidgetDonutHeading, string> = {
+  muted: "text-sm font-medium text-muted-foreground",
+  prominent: "text-xl font-semibold text-foreground",
+}
+
+function gradientSurfaceStyle(
+  gradient?: string
+): (CSSProperties & Record<string, string>) | undefined {
+  return gradient
+    ? {
+        backgroundImage: `var(--gradient-${gradient})`,
+        color: `var(--gradient-${gradient}-foreground)`,
+        "--foreground": `var(--gradient-${gradient}-foreground)`,
+        "--card-foreground": `var(--gradient-${gradient}-foreground)`,
+        "--muted-foreground": `var(--gradient-${gradient}-foreground)`,
+        "--sidebar-foreground": `var(--gradient-${gradient}-foreground)`,
+        "--sidebar-active": `color-mix(in oklch, var(--gradient-${gradient}-foreground) 10%, transparent)`,
+        "--sidebar-active-foreground": `var(--gradient-${gradient}-foreground)`,
+      }
+    : undefined
 }
 
 const sliceColorCount = 5
@@ -76,23 +104,46 @@ export function WidgetDonut({
   hint,
   slices,
   valueFormat = defaultValueFormat,
+  heading = "muted",
+  summary,
   emptyTitle = "No data",
   loading = false,
+  gradient,
   className,
 }: WidgetDonutProps) {
   const { total, shares } = computeDonutShares(slices)
   const isEmpty = slices.length === 0 || total === 0
 
   return (
-    <Card className={className}>
-      {title || hint ? (
-        <CardHeader>
-          {title ? (
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              {title}
-            </CardTitle>
+    <Card className={className} style={gradientSurfaceStyle(gradient)}>
+      {title || hint || summary ? (
+        <CardHeader
+          className={
+            summary ? "flex flex-wrap items-center justify-between gap-4" : undefined
+          }
+        >
+          {summary ? (
+            <div className="flex flex-col gap-1">
+              {title ? (
+                <CardTitle className={headingClassName[heading]}>
+                  {title}
+                </CardTitle>
+              ) : null}
+              {hint ? <CardDescription>{hint}</CardDescription> : null}
+            </div>
+          ) : (
+            <>
+              {title ? (
+                <CardTitle className={headingClassName[heading]}>
+                  {title}
+                </CardTitle>
+              ) : null}
+              {hint ? <CardDescription>{hint}</CardDescription> : null}
+            </>
+          )}
+          {summary ? (
+            <span className="text-sm text-muted-foreground">{summary}</span>
           ) : null}
-          {hint ? <CardDescription>{hint}</CardDescription> : null}
         </CardHeader>
       ) : null}
       <CardContent aria-busy={loading || undefined}>

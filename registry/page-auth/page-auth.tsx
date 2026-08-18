@@ -1,6 +1,6 @@
 "use client"
 
-import type { FormEvent, ReactNode } from "react"
+import type { CSSProperties, FormEvent, ReactNode } from "react"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -23,7 +23,22 @@ export interface PageAuthProps {
   error?: string
   footer?: ReactNode
   aside?: ReactNode
+  gradient?: string
   className?: string
+}
+
+function gradientBackdropStyle(
+  gradient?: string
+): CSSProperties | undefined {
+  return gradient
+    ? { backgroundImage: `var(--gradient-${gradient})` }
+    : undefined
+}
+
+function backdropTextStyle(gradient?: string): CSSProperties | undefined {
+  return gradient
+    ? { color: `var(--gradient-${gradient}-foreground)` }
+    : undefined
 }
 
 export function PageAuth({
@@ -37,10 +52,14 @@ export function PageAuth({
   error,
   footer,
   aside,
+  gradient,
   className,
 }: PageAuthProps) {
   return (
-    <div className={cn("flex min-h-svh flex-col lg:flex-row", className)}>
+    <div
+      className={cn("flex min-h-svh flex-col lg:flex-row", className)}
+      style={gradientBackdropStyle(gradient)}
+    >
       {aside ? (
         <div className="hidden bg-muted lg:flex lg:w-1/2 lg:items-center lg:justify-center lg:p-10">
           {aside}
@@ -53,7 +72,13 @@ export function PageAuth({
         )}
       >
         <div className="flex w-full max-w-sm flex-col gap-6">
-          <p className="text-center text-sm font-medium text-muted-foreground">
+          <p
+            className={cn(
+              "text-center text-sm font-medium",
+              gradient ? undefined : "text-muted-foreground"
+            )}
+            style={backdropTextStyle(gradient)}
+          >
             {appName}
           </p>
           <Card>
@@ -91,7 +116,13 @@ export function PageAuth({
             </CardContent>
           </Card>
           {footer ? (
-            <div className="text-center text-sm text-muted-foreground">
+            <div
+              className={cn(
+                "text-center text-sm",
+                gradient ? undefined : "text-muted-foreground"
+              )}
+              style={backdropTextStyle(gradient)}
+            >
               {footer}
             </div>
           ) : null}

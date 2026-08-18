@@ -1,4 +1,4 @@
-import type { ComponentType, ReactNode } from "react"
+import type { ComponentType, CSSProperties, ReactNode } from "react"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -12,13 +12,40 @@ export interface WidgetListItem {
   icon?: ComponentType<{ className?: string }>
 }
 
+export type WidgetListHeading = "muted" | "prominent"
+
 export interface WidgetListProps {
   title: string
   items: readonly WidgetListItem[]
+  heading?: WidgetListHeading
+  summary?: ReactNode
   empty?: ReactNode
   emptyTitle?: string
   loading?: boolean
+  gradient?: string
   className?: string
+}
+
+const headingClassName: Record<WidgetListHeading, string> = {
+  muted: "text-sm font-medium text-muted-foreground",
+  prominent: "text-xl font-semibold text-foreground",
+}
+
+function gradientSurfaceStyle(
+  gradient?: string
+): (CSSProperties & Record<string, string>) | undefined {
+  return gradient
+    ? {
+        backgroundImage: `var(--gradient-${gradient})`,
+        color: `var(--gradient-${gradient}-foreground)`,
+        "--foreground": `var(--gradient-${gradient}-foreground)`,
+        "--card-foreground": `var(--gradient-${gradient}-foreground)`,
+        "--muted-foreground": `var(--gradient-${gradient}-foreground)`,
+        "--sidebar-foreground": `var(--gradient-${gradient}-foreground)`,
+        "--sidebar-active": `color-mix(in oklch, var(--gradient-${gradient}-foreground) 10%, transparent)`,
+        "--sidebar-active-foreground": `var(--gradient-${gradient}-foreground)`,
+      }
+    : undefined
 }
 
 const skeletonItemCount = 3
@@ -26,17 +53,25 @@ const skeletonItemCount = 3
 export function WidgetList({
   title,
   items,
+  heading = "muted",
+  summary,
   empty,
   emptyTitle = "No data",
   loading = false,
+  gradient,
   className,
 }: WidgetListProps) {
   return (
-    <Card className={className}>
-      <CardHeader>
-        <CardTitle className="text-sm font-medium text-muted-foreground">
-          {title}
-        </CardTitle>
+    <Card className={className} style={gradientSurfaceStyle(gradient)}>
+      <CardHeader
+        className={
+          summary ? "flex flex-wrap items-center justify-between gap-4" : undefined
+        }
+      >
+        <CardTitle className={headingClassName[heading]}>{title}</CardTitle>
+        {summary ? (
+          <span className="text-sm text-muted-foreground">{summary}</span>
+        ) : null}
       </CardHeader>
       <CardContent aria-busy={loading || undefined}>
         {loading ? (

@@ -8,7 +8,7 @@
       "name": "admin-theme",
       "type": "registry:theme",
       "title": "Admin theme",
-      "description": "Admin colors and radii, including a pair of success and warning tokens on top of the standard shadcn set, for both light and dark schemes. Installed first: the rest of the admin-kit items rely on these tokens.",
+      "description": "Admin colors and radii on top of the standard shadcn set, for both light and dark schemes: a pair of success and warning tokens, and a sidebar-active pair that paints the current navigation row and the current tab in a tint of the brand with a darker shade of it for the text, because the brand colour over a tint of itself never clears 4.5:1. Installed first: the rest of the admin-kit items rely on these tokens.",
       "files": [],
       "cssVars": {
         "light": {
@@ -38,10 +38,12 @@
           "radius": "0.45rem",
           "sidebar": "oklch(0.985 0 0)",
           "sidebar-foreground": "oklch(0.145 0 0)",
-          "sidebar-primary": "oklch(0.596 0.145 163.225)",
-          "sidebar-primary-foreground": "oklch(0.979 0.021 166.113)",
+          "sidebar-primary": "oklch(0.528 0.137 162.792)",
+          "sidebar-primary-foreground": "oklch(0.979 0.021 162.792)",
           "sidebar-accent": "oklch(0.97 0 0)",
           "sidebar-accent-foreground": "oklch(0.205 0 0)",
+          "sidebar-active": "oklch(0.940 0.030 162.792)",
+          "sidebar-active-foreground": "oklch(0.510 0.110 162.792)",
           "sidebar-border": "oklch(0.922 0 0)",
           "sidebar-ring": "oklch(0.708 0 0)",
           "success": "oklch(0.52 0.12 150)",
@@ -76,10 +78,12 @@
           "chart-5": "oklch(0.72 0.16 25)",
           "sidebar": "oklch(0.205 0 0)",
           "sidebar-foreground": "oklch(0.985 0 0)",
-          "sidebar-primary": "oklch(0.696 0.17 162.48)",
-          "sidebar-primary-foreground": "oklch(0.262 0.051 172.552)",
+          "sidebar-primary": "oklch(0.522 0.115 162.792)",
+          "sidebar-primary-foreground": "oklch(0.979 0.021 162.792)",
           "sidebar-accent": "oklch(0.269 0 0)",
           "sidebar-accent-foreground": "oklch(0.985 0 0)",
+          "sidebar-active": "oklch(0.265 0.030 162.792)",
+          "sidebar-active-foreground": "oklch(0.630 0.110 162.792)",
           "sidebar-border": "oklch(1 0 0 / 10%)",
           "sidebar-ring": "oklch(0.556 0 0)",
           "success": "oklch(0.52 0.12 150)",
@@ -89,6 +93,61 @@
           "destructive-foreground": "oklch(0.145 0 0)"
         }
       }
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "admin-theme-tokens",
+      "type": "registry:component",
+      "title": "Admin theme tokens",
+      "description": "The theme as data instead of hand-written CSS: five source colours plus a radius go into deriveAdminTheme, which computes every token admin-theme declares for both schemes in OKLCH, and adminThemeToCss prints the result as custom properties a consumer renders in a style element. Foreground colours are never chosen by hand, they are searched by contrast, so no combination of sources produces text below 4.5:1 — the surface itself is nudged when the text alone cannot save it. The dark scheme is derived rather than stored. Gradients are a separate class of token, named by the consumer and emitted as --gradient-<id> with a matching --gradient-<id>-foreground taken from the gradient's worst stop, because a gradient cannot live in a colour token that also feeds text, borders and oklch algebra. Ids and colours are validated before they reach the CSS text and an unusable gradient is dropped whole rather than half-emitted. Pure TypeScript with no React and no dependencies: suggestDarkStops proposes a dark variant of a gradient and fits its chroma back into the sRGB gamut so a darkened stop keeps its hue instead of collapsing to grey, contrastRatio is the WCAG ratio, and defaultAdminThemeSources reproduces the shipped admin-theme as closely as sRGB allows. Install it with theme-editor, or on its own to generate a theme in a script.",
+      "files": [
+        {
+          "path": "registry/admin-theme-tokens/admin-theme-color.ts",
+          "type": "registry:component",
+          "target": "@components/admin-theme-color.ts"
+        },
+        {
+          "path": "registry/admin-theme-tokens/admin-theme-tokens.ts",
+          "type": "registry:component",
+          "target": "@components/admin-theme-tokens.ts"
+        },
+        {
+          "path": "registry/admin-theme-tokens/admin-theme-css.ts",
+          "type": "registry:component",
+          "target": "@components/admin-theme-css.ts"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "theme-editor",
+      "type": "registry:component",
+      "title": "Theme editor",
+      "description": "A controlled form over an AdminTheme: five source colours, a corner radius, and a palette of named gradients the consumer hangs on individual cards. It holds no theme and writes nowhere — value and onChange, the rule theme-toggle established — so the same element is a runtime appearance screen inside a panel and, with showCss, a globals.css generator in a showcase. Every gradient carries a light and a dark variant side by side; the dark one is proposed on demand by suggestDarkStops and then stays editable, because recomputing it whenever the light variant changes would discard a hand-tuned gradient. A gradient's id is derived from its name once, at add time, and never again, so renaming a label cannot orphan the cards already pointing at it. Contrast is reported beside each gradient and warns below 4.5:1 without blocking anything: refusing an owner their own brand colour reads as a broken panel, so the kit states the consequence rather than overruling the choice. Labels are props with English defaults and locale-ru carries the matching themeEditor slice. Requires admin-theme-tokens for the derivation and the kit's colour, number and text fields for the controls.",
+      "registryDependencies": [
+        "berezin-pavel/admin-kit/admin-theme-tokens",
+        "berezin-pavel/admin-kit/color-field",
+        "berezin-pavel/admin-kit/number-field",
+        "berezin-pavel/admin-kit/text-field",
+        "berezin-pavel/admin-kit/confirm-dialog",
+        "button",
+        "card"
+      ],
+      "dependencies": [
+        "lucide-react"
+      ],
+      "files": [
+        {
+          "path": "registry/theme-editor/theme-editor.tsx",
+          "type": "registry:component",
+          "target": "@components/theme-editor.tsx"
+        },
+        {
+          "path": "registry/theme-editor/theme-editor-gradients.tsx",
+          "type": "registry:component",
+          "target": "@components/theme-editor-gradients.tsx"
+        }
+      ]
     },
     {
       "$schema": "https://ui.shadcn.com/schema/registry-item.json",
@@ -1130,7 +1189,8 @@
       "title": "Page tabs",
       "description": "Section navigation inside a single page — the tabs that split an order or customer screen into Overview, History and Settings without navigating away. Controlled like every item in the kit: value and onValueChange come from props, so the active tab can be routed through a URL query string; the item stores nothing itself. Only the active panel's content mounts — the underlying Base UI panel defaults to keepMounted false and unmounts a hidden panel's subtree instead of hiding it, so a heavy table on a hidden tab never renders while another tab is open. Each item's icon renders before the label and badge after it (a count or a status dot); disabled disables a trigger without removing it from the strip. actions renders on the same row as the tab strip, pushed to the far end, for a page-level button that belongs beside the tabs rather than inside a panel — on a narrow screen the row wraps instead of pushing the actions off screen, and the strip itself scrolls horizontally when the labels do not fit. Keyboard movement and ARIA (role=tablist, arrow keys, aria-selected) come from the primitive rather than being hand-rolled.",
       "registryDependencies": [
-        "tabs"
+        "tabs",
+        "berezin-pavel/admin-kit/admin-theme"
       ],
       "files": [
         {

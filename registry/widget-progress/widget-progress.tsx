@@ -1,9 +1,12 @@
+import type { CSSProperties, ReactNode } from "react"
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 import { Skeleton } from "@/components/ui/skeleton"
 import { cn } from "@/lib/utils"
 
 export type WidgetProgressTone = "default" | "success" | "warning" | "danger"
+export type WidgetProgressHeading = "muted" | "prominent"
 
 const toneClassName: Record<WidgetProgressTone, string | undefined> = {
   default: undefined,
@@ -20,8 +23,33 @@ export interface WidgetProgressProps {
   targetLabel?: string
   tone?: WidgetProgressTone
   hint?: string
+  heading?: WidgetProgressHeading
+  summary?: ReactNode
   loading?: boolean
+  gradient?: string
   className?: string
+}
+
+const headingClassName: Record<WidgetProgressHeading, string> = {
+  muted: "text-sm font-medium text-muted-foreground",
+  prominent: "text-xl font-semibold text-foreground",
+}
+
+function gradientSurfaceStyle(
+  gradient?: string
+): (CSSProperties & Record<string, string>) | undefined {
+  return gradient
+    ? {
+        backgroundImage: `var(--gradient-${gradient})`,
+        color: `var(--gradient-${gradient}-foreground)`,
+        "--foreground": `var(--gradient-${gradient}-foreground)`,
+        "--card-foreground": `var(--gradient-${gradient}-foreground)`,
+        "--muted-foreground": `var(--gradient-${gradient}-foreground)`,
+        "--sidebar-foreground": `var(--gradient-${gradient}-foreground)`,
+        "--sidebar-active": `color-mix(in oklch, var(--gradient-${gradient}-foreground) 10%, transparent)`,
+        "--sidebar-active-foreground": `var(--gradient-${gradient}-foreground)`,
+      }
+    : undefined
 }
 
 export function WidgetProgress({
@@ -32,7 +60,10 @@ export function WidgetProgress({
   targetLabel = "Goal",
   tone = "default",
   hint,
+  heading = "muted",
+  summary,
   loading = false,
+  gradient,
   className,
 }: WidgetProgressProps) {
   const clampedValue = Math.min(Math.max(value, 0), max)
@@ -43,11 +74,16 @@ export function WidgetProgress({
       : (Math.min(Math.max(target, 0), max) / max) * 100
 
   return (
-    <Card className={className}>
-      <CardHeader>
-        <CardTitle className="text-sm font-medium text-muted-foreground">
-          {title}
-        </CardTitle>
+    <Card className={className} style={gradientSurfaceStyle(gradient)}>
+      <CardHeader
+        className={
+          summary ? "flex flex-wrap items-center justify-between gap-4" : undefined
+        }
+      >
+        <CardTitle className={headingClassName[heading]}>{title}</CardTitle>
+        {summary ? (
+          <span className="text-sm text-muted-foreground">{summary}</span>
+        ) : null}
       </CardHeader>
       <CardContent
         className="flex flex-col gap-2"

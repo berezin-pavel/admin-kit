@@ -9,7 +9,7 @@ import {
 import { localeRu } from "@/registry/locale-ru/locale-ru"
 import { LanguageToggle } from "@/registry/language-toggle/language-toggle"
 
-export function DemoLanguageToggle() {
+export function DemoLanguageToggle({ className }: { className?: string }) {
   const locale = useDemoLocale()
 
   return (
@@ -22,6 +22,7 @@ export function DemoLanguageToggle() {
         }
       }}
       label={locale === "ru" ? localeRu.languageToggle.label : undefined}
+      className={className}
     />
   )
 }

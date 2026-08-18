@@ -1,5 +1,6 @@
 "use client"
 
+import type { CSSProperties, ReactNode } from "react"
 import { TrendingDown, TrendingUp } from "lucide-react"
 import { Line, LineChart, ResponsiveContainer, Tooltip } from "recharts"
 
@@ -9,6 +10,7 @@ import { cn } from "@/lib/utils"
 
 export type MetricDirection = "up" | "down"
 export type MetricTone = "positive" | "negative"
+export type WidgetMetricHeading = "muted" | "prominent"
 
 export interface WidgetMetricProps {
   title: string
@@ -21,8 +23,33 @@ export interface WidgetMetricProps {
   }
   trendValues?: readonly number[]
   trendTooltipFormat?: (value: number) => string
+  heading?: WidgetMetricHeading
+  summary?: ReactNode
   loading?: boolean
+  gradient?: string
   className?: string
+}
+
+const headingClassName: Record<WidgetMetricHeading, string> = {
+  muted: "text-sm font-medium text-muted-foreground",
+  prominent: "text-xl font-semibold text-foreground",
+}
+
+function gradientSurfaceStyle(
+  gradient?: string
+): (CSSProperties & Record<string, string>) | undefined {
+  return gradient
+    ? {
+        backgroundImage: `var(--gradient-${gradient})`,
+        color: `var(--gradient-${gradient}-foreground)`,
+        "--foreground": `var(--gradient-${gradient}-foreground)`,
+        "--card-foreground": `var(--gradient-${gradient}-foreground)`,
+        "--muted-foreground": `var(--gradient-${gradient}-foreground)`,
+        "--sidebar-foreground": `var(--gradient-${gradient}-foreground)`,
+        "--sidebar-active": `color-mix(in oklch, var(--gradient-${gradient}-foreground) 10%, transparent)`,
+        "--sidebar-active-foreground": `var(--gradient-${gradient}-foreground)`,
+      }
+    : undefined
 }
 
 export function WidgetMetric({
@@ -32,7 +59,10 @@ export function WidgetMetric({
   trend,
   trendValues,
   trendTooltipFormat = String,
+  heading = "muted",
+  summary,
   loading = false,
+  gradient,
   className,
 }: WidgetMetricProps) {
   const TrendIcon = trend?.direction === "down" ? TrendingDown : TrendingUp
@@ -40,11 +70,16 @@ export function WidgetMetric({
     trend?.tone ?? (trend?.direction === "down" ? "negative" : "positive")
 
   return (
-    <Card className={className}>
-      <CardHeader>
-        <CardTitle className="text-sm font-medium text-muted-foreground">
-          {title}
-        </CardTitle>
+    <Card className={className} style={gradientSurfaceStyle(gradient)}>
+      <CardHeader
+        className={
+          summary ? "flex flex-wrap items-center justify-between gap-4" : undefined
+        }
+      >
+        <CardTitle className={headingClassName[heading]}>{title}</CardTitle>
+        {summary ? (
+          <span className="text-sm text-muted-foreground">{summary}</span>
+        ) : null}
       </CardHeader>
       <CardContent
         className="flex flex-col gap-1"
@@ -65,7 +100,8 @@ export function WidgetMetric({
                 <span
                   className={cn(
                     "flex items-center gap-1 text-sm whitespace-nowrap",
-                    tone === "negative" ? "text-destructive" : "text-primary"
+                    !gradient &&
+                      (tone === "negative" ? "text-destructive" : "text-primary")
                   )}
                 >
                   <TrendIcon className="size-4" />

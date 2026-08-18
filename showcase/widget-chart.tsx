@@ -1,10 +1,19 @@
+import { Button } from "@/components/ui/button"
+import type { GradientStops } from "@/registry/admin-theme-tokens/admin-theme-tokens"
 import {
   WidgetChart,
   type WidgetChartSeries,
 } from "@/registry/widget-chart/widget-chart"
 
+import { GradientFrame } from "./gradient-frame"
 import { WidgetChartToolbarView } from "./widget-chart-toolbar-view"
 import type { ShowcaseEntry } from "./types"
+
+const chartGradientStops: GradientStops = {
+  angle: 135,
+  from: "#134e4a",
+  to: "#312e81",
+}
 
 const months = [
   "Jan",
@@ -149,6 +158,37 @@ export const widgetChartEntry: ShowcaseEntry = {
       ),
     },
     {
+      id: "prominent-heading",
+      name: "Prominent heading with a summary",
+      render: () => (
+        <WidgetChart
+          title="Revenue by month"
+          labels={months}
+          series={revenueSeries}
+          heading="prominent"
+          summary="$2,040 this month"
+        />
+      ),
+    },
+    {
+      id: "prominent-heading-with-toolbar",
+      name: "Prominent heading, summary, and a toolbar",
+      render: () => (
+        <WidgetChart
+          title="Revenue by month"
+          labels={months}
+          series={revenueSeries}
+          heading="prominent"
+          summary="$2,040 this month"
+          toolbar={
+            <Button type="button" variant="outline" size="sm">
+              This month
+            </Button>
+          }
+        />
+      ),
+    },
+    {
       id: "with-toolbar",
       name: "With a period picker in the toolbar",
       render: () => <WidgetChartToolbarView />,
@@ -170,6 +210,21 @@ export const widgetChartEntry: ShowcaseEntry = {
           series={revenueSeries}
           loading
         />
+      ),
+    },
+    {
+      id: "gradient",
+      name: "With a gradient backdrop",
+      render: () => (
+        <GradientFrame id="aurora" stops={chartGradientStops}>
+          <WidgetChart
+            title="Revenue, expenses, and profit"
+            labels={months}
+            series={revenueExpenseProfitSeries}
+            hint="in thousands of dollars"
+            gradient="aurora"
+          />
+        </GradientFrame>
       ),
     },
   ],

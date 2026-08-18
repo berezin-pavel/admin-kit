@@ -1,9 +1,29 @@
 import { Button } from "@/components/ui/button"
+import type { GradientStops } from "@/registry/admin-theme-tokens/admin-theme-tokens"
 import { StateError } from "@/registry/state-error/state-error"
 import { StateForbidden } from "@/registry/state-forbidden/state-forbidden"
 import { StateOffline } from "@/registry/state-offline/state-offline"
 
+import { GradientFrame } from "./gradient-frame"
 import type { ShowcaseEntry } from "./types"
+
+const errorGradientStops: GradientStops = {
+  angle: 120,
+  from: "#7f1d1d",
+  to: "#7c2d12",
+}
+
+const forbiddenGradientStops: GradientStops = {
+  angle: 135,
+  from: "#fde68a",
+  to: "#fecdd3",
+}
+
+const offlineGradientStops: GradientStops = {
+  angle: 135,
+  from: "#e2e8f0",
+  to: "#cbd5e1",
+}
 
 export const stateErrorEntry: ShowcaseEntry = {
   item: "state-error",
@@ -31,6 +51,19 @@ export const stateErrorEntry: ShowcaseEntry = {
           description="Failed to load data. Try again."
           actions={<Button>Retry</Button>}
         />
+      ),
+    },
+    {
+      id: "gradient",
+      name: "With a gradient backdrop",
+      render: () => (
+        <GradientFrame id="ember" stops={errorGradientStops}>
+          <StateError
+            description="Failed to load data. Try again."
+            actions={<Button>Retry</Button>}
+            gradient="ember"
+          />
+        </GradientFrame>
       ),
     },
   ],
@@ -64,6 +97,19 @@ export const stateForbiddenEntry: ShowcaseEntry = {
         />
       ),
     },
+    {
+      id: "gradient",
+      name: "With a gradient backdrop",
+      render: () => (
+        <GradientFrame id="dusk" stops={forbiddenGradientStops}>
+          <StateForbidden
+            description="Contact an administrator to get access to this section."
+            actions={<Button variant="outline">Request access</Button>}
+            gradient="dusk"
+          />
+        </GradientFrame>
+      ),
+    },
   ],
 }
 
@@ -93,6 +139,19 @@ export const stateOfflineEntry: ShowcaseEntry = {
           description="Check your internet connection and try again."
           actions={<Button>Retry</Button>}
         />
+      ),
+    },
+    {
+      id: "gradient",
+      name: "With a gradient backdrop",
+      render: () => (
+        <GradientFrame id="mist" stops={offlineGradientStops}>
+          <StateOffline
+            description="Check your internet connection and try again."
+            actions={<Button>Retry</Button>}
+            gradient="mist"
+          />
+        </GradientFrame>
       ),
     },
   ],

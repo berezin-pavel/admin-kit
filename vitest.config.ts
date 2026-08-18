@@ -9,7 +9,7 @@ export default defineConfig({
         resolve: { alias },
         test: {
           name: "logic",
-          include: ["registry/**/*.test.ts"],
+          include: ["registry/**/*.test.ts", "app/**/*.test.ts"],
           environment: "node",
         },
       },

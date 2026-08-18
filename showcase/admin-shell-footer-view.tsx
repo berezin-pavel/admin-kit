@@ -40,27 +40,39 @@ const logoMark = (
 export function AdminShellFooterView({
   header = true,
   defaultCollapsed = false,
+  sidebarGradient,
   children,
 }: {
   header?: boolean
   defaultCollapsed?: boolean
+  sidebarGradient?: string
   children?: React.ReactNode
 }) {
   const [collapsed, setCollapsed] = useState(defaultCollapsed)
   const [isDark, setIsDark] = useState(false)
   const [locale, setLocale] = useState("en")
 
+  const footerButtonClassName = sidebarGradient
+    ? "bg-transparent dark:bg-transparent"
+    : undefined
+
   const footer = (
     <>
       <SidebarToggle
         collapsed={collapsed}
         onToggle={() => setCollapsed((previous) => !previous)}
+        className={footerButtonClassName}
       />
-      <ThemeToggle isDark={isDark} onToggle={() => setIsDark((d) => !d)} />
+      <ThemeToggle
+        isDark={isDark}
+        onToggle={() => setIsDark((d) => !d)}
+        className={footerButtonClassName}
+      />
       <LanguageToggle
         locale={locale}
         locales={locales}
         onLocaleChange={setLocale}
+        className={footerButtonClassName}
       />
     </>
   )
@@ -111,6 +123,7 @@ export function AdminShellFooterView({
       sidebarActions={notifications}
       sidebarProfile={accountRow}
       sidebarFooter={footer}
+      sidebarGradient={sidebarGradient}
     >
       {children}
       <AdminToaster />
@@ -126,6 +139,7 @@ export function AdminShellFooterView({
       sidebarActions={notifications}
       sidebarProfile={accountRow}
       sidebarFooter={footer}
+      sidebarGradient={sidebarGradient}
     >
       {children}
       <AdminToaster />

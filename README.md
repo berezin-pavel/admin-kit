@@ -39,6 +39,37 @@ After that, any registry item installs with the same command and its name:
 pnpm dlx shadcn@latest add berezin-pavel/admin-kit/admin-shell
 ```
 
+### Letting the panel's owner change the colors
+
+The theme above is a build-time artifact: it lands in your CSS file and
+only changes when you edit it. If the person who owns the panel should be
+able to pick its colors from inside it, install `theme-editor`, which
+brings `admin-theme-tokens` with it, and render the CSS the theme
+produces:
+
+```tsx
+<style dangerouslySetInnerHTML={{ __html: adminThemeToCss(theme) }} />
+```
+
+Put that in your layout and store `theme` wherever you store the rest of
+your settings — the kit holds no theme of its own. Rendering it on the
+server means the colors arrive in the first HTML, so there is no flash of
+the installed palette; putting the variables on `:root` means toasts and
+dialogs, which render through a portal into `body`, are painted along
+with everything else. `admin-theme` stays installed either way: it is
+what the panel falls back to before a stored theme is read, and what
+every item's tokens are named after.
+
+A theme read back from storage is untrusted: malformed JSON, a shape
+left over from an older version, or a value edited by hand all reach
+`adminThemeToCss`, which calls into color parsing that throws on
+anything that isn't a valid hex color, with nothing in the kit to catch
+it. Validate what you read back with `isAdminTheme`, exported from
+`admin-theme-tokens`, before it reaches the printer, and fall back to a
+known-good theme when it fails — `{ sources: defaultAdminThemeSources,
+gradients: [] }`, also exported from `admin-theme-tokens`, reproduces
+the shipped palette.
+
 The CLI pulls in whatever the item depends on by itself: shadcn
 primitives (`card`, `table`, `skeleton`, and others), npm packages, and
 the theme itself if it isn't in the project yet. But a theme that arrives
@@ -53,8 +84,10 @@ as they were.
 
 | Name                  | Type                  | What it does                                                                                                                                                                                                                                                                                                                                                           |
 | --------------------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `admin-theme`        | `registry:theme`     | Colors and radii for the admin panel, for the light and dark schemes. Installed first — the other items rely on its tokens                                                                                                                                                                                                                                            |
+| `admin-theme`        | `registry:theme`     | Colors and radii for the admin panel, for the light and dark schemes, including the `sidebar-active` pair that paints the current nav row and tab. Installed first — the other items rely on its tokens                                                                                                                                                                                                                                            |
 | `admin-shell`        | `registry:block`     | A persistent full-height frame for the admin panel: an optional header, side navigation (on a wide screen a sidebar, or an icon rail with `collapsed`; on a narrow one no sidebar at all — a compact top bar with the burger, the logo, the app name and the account, and the panel behind the burger holds the sections), a `logo` slot before the app name, a `sidebarProfile` row under it for the account, a `sidebarActions` slot next to the app name, a `sidebarFooter` slot at the bottom, and a work area with its own scrolling. Every sidebar row shares one grid, so the logo, the avatar and the nav icons keep the same centre expanded or collapsed. Installed once per project |
+| `admin-theme-tokens` | `registry:component` | The theme as data: six sources go into `deriveAdminTheme`, which computes every token for both schemes in OKLCH, and `adminThemeToCss` prints them as custom properties you render in a `<style>` element. Foregrounds are searched by contrast rather than chosen, and the surface is nudged when the text alone cannot clear 4.5:1, so no combination of sources produces unreadable text. Gradients are their own class of token, validated before they reach the CSS text. Pure TypeScript, no React |
+| `theme-editor`       | `registry:component` | A controlled form over that theme: the sources and a palette of named gradients, each with a light and a dark variant. The dark one is proposed on demand and stays editable; a gradient's id is fixed at add time so renaming never orphans the cards pointing at it. Contrast is reported and warned on, never enforced. With `showCss` it prints the CSS for your `globals.css`, which is how the same element serves both a panel's owner and its developer |
 | `theme-toggle`       | `registry:component` | A theme-switch button that doesn't store the theme itself: the `isDark` state and the `onToggle` handler arrive as props. Fits the shell's `sidebarFooter` slot or anywhere else on the page                                                                                                                                                                          |
 | `sidebar-toggle`     | `registry:component` | A button that collapses the shell's sidebar into the icon rail, built the same way as `theme-toggle`: `collapsed` and `onToggle` arrive as props. Visible only on a wide screen — a narrow one has no sidebar to collapse. Its place is the `sidebarFooter` slot next to the theme toggle                                             |
 | `language-toggle`    | `registry:component` | A locale-switch button built the same way as `theme-toggle`: `locale`, `locales`, and `onLocaleChange` arrive as props. Shows the current locale's short label, cycling to the next one in the list on click. Its place is the `sidebarFooter` slot next to the theme toggle                                                                                        |
