@@ -86,6 +86,18 @@ export const widgetActivityEntry: ShowcaseEntry = {
       ),
     },
     {
+      id: "prominent-heading",
+      name: "Prominent heading with a summary",
+      render: () => (
+        <WidgetActivity
+          title="Recent activity"
+          entries={buildEntries()}
+          heading="prominent"
+          summary="5 events today"
+        />
+      ),
+    },
+    {
       id: "empty",
       name: "No activity",
       render: () => <WidgetActivity title="Recent activity" entries={[]} />,

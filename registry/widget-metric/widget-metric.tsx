@@ -1,6 +1,6 @@
 "use client"
 
-import type { CSSProperties } from "react"
+import type { CSSProperties, ReactNode } from "react"
 import { TrendingDown, TrendingUp } from "lucide-react"
 import { Line, LineChart, ResponsiveContainer, Tooltip } from "recharts"
 
@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils"
 
 export type MetricDirection = "up" | "down"
 export type MetricTone = "positive" | "negative"
+export type WidgetMetricHeading = "muted" | "prominent"
 
 export interface WidgetMetricProps {
   title: string
@@ -22,9 +23,16 @@ export interface WidgetMetricProps {
   }
   trendValues?: readonly number[]
   trendTooltipFormat?: (value: number) => string
+  heading?: WidgetMetricHeading
+  summary?: ReactNode
   loading?: boolean
   gradient?: string
   className?: string
+}
+
+const headingClassName: Record<WidgetMetricHeading, string> = {
+  muted: "text-sm font-medium text-muted-foreground",
+  prominent: "text-xl font-semibold text-foreground",
 }
 
 function gradientSurfaceStyle(
@@ -51,6 +59,8 @@ export function WidgetMetric({
   trend,
   trendValues,
   trendTooltipFormat = String,
+  heading = "muted",
+  summary,
   loading = false,
   gradient,
   className,
@@ -61,10 +71,15 @@ export function WidgetMetric({
 
   return (
     <Card className={className} style={gradientSurfaceStyle(gradient)}>
-      <CardHeader>
-        <CardTitle className="text-sm font-medium text-muted-foreground">
-          {title}
-        </CardTitle>
+      <CardHeader
+        className={
+          summary ? "flex flex-wrap items-center justify-between gap-4" : undefined
+        }
+      >
+        <CardTitle className={headingClassName[heading]}>{title}</CardTitle>
+        {summary ? (
+          <span className="text-sm text-muted-foreground">{summary}</span>
+        ) : null}
       </CardHeader>
       <CardContent
         className="flex flex-col gap-1"

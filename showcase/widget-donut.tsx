@@ -59,6 +59,18 @@ export const widgetDonutEntry: ShowcaseEntry = {
       render: () => <CustomValueFormatView />,
     },
     {
+      id: "prominent-heading",
+      name: "Prominent heading with a summary",
+      render: () => (
+        <WidgetDonut
+          title="Orders by status"
+          slices={orderStatusSlices}
+          heading="prominent"
+          summary="112 orders"
+        />
+      ),
+    },
+    {
       id: "empty",
       name: "No data",
       render: () => <WidgetDonut title="Orders by status" slices={[]} />,

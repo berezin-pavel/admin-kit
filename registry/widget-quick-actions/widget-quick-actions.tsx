@@ -1,4 +1,4 @@
-import type { ComponentType, CSSProperties } from "react"
+import type { ComponentType, CSSProperties, ReactNode } from "react"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -12,13 +12,22 @@ export interface QuickAction {
   onSelect: () => void
 }
 
+export type WidgetQuickActionsHeading = "muted" | "prominent"
+
 export interface WidgetQuickActionsProps {
   title?: string
   actions: readonly QuickAction[]
   columns?: 2 | 3
+  heading?: WidgetQuickActionsHeading
+  summary?: ReactNode
   loading?: boolean
   gradient?: string
   className?: string
+}
+
+const headingClassName: Record<WidgetQuickActionsHeading, string> = {
+  muted: "text-sm font-medium text-muted-foreground",
+  prominent: "text-xl font-semibold text-foreground",
 }
 
 function gradientSurfaceStyle(
@@ -44,17 +53,26 @@ export function WidgetQuickActions({
   title,
   actions,
   columns = 2,
+  heading = "muted",
+  summary,
   loading = false,
   gradient,
   className,
 }: WidgetQuickActionsProps) {
   return (
     <Card className={className} style={gradientSurfaceStyle(gradient)}>
-      {title ? (
-        <CardHeader>
-          <CardTitle className="text-sm font-medium text-muted-foreground">
-            {title}
-          </CardTitle>
+      {title || summary ? (
+        <CardHeader
+          className={
+            summary ? "flex flex-wrap items-center justify-between gap-4" : undefined
+          }
+        >
+          {title ? (
+            <CardTitle className={headingClassName[heading]}>{title}</CardTitle>
+          ) : null}
+          {summary ? (
+            <span className="text-sm text-muted-foreground">{summary}</span>
+          ) : null}
         </CardHeader>
       ) : null}
       <CardContent aria-busy={loading || undefined}>

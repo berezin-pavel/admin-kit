@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button"
 import type { GradientStops } from "@/registry/admin-theme-tokens/admin-theme-tokens"
 import {
   WidgetChart,
@@ -153,6 +154,37 @@ export const widgetChartEntry: ShowcaseEntry = {
           title="Sales by region"
           labels={months}
           series={regionSeries}
+        />
+      ),
+    },
+    {
+      id: "prominent-heading",
+      name: "Prominent heading with a summary",
+      render: () => (
+        <WidgetChart
+          title="Revenue by month"
+          labels={months}
+          series={revenueSeries}
+          heading="prominent"
+          summary="$2,040 this month"
+        />
+      ),
+    },
+    {
+      id: "prominent-heading-with-toolbar",
+      name: "Prominent heading, summary, and a toolbar",
+      render: () => (
+        <WidgetChart
+          title="Revenue by month"
+          labels={months}
+          series={revenueSeries}
+          heading="prominent"
+          summary="$2,040 this month"
+          toolbar={
+            <Button type="button" variant="outline" size="sm">
+              This month
+            </Button>
+          }
         />
       ),
     },

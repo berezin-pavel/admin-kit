@@ -116,6 +116,20 @@ export const widgetProgressEntry: ShowcaseEntry = {
       ),
     },
     {
+      id: "prominent-heading",
+      name: "Prominent heading with a summary",
+      render: () => (
+        <WidgetProgress
+          title="Monthly revenue"
+          value={340}
+          max={500}
+          target={420}
+          heading="prominent"
+          summary="$34,000 of $50,000"
+        />
+      ),
+    },
+    {
       id: "loading",
       name: "Loading",
       render: () => (

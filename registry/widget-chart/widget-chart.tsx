@@ -21,6 +21,8 @@ export interface WidgetChartSeries {
   values: readonly number[]
 }
 
+export type WidgetChartHeading = "muted" | "prominent"
+
 export interface WidgetChartProps {
   title: string
   labels: readonly string[]
@@ -28,11 +30,18 @@ export interface WidgetChartProps {
   kind?: "line" | "bar"
   hint?: string
   toolbar?: ReactNode
+  heading?: WidgetChartHeading
+  summary?: ReactNode
   empty?: ReactNode
   emptyTitle?: string
   loading?: boolean
   gradient?: string
   className?: string
+}
+
+const headingClassName: Record<WidgetChartHeading, string> = {
+  muted: "text-sm font-medium text-muted-foreground",
+  prominent: "text-xl font-semibold text-foreground",
 }
 
 function gradientSurfaceStyle(
@@ -89,6 +98,8 @@ export function WidgetChart({
   kind = "line",
   hint,
   toolbar,
+  heading = "muted",
+  summary,
   empty,
   emptyTitle = "No data",
   loading = false,
@@ -100,10 +111,13 @@ export function WidgetChart({
   return (
     <Card className={className} style={gradientSurfaceStyle(gradient)}>
       <CardHeader className="flex flex-wrap items-center justify-between gap-4">
-        <CardTitle className="text-sm font-medium text-muted-foreground">
-          {title}
-        </CardTitle>
-        {toolbar ? (
+        <CardTitle className={headingClassName[heading]}>{title}</CardTitle>
+        {summary ? (
+          <div className="flex flex-wrap items-center gap-3">
+            <span className="text-sm text-muted-foreground">{summary}</span>
+            {toolbar}
+          </div>
+        ) : toolbar ? (
           <div className="flex items-center gap-2">{toolbar}</div>
         ) : null}
       </CardHeader>

@@ -12,14 +12,23 @@ export interface WidgetListItem {
   icon?: ComponentType<{ className?: string }>
 }
 
+export type WidgetListHeading = "muted" | "prominent"
+
 export interface WidgetListProps {
   title: string
   items: readonly WidgetListItem[]
+  heading?: WidgetListHeading
+  summary?: ReactNode
   empty?: ReactNode
   emptyTitle?: string
   loading?: boolean
   gradient?: string
   className?: string
+}
+
+const headingClassName: Record<WidgetListHeading, string> = {
+  muted: "text-sm font-medium text-muted-foreground",
+  prominent: "text-xl font-semibold text-foreground",
 }
 
 function gradientSurfaceStyle(
@@ -44,6 +53,8 @@ const skeletonItemCount = 3
 export function WidgetList({
   title,
   items,
+  heading = "muted",
+  summary,
   empty,
   emptyTitle = "No data",
   loading = false,
@@ -52,10 +63,15 @@ export function WidgetList({
 }: WidgetListProps) {
   return (
     <Card className={className} style={gradientSurfaceStyle(gradient)}>
-      <CardHeader>
-        <CardTitle className="text-sm font-medium text-muted-foreground">
-          {title}
-        </CardTitle>
+      <CardHeader
+        className={
+          summary ? "flex flex-wrap items-center justify-between gap-4" : undefined
+        }
+      >
+        <CardTitle className={headingClassName[heading]}>{title}</CardTitle>
+        {summary ? (
+          <span className="text-sm text-muted-foreground">{summary}</span>
+        ) : null}
       </CardHeader>
       <CardContent aria-busy={loading || undefined}>
         {loading ? (

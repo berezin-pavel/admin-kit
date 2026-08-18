@@ -1,4 +1,4 @@
-import type { CSSProperties } from "react"
+import type { CSSProperties, ReactNode } from "react"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
@@ -6,6 +6,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { cn } from "@/lib/utils"
 
 export type WidgetProgressTone = "default" | "success" | "warning" | "danger"
+export type WidgetProgressHeading = "muted" | "prominent"
 
 const toneClassName: Record<WidgetProgressTone, string | undefined> = {
   default: undefined,
@@ -22,9 +23,16 @@ export interface WidgetProgressProps {
   targetLabel?: string
   tone?: WidgetProgressTone
   hint?: string
+  heading?: WidgetProgressHeading
+  summary?: ReactNode
   loading?: boolean
   gradient?: string
   className?: string
+}
+
+const headingClassName: Record<WidgetProgressHeading, string> = {
+  muted: "text-sm font-medium text-muted-foreground",
+  prominent: "text-xl font-semibold text-foreground",
 }
 
 function gradientSurfaceStyle(
@@ -52,6 +60,8 @@ export function WidgetProgress({
   targetLabel = "Goal",
   tone = "default",
   hint,
+  heading = "muted",
+  summary,
   loading = false,
   gradient,
   className,
@@ -65,10 +75,15 @@ export function WidgetProgress({
 
   return (
     <Card className={className} style={gradientSurfaceStyle(gradient)}>
-      <CardHeader>
-        <CardTitle className="text-sm font-medium text-muted-foreground">
-          {title}
-        </CardTitle>
+      <CardHeader
+        className={
+          summary ? "flex flex-wrap items-center justify-between gap-4" : undefined
+        }
+      >
+        <CardTitle className={headingClassName[heading]}>{title}</CardTitle>
+        {summary ? (
+          <span className="text-sm text-muted-foreground">{summary}</span>
+        ) : null}
       </CardHeader>
       <CardContent
         className="flex flex-col gap-2"

@@ -92,6 +92,18 @@ export const widgetMetricEntry: ShowcaseEntry = {
       ),
     },
     {
+      id: "prominent-heading",
+      name: "Prominent heading with a summary",
+      render: () => (
+        <WidgetMetric
+          title="Revenue"
+          value="$18,420"
+          heading="prominent"
+          summary="30-day total"
+        />
+      ),
+    },
+    {
       id: "loading",
       name: "Loading",
       render: () => <WidgetMetric title="Orders" value="312" loading />,

@@ -107,6 +107,18 @@ export const widgetListEntry: ShowcaseEntry = {
       render: () => <WidgetList title="Team" items={[]} />,
     },
     {
+      id: "prominent-heading",
+      name: "Prominent heading with a summary",
+      render: () => (
+        <WidgetList
+          title="Recent transactions"
+          items={orderItemsWithMeta}
+          heading="prominent"
+          summary="$6,940 total"
+        />
+      ),
+    },
+    {
       id: "loading",
       name: "Loading",
       render: () => <WidgetList title="Team" items={teamItems} loading />,

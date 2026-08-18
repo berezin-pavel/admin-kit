@@ -84,6 +84,20 @@ export function EmptyView() {
   return <WidgetQuickActions title="Quick actions" actions={[]} />
 }
 
+export function ProminentHeadingView() {
+  return (
+    <div>
+      <WidgetQuickActions
+        title="Quick actions"
+        actions={buildActions()}
+        heading="prominent"
+        summary="4 available"
+      />
+      <AdminToaster />
+    </div>
+  )
+}
+
 export function GradientView() {
   return (
     <GradientFrame id="flare" stops={quickActionsGradientStops}>
