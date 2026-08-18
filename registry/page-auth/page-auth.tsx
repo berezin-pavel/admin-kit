@@ -48,6 +48,7 @@ export function PageAuth({
     <div
       className={cn("flex min-h-svh flex-col lg:flex-row", className)}
       data-backdrop={gradient}
+      data-backdrop-vivid={gradient ? "" : undefined}
     >
       {aside ? (
         <div className="hidden bg-muted lg:flex lg:w-1/2 lg:items-center lg:justify-center lg:p-10">

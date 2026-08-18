@@ -91,9 +91,9 @@ describe("AppearanceMenu sidebar and sign-in selects", () => {
 })
 
 describe("AppearanceMenu page background", () => {
-  it("sets the page gradient and toggles soft tint", async () => {
+  it("sets the page gradient", async () => {
     const onChange = vi.fn<(next: AdminAppearance) => void>()
-    const { rerender } = render(
+    render(
       <AppearanceMenu value={defaultAdminAppearance} onChange={onChange} />
     )
 
@@ -101,32 +101,25 @@ describe("AppearanceMenu page background", () => {
     await user.click(screen.getByRole("combobox", { name: "Page background" }))
     await user.click(await screen.findByRole("option", { name: "Ocean" }))
 
-    let last = onChange.mock.calls.at(-1)?.[0]
-    expect(last?.page.gradient).toBe("ocean")
-    expect(last).toBeDefined()
-    if (!last) {
-      throw new Error("onChange was not called")
-    }
-
-    rerender(<AppearanceMenu value={last} onChange={onChange} />)
-
-    await user.click(screen.getByRole("checkbox", { name: "Soft tint" }))
-
-    last = onChange.mock.calls.at(-1)?.[0]
-    expect(last?.page.soft).toBe(false)
+    const last = onChange.mock.calls.at(-1)?.[0]
+    expect(last?.page).toBe("ocean")
   })
 
-  it("disables the soft tint checkbox while there is no gradient", async () => {
+  it("clears the page gradient with No gradient", async () => {
+    const onChange = vi.fn<(next: AdminAppearance) => void>()
     render(
-      <AppearanceMenu value={defaultAdminAppearance} onChange={() => {}} />
+      <AppearanceMenu
+        value={{ ...defaultAdminAppearance, page: "ocean" }}
+        onChange={onChange}
+      />
     )
 
-    await openMenu()
+    const user = await openMenu()
+    await user.click(screen.getByRole("combobox", { name: "Page background" }))
+    await user.click(await screen.findByRole("option", { name: "No gradient" }))
 
-    expect(screen.getByRole("checkbox", { name: "Soft tint" })).toHaveAttribute(
-      "aria-disabled",
-      "true"
-    )
+    const last = onChange.mock.calls.at(-1)?.[0]
+    expect(last?.page).toBeNull()
   })
 })
 
@@ -137,7 +130,7 @@ describe("AppearanceMenu per page", () => {
     const onChange = vi.fn<(next: AdminAppearance) => void>()
     render(
       <AppearanceMenu
-        value={{ ...defaultAdminAppearance, page: { gradient: null, soft: true } }}
+        value={{ ...defaultAdminAppearance, page: null }}
         onChange={onChange}
         pages={pages}
       />
@@ -148,7 +141,25 @@ describe("AppearanceMenu per page", () => {
     await user.click(await screen.findByRole("option", { name: "Ocean" }))
 
     const last = onChange.mock.calls.at(-1)?.[0]
-    expect(last?.pages.orders).toEqual({ gradient: "ocean", soft: true })
+    expect(last?.pages.orders).toBe("ocean")
+  })
+
+  it("sets a page override to no backdrop with No gradient", async () => {
+    const onChange = vi.fn<(next: AdminAppearance) => void>()
+    render(
+      <AppearanceMenu
+        value={{ ...defaultAdminAppearance, page: "ocean", pages: { orders: "ocean" } }}
+        onChange={onChange}
+        pages={pages}
+      />
+    )
+
+    const user = await openMenu()
+    await user.click(screen.getByRole("combobox", { name: "Orders" }))
+    await user.click(await screen.findByRole("option", { name: "No gradient" }))
+
+    const last = onChange.mock.calls.at(-1)?.[0]
+    expect(last?.pages.orders).toBeNull()
   })
 
   it("deletes the override when Same as default is picked", async () => {
@@ -157,7 +168,7 @@ describe("AppearanceMenu per page", () => {
       <AppearanceMenu
         value={{
           ...defaultAdminAppearance,
-          pages: { orders: { gradient: "ocean", soft: true } },
+          pages: { orders: "ocean" },
         }}
         onChange={onChange}
         pages={pages}
@@ -170,26 +181,6 @@ describe("AppearanceMenu per page", () => {
 
     const last = onChange.mock.calls.at(-1)?.[0]
     expect(last?.pages.orders).toBeUndefined()
-  })
-
-  it("toggles the per-page soft tint", async () => {
-    const onChange = vi.fn<(next: AdminAppearance) => void>()
-    render(
-      <AppearanceMenu
-        value={{
-          ...defaultAdminAppearance,
-          pages: { orders: { gradient: "ocean", soft: true } },
-        }}
-        onChange={onChange}
-        pages={pages}
-      />
-    )
-
-    const user = await openMenu()
-    await user.click(screen.getByRole("checkbox", { name: "Orders: Soft tint" }))
-
-    const last = onChange.mock.calls.at(-1)?.[0]
-    expect(last?.pages.orders).toEqual({ gradient: "ocean", soft: false })
   })
 })
 

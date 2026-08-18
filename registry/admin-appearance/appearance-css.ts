@@ -14,8 +14,8 @@ import {
   isGradientId,
   type AdminAppearance,
   type BlockHeading,
+  type GradientId,
   type GradientStops,
-  type PageBackdrop,
 } from "./appearance-palette"
 
 const BLOCK_HEADINGS: readonly BlockHeading[] = ["regular", "large", "none"]
@@ -46,14 +46,6 @@ function isNullableGradientId(value: unknown): value is null {
   return value === null || isGradientId(value)
 }
 
-function isPageBackdrop(value: unknown): value is PageBackdrop {
-  return (
-    isRecord(value) &&
-    isNullableGradientId(value.gradient) &&
-    typeof value.soft === "boolean"
-  )
-}
-
 function isBlockAppearance(value: unknown) {
   if (!isRecord(value)) {
     return false
@@ -70,8 +62,8 @@ function isBlockAppearance(value: unknown) {
   return true
 }
 
-function isPageBackdropRecord(value: unknown): value is Record<string, PageBackdrop> {
-  return isRecord(value) && Object.values(value).every(isPageBackdrop)
+function isPageRecord(value: unknown): value is Record<string, GradientId | null> {
+  return isRecord(value) && Object.values(value).every(isNullableGradientId)
 }
 
 function isBlockAppearanceRecord(value: unknown): value is Record<string, unknown> {
@@ -84,8 +76,8 @@ export function isAdminAppearance(value: unknown): value is AdminAppearance {
     isAccentId(value.accent) &&
     isNullableGradientId(value.sidebar) &&
     isNullableGradientId(value.signIn) &&
-    isPageBackdrop(value.page) &&
-    isPageBackdropRecord(value.pages) &&
+    isNullableGradientId(value.page) &&
+    isPageRecord(value.pages) &&
     isBlockAppearanceRecord(value.blocks)
   )
 }
@@ -191,7 +183,7 @@ function surfaceSelectorBlocks(): string {
 function backdropSelectorBlocks(): string {
   const blocks = gradientIds.map(
     (id) =>
-      `[data-backdrop="${id}"] {\n  --backdrop-gradient: var(--gradient-${id});\n  --backdrop-text: var(--gradient-${id}-foreground);\n}\n\n[data-backdrop="${id}"][data-backdrop-soft] {\n  --backdrop-gradient: var(--gradient-${id}-soft);\n  --backdrop-text: var(--foreground);\n}\n\nhtml:has([data-backdrop="${id}"]:not([data-backdrop-soft])) {\n  background-image: var(--gradient-${id});\n}\n\nhtml:has([data-backdrop="${id}"][data-backdrop-soft]) {\n  background-image: var(--gradient-${id}-soft);\n}`
+      `[data-backdrop="${id}"] {\n  --backdrop-gradient: var(--gradient-${id}-soft);\n  --backdrop-text: var(--foreground);\n}\n\n[data-backdrop="${id}"][data-backdrop-vivid] {\n  --backdrop-gradient: var(--gradient-${id});\n  --backdrop-text: var(--gradient-${id}-foreground);\n}\n\nhtml:has([data-backdrop="${id}"]:not([data-backdrop-vivid])) {\n  background-image: var(--gradient-${id}-soft);\n}\n\nhtml:has([data-backdrop="${id}"][data-backdrop-vivid]) {\n  background-image: var(--gradient-${id});\n}`
   )
   return blocks.join("\n\n")
 }

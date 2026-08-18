@@ -60,15 +60,12 @@ describe("isAdminAppearance", () => {
       isAdminAppearance({ ...defaultAdminAppearance, signIn: "neon" })
     ).toBe(false)
     expect(
-      isAdminAppearance({
-        ...defaultAdminAppearance,
-        page: { gradient: "neon", soft: true },
-      })
+      isAdminAppearance({ ...defaultAdminAppearance, page: "neon" })
     ).toBe(false)
     expect(
       isAdminAppearance({
         ...defaultAdminAppearance,
-        pages: { orders: { gradient: "neon", soft: true } },
+        pages: { orders: "neon" },
       })
     ).toBe(false)
     expect(
@@ -79,11 +76,21 @@ describe("isAdminAppearance", () => {
     ).toBe(false)
   })
 
-  it("rejects a non-boolean soft flag", () => {
+  it("accepts a page and per-page overrides made of gradient ids and null", () => {
     expect(
       isAdminAppearance({
         ...defaultAdminAppearance,
-        page: { gradient: null, soft: "yes" },
+        page: "ocean",
+        pages: { orders: null },
+      })
+    ).toBe(true)
+  })
+
+  it("rejects a page value that is an object instead of a gradient id or null", () => {
+    expect(
+      isAdminAppearance({
+        ...defaultAdminAppearance,
+        page: { gradient: "ocean" },
       })
     ).toBe(false)
   })
@@ -112,8 +119,8 @@ describe("isAdminAppearance", () => {
         accent: "blue",
         sidebar: "ocean",
         signIn: "midnight",
-        page: { gradient: null, soft: true },
-        pages: { orders: { gradient: "ocean", soft: false } },
+        page: null,
+        pages: { orders: "ocean" },
         blocks: { revenue: { gradient: "meadow", heading: "large" } },
       })
     ).toBe(true)
@@ -142,8 +149,8 @@ describe("appearanceCss", () => {
 
   it("paints the whole document behind a backdrop so the browser canvas matches", () => {
     const css = appearanceCss(defaultAdminAppearance)
-    expect(css).toContain('html:has([data-backdrop="ocean"][data-backdrop-soft]) {\n  background-image: var(--gradient-ocean-soft);')
-    expect(css).toContain('html:has([data-backdrop="ocean"]:not([data-backdrop-soft])) {\n  background-image: var(--gradient-ocean);')
+    expect(css).toContain('html:has([data-backdrop="ocean"]:not([data-backdrop-vivid])) {\n  background-image: var(--gradient-ocean-soft);')
+    expect(css).toContain('html:has([data-backdrop="ocean"][data-backdrop-vivid]) {\n  background-image: var(--gradient-ocean);')
   })
 
   it("paints a popup opened from a gradient surface with that surface's gradient", () => {
@@ -165,8 +172,8 @@ describe("appearanceCss", () => {
     )
   })
 
-  it("emits backdrop selectors including the soft variant", () => {
-    expect(css).toContain('[data-backdrop="ocean"][data-backdrop-soft]')
+  it("emits backdrop selectors including the vivid variant", () => {
+    expect(css).toContain('[data-backdrop="ocean"][data-backdrop-vivid]')
   })
 
   it("emits gradient variables for all twenty gradients", () => {

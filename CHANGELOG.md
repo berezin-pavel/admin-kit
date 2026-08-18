@@ -55,20 +55,20 @@ tints, borders and focus rings stay visible.
 a derived soft tint for page backdrops) and twenty accent colours, all measured in tests — text
 against 33 points along the gradient, text on hovered controls (8 % and 16 % overlays), every
 filled accent pair both through 8-bit hex and in continuous precision. `AdminAppearance` is one
-value: `accent`, `sidebar`, `signIn`, `page` (`{ gradient, soft }`), `pages` per page id, `blocks`
-per block id (`{ gradient, heading }`); `isAdminAppearance` validates what you read back,
-`defaultAdminAppearance` is the shipped look, `resolvePageBackdrop` picks a page's backdrop.
-`AppearanceProvider` (`value`/`onChange`/`editable`) hands it to `Block`, the card of the work
-area: it resolves its gradient by id, and in edit mode shows a corner button with the swatch grid
-and — on widgets — the heading choice (muted, prominent, hidden). Every widget, `widget-table`,
-`page-header`, page sections, the form's actions, the tab strip and `page-auth`'s card take a
-`blockId`.
+value: `accent`, `sidebar`, `signIn`, `page` (a gradient id or null; backdrops are always the soft
+tint), `pages` per page id, `blocks` per block id (`{ gradient, heading }`); `isAdminAppearance`
+validates what you read back, `defaultAdminAppearance` is the shipped look, `resolvePageBackdrop`
+picks a page's backdrop. `AppearanceProvider` (`value`/`onChange`/`editable`) hands it to `Block`,
+the card of the work area: it resolves its gradient by id, and in edit mode shows a corner button
+with the swatch grid and — on widgets — the heading choice (muted, prominent, hidden). Every
+widget, `widget-table`, `page-header`, page sections, the form's actions, the tab strip and
+`page-auth`'s card take a `blockId`.
 
 **New** — `appearance-menu`, the fourth footer control: accent swatches, one select each for the
-sidebar, the sign-in screen and the default page backdrop (with a soft-tint checkbox), and a row
-per page. `admin-shell` gained `backdrop={{ gradient, soft }}` for the page backdrop; the burger
-panel now receives the sidebar gradient (it never did). `locale-ru` gained `adminAppearance` and
-`appearanceMenu` slices with Russian names for all forty palette entries.
+sidebar, the sign-in screen and the default page backdrop, and a row per page. `admin-shell` gained
+`backdrop={gradientId}` for the page backdrop; the burger panel now receives the sidebar gradient
+(it never did). `locale-ru` gained `adminAppearance` and `appearanceMenu` slices with Russian names
+for all forty palette entries.
 
 **Project** — the showcase has a `/palette` page with every gradient and accent on live controls;
 the demo stores one appearance in localStorage, edits it through the menu and the corner buttons,

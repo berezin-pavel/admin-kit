@@ -173,8 +173,8 @@ describe("gradientIds and gradientPalette", () => {
         gradient.softLight.to,
       ]) {
         const l = hexToOklch(hex).l
-        expect(l).toBeGreaterThanOrEqual(0.84)
-        expect(l).toBeLessThanOrEqual(0.92)
+        expect(l).toBeGreaterThanOrEqual(0.8)
+        expect(l).toBeLessThanOrEqual(0.94)
       }
       for (const sample of samples) {
         expect(contrastRatio(sample, lightForegroundHex)).toBeGreaterThanOrEqual(7)
@@ -193,8 +193,8 @@ describe("gradientIds and gradientPalette", () => {
         gradient.softDark.to,
       ]) {
         const l = hexToOklch(hex).l
-        expect(l).toBeGreaterThanOrEqual(0.26)
-        expect(l).toBeLessThanOrEqual(0.34)
+        expect(l).toBeGreaterThanOrEqual(0.22)
+        expect(l).toBeLessThanOrEqual(0.36)
       }
       for (const sample of samples) {
         expect(contrastRatio(sample, darkForegroundHex)).toBeGreaterThanOrEqual(7)
@@ -287,7 +287,7 @@ describe("defaultAdminAppearance", () => {
       accent: "emerald",
       sidebar: null,
       signIn: null,
-      page: { gradient: null, soft: true },
+      page: null,
       pages: {},
       blocks: {},
     })
@@ -304,13 +304,20 @@ describe("resolvePageBackdrop", () => {
   it("uses the page-specific override when present", () => {
     const appearance = {
       ...defaultAdminAppearance,
-      pages: { orders: { gradient: "ocean" as const, soft: false } },
+      pages: { orders: "ocean" as const },
     }
-    expect(resolvePageBackdrop(appearance, "orders")).toEqual({
-      gradient: "ocean",
-      soft: false,
-    })
+    expect(resolvePageBackdrop(appearance, "orders")).toBe("ocean")
     expect(resolvePageBackdrop(appearance, "products")).toEqual(appearance.page)
+  })
+
+  it("treats a stored null override as no backdrop on that page", () => {
+    const appearance = {
+      ...defaultAdminAppearance,
+      page: "ocean" as const,
+      pages: { orders: null },
+    }
+    expect(resolvePageBackdrop(appearance, "orders")).toBeNull()
+    expect(resolvePageBackdrop(appearance, "products")).toBe("ocean")
   })
 
   it("falls back to the page backdrop when no pageId is given", () => {

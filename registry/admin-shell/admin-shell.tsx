@@ -34,7 +34,7 @@ type AdminShellBaseProps = {
   sidebarProfile?: ReactNode
   collapsed?: boolean
   sidebarGradient?: string
-  backdrop?: { gradient: string | null; soft?: boolean }
+  backdrop?: string | null
   children?: ReactNode
   className?: string
   labels?: AdminShellLabels
@@ -106,8 +106,7 @@ export function AdminShell({
         "flex h-svh flex-col gap-2 bg-background p-2 text-foreground md:flex-row md:gap-4 md:p-4",
         className
       )}
-      data-backdrop={backdrop?.gradient || undefined}
-      data-backdrop-soft={backdrop?.gradient && backdrop.soft ? "" : undefined}
+      data-backdrop={backdrop || undefined}
     >
       {header === false ? (
         <div

@@ -4,7 +4,6 @@ import { useId, type ReactElement, type ReactNode } from "react"
 import { Palette } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import {
   Popover,
@@ -36,7 +35,6 @@ export interface AppearanceMenuLabels {
   signIn?: string
   page?: string
   pages?: string
-  soft?: string
   inherit?: string
   none?: string
   gradients?: Partial<Record<GradientId, string>>
@@ -71,7 +69,6 @@ const defaultLabels: Required<Omit<AppearanceMenuLabels, "gradients" | "accents"
   signIn: "Sign-in screen",
   page: "Page background",
   pages: "Per page",
-  soft: "Soft tint",
   inherit: "Same as default",
   none: "No gradient",
 }
@@ -84,7 +81,6 @@ function resolveLabels(labels: AppearanceMenuLabels | undefined): ResolvedLabels
     signIn: labels?.signIn ?? defaultLabels.signIn,
     page: labels?.page ?? defaultLabels.page,
     pages: labels?.pages ?? defaultLabels.pages,
-    soft: labels?.soft ?? defaultLabels.soft,
     inherit: labels?.inherit ?? defaultLabels.inherit,
     none: labels?.none ?? defaultLabels.none,
     gradients: labels?.gradients ?? {},
@@ -173,7 +169,6 @@ export function AppearanceMenu({
   const sidebarId = `${baseId}-sidebar`
   const signInId = `${baseId}-sign-in`
   const pageId = `${baseId}-page`
-  const softId = `${baseId}-soft`
 
   const selectAccent = (id: AccentId) => {
     onChange({ ...value, accent: id })
@@ -188,14 +183,7 @@ export function AppearanceMenu({
   }
 
   const selectPageBackground = (next: GradientChoice) => {
-    onChange({
-      ...value,
-      page: { ...value.page, gradient: next === "none" ? null : next },
-    })
-  }
-
-  const setPageSoft = (soft: boolean) => {
-    onChange({ ...value, page: { ...value.page, soft } })
+    onChange({ ...value, page: next === "none" ? null : next })
   }
 
   const selectPageGradient = (pageEntryId: string, next: PageGradientChoice) => {
@@ -205,25 +193,9 @@ export function AppearanceMenu({
       onChange({ ...value, pages: nextPages })
       return
     }
-    const gradient = next === "none" ? null : next
-    const hasOverride = Object.hasOwn(value.pages, pageEntryId)
-    const soft = hasOverride ? value.pages[pageEntryId].soft : value.page.soft
     onChange({
       ...value,
-      pages: { ...value.pages, [pageEntryId]: { gradient, soft } },
-    })
-  }
-
-  const togglePageSoft = (pageEntryId: string, soft: boolean) => {
-    if (!Object.hasOwn(value.pages, pageEntryId)) {
-      return
-    }
-    onChange({
-      ...value,
-      pages: {
-        ...value.pages,
-        [pageEntryId]: { ...value.pages[pageEntryId], soft },
-      },
+      pages: { ...value.pages, [pageEntryId]: next === "none" ? null : next },
     })
   }
 
@@ -347,7 +319,7 @@ export function AppearanceMenu({
               {labels.page}
             </Label>
             <Select<GradientChoice>
-              value={value.page.gradient ?? "none"}
+              value={value.page ?? "none"}
               onValueChange={(next) => {
                 if (next === null) {
                   return
@@ -357,7 +329,7 @@ export function AppearanceMenu({
             >
               <SelectTrigger id={pageId} className="w-full">
                 <SelectValue>
-                  {renderGradientChoice(value.page.gradient ?? "none", labels)}
+                  {renderGradientChoice(value.page ?? "none", labels)}
                 </SelectValue>
               </SelectTrigger>
               <SelectContent
@@ -369,15 +341,6 @@ export function AppearanceMenu({
                 <GradientSelectItems labels={labels} />
               </SelectContent>
             </Select>
-            <div className="flex items-center gap-2">
-              <Checkbox
-                id={softId}
-                checked={value.page.soft}
-                onCheckedChange={(next) => setPageSoft(next)}
-                disabled={value.page.gradient === null}
-              />
-              <Label htmlFor={softId}>{labels.soft}</Label>
-            </div>
           </section>
 
           {pages.length > 0 ? (
@@ -388,12 +351,9 @@ export function AppearanceMenu({
               <div className="flex flex-col gap-2">
                 {pages.map((page) => {
                   const hasOverride = Object.hasOwn(value.pages, page.id)
-                  const override = value.pages[page.id]
                   const selectValue: PageGradientChoice = !hasOverride
                     ? "inherit"
-                    : (override.gradient ?? "none")
-                  const softChecked = hasOverride ? override.soft : false
-                  const softDisabled = !hasOverride || override.gradient === null
+                    : (value.pages[page.id] ?? "none")
                   const rowSelectId = `${baseId}-page-${page.id}`
 
                   return (
@@ -428,12 +388,6 @@ export function AppearanceMenu({
                           <GradientSelectItems labels={labels} />
                         </SelectContent>
                       </Select>
-                      <Checkbox
-                        aria-label={`${page.label}: ${labels.soft}`}
-                        checked={softChecked}
-                        onCheckedChange={(next) => togglePageSoft(page.id, next)}
-                        disabled={softDisabled}
-                      />
                     </div>
                   )
                 })}

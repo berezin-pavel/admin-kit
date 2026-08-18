@@ -148,13 +148,13 @@ describe("the shell paints its surfaces through data attributes", () => {
     )
   })
 
-  it("sets data-backdrop and data-backdrop-soft on the work area for a soft gradient", () => {
+  it("sets data-backdrop on the work area for a chosen gradient", () => {
     const { container } = render(
       <AdminShell
         appName="Store"
         nav={[]}
         activeHref="/"
-        backdrop={{ gradient: "ocean", soft: true }}
+        backdrop="ocean"
       >
         <p>Work</p>
       </AdminShell>
@@ -163,34 +163,15 @@ describe("the shell paints its surfaces through data attributes", () => {
     const main = container.firstElementChild
 
     expect(main).toHaveAttribute("data-backdrop", "ocean")
-    expect(main).toHaveAttribute("data-backdrop-soft", "")
   })
 
-  it("sets data-backdrop without the soft attribute when soft is false or omitted", () => {
-    const { container } = render(
-      <AdminShell
-        appName="Store"
-        nav={[]}
-        activeHref="/"
-        backdrop={{ gradient: "ocean", soft: false }}
-      >
-        <p>Work</p>
-      </AdminShell>
-    )
-
-    const main = container.firstElementChild
-
-    expect(main).toHaveAttribute("data-backdrop", "ocean")
-    expect(main).not.toHaveAttribute("data-backdrop-soft")
-  })
-
-  it("sets neither attribute when backdrop has no gradient or is omitted", () => {
+  it("sets no data-backdrop when the backdrop is null or omitted", () => {
     const { container: withNullGradient } = render(
       <AdminShell
         appName="Store"
         nav={[]}
         activeHref="/"
-        backdrop={{ gradient: null }}
+        backdrop={null}
       >
         <p>Work</p>
       </AdminShell>
@@ -198,9 +179,6 @@ describe("the shell paints its surfaces through data attributes", () => {
 
     expect(withNullGradient.firstElementChild).not.toHaveAttribute(
       "data-backdrop"
-    )
-    expect(withNullGradient.firstElementChild).not.toHaveAttribute(
-      "data-backdrop-soft"
     )
 
     const { container: withoutBackdrop } = render(
@@ -211,9 +189,6 @@ describe("the shell paints its surfaces through data attributes", () => {
 
     expect(withoutBackdrop.firstElementChild).not.toHaveAttribute(
       "data-backdrop"
-    )
-    expect(withoutBackdrop.firstElementChild).not.toHaveAttribute(
-      "data-backdrop-soft"
     )
   })
 
@@ -281,12 +256,16 @@ describe("page-auth takes a gradient", () => {
       </PageAuth>
     )
 
-  it("marks the wrapper behind the card with the named gradient", () => {
+  it("marks the wrapper behind the card with the named gradient, vivid", () => {
     const { container } = renderAuth("dusk")
 
     expect(container.firstElementChild).toHaveAttribute(
       "data-backdrop",
       "dusk"
+    )
+    expect(container.firstElementChild).toHaveAttribute(
+      "data-backdrop-vivid",
+      ""
     )
   })
 
@@ -343,6 +322,9 @@ describe("page-auth takes a gradient", () => {
     const { container } = renderAuth(undefined)
 
     expect(container.firstElementChild).not.toHaveAttribute("data-backdrop")
+    expect(container.firstElementChild).not.toHaveAttribute(
+      "data-backdrop-vivid"
+    )
     expect(getByTextIn(container, "Store")).toHaveClass("text-muted-foreground")
   })
 })

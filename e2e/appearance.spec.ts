@@ -76,7 +76,6 @@ test("a per-page backdrop chosen in the menu paints only that page", async ({
   await expect(page.locator("[data-backdrop]").first()).toHaveAttribute("data-backdrop", "grape", {
     timeout: HYDRATION_POLL_TIMEOUT,
   })
-  await expect(page.locator("[data-backdrop]").first()).toHaveAttribute("data-backdrop-soft", "")
 
   await page.goto("/demo")
   await expect(page.locator("[data-backdrop]").first()).toHaveAttribute("data-backdrop", "ocean", {

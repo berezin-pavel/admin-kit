@@ -58,25 +58,37 @@ function fitChromaToGamut(color: Oklch): Oklch {
   return bestCandidate ?? color
 }
 
+const SOFT_STOP_LIGHTNESS: Record<"light" | "dark", { from: number; via: number; to: number }> = {
+  light: { from: 0.86, via: 0.91, to: 0.84 },
+  dark: { from: 0.27, via: 0.32, to: 0.25 },
+}
+
+const SOFT_STOP_HUE_SHIFT: { from: number; via: number; to: number } = {
+  from: -18,
+  via: 0,
+  to: 18,
+}
+
 export function softStops(
   surface: GradientStops,
   scheme: "light" | "dark"
 ): GradientStops {
-  const targetLightness = scheme === "light" ? 0.88 : 0.3
-  const chromaScale = scheme === "light" ? 0.75 : 0.7
-  const chromaCap = scheme === "light" ? 0.09 : 0.08
+  const chromaScale = scheme === "light" ? 0.9 : 0.8
+  const chromaCap = scheme === "light" ? 0.1 : 0.09
+  const lightness = SOFT_STOP_LIGHTNESS[scheme]
 
-  const transform = (hex: string): string => {
+  const transform = (hex: string, stop: "from" | "via" | "to"): string => {
     const oklch = hexToOklch(hex)
     const chroma = Math.min(oklch.c * chromaScale, chromaCap)
-    return oklchToHex(fitChromaToGamut({ l: targetLightness, c: chroma, h: oklch.h }))
+    const hue = (oklch.h + SOFT_STOP_HUE_SHIFT[stop] + 360) % 360
+    return oklchToHex(fitChromaToGamut({ l: lightness[stop], c: chroma, h: hue }))
   }
 
   return {
     angle: surface.angle,
-    from: transform(surface.from),
-    via: transform(surface.via),
-    to: transform(surface.to),
+    from: transform(surface.from, "from"),
+    via: transform(surface.via, "via"),
+    to: transform(surface.to, "to"),
   }
 }
 
@@ -378,17 +390,12 @@ export interface BlockAppearance {
   heading?: BlockHeading
 }
 
-export interface PageBackdrop {
-  gradient: GradientId | null
-  soft: boolean
-}
-
 export interface AdminAppearance {
   accent: AccentId
   sidebar: GradientId | null
   signIn: GradientId | null
-  page: PageBackdrop
-  pages: Record<string, PageBackdrop>
+  page: GradientId | null
+  pages: Record<string, GradientId | null>
   blocks: Record<string, BlockAppearance>
 }
 
@@ -396,7 +403,7 @@ export const defaultAdminAppearance: AdminAppearance = {
   accent: "emerald",
   sidebar: null,
   signIn: null,
-  page: { gradient: null, soft: true },
+  page: null,
   pages: {},
   blocks: {},
 }
@@ -404,12 +411,9 @@ export const defaultAdminAppearance: AdminAppearance = {
 export function resolvePageBackdrop(
   appearance: AdminAppearance,
   pageId?: string
-): PageBackdrop {
-  if (pageId !== undefined) {
-    const override = appearance.pages[pageId]
-    if (override) {
-      return override
-    }
+): GradientId | null {
+  if (pageId !== undefined && Object.hasOwn(appearance.pages, pageId)) {
+    return appearance.pages[pageId]
   }
   return appearance.page
 }

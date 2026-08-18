@@ -151,7 +151,6 @@ export default function PalettePage() {
               <div className="flex flex-col gap-1">
                 <div
                   data-backdrop={gradient.id}
-                  data-backdrop-soft=""
                   className="h-6 rounded-md"
                 />
                 <span className="text-xs text-muted-foreground">

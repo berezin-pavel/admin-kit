@@ -81,13 +81,19 @@ describe("isAdminAppearance", () => {
     ).toBe(true)
   })
 
-  it("rejects a page backdrop missing soft", () => {
+  it("rejects an unknown page gradient", () => {
     expect(
       isAdminAppearance({
         ...DEMO_APPEARANCE_DEFAULT,
-        page: { gradient: null },
+        page: "coral",
       })
     ).toBe(false)
+  })
+
+  it("accepts a null page backdrop", () => {
+    expect(
+      isAdminAppearance({ ...DEMO_APPEARANCE_DEFAULT, page: null })
+    ).toBe(true)
   })
 
   it("rejects a block with an unknown heading", () => {

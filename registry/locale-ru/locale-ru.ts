@@ -79,7 +79,6 @@ const appearanceMenuRu = {
   signIn: "Экран входа",
   page: "Фон страниц",
   pages: "По страницам",
-  soft: "Мягкий фон",
   inherit: "Как по умолчанию",
   none: "Без градиента",
   gradients: gradientNamesRu,
