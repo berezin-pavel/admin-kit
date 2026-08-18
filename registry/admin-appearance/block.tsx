@@ -56,6 +56,7 @@ export function Block({
       data-block=""
       data-block-id={id}
       data-gradient={resolvedGradient}
+      data-heading={stored.heading}
       className={cn("group/block relative", className)}
       {...rest}
     >

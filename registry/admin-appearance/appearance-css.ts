@@ -63,7 +63,7 @@ function isBlockAppearance(value: unknown) {
   }
   if (
     value.heading !== undefined &&
-    !BLOCK_HEADINGS.includes(value.heading as BlockHeading)
+    !BLOCK_HEADINGS.some((heading) => heading === value.heading)
   ) {
     return false
   }
@@ -132,6 +132,32 @@ const SURFACE_RULE = `[data-gradient] {
   --sidebar-active-foreground: var(--surface-foreground);
 }`
 
+const HEADING_RULE = `[data-block][data-heading="muted"] [data-slot="card-title"] {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 500;
+  color: var(--muted-foreground);
+}
+
+[data-block][data-heading="prominent"] [data-slot="card-title"] {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+[data-block][data-heading="none"] [data-slot="card-title"] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}`
+
 function surfaceSelectorBlocks(): string {
   return gradientIds
     .map(
@@ -173,5 +199,6 @@ export function appearanceCss(appearance: AdminAppearance): string {
     surfaceSelectorBlocks(),
     `[data-backdrop] {\n  background-image: var(--backdrop-gradient);\n  --backdrop-foreground: var(--backdrop-text);\n}`,
     backdropSelectorBlocks(),
+    HEADING_RULE,
   ].join("\n\n")
 }

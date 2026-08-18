@@ -272,3 +272,38 @@ describe("Block corner menu interaction", () => {
     expect(within(headingGroup).getAllByRole("radio")).toHaveLength(3)
   })
 })
+
+describe("Block heading attribute", () => {
+  it("marks the card with the stored heading choice", () => {
+    const { container } = render(
+      <AppearanceProvider
+        value={{
+          ...defaultAdminAppearance,
+          blocks: { a: { heading: "prominent" } },
+        }}
+        onChange={() => {}}
+      >
+        <Block id="a">
+          <p>Content</p>
+        </Block>
+      </AppearanceProvider>
+    )
+
+    expect(container.querySelector("[data-block]")).toHaveAttribute(
+      "data-heading",
+      "prominent"
+    )
+  })
+
+  it("carries no heading attribute when nothing is stored", () => {
+    const { container } = render(
+      <Block id="a">
+        <p>Content</p>
+      </Block>
+    )
+
+    expect(container.querySelector("[data-block]")).not.toHaveAttribute(
+      "data-heading"
+    )
+  })
+})

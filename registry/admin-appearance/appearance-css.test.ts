@@ -133,6 +133,13 @@ describe("appearanceCss", () => {
     expect(css).toContain('[data-gradient="ocean"]')
   })
 
+  it("restyles a block title from the stored heading choice", () => {
+    const css = appearanceCss(defaultAdminAppearance)
+    expect(css).toContain('[data-block][data-heading="prominent"] [data-slot="card-title"]')
+    expect(css).toContain('[data-block][data-heading="muted"] [data-slot="card-title"]')
+    expect(css).toMatch(/\[data-heading="none"\] \[data-slot="card-title"\] \{[^}]*clip: rect\(0, 0, 0, 0\)/)
+  })
+
   it("gives --secondary the same tint strength as --muted", () => {
     expect(css).toContain(
       "--secondary: color-mix(in oklch, var(--surface-foreground) 16%, transparent);"
