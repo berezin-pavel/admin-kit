@@ -118,7 +118,7 @@ export function PageList<Row>({
   maxBodyHeight,
 }: PageListProps<Row>) {
   return (
-    <div className={cn("flex flex-col gap-6", className)}>
+    <div className={cn("flex flex-col gap-4", className)}>
       <PageHeader
         title={title}
         description={description}

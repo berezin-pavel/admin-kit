@@ -53,7 +53,7 @@ export function PageTabs({
                   key={item.id}
                   value={item.id}
                   disabled={item.disabled}
-                  className="h-10 flex-none gap-3 rounded-md border-transparent px-2 text-[0.9375rem] font-medium text-sidebar-foreground shadow-none hover:bg-sidebar-active/50 hover:text-sidebar-active-foreground data-active:bg-sidebar-active data-active:font-semibold data-active:text-sidebar-active-foreground data-active:shadow-none dark:data-active:border-transparent dark:data-active:bg-sidebar-active"
+                  className="h-10 flex-none gap-3 rounded-md border-transparent px-2 text-[0.9375rem] font-medium text-sidebar-foreground shadow-none hover:bg-sidebar-active/50 hover:text-sidebar-active-foreground data-active:bg-sidebar-active data-active:font-semibold data-active:text-sidebar-active-foreground data-active:shadow-none! dark:data-active:border-transparent! dark:data-active:bg-sidebar-active"
                 >
                   {Icon ? (
                     <span className="flex size-6 shrink-0 items-center justify-center">

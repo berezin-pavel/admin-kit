@@ -157,7 +157,13 @@ export function WidgetDonut({
               <PieChart>
                 <ChartTooltip
                   isAnimationActive={false}
-                  content={<ChartTooltipContent hideLabel nameKey="label" />}
+                  content={
+                    <ChartTooltipContent
+                      hideLabel
+                      nameKey="label"
+                      className="bg-card backdrop-blur-lg"
+                    />
+                  }
                 />
                 <Pie
                   data={shares}

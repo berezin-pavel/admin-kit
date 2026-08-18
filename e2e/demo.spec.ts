@@ -49,7 +49,8 @@ test("the order screen splits into working tabs", async ({ page }) => {
   expect(history).not.toBe(overview)
 
   await page.getByRole("tab", { name: "Edit" }).click()
-  await expect(page).toHaveURL(/\/demo\/order\/edit$/)
+  await expect(page.getByRole("tab", { name: "Edit" })).toHaveAttribute("aria-selected", "true")
+  await expect(page.getByRole("tabpanel").getByRole("button", { name: /save/i })).toBeVisible()
 })
 
 test("the order edit form picks a customer by search and saves", async ({

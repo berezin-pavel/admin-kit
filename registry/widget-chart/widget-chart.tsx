@@ -136,7 +136,7 @@ export function WidgetChart({
                 />
                 <ChartTooltip
                   isAnimationActive={false}
-                  content={<ChartTooltipContent />}
+                  content={<ChartTooltipContent className="bg-card backdrop-blur-lg" />}
                 />
                 {series.length > 1 ? (
                   <ChartLegend content={<ChartLegendContent />} />
@@ -167,7 +167,7 @@ export function WidgetChart({
                 />
                 <ChartTooltip
                   isAnimationActive={false}
-                  content={<ChartTooltipContent />}
+                  content={<ChartTooltipContent className="bg-card backdrop-blur-lg" />}
                 />
                 {series.length > 1 ? (
                   <ChartLegend content={<ChartLegendContent />} />

@@ -156,7 +156,7 @@ describe("appearanceCss", () => {
 
   it("makes nested card surfaces transparent on a gradient", () => {
     const css = appearanceCss(defaultAdminAppearance)
-    expect(css).toMatch(/\[data-gradient\] \{[^}]*--card: transparent;/)
+    expect(css).toMatch(/\[data-gradient\] \{[^}]*--card: color-mix\(in oklch, var\(--surface-foreground\) 20%, transparent\);/)
   })
 
   it("gives --secondary the same tint strength as --muted", () => {

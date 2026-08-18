@@ -267,7 +267,7 @@ export function WidgetTable<Row>({
   )
 
   return (
-    <Block id={blockId} className={className}>
+    <Block id={blockId} headings className={className}>
       {hasHeader ? (
         <CardHeader className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex flex-wrap items-center gap-3">
@@ -412,7 +412,7 @@ export function WidgetTable<Row>({
                     <TableHead
                       className={cn(
                         "w-px [&:has([role=checkbox])]:pr-4",
-                        stickyHeader && "sticky top-0 z-10 bg-card"
+                        stickyHeader && "sticky top-0 z-10 bg-card backdrop-blur-md"
                       )}
                     >
                       <Checkbox
@@ -445,7 +445,7 @@ export function WidgetTable<Row>({
                       className={cn(
                         column.align === "right" && "text-right",
                         column.sortable && onSortChange && "p-0",
-                        stickyHeader && "sticky top-0 z-10 bg-card"
+                        stickyHeader && "sticky top-0 z-10 bg-card backdrop-blur-md"
                       )}
                     >
                       {column.sortable && onSortChange ? (

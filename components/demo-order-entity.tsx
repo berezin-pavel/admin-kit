@@ -258,7 +258,7 @@ export function DemoOrderEntity() {
               {strings.sendReceiptButton}
             </Button>
             <Button
-              variant="destructive"
+              variant="outline"
               disabled={cancelled}
               onClick={() => setConfirmOpen(true)}
             >

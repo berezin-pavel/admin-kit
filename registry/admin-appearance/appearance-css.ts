@@ -114,7 +114,7 @@ const SURFACE_DECLARATIONS = `
   background-image: var(--surface-gradient);
   color: var(--surface-foreground);
   --foreground: var(--surface-foreground);
-  --card: transparent;
+  --card: color-mix(in oklch, var(--surface-foreground) 20%, transparent);
   --card-foreground: var(--surface-foreground);
   --muted-foreground: var(--surface-foreground);
   --background: color-mix(in oklch, var(--surface-foreground) 8%, transparent);
