@@ -101,12 +101,12 @@ side swaps for a selection bar.
 `sidebar-active` pair. The CLI pulls the theme in for you; an existing install that only ever had
 `tabs` should re-pull the item so the dependency is recorded.
 
-**Note on file locations** — the two new items land in `components/` rather than
-`components/admin/`, unlike the fifty-three items that came before. That is deliberate: with a
-subdirectory in the target, the CLI writes a file to one path and rewrites its imports to another,
-so any item importing a sibling item resolves to a path that does not exist. The remaining items
-move to the same flat layout in a separate patch release. Until then a project holding both will
-have admin-kit files in two places; the imports are correct either way.
+**Breaking** — every item now installs into `components/` rather than `components/admin/`. With a
+subdirectory in the target the CLI wrote a file to one path and rewrote its imports to another, so
+any item importing a sibling item resolved to a path that did not exist. Flattening the layout
+makes both sides agree. A project that already has admin-kit files will end up holding them in two
+places after pulling an update: the new copies under `components/` are the live ones, and the old
+`components/admin/` directory can be deleted once nothing of your own imports from it.
 
 **Project** — a showcase section for the editor with its CSS output on, a `/demo/appearance` page
 that repaints the demo for real and persists across reloads, 42 end-to-end checks, and 371 unit
