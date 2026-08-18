@@ -1,4 +1,4 @@
-import type { CSSProperties, ReactNode } from "react"
+import type { ReactNode } from "react"
 
 import { cn } from "@/lib/utils"
 
@@ -34,6 +34,7 @@ type AdminShellBaseProps = {
   sidebarProfile?: ReactNode
   collapsed?: boolean
   sidebarGradient?: string
+  workArea?: { gradient: string | null; soft?: boolean }
   children?: ReactNode
   className?: string
   labels?: AdminShellLabels
@@ -41,23 +42,6 @@ type AdminShellBaseProps = {
 
 export type AdminShellProps = AdminShellBaseProps &
   ({ header?: true; actions?: ReactNode } | { header: false; actions?: never })
-
-function gradientSurfaceStyle(
-  gradient?: string
-): (CSSProperties & Record<string, string>) | undefined {
-  return gradient
-    ? {
-        backgroundImage: `var(--gradient-${gradient})`,
-        color: `var(--gradient-${gradient}-foreground)`,
-        "--foreground": `var(--gradient-${gradient}-foreground)`,
-        "--card-foreground": `var(--gradient-${gradient}-foreground)`,
-        "--muted-foreground": `var(--gradient-${gradient}-foreground)`,
-        "--sidebar-foreground": `var(--gradient-${gradient}-foreground)`,
-        "--sidebar-active": `color-mix(in oklch, var(--gradient-${gradient}-foreground) 10%, transparent)`,
-        "--sidebar-active-foreground": `var(--gradient-${gradient}-foreground)`,
-      }
-    : undefined
-}
 
 export function AdminShell({
   appName,
@@ -70,6 +54,7 @@ export function AdminShell({
   sidebarProfile,
   collapsed = false,
   sidebarGradient,
+  workArea,
   header = true,
   actions,
   children,
@@ -104,6 +89,7 @@ export function AdminShell({
       appName={appName}
       footer={sidebarFooter}
       openMenuLabel={openMenuLabel}
+      gradient={sidebarGradient}
     >
       <AdminNav
         nav={nav}
@@ -139,7 +125,7 @@ export function AdminShell({
           "hidden w-60 shrink-0 flex-col overflow-hidden rounded-xl bg-card ring-1 ring-foreground/10 md:flex",
           collapsed && "md:w-14"
         )}
-        style={gradientSurfaceStyle(sidebarGradient)}
+        data-gradient={sidebarGradient || undefined}
       >
         {collapsed ? (
           brand ? (
@@ -204,7 +190,13 @@ export function AdminShell({
             narrowActions={narrowActions}
           />
         ) : null}
-        <main className="min-h-0 flex-1 overflow-y-auto p-4 md:p-6">
+        <main
+          className="min-h-0 flex-1 overflow-y-auto p-4 md:p-6"
+          data-backdrop={workArea?.gradient || undefined}
+          data-backdrop-soft={
+            workArea?.gradient && workArea.soft ? "" : undefined
+          }
+        >
           {children}
         </main>
       </div>

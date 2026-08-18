@@ -1,4 +1,5 @@
-import { render, within } from "@testing-library/react"
+import { render, screen } from "@testing-library/react"
+import userEvent from "@testing-library/user-event"
 import { describe, expect, it } from "vitest"
 
 import { AdminShell } from "./admin-shell/admin-shell"
@@ -82,8 +83,8 @@ describe.each(cases)("$name gradient surface", ({ render: renderCase }) => {
   })
 })
 
-describe("the shell's sidebar takes a gradient", () => {
-  it("paints the sidebar and leaves the work area alone", () => {
+describe("the shell paints its surfaces through data attributes", () => {
+  it("sets data-gradient on the sidebar when sidebarGradient is given", () => {
     const { container } = render(
       <AdminShell
         appName="Store"
@@ -95,108 +96,120 @@ describe("the shell's sidebar takes a gradient", () => {
       </AdminShell>
     )
 
-    expect(container.querySelector("aside")).toHaveStyle({
-      backgroundImage: "var(--gradient-brand)",
-      "--foreground": "var(--gradient-brand-foreground)",
-      "--card-foreground": "var(--gradient-brand-foreground)",
-      "--muted-foreground": "var(--gradient-brand-foreground)",
-      "--sidebar-foreground": "var(--gradient-brand-foreground)",
+    expect(container.querySelector("aside")).toHaveAttribute(
+      "data-gradient",
+      "brand"
+    )
+  })
+
+  it("leaves the sidebar and the work area without data-gradient otherwise", () => {
+    const { container } = render(
+      <AdminShell appName="Store" nav={[]} activeHref="/">
+        <p>Work</p>
+      </AdminShell>
+    )
+
+    expect(container.querySelector("aside")).not.toHaveAttribute(
+      "data-gradient"
+    )
+    expect(container.querySelector("main")).not.toHaveAttribute(
+      "data-gradient"
+    )
+  })
+
+  it("sets data-backdrop and data-backdrop-soft on the work area for a soft gradient", () => {
+    const { container } = render(
+      <AdminShell
+        appName="Store"
+        nav={[]}
+        activeHref="/"
+        workArea={{ gradient: "ocean", soft: true }}
+      >
+        <p>Work</p>
+      </AdminShell>
+    )
+
+    const main = container.querySelector("main")
+
+    expect(main).toHaveAttribute("data-backdrop", "ocean")
+    expect(main).toHaveAttribute("data-backdrop-soft", "")
+  })
+
+  it("sets data-backdrop without the soft attribute when soft is false or omitted", () => {
+    const { container } = render(
+      <AdminShell
+        appName="Store"
+        nav={[]}
+        activeHref="/"
+        workArea={{ gradient: "ocean", soft: false }}
+      >
+        <p>Work</p>
+      </AdminShell>
+    )
+
+    const main = container.querySelector("main")
+
+    expect(main).toHaveAttribute("data-backdrop", "ocean")
+    expect(main).not.toHaveAttribute("data-backdrop-soft")
+  })
+
+  it("sets neither attribute when workArea has no gradient or is omitted", () => {
+    const { container: withNullGradient } = render(
+      <AdminShell
+        appName="Store"
+        nav={[]}
+        activeHref="/"
+        workArea={{ gradient: null }}
+      >
+        <p>Work</p>
+      </AdminShell>
+    )
+
+    expect(withNullGradient.querySelector("main")).not.toHaveAttribute(
+      "data-backdrop"
+    )
+    expect(withNullGradient.querySelector("main")).not.toHaveAttribute(
+      "data-backdrop-soft"
+    )
+
+    const { container: withoutWorkArea } = render(
+      <AdminShell appName="Store" nav={[]} activeHref="/">
+        <p>Work</p>
+      </AdminShell>
+    )
+
+    expect(withoutWorkArea.querySelector("main")).not.toHaveAttribute(
+      "data-backdrop"
+    )
+    expect(withoutWorkArea.querySelector("main")).not.toHaveAttribute(
+      "data-backdrop-soft"
+    )
+  })
+
+  it("carries sidebarGradient into the burger panel's sheet", async () => {
+    const user = userEvent.setup()
+    render(
+      <AdminShell
+        appName="Store"
+        nav={[]}
+        activeHref="/"
+        header={false}
+        sidebarGradient="brand"
+      >
+        <p>Work</p>
+      </AdminShell>
+    )
+
+    await user.click(
+      screen.getByRole("button", { name: "Open navigation menu" })
+    )
+
+    const dialog = await screen.findByText("Store", {
+      selector: '[data-slot="sheet-title"]',
     })
-    expect(container.querySelector("main")?.getAttribute("style")).toBeNull()
-  })
+    const sheetContent = dialog.closest('[data-slot="sheet-content"]')
 
-  const shellWithNav = (sidebarGradient?: string) => (
-    <AdminShell
-      appName="Store"
-      nav={[
-        { href: "/orders", title: "Orders" },
-        { href: "/settings", title: "Settings" },
-      ]}
-      activeHref="/orders"
-      sidebarGradient={sidebarGradient}
-    >
-      <p>Work</p>
-    </AdminShell>
-  )
-
-  const findInactiveNavLink = (container: HTMLElement) =>
-    [...container.querySelectorAll("aside nav a")].find((link) =>
-      link.textContent?.includes("Settings")
-    )
-
-  it("carries the gradient foreground down to an inactive nav row", () => {
-    const { container } = render(shellWithNav("brand"))
-    const inactiveLink = findInactiveNavLink(container)
-
-    expect(inactiveLink).toBeTruthy()
-    expect(
-      getComputedStyle(inactiveLink as Element).getPropertyValue(
-        "--sidebar-foreground"
-      )
-    ).toBe("var(--gradient-brand-foreground)")
-  })
-
-  it("leaves an inactive nav row at the sidebar default without a gradient", () => {
-    const { container } = render(shellWithNav(undefined))
-    const inactiveLink = findInactiveNavLink(container)
-
-    expect(inactiveLink).toBeTruthy()
-    expect(
-      getComputedStyle(inactiveLink as Element).getPropertyValue(
-        "--sidebar-foreground"
-      )
-    ).toBe("")
-  })
-
-  const findActiveNavLink = (container: HTMLElement) =>
-    [...container.querySelectorAll("aside nav a")].find((link) =>
-      link.textContent?.includes("Orders")
-    )
-
-  it("overrides the active row with a translucent gradient overlay instead of the light-theme tint", () => {
-    const { container } = render(shellWithNav("brand"))
-    const activeLink = findActiveNavLink(container)
-
-    expect(activeLink).toBeTruthy()
-    const style = getComputedStyle(activeLink as Element)
-    expect(style.getPropertyValue("--sidebar-active")).toBe(
-      "color-mix(in oklch, var(--gradient-brand-foreground) 10%, transparent)"
-    )
-    expect(style.getPropertyValue("--sidebar-active-foreground")).toBe(
-      "var(--gradient-brand-foreground)"
-    )
-  })
-
-  it("leaves the active row at the sidebar default without a gradient", () => {
-    const { container } = render(shellWithNav(undefined))
-    const activeLink = findActiveNavLink(container)
-
-    expect(activeLink).toBeTruthy()
-    expect(
-      getComputedStyle(activeLink as Element).getPropertyValue(
-        "--sidebar-active"
-      )
-    ).toBe("")
-  })
-
-  it("carries the gradient foreground down to sidebarProfile content styled with text-foreground", () => {
-    const { container } = render(
-      <AdminShell
-        appName="Store"
-        nav={[]}
-        activeHref="/"
-        sidebarGradient="brand"
-        sidebarProfile={<span className="text-foreground">Alex Morgan</span>}
-      >
-        <p>Work</p>
-      </AdminShell>
-    )
-    const aside = container.querySelector("aside") as HTMLElement
-    const name = within(aside).getByText("Alex Morgan")
-
-    expect(
-      getComputedStyle(name).getPropertyValue("--foreground")
-    ).toBe("var(--gradient-brand-foreground)")
+    expect(sheetContent).toHaveAttribute("data-gradient", "brand")
   })
 })
 

@@ -38,9 +38,6 @@ export function DemoShell({ children }: { children: ReactNode }) {
   const locale = useDemoLocale()
   const assignment = useDemoGradientAssignment()
   const sidebarGradient = assignment.surfaces.shell
-  const footerButtonClassName = sidebarGradient
-    ? "bg-transparent dark:bg-transparent"
-    : undefined
 
   return (
     <>
@@ -66,10 +63,9 @@ export function DemoShell({ children }: { children: ReactNode }) {
               collapsed={collapsed}
               onToggle={() => setCollapsed((prev) => !prev)}
               labels={locale === "ru" ? localeRu.sidebarToggle : undefined}
-              className={footerButtonClassName}
             />
-            <DemoThemeToggle className={footerButtonClassName} />
-            <DemoLanguageToggle className={footerButtonClassName} />
+            <DemoThemeToggle />
+            <DemoLanguageToggle />
           </>
         }
       >
