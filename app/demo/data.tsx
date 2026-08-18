@@ -21,12 +21,14 @@ import { format } from "date-fns"
 import type { Locale } from "date-fns"
 import { enUS, ru } from "date-fns/locale"
 
-import { cn } from "@/lib/utils"
 import type { AdminNavItem } from "@/registry/admin-shell/admin-shell"
 import type { ComboboxFieldOption } from "@/registry/combobox-field/combobox-field"
 import type { DateRange } from "@/registry/date-range-field/date-range-field"
 import type { SelectFieldOption } from "@/registry/select-field/select-field"
-import type { StatusTone } from "@/registry/status-badge/status-badge"
+import {
+  StatusBadge,
+  type StatusTone,
+} from "@/registry/status-badge/status-badge"
 import type { WidgetActivityEntry } from "@/registry/widget-activity/widget-activity"
 import type { WidgetChartSeries } from "@/registry/widget-chart/widget-chart"
 import type { WidgetDonutSlice } from "@/registry/widget-donut/widget-donut"
@@ -51,13 +53,6 @@ export const orderStatusTone: Record<OrderStatus, StatusTone> = {
   "in-transit": "neutral",
   paid: "warning",
   cancelled: "danger",
-}
-
-const orderStatusClassName: Record<OrderStatus, string> = {
-  delivered: "text-primary",
-  "in-transit": "text-muted-foreground",
-  paid: "text-muted-foreground",
-  cancelled: "text-destructive",
 }
 
 export const orderStatusLabelByLocale: Record<
@@ -453,9 +448,9 @@ export function getDemoOrderColumns(
       id: "status",
       title: titles.status,
       cell: (row) => (
-        <span className={cn("font-medium", orderStatusClassName[row.status])}>
+        <StatusBadge tone={orderStatusTone[row.status]}>
           {statusLabel[row.status]}
-        </span>
+        </StatusBadge>
       ),
     },
     {
