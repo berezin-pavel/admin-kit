@@ -127,8 +127,9 @@ export function DemoOrderEdit() {
 
   return (
     <div className="flex flex-col gap-4">
-      <DemoOrderBreadcrumbs current="edit" />
       <PageForm
+        blockId="order.edit"
+        breadcrumbs={<DemoOrderBreadcrumbs current="edit" />}
         title={strings.title}
         description={strings.description}
         submitLabel={locale === "ru" ? localeRu.pageForm.submitLabel : undefined}

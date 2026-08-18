@@ -67,6 +67,19 @@ describe("page-list blocks", () => {
     ).toBeGreaterThan(0)
   })
 
+  it("forwards breadcrumbs into the header block", () => {
+    render(
+      <PageList
+        title="Orders"
+        breadcrumbs={<span>Home</span>}
+        columns={[{ id: "number", title: "Number", cell: () => "cell" }]}
+        rows={[]}
+      />
+    )
+
+    expect(screen.getByText("Home")).toBeInTheDocument()
+  })
+
   it("paints the table block with the gradient stored for its id", () => {
     const appearance = {
       ...defaultAdminAppearance,
@@ -128,6 +141,23 @@ describe("page-entity blocks", () => {
       container.querySelectorAll("[data-block]").length
     ).toBeGreaterThan(0)
   })
+
+  it("forwards breadcrumbs into the header block", () => {
+    render(
+      <PageEntity
+        title="Order 1024"
+        breadcrumbs={<span>Home</span>}
+        sections={[
+          {
+            id: "summary",
+            fields: [{ id: "total", label: "Total", value: "$10" }],
+          },
+        ]}
+      />
+    )
+
+    expect(screen.getByText("Home")).toBeInTheDocument()
+  })
 })
 
 describe("page-form blocks", () => {
@@ -170,6 +200,18 @@ describe("page-form blocks", () => {
       container.querySelectorAll("[data-block]").length
     ).toBeGreaterThan(0)
   })
+
+  it("forwards breadcrumbs into the header block", () => {
+    render(
+      <PageForm
+        title="Edit order"
+        breadcrumbs={<span>Home</span>}
+        sections={[{ title: "Details", children: <p>Fields</p> }]}
+      />
+    )
+
+    expect(screen.getByText("Home")).toBeInTheDocument()
+  })
 })
 
 describe("page-tabs blocks", () => {
@@ -203,5 +245,22 @@ describe("page-tabs blocks", () => {
     expect(
       container.querySelectorAll("[data-block]").length
     ).toBeGreaterThan(0)
+  })
+
+  it("renders breadcrumbs inside the tabs block, above the strip", () => {
+    const { container } = render(
+      <PageTabs
+        blockId="order"
+        breadcrumbs={<span>Home</span>}
+        value="one"
+        onValueChange={() => {}}
+        items={[{ id: "one", label: "One", content: <p>One content</p> }]}
+      />
+    )
+
+    const block = blockById(container, "order.tabs")
+    expect(
+      within(block as HTMLElement).getByText("Home")
+    ).toBeInTheDocument()
   })
 })

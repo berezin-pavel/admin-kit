@@ -40,7 +40,6 @@ import {
 } from "@/app/demo/data"
 import { demoDictionary } from "@/app/demo/locale"
 import { useDemoLocale } from "@/app/demo/locale-store"
-import { useDemoGradientAssignment } from "@/app/demo/theme-store"
 
 function getDefaultOverviewRangeValue(): string {
   const today = new Date()
@@ -83,7 +82,6 @@ function buildDemoMetricTrend(
 export default function DemoPage() {
   const locale = useDemoLocale()
   const strings = demoDictionary[locale].overview
-  const gradientAssignment = useDemoGradientAssignment()
   const emptyTitle = locale === "ru" ? localeRu.widgetList.emptyTitle : undefined
   const chartEmptyTitle =
     locale === "ru" ? localeRu.widgetChart.emptyTitle : undefined
@@ -190,7 +188,7 @@ export default function DemoPage() {
           trendTooltipFormat={(value) => formatDemoNumber(value, locale)}
           hint={strings.metricHint}
           loading={reloading}
-          gradient={gradientAssignment.blocks["orders-metric"]}
+          blockId="overview.orders"
         />
         <WidgetMetric
           title={strings.metricRevenueTitle}
@@ -204,7 +202,7 @@ export default function DemoPage() {
           trendTooltipFormat={(value) => formatDemoCurrency(value, locale)}
           hint={strings.metricHint}
           loading={reloading}
-          gradient={gradientAssignment.blocks["revenue-metric"]}
+          blockId="overview.revenue"
         />
         <WidgetMetric
           title={strings.metricAverageOrderTitle}
@@ -221,6 +219,7 @@ export default function DemoPage() {
           trendTooltipFormat={(value) => formatDemoCurrency(value, locale)}
           hint={strings.metricHint}
           loading={reloading}
+          blockId="overview.average"
         />
       </div>
       <div className="grid gap-4 md:grid-cols-3">
@@ -236,6 +235,7 @@ export default function DemoPage() {
             formatDemoCurrency(monthlyGoal.max, locale)
           )}
           loading={reloading}
+          blockId="overview.goal-revenue"
         />
         <WidgetProgress
           title={strings.progressOrdersTitle}
@@ -249,11 +249,13 @@ export default function DemoPage() {
             formatDemoNumber(monthlyOrdersGoal.max, locale)
           )}
           loading={reloading}
+          blockId="overview.goal-orders"
         />
         <WidgetQuickActions
           title={strings.quickActionsTitle}
           actions={overviewActions}
           loading={reloading}
+          blockId="overview.actions"
         />
       </div>
       <WidgetChart
@@ -263,6 +265,7 @@ export default function DemoPage() {
         hint={strings.financeChartHint}
         emptyTitle={chartEmptyTitle}
         loading={reloading}
+        blockId="overview.finance"
         toolbar={
           <DateRangeField
             value={rangeValue}
@@ -289,6 +292,7 @@ export default function DemoPage() {
           kind="bar"
           emptyTitle={chartEmptyTitle}
           loading={reloading}
+          blockId="overview.channel"
         />
         <WidgetChart
           title={strings.newCustomersChartTitle}
@@ -296,16 +300,18 @@ export default function DemoPage() {
           series={getDemoNewCustomersSeries(locale)}
           emptyTitle={chartEmptyTitle}
           loading={reloading}
+          blockId="overview.customers"
         />
       </div>
       <div className="grid gap-4 lg:grid-cols-2">
-        <DemoStandaloneTable loading={reloading} />
+        <DemoStandaloneTable loading={reloading} blockId="overview.recent-orders" />
         <div className="flex flex-col gap-4">
           <WidgetList
             title={strings.productsTitle}
             items={getDemoProductItems(locale)}
             emptyTitle={emptyTitle}
             loading={reloading}
+            blockId="overview.products"
           />
           <WidgetDonut
             title={strings.donutTitle}
@@ -313,6 +319,7 @@ export default function DemoPage() {
             slices={donutSlices}
             emptyTitle={donutEmptyTitle}
             loading={reloading}
+            blockId="overview.split"
           />
         </div>
       </div>
@@ -325,6 +332,7 @@ export default function DemoPage() {
           locale === "ru" ? localeRu.widgetActivity.dayFormat : undefined
         }
         loading={reloading}
+        blockId="overview.activity"
       />
     </div>
   )

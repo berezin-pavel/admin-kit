@@ -21,6 +21,7 @@ export interface PageTabsProps {
   value: string
   onValueChange: (value: string) => void
   actions?: ReactNode
+  breadcrumbs?: ReactNode
   blockId?: string
   className?: string
 }
@@ -30,6 +31,7 @@ export function PageTabs({
   value,
   onValueChange,
   actions,
+  breadcrumbs,
   blockId,
   className,
 }: PageTabsProps) {
@@ -41,6 +43,7 @@ export function PageTabs({
     >
       <Block id={blockId ? `${blockId}.tabs` : undefined}>
         <CardContent className="flex flex-wrap items-center justify-between gap-2 py-2">
+          {breadcrumbs ? <div className="w-full pb-2">{breadcrumbs}</div> : null}
           <div className="min-w-0 overflow-x-auto">
             <TabsList className="gap-1 bg-transparent p-0 group-data-horizontal/tabs:h-auto">
               {items.map((item) => {

@@ -24,6 +24,7 @@ export interface PageFormProps {
   title: string
   description?: string
   actions?: ReactNode
+  breadcrumbs?: ReactNode
   sections: readonly PageFormSection[]
   onSubmit?: () => void
   onCancel?: () => void
@@ -39,6 +40,7 @@ export function PageForm({
   title,
   description,
   actions,
+  breadcrumbs,
   sections,
   onSubmit,
   onCancel,
@@ -54,6 +56,7 @@ export function PageForm({
         title={title}
         description={description}
         actions={actions}
+        breadcrumbs={breadcrumbs}
         blockId={blockId ? `${blockId}.header` : undefined}
       />
       {status === "loading" ? (

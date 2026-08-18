@@ -300,6 +300,7 @@ export function DemoOrders() {
   return (
     <>
       <PageList
+        blockId="orders"
         title={strings.title}
         description={strings.description}
         actions={

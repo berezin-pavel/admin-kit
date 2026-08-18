@@ -37,6 +37,7 @@ export interface PageListProps<Row> {
   title: string
   description?: string
   actions?: ReactNode
+  breadcrumbs?: ReactNode
   filters?: readonly PageListFilter[]
   onFilterChange?: (id: string, value: string) => void
   onResetFilters?: () => void
@@ -83,6 +84,7 @@ export function PageList<Row>({
   title,
   description,
   actions,
+  breadcrumbs,
   filters,
   onFilterChange,
   onResetFilters,
@@ -121,6 +123,7 @@ export function PageList<Row>({
         title={title}
         description={description}
         actions={actions}
+        breadcrumbs={breadcrumbs}
         blockId={blockId ? `${blockId}.header` : undefined}
       />
 

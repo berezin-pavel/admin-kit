@@ -166,6 +166,7 @@ export function DemoOrderEntity() {
       icon: LayoutDashboard,
       content: (
         <PageEntity
+          blockId="order"
           title={strings.title}
           description={strings.description}
           status={reloading ? "loading" : "ready"}
@@ -187,6 +188,7 @@ export function DemoOrderEntity() {
             locale === "ru" ? localeRu.widgetActivity.dayFormat : undefined
           }
           loading={reloading}
+          blockId="order.history"
         />
       ),
     },
@@ -202,6 +204,7 @@ export function DemoOrderEntity() {
             locale === "ru" ? localeRu.widgetList.emptyTitle : undefined
           }
           loading={reloading}
+          blockId="order.related"
         />
       ),
     },
@@ -215,8 +218,9 @@ export function DemoOrderEntity() {
 
   return (
     <div className="flex flex-col gap-4">
-      <DemoOrderBreadcrumbs />
       <PageTabs
+        blockId="order"
+        breadcrumbs={<DemoOrderBreadcrumbs />}
         items={tabItems}
         value={tab}
         onValueChange={(next) => {

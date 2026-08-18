@@ -35,6 +35,7 @@ export interface PageEntityProps {
   title: string
   description?: string
   actions?: ReactNode
+  breadcrumbs?: ReactNode
   sections: readonly PageEntitySection[]
   status?: PageStatus
   className?: string
@@ -45,6 +46,7 @@ export function PageEntity({
   title,
   description,
   actions,
+  breadcrumbs,
   sections,
   status = "ready",
   className,
@@ -55,6 +57,7 @@ export function PageEntity({
         title={title}
         description={description}
         actions={actions}
+        breadcrumbs={breadcrumbs}
         blockId={blockId ? `${blockId}.header` : undefined}
       />
       {status === "loading" ? (
