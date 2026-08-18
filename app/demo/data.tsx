@@ -12,6 +12,7 @@ import {
   Package,
   PackageCheck,
   Shirt,
+  UserRound,
   ShoppingCart,
   SportShoe,
   Truck,
@@ -763,6 +764,59 @@ export function getDemoProductItems(
     description: copy.description,
     meta: copy.meta,
     icon: PRODUCT_ICONS[index],
+  }))
+}
+
+const PAYMENT_METHOD_IDS = ["card", "wallet", "cash"] as const
+const PAYMENT_METHOD_SHARES = [58, 27, 15]
+const PAYMENT_METHOD_LABELS: Record<DemoLocale, readonly string[]> = {
+  en: ["Bank card", "Wallet", "Cash on delivery"],
+  ru: ["Банковская карта", "Кошелёк", "Наличные при получении"],
+}
+
+export function getDemoPaymentSlices(
+  locale: DemoLocale
+): readonly WidgetDonutSlice[] {
+  return PAYMENT_METHOD_IDS.map((id, index) => ({
+    id,
+    label: PAYMENT_METHOD_LABELS[locale][index],
+    value: PAYMENT_METHOD_SHARES[index],
+  }))
+}
+
+interface DemoTopCustomerCopy {
+  title: string
+  description: string
+  meta: string
+}
+
+const TOP_CUSTOMER_IDS = ["carter", "morgan", "novak", "frost", "sanders"] as const
+const TOP_CUSTOMER_COPY: Record<DemoLocale, readonly DemoTopCustomerCopy[]> = {
+  en: [
+    { title: "Emily Carter", description: "Austin, since 2023", meta: "42 orders" },
+    { title: "Alex Morgan", description: "Denver, since 2022", meta: "37 orders" },
+    { title: "Olga Novak", description: "Prague, since 2024", meta: "29 orders" },
+    { title: "Tom Frost", description: "Oslo, since 2021", meta: "24 orders" },
+    { title: "Mia Sanders", description: "Leeds, since 2024", meta: "19 orders" },
+  ],
+  ru: [
+    { title: "Емельянова Е.", description: "Казань, с 2023", meta: "42 заказа" },
+    { title: "Морозов А.", description: "Тверь, с 2022", meta: "37 заказов" },
+    { title: "Новикова О.", description: "Прага, с 2024", meta: "29 заказов" },
+    { title: "Фролов Т.", description: "Осло, с 2021", meta: "24 заказа" },
+    { title: "Сандерс М.", description: "Лидс, с 2024", meta: "19 заказов" },
+  ],
+}
+
+export function getDemoTopCustomerItems(
+  locale: DemoLocale
+): readonly WidgetListItem[] {
+  return TOP_CUSTOMER_COPY[locale].map((copy, index) => ({
+    id: TOP_CUSTOMER_IDS[index],
+    title: copy.title,
+    description: copy.description,
+    meta: copy.meta,
+    icon: UserRound,
   }))
 }
 

@@ -24,14 +24,9 @@ export interface DemoDictionary {
     progressOrdersTitle: string
     progressHint: (value: string, max: string) => string
     progressOrdersHint: (value: string, max: string) => string
-    quickActionsTitle: string
-    quickActionLabels: {
-      createOrder: string
-      exportCsv: string
-      inviteUser: string
-      openReports: string
-    }
-    quickActionToastTitle: (label: string) => string
+    metricRefundsTitle: string
+    paymentsDonutTitle: string
+    topCustomersTitle: string
     reloadButton: string
   }
   standaloneTable: {
@@ -253,14 +248,9 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       progressOrdersTitle: "Monthly orders goal",
       progressHint: (value, max) => `${value} of ${max}`,
       progressOrdersHint: (value, max) => `${value} of ${max} orders`,
-      quickActionsTitle: "Quick actions",
-      quickActionLabels: {
-        createOrder: "Create order",
-        exportCsv: "Export to CSV",
-        inviteUser: "Invite user",
-        openReports: "Open reports",
-      },
-      quickActionToastTitle: (label) => `${label} — demo action`,
+      metricRefundsTitle: "Refunds",
+      paymentsDonutTitle: "Payment methods",
+      topCustomersTitle: "Top customers",
       reloadButton: "Reload",
     },
     standaloneTable: {
@@ -506,14 +496,9 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       progressOrdersTitle: "Цель по заказам за месяц",
       progressHint: (value, max) => `${value} из ${max}`,
       progressOrdersHint: (value, max) => `${value} из ${max} заказов`,
-      quickActionsTitle: "Быстрые действия",
-      quickActionLabels: {
-        createOrder: "Создать заказ",
-        exportCsv: "Выгрузить в CSV",
-        inviteUser: "Пригласить пользователя",
-        openReports: "Открыть отчёты",
-      },
-      quickActionToastTitle: (label) => `${label} — демо-действие`,
+      metricRefundsTitle: "Возвраты",
+      paymentsDonutTitle: "Способы оплаты",
+      topCustomersTitle: "Лучшие клиенты",
       reloadButton: "Обновить",
     },
     standaloneTable: {
