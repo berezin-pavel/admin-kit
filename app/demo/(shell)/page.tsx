@@ -40,6 +40,7 @@ import {
 } from "@/app/demo/data"
 import { demoDictionary } from "@/app/demo/locale"
 import { useDemoLocale } from "@/app/demo/locale-store"
+import { useDemoGradientAssignment } from "@/app/demo/theme-store"
 
 function getDefaultOverviewRangeValue(): string {
   const today = new Date()
@@ -82,6 +83,7 @@ function buildDemoMetricTrend(
 export default function DemoPage() {
   const locale = useDemoLocale()
   const strings = demoDictionary[locale].overview
+  const gradientAssignment = useDemoGradientAssignment()
   const emptyTitle = locale === "ru" ? localeRu.widgetList.emptyTitle : undefined
   const chartEmptyTitle =
     locale === "ru" ? localeRu.widgetChart.emptyTitle : undefined
@@ -188,7 +190,7 @@ export default function DemoPage() {
           trendTooltipFormat={(value) => formatDemoNumber(value, locale)}
           hint={strings.metricHint}
           loading={reloading}
-          gradient="orders"
+          gradient={gradientAssignment.blocks["orders-metric"]}
         />
         <WidgetMetric
           title={strings.metricRevenueTitle}
@@ -202,7 +204,7 @@ export default function DemoPage() {
           trendTooltipFormat={(value) => formatDemoCurrency(value, locale)}
           hint={strings.metricHint}
           loading={reloading}
-          gradient="revenue"
+          gradient={gradientAssignment.blocks["revenue-metric"]}
         />
         <WidgetMetric
           title={strings.metricAverageOrderTitle}

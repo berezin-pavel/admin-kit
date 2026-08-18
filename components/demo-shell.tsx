@@ -8,9 +8,9 @@ import { usePathname } from "next/navigation"
 import { Store } from "lucide-react"
 
 import { DemoLanguageToggle } from "@/components/demo-language-toggle"
+import { DemoThemeStyle } from "@/components/demo-theme-style"
 import { DemoThemeToggle } from "@/components/demo-theme-toggle"
 import { DemoUserMenu } from "@/components/demo-user-menu"
-import { adminThemeToCss } from "@/registry/admin-theme-tokens/admin-theme-css"
 import { AdminShell } from "@/registry/admin-shell/admin-shell"
 import type { AdminNavLinkRenderer } from "@/registry/admin-shell/admin-shell"
 import { AdminToaster } from "@/registry/admin-toaster/admin-toaster"
@@ -20,7 +20,7 @@ import { SidebarToggle } from "@/registry/sidebar-toggle/sidebar-toggle"
 import { getDemoNav } from "@/app/demo/data"
 import { demoDictionary } from "@/app/demo/locale"
 import { useDemoLocale } from "@/app/demo/locale-store"
-import { useDemoTheme } from "@/app/demo/theme-store"
+import { useDemoGradientAssignment } from "@/app/demo/theme-store"
 
 const renderDemoLink: AdminNavLinkRenderer = ({
   href,
@@ -36,11 +36,15 @@ export function DemoShell({ children }: { children: ReactNode }) {
   const [collapsed, setCollapsed] = useState(false)
   const pathname = usePathname()
   const locale = useDemoLocale()
-  const theme = useDemoTheme()
+  const assignment = useDemoGradientAssignment()
+  const sidebarGradient = assignment.surfaces.shell
+  const footerButtonClassName = sidebarGradient
+    ? "bg-transparent dark:bg-transparent"
+    : undefined
 
   return (
     <>
-      <style dangerouslySetInnerHTML={{ __html: adminThemeToCss(theme) }} />
+      <DemoThemeStyle />
       <AdminShell
         appName={demoDictionary[locale].appName}
         nav={getDemoNav(locale)}
@@ -54,6 +58,7 @@ export function DemoShell({ children }: { children: ReactNode }) {
         }
         sidebarProfile={<DemoUserMenu variant="row" />}
         collapsed={collapsed}
+        sidebarGradient={sidebarGradient}
         labels={locale === "ru" ? localeRu.adminShell : undefined}
         sidebarFooter={
           <>
@@ -61,9 +66,10 @@ export function DemoShell({ children }: { children: ReactNode }) {
               collapsed={collapsed}
               onToggle={() => setCollapsed((prev) => !prev)}
               labels={locale === "ru" ? localeRu.sidebarToggle : undefined}
+              className={footerButtonClassName}
             />
-            <DemoThemeToggle />
-            <DemoLanguageToggle />
+            <DemoThemeToggle className={footerButtonClassName} />
+            <DemoLanguageToggle className={footerButtonClassName} />
           </>
         }
       >
