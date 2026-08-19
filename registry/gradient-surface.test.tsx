@@ -148,13 +148,13 @@ describe("the shell paints its surfaces through data attributes", () => {
     )
   })
 
-  it("sets data-backdrop on the work area for a chosen gradient", () => {
+  it("sets data-backdrop on the work area for a soft backdrop", () => {
     const { container } = render(
       <AdminShell
         appName="Store"
         nav={[]}
         activeHref="/"
-        backdrop="ocean"
+        backdrop={{ gradient: "ocean", soft: true }}
       >
         <p>Work</p>
       </AdminShell>
@@ -163,6 +163,25 @@ describe("the shell paints its surfaces through data attributes", () => {
     const main = container.firstElementChild
 
     expect(main).toHaveAttribute("data-backdrop", "ocean")
+    expect(main).not.toHaveAttribute("data-backdrop-vivid")
+  })
+
+  it("marks the work area vivid when the backdrop is not softened", () => {
+    const { container } = render(
+      <AdminShell
+        appName="Store"
+        nav={[]}
+        activeHref="/"
+        backdrop={{ gradient: "ocean", soft: false }}
+      >
+        <p>Work</p>
+      </AdminShell>
+    )
+
+    const main = container.firstElementChild
+
+    expect(main).toHaveAttribute("data-backdrop", "ocean")
+    expect(main).toHaveAttribute("data-backdrop-vivid", "")
   })
 
   it("sets no data-backdrop when the backdrop is null or omitted", () => {

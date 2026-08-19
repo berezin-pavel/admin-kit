@@ -8,7 +8,7 @@ import {
   type AdminAppearance,
   type BlockAppearance,
   type BlockHeading,
-  type GradientId,
+  type PageBackdrop,
 } from "@/registry/admin-appearance/appearance-palette"
 
 const STORAGE_KEY = "admin-kit-demo-appearance"
@@ -17,7 +17,7 @@ export const DEMO_APPEARANCE_DEFAULT: AdminAppearance = {
   accent: "emerald",
   sidebar: "forest",
   signIn: "dusk",
-  page: "ocean",
+  page: { gradient: "ocean", soft: true },
   pages: {},
   blocks: {
     "overview.orders": { gradient: "ember" },
@@ -88,8 +88,16 @@ function isBlockAppearance(value: unknown): value is BlockAppearance {
   return true
 }
 
-function isNullableGradientId(value: unknown): value is GradientId | null {
-  return value === null || isGradientId(value)
+function isPageBackdrop(value: unknown): value is PageBackdrop {
+  return (
+    isRecord(value) &&
+    isGradientId(value.gradient) &&
+    typeof value.soft === "boolean"
+  )
+}
+
+function isNullablePageBackdrop(value: unknown): value is PageBackdrop | null {
+  return value === null || isPageBackdrop(value)
 }
 
 export function isAdminAppearance(value: unknown): value is AdminAppearance {
@@ -105,12 +113,12 @@ export function isAdminAppearance(value: unknown): value is AdminAppearance {
   if (value.signIn !== null && !isGradientId(value.signIn)) {
     return false
   }
-  if (!isNullableGradientId(value.page)) {
+  if (!isNullablePageBackdrop(value.page)) {
     return false
   }
   if (
     !isRecord(value.pages) ||
-    !Object.values(value.pages).every(isNullableGradientId)
+    !Object.values(value.pages).every(isNullablePageBackdrop)
   ) {
     return false
   }

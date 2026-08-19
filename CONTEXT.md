@@ -67,7 +67,7 @@ The administrator's global choice of an accent colour and gradients — for the 
 _Avoid_: theme settings, customization, skin
 
 **Backdrop**:
-A gradient painted behind blocks — the work area of a page or the sign-in screen. Soft by default, a light or dark tint of the gradient; vivid on request. Never overrides text tokens, because no text sits on it.
+A gradient painted behind blocks — the work area of a page or the sign-in screen. Stored as a pair of a gradient and a `soft` flag: soft by default, a light or dark tint of the gradient, and vivid when the flag is off (the appearance menu's soften checkbox). Never overrides text tokens, because no text sits on it.
 _Avoid_: page background, wallpaper
 
 **Palette**:

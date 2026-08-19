@@ -10,6 +10,11 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { cn } from "@/lib/utils"
 
 import {
@@ -136,16 +141,26 @@ function BlockMenu({
             className="flex flex-col gap-2"
           >
             <div className="grid grid-cols-8 gap-1.5">
-              <button
-                type="button"
-                role="radio"
-                aria-checked={gradient === null}
-                aria-label={labels.none}
-                onClick={() => selectGradient(null)}
-                className="flex size-7 items-center justify-center rounded-md bg-muted ring-1 ring-foreground/10"
-              >
-                <Ban className="size-3.5 text-muted-foreground" aria-hidden="true" />
-              </button>
+              <Tooltip>
+                <TooltipTrigger
+                  render={
+                    <button
+                      type="button"
+                      role="radio"
+                      aria-checked={gradient === null}
+                      aria-label={labels.none}
+                      onClick={() => selectGradient(null)}
+                      className="flex size-7 items-center justify-center rounded-md bg-muted ring-1 ring-foreground/10"
+                    >
+                      <Ban
+                        className="size-3.5 text-muted-foreground"
+                        aria-hidden="true"
+                      />
+                    </button>
+                  }
+                />
+                <TooltipContent>{labels.none}</TooltipContent>
+              </Tooltip>
             </div>
             {gradientFamilies.map((family) => (
               <div key={family} className="flex flex-col gap-1">
@@ -159,24 +174,34 @@ function BlockMenu({
                       const selected = gradient === entry.id
                       const name = labels.gradients[entry.id] ?? entry.name
                       return (
-                        <button
-                          key={entry.id}
-                          type="button"
-                          role="radio"
-                          aria-checked={selected}
-                          aria-label={name}
-                          onClick={() => selectGradient(entry.id)}
-                          className="flex size-7 items-center justify-center rounded-md ring-1 ring-foreground/10"
-                          style={{ backgroundImage: `var(--gradient-${entry.id})` }}
-                        >
-                          {selected ? (
-                            <Check
-                              className="size-3.5"
-                              style={{ color: `var(--gradient-${entry.id}-foreground)` }}
-                              aria-hidden="true"
-                            />
-                          ) : null}
-                        </button>
+                        <Tooltip key={entry.id}>
+                          <TooltipTrigger
+                            render={
+                              <button
+                                type="button"
+                                role="radio"
+                                aria-checked={selected}
+                                aria-label={name}
+                                onClick={() => selectGradient(entry.id)}
+                                className="flex size-7 items-center justify-center rounded-md ring-1 ring-foreground/10"
+                                style={{
+                                  backgroundImage: `var(--gradient-${entry.id})`,
+                                }}
+                              >
+                                {selected ? (
+                                  <Check
+                                    className="size-3.5"
+                                    style={{
+                                      color: `var(--gradient-${entry.id}-foreground)`,
+                                    }}
+                                    aria-hidden="true"
+                                  />
+                                ) : null}
+                              </button>
+                            }
+                          />
+                          <TooltipContent>{name}</TooltipContent>
+                        </Tooltip>
                       )
                     })}
                 </div>

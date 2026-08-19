@@ -62,7 +62,7 @@ export function DemoShell({ children }: { children: ReactNode }) {
 
   return (
     <>
-      <AppearanceThemeColor gradient={backdrop} />
+      <AppearanceThemeColor backdrop={backdrop} />
       <AdminShell
         appName={demoDictionary[locale].appName}
         nav={getDemoNav(locale)}

@@ -299,20 +299,38 @@ describe("resolvePageBackdrop", () => {
   it("uses the page-specific override when present", () => {
     const appearance = {
       ...defaultAdminAppearance,
-      pages: { orders: "ocean" as const },
+      pages: { orders: { gradient: "ocean" as const, soft: true } },
     }
-    expect(resolvePageBackdrop(appearance, "orders")).toBe("ocean")
+    expect(resolvePageBackdrop(appearance, "orders")).toEqual({
+      gradient: "ocean",
+      soft: true,
+    })
     expect(resolvePageBackdrop(appearance, "products")).toEqual(appearance.page)
+  })
+
+  it("carries the override's own soft flag", () => {
+    const appearance = {
+      ...defaultAdminAppearance,
+      page: { gradient: "ocean" as const, soft: true },
+      pages: { orders: { gradient: "ember" as const, soft: false } },
+    }
+    expect(resolvePageBackdrop(appearance, "orders")).toEqual({
+      gradient: "ember",
+      soft: false,
+    })
   })
 
   it("treats a stored null override as no backdrop on that page", () => {
     const appearance = {
       ...defaultAdminAppearance,
-      page: "ocean" as const,
+      page: { gradient: "ocean" as const, soft: true },
       pages: { orders: null },
     }
     expect(resolvePageBackdrop(appearance, "orders")).toBeNull()
-    expect(resolvePageBackdrop(appearance, "products")).toBe("ocean")
+    expect(resolvePageBackdrop(appearance, "products")).toEqual({
+      gradient: "ocean",
+      soft: true,
+    })
   })
 
   it("falls back to the page backdrop when no pageId is given", () => {

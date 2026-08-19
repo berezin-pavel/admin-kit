@@ -41,6 +41,21 @@ marker.
 demo a layout toggle in the sidebar footer that cycles card → flush → flush with header and
 remembers the choice in localStorage.
 
+**Breaking** — a page backdrop is a pair, not a gradient id: `AdminAppearance.page` and every
+entry of `AdminAppearance.pages` are now `PageBackdrop | null`, where `PageBackdrop` is
+`{ gradient, soft }`. `resolvePageBackdrop` returns that pair, `admin-shell`'s `backdrop` prop
+takes it (and emits `data-backdrop-vivid` when `soft` is false), and `AppearanceThemeColor`'s
+`gradient` prop is renamed to `backdrop`. `isAdminAppearance` rejects the old shape, so a stored
+appearance from an earlier version falls back to the default — there is no migration.
+
+**Changed** — `appearance-menu` puts a soften checkbox beside every backdrop select, the default
+one and each per-page row: checked (the default for a freshly picked gradient) paints the soft
+tint, unchecked paints the vivid gradient. The checkbox has no visible label — its name and its
+tooltip are the new `labels.soft` ("Soften the colour"; `locale-ru` has "Смягчить цвет") — and it
+is disabled while the row has no gradient of its own. Picking another gradient keeps the current
+soft choice. `admin-appearance`'s block menu now names every swatch in a tooltip, the "no
+gradient" tile included.
+
 ## 0.29.0 — 2026-08-19
 
 **Changed** — the palette is 86 multi-stop (4–5 stops) gradients in eight families instead of

@@ -4,6 +4,7 @@ import { useId, type ReactElement, type ReactNode } from "react"
 import { Palette } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import {
   Popover,
@@ -31,6 +32,7 @@ import {
   type AdminAppearance,
   type GradientFamily,
   type GradientId,
+  type PageBackdrop,
 } from "@/registry/admin-appearance/appearance-palette"
 
 export interface AppearanceMenuLabels {
@@ -42,6 +44,7 @@ export interface AppearanceMenuLabels {
   pages?: string
   inherit?: string
   none?: string
+  soft?: string
   gradients?: Partial<Record<GradientId, string>>
   accents?: Partial<Record<AccentId, string>>
   families?: Partial<Record<GradientFamily, string>>
@@ -82,6 +85,7 @@ const defaultLabels: Required<
   pages: "Per page",
   inherit: "Same as default",
   none: "No gradient",
+  soft: "Soften the colour",
 }
 
 function resolveLabels(labels: AppearanceMenuLabels | undefined): ResolvedLabels {
@@ -94,6 +98,7 @@ function resolveLabels(labels: AppearanceMenuLabels | undefined): ResolvedLabels
     pages: labels?.pages ?? defaultLabels.pages,
     inherit: labels?.inherit ?? defaultLabels.inherit,
     none: labels?.none ?? defaultLabels.none,
+    soft: labels?.soft ?? defaultLabels.soft,
     gradients: labels?.gradients ?? {},
     accents: labels?.accents ?? {},
     families: { ...gradientFamilyNames, ...labels?.families },
@@ -176,6 +181,33 @@ function GradientSelectItems({ labels }: { labels: ResolvedLabels }): ReactEleme
   )
 }
 
+function SoftCheckbox({
+  label,
+  checked,
+  disabled,
+  onCheckedChange,
+}: {
+  label: string
+  checked: boolean
+  disabled: boolean
+  onCheckedChange: (next: boolean) => void
+}): ReactElement {
+  return (
+    <Hint
+      text={label}
+      render={
+        <Checkbox
+          aria-label={label}
+          checked={checked}
+          disabled={disabled}
+          onCheckedChange={onCheckedChange}
+          className="shrink-0"
+        />
+      }
+    />
+  )
+}
+
 export function AppearanceMenu({
   value,
   onChange,
@@ -201,8 +233,23 @@ export function AppearanceMenu({
     onChange({ ...value, signIn: next === "none" ? null : next })
   }
 
+  const withGradient = (
+    current: PageBackdrop | null | undefined,
+    gradient: GradientId
+  ): PageBackdrop => ({ gradient, soft: current?.soft ?? true })
+
   const selectPageBackground = (next: GradientChoice) => {
-    onChange({ ...value, page: next === "none" ? null : next })
+    onChange({
+      ...value,
+      page: next === "none" ? null : withGradient(value.page, next),
+    })
+  }
+
+  const togglePageSoft = (soft: boolean) => {
+    if (!value.page) {
+      return
+    }
+    onChange({ ...value, page: { ...value.page, soft } })
   }
 
   const selectPageGradient = (pageEntryId: string, next: PageGradientChoice) => {
@@ -214,7 +261,24 @@ export function AppearanceMenu({
     }
     onChange({
       ...value,
-      pages: { ...value.pages, [pageEntryId]: next === "none" ? null : next },
+      pages: {
+        ...value.pages,
+        [pageEntryId]:
+          next === "none"
+            ? null
+            : withGradient(value.pages[pageEntryId], next),
+      },
+    })
+  }
+
+  const togglePageRowSoft = (pageEntryId: string, soft: boolean) => {
+    const current = value.pages[pageEntryId]
+    if (!current) {
+      return
+    }
+    onChange({
+      ...value,
+      pages: { ...value.pages, [pageEntryId]: { ...current, soft } },
     })
   }
 
@@ -233,7 +297,7 @@ export function AppearanceMenu({
       />
       <PopoverContent
         aria-label={labels.label}
-        className="max-h-[70vh] w-[22rem] overflow-y-auto"
+        className="max-h-[70vh] w-[24rem] overflow-y-auto"
       >
         <div className="flex flex-col gap-4">
           <section className="flex flex-col gap-1.5">
@@ -337,29 +401,37 @@ export function AppearanceMenu({
             >
               {labels.page}
             </Label>
-            <Select<GradientChoice>
-              value={value.page ?? "none"}
-              onValueChange={(next) => {
-                if (next === null) {
-                  return
-                }
-                selectPageBackground(next)
-              }}
-            >
-              <SelectTrigger id={pageId} className="w-full">
-                <SelectValue>
-                  {renderGradientChoice(value.page ?? "none", labels)}
-                </SelectValue>
-              </SelectTrigger>
-              <SelectContent
-                align="start"
-                alignItemWithTrigger={false}
-                className="w-auto min-w-(--anchor-width)"
+            <div className="flex items-center gap-2">
+              <Select<GradientChoice>
+                value={value.page?.gradient ?? "none"}
+                onValueChange={(next) => {
+                  if (next === null) {
+                    return
+                  }
+                  selectPageBackground(next)
+                }}
               >
-                <SelectItem value="none">{labels.none}</SelectItem>
-                <GradientSelectItems labels={labels} />
-              </SelectContent>
-            </Select>
+                <SelectTrigger id={pageId} className="min-w-0 flex-1">
+                  <SelectValue>
+                    {renderGradientChoice(value.page?.gradient ?? "none", labels)}
+                  </SelectValue>
+                </SelectTrigger>
+                <SelectContent
+                  align="start"
+                  alignItemWithTrigger={false}
+                  className="w-auto min-w-(--anchor-width)"
+                >
+                  <SelectItem value="none">{labels.none}</SelectItem>
+                  <GradientSelectItems labels={labels} />
+                </SelectContent>
+              </Select>
+              <SoftCheckbox
+                label={labels.soft}
+                checked={value.page?.soft ?? true}
+                disabled={value.page === null}
+                onCheckedChange={togglePageSoft}
+              />
+            </div>
           </section>
 
           {pages.length > 0 ? (
@@ -370,9 +442,11 @@ export function AppearanceMenu({
               <div className="flex flex-col gap-2">
                 {pages.map((page) => {
                   const hasOverride = Object.hasOwn(value.pages, page.id)
+                  const override = value.pages[page.id]
                   const selectValue: PageGradientChoice = !hasOverride
                     ? "inherit"
-                    : (value.pages[page.id] ?? "none")
+                    : (override?.gradient ?? "none")
+                  const rowBackdrop = hasOverride ? override : value.page
                   const rowSelectId = `${baseId}-page-${page.id}`
 
                   return (
@@ -407,6 +481,12 @@ export function AppearanceMenu({
                           <GradientSelectItems labels={labels} />
                         </SelectContent>
                       </Select>
+                      <SoftCheckbox
+                        label={labels.soft}
+                        checked={rowBackdrop?.soft ?? true}
+                        disabled={selectValue === "none" || selectValue === "inherit"}
+                        onCheckedChange={(soft) => togglePageRowSoft(page.id, soft)}
+                      />
                     </div>
                   )
                 })}

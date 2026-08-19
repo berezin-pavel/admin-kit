@@ -1,5 +1,5 @@
 import { appearanceCss } from "./appearance-css"
-import { gradientPalette, type AdminAppearance, type GradientId } from "./appearance-palette"
+import { gradientPalette, type AdminAppearance, type PageBackdrop } from "./appearance-palette"
 
 export function AppearanceStyle({ value }: { value: AdminAppearance }) {
   return <style dangerouslySetInnerHTML={{ __html: appearanceCss(value) }} />
@@ -8,20 +8,25 @@ export function AppearanceStyle({ value }: { value: AdminAppearance }) {
 const THEME_BACKGROUND = { light: "#ffffff", dark: "#0a0a0a" }
 
 export function backdropThemeColors(
-  gradient: GradientId | null | undefined
+  backdrop: PageBackdrop | null | undefined
 ): { light: string; dark: string } {
-  const entry = gradientPalette.find((candidate) => candidate.id === gradient)
-  return entry
+  const entry = gradientPalette.find(
+    (candidate) => candidate.id === backdrop?.gradient
+  )
+  if (!entry || !backdrop) {
+    return THEME_BACKGROUND
+  }
+  return backdrop.soft
     ? { light: entry.softLight.stops[0], dark: entry.softDark.stops[0] }
-    : THEME_BACKGROUND
+    : { light: entry.light.stops[0], dark: entry.dark.stops[0] }
 }
 
 export function AppearanceThemeColor({
-  gradient,
+  backdrop,
 }: {
-  gradient: GradientId | null | undefined
+  backdrop: PageBackdrop | null | undefined
 }) {
-  const colors = backdropThemeColors(gradient)
+  const colors = backdropThemeColors(backdrop)
   return (
     <>
       <meta

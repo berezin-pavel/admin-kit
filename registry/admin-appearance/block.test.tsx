@@ -174,6 +174,19 @@ describe("Block corner menu interaction", () => {
     expect(screen.getAllByRole("radio")).toHaveLength(104)
   })
 
+  it("names a swatch in a tooltip on hover", async () => {
+    const user = userEvent.setup()
+    const onChangeSpy = vi.fn<(next: AdminAppearance) => void>()
+    render(<Harness onChangeSpy={onChangeSpy} />)
+
+    await user.click(screen.getByRole("button", { name: "Block appearance" }))
+    await user.hover(screen.getByRole("radio", { name: "Ember" }))
+
+    expect(
+      await screen.findByText("Ember", {}, { timeout: 3000 })
+    ).toBeInTheDocument()
+  })
+
   it("reports the picked gradient through onChange", async () => {
     const user = userEvent.setup()
     const onChangeSpy = vi.fn<(next: AdminAppearance) => void>()

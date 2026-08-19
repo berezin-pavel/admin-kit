@@ -80,21 +80,33 @@ describe("isAdminAppearance", () => {
     ).toBe(false)
   })
 
-  it("accepts a page and per-page overrides made of gradient ids and null", () => {
+  it("accepts a page and per-page overrides made of backdrops and null", () => {
     expect(
       isAdminAppearance({
         ...defaultAdminAppearance,
-        page: "ocean",
-        pages: { orders: null },
+        page: { gradient: "ocean", soft: true },
+        pages: { orders: null, order: { gradient: "ember", soft: false } },
       })
     ).toBe(true)
   })
 
-  it("rejects a page value that is an object instead of a gradient id or null", () => {
+  it("rejects a backdrop without its soft flag", () => {
     expect(
       isAdminAppearance({
         ...defaultAdminAppearance,
         page: { gradient: "ocean" },
+      })
+    ).toBe(false)
+  })
+
+  it("rejects the older shape where a page was a bare gradient id", () => {
+    expect(
+      isAdminAppearance({ ...defaultAdminAppearance, page: "ocean" })
+    ).toBe(false)
+    expect(
+      isAdminAppearance({
+        ...defaultAdminAppearance,
+        pages: { orders: "ocean" },
       })
     ).toBe(false)
   })
@@ -124,7 +136,7 @@ describe("isAdminAppearance", () => {
         sidebar: "ocean",
         signIn: "midnight",
         page: null,
-        pages: { orders: "ocean" },
+        pages: { orders: { gradient: "ocean", soft: true } },
         blocks: { revenue: { gradient: "meadow", heading: "large" } },
       })
     ).toBe(true)

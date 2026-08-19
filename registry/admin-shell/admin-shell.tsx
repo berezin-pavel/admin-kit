@@ -1,6 +1,7 @@
 import type { ReactNode } from "react"
 
 import { cn } from "@/lib/utils"
+import type { PageBackdrop } from "@/registry/admin-appearance/appearance-palette"
 
 import { AdminHeader } from "./admin-header"
 import { AdminMenu } from "./admin-menu"
@@ -37,7 +38,7 @@ type AdminShellBaseProps = {
   collapsed?: boolean
   variant?: AdminShellVariant
   sidebarGradient?: string
-  backdrop?: string | null
+  backdrop?: PageBackdrop | null
   children?: ReactNode
   className?: string
   labels?: AdminShellLabels
@@ -242,7 +243,8 @@ export function AdminShell({
         className
       )}
       data-variant={variant}
-      data-backdrop={backdrop || undefined}
+      data-backdrop={backdrop?.gradient}
+      data-backdrop-vivid={backdrop && !backdrop.soft ? "" : undefined}
     >
       {topBar}
       {headerBar ? (

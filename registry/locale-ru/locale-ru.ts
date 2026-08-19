@@ -178,6 +178,7 @@ const appearanceMenuRu = {
   pages: "По страницам",
   inherit: "Как по умолчанию",
   none: "Без градиента",
+  soft: "Смягчить цвет",
   gradients: gradientNamesRu,
   accents: accentNamesRu,
   families: gradientFamilyNamesRu,

@@ -85,7 +85,19 @@ describe("isAdminAppearance", () => {
     expect(
       isAdminAppearance({
         ...DEMO_APPEARANCE_DEFAULT,
-        page: "nonexistent",
+        page: { gradient: "nonexistent", soft: true },
+      })
+    ).toBe(false)
+  })
+
+  it("rejects a stored backdrop of the older bare-gradient shape", () => {
+    expect(
+      isAdminAppearance({ ...DEMO_APPEARANCE_DEFAULT, page: "ocean" })
+    ).toBe(false)
+    expect(
+      isAdminAppearance({
+        ...DEMO_APPEARANCE_DEFAULT,
+        pages: { orders: "ocean" },
       })
     ).toBe(false)
   })
@@ -93,6 +105,15 @@ describe("isAdminAppearance", () => {
   it("accepts a null page backdrop", () => {
     expect(
       isAdminAppearance({ ...DEMO_APPEARANCE_DEFAULT, page: null })
+    ).toBe(true)
+  })
+
+  it("accepts a vivid page backdrop", () => {
+    expect(
+      isAdminAppearance({
+        ...DEMO_APPEARANCE_DEFAULT,
+        page: { gradient: "ocean", soft: false },
+      })
     ).toBe(true)
   })
 

@@ -14,8 +14,8 @@ import {
   isGradientId,
   type AdminAppearance,
   type BlockHeading,
-  type GradientId,
   type GradientStops,
+  type PageBackdrop,
 } from "./appearance-palette"
 
 const BLOCK_HEADINGS: readonly BlockHeading[] = ["regular", "large", "none"]
@@ -64,8 +64,20 @@ function isBlockAppearance(value: unknown) {
   return true
 }
 
-function isPageRecord(value: unknown): value is Record<string, GradientId | null> {
-  return isRecord(value) && Object.values(value).every(isNullableGradientId)
+function isPageBackdrop(value: unknown): value is PageBackdrop {
+  return (
+    isRecord(value) &&
+    isGradientId(value.gradient) &&
+    typeof value.soft === "boolean"
+  )
+}
+
+function isNullablePageBackdrop(value: unknown): value is PageBackdrop | null {
+  return value === null || isPageBackdrop(value)
+}
+
+function isPageRecord(value: unknown): value is Record<string, PageBackdrop | null> {
+  return isRecord(value) && Object.values(value).every(isNullablePageBackdrop)
 }
 
 function isBlockAppearanceRecord(value: unknown): value is Record<string, unknown> {
@@ -78,7 +90,7 @@ export function isAdminAppearance(value: unknown): value is AdminAppearance {
     isAccentId(value.accent) &&
     isNullableGradientId(value.sidebar) &&
     isNullableGradientId(value.signIn) &&
-    isNullableGradientId(value.page) &&
+    isNullablePageBackdrop(value.page) &&
     isPageRecord(value.pages) &&
     isBlockAppearanceRecord(value.blocks)
   )

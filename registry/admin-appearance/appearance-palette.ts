@@ -619,12 +619,17 @@ export interface BlockAppearance {
   heading?: BlockHeading
 }
 
+export interface PageBackdrop {
+  gradient: GradientId
+  soft: boolean
+}
+
 export interface AdminAppearance {
   accent: AccentId
   sidebar: GradientId | null
   signIn: GradientId | null
-  page: GradientId | null
-  pages: Record<string, GradientId | null>
+  page: PageBackdrop | null
+  pages: Record<string, PageBackdrop | null>
   blocks: Record<string, BlockAppearance>
 }
 
@@ -640,7 +645,7 @@ export const defaultAdminAppearance: AdminAppearance = {
 export function resolvePageBackdrop(
   appearance: AdminAppearance,
   pageId?: string
-): GradientId | null {
+): PageBackdrop | null {
   if (pageId !== undefined && Object.hasOwn(appearance.pages, pageId)) {
     return appearance.pages[pageId]
   }
