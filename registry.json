@@ -104,6 +104,7 @@
         "card",
         "button",
         "popover",
+        "tooltip",
         "berezin-pavel/admin-kit/admin-theme"
       ],
       "dependencies": [

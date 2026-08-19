@@ -88,6 +88,23 @@ test("a per-page backdrop chosen in the menu paints only that page", async ({
   })
 })
 
+test("unchecking soften paints the vivid backdrop", async ({ page }) => {
+  const menu = await openMenu(page)
+  await menu.getByRole("checkbox", { name: "Soften the colour" }).first().click()
+  await page.keyboard.press("Escape")
+
+  const root = page.locator("[data-backdrop]").first()
+  await expect(root).toHaveAttribute("data-backdrop", "ocean")
+  await expect(root).toHaveAttribute("data-backdrop-vivid", "")
+
+  await page.reload()
+  await expect(page.locator("[data-backdrop]").first()).toHaveAttribute(
+    "data-backdrop-vivid",
+    "",
+    { timeout: HYDRATION_POLL_TIMEOUT }
+  )
+})
+
 test("the sidebar gradient and its burger panel follow the menu", async ({ page }) => {
   await expect(page.locator("aside")).toHaveAttribute("data-gradient", "forest")
 

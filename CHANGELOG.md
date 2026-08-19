@@ -8,7 +8,7 @@ items changed, and what breaks if you pull them.
 **Install an item, pinned to a release:**
 
 ```bash
-pnpm dlx shadcn@latest add berezin-pavel/admin-kit/widget-table#v0.29.0
+pnpm dlx shadcn@latest add berezin-pavel/admin-kit/widget-table#v0.30.0
 ```
 
 **See what an update would change before taking it:**
@@ -25,7 +25,13 @@ Sections used below: **New** (items you can now install), **Changed** (installed
 re-pulling), **Breaking** (props or files that changed shape — read before overwriting), and
 **Project** (showcase, CI, docs — nothing that reaches your project).
 
-## Unreleased
+## 0.30.0 — 2026-08-19
+
+**New** — a `monochrome` gradient family, first in the list: seventeen single-hue, three-stop
+gradients (red, crimson, orange, gold, yellow, chartreuse, green, jade, blue, navy, indigo,
+violet, purple, fuchsia, pink, brown, maroon) for a panel that wants one colour rather than a
+sweep. Gold, yellow and chartreuse carry dark text so they stay bright; the rest take white. The
+palette is one hundred three gradients in nine families; `locale-ru` names them all.
 
 **Changed** — `admin-shell` takes a `variant` prop (`card` | `flush`, default `card`, and the
 card look is unchanged). `flush` drops the shell's padding: the sidebar reaches the top, the
@@ -51,7 +57,7 @@ appearance from an earlier version falls back to the default — there is no mig
 **Changed** — `appearance-menu` puts a soften checkbox beside every backdrop select, the default
 one and each per-page row: checked (the default for a freshly picked gradient) paints the soft
 tint, unchecked paints the vivid gradient. The checkbox has no visible label — its name and its
-tooltip are the new `labels.soft` ("Soften the colour"; `locale-ru` has "Смягчить цвет") — and it
+tooltip are the new `labels.soft` ("Soften the colour"; `locale-ru` carries the Russian) — and it
 is disabled while the row has no gradient of its own. Picking another gradient keeps the current
 soft choice. `admin-appearance`'s block menu now names every swatch in a tooltip, the "no
 gradient" tile included.
