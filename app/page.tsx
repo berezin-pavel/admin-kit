@@ -29,6 +29,15 @@ export default function Page() {
               View demo
             </Link>
             <Link
+              href="/demo-flush"
+              className={cn(
+                buttonVariants({ variant: "outline", size: "sm" }),
+                "w-fit"
+              )}
+            >
+              Flush demo
+            </Link>
+            <Link
               href="/palette"
               className={cn(
                 buttonVariants({ variant: "outline", size: "sm" }),

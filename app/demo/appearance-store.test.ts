@@ -49,6 +49,14 @@ describe("demoPageId", () => {
   it("maps the order edit route to the same page id", () => {
   })
 
+  it("maps the flush demo overview route", () => {
+    expect(demoPageId("/demo-flush")).toBe("overview")
+  })
+
+  it("maps the flush demo orders route", () => {
+    expect(demoPageId("/demo-flush/orders")).toBe("orders")
+  })
+
   it("returns undefined outside the demo shell", () => {
     expect(demoPageId("/demo/sign-in")).toBeUndefined()
   })

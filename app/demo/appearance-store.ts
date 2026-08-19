@@ -51,10 +51,10 @@ export const DEMO_APPEARANCE_PAGES: readonly { id: string }[] = [
 ]
 
 export function demoPageId(pathname: string): string | undefined {
-  if (pathname === "/demo") {
+  if (pathname === "/demo" || pathname === "/demo-flush") {
     return "overview"
   }
-  if (pathname === "/demo/orders") {
+  if (pathname === "/demo/orders" || pathname === "/demo-flush/orders") {
     return "orders"
   }
   if (pathname === "/demo/order") {

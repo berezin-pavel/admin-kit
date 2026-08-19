@@ -100,6 +100,15 @@ export function getDemoNav(locale: DemoLocale): readonly AdminNavItem[] {
   ]
 }
 
+export function getDemoFlushNav(locale: DemoLocale): readonly AdminNavItem[] {
+  const titles = NAV_TITLES[locale]
+
+  return [
+    { href: "/demo-flush", title: titles.overview, icon: LayoutDashboard },
+    { href: "/demo-flush/orders", title: titles.orders, icon: ShoppingCart },
+  ]
+}
+
 const MONTHS: Record<DemoLocale, readonly string[]> = {
   en: [
     "Jan",

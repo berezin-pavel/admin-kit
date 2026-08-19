@@ -1,5 +1,5 @@
 import { DemoOverview } from "@/components/demo-overview"
 
-export default function DemoPage() {
+export default function DemoFlushPage() {
   return <DemoOverview />
 }

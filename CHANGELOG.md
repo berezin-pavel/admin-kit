@@ -8,7 +8,7 @@ items changed, and what breaks if you pull them.
 **Install an item, pinned to a release:**
 
 ```bash
-pnpm dlx shadcn@latest add berezin-pavel/admin-kit/widget-table#v0.30.0
+pnpm dlx shadcn@latest add berezin-pavel/admin-kit/widget-table#v0.31.0
 ```
 
 **See what an update would change before taking it:**
@@ -25,13 +25,20 @@ Sections used below: **New** (items you can now install), **Changed** (installed
 re-pulling), **Breaking** (props or files that changed shape — read before overwriting), and
 **Project** (showcase, CI, docs — nothing that reaches your project).
 
-## Unreleased
+## 0.31.0 — 2026-08-19
 
 **Breaking** — `AppearanceThemeColor` is now `AppearanceCanvas`. The stylesheet no
 longer paints `html`/`body` from any `[data-backdrop]` element in the page — an
 inline preview carrying a backdrop no longer repaints the whole document.
 `AppearanceCanvas` is now the one place that paints the document canvas: render it
 where you used to render the theme-color metas.
+
+**Project** — the showcase has a second demo panel at `/demo-flush`, linked from the home page:
+`admin-shell`'s `variant="flush"` with the full-width header bar, the brand in its left cell and
+the account as an icon menu at the right of the bar, carrying the overview and the orders list.
+The card demo at `/demo` is unchanged. The layout toggle that used to cycle the demo's shell
+through card → flush → flush with header is gone — the two demos show the looks side by side
+instead.
 
 ## 0.30.0 — 2026-08-19
 

@@ -210,11 +210,6 @@ export interface DemoDictionary {
     signOutAction: string
     profileToastTitle: string
   }
-  layoutToggle: {
-    card: string
-    flush: string
-    "flush-header": string
-  }
   signIn: {
     title: string
     description: string
@@ -464,11 +459,6 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       signOutAction: "Sign out",
       profileToastTitle: "Opened profile",
     },
-    layoutToggle: {
-      card: "Layout: card",
-      flush: "Layout: flush",
-      "flush-header": "Layout: flush with header",
-    },
     signIn: {
       title: "Sign in",
       description:
@@ -713,11 +703,6 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       profileAction: "Профиль",
       signOutAction: "Выйти",
       profileToastTitle: "Открыт профиль",
-    },
-    layoutToggle: {
-      card: "Макет: карточка",
-      flush: "Макет: без отступов",
-      "flush-header": "Макет: без отступов, с шапкой",
     },
     signIn: {
       title: "Вход",

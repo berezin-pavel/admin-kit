@@ -114,6 +114,19 @@ admin-kit colors won't be applied over the project's existing palette —
 the files will arrive, but `--primary` and the other variables will stay
 as they were.
 
+## Demo
+
+The showcase runs two demo panels built from the same widgets and pages,
+so the difference between them is the shell's own look and nothing else.
+`/demo` is the card layout: the shell keeps its padding, the sidebar is a
+rounded panel, there is no header, and the account sits in the sidebar's
+profile row. `/demo-flush` is `admin-shell`'s `variant="flush"` with the
+header on — the sidebar reaches the screen edges, a full-width bar runs
+above it with the brand in its left cell, and the account is an icon menu
+at the right of that bar. The flush panel carries the overview and the
+orders list; the card one has the order page as well. Both read the same
+stored appearance, and a page's backdrop is shared between them.
+
 ## Registry items
 
 | Name                  | Type                  | What it does                                                                                                                                                                                                                                                                                                                                                           |
