@@ -2,10 +2,57 @@ import { describe, expect, it } from "vitest"
 import {
   appearanceCss,
   gradientCss,
+  destructiveInkLegible,
+  gradientDestructive,
   gradientForeground,
   isAdminAppearance,
 } from "./appearance-css"
-import { defaultAdminAppearance, gradientIds } from "./appearance-palette"
+import { NEAR_BLACK_HEX, NEAR_WHITE_HEX } from "./appearance-accent"
+import { contrastRatio, oklchToHex } from "./appearance-color"
+import {
+  defaultAdminAppearance,
+  gradientIds,
+  gradientPalette,
+} from "./appearance-palette"
+
+function oklchStringToHex(value: string): string {
+  const match = value.match(/oklch\(([\d.]+) ([\d.]+) ([\d.]+)\)/)
+  if (!match) {
+    throw new Error(`not an oklch colour: ${value}`)
+  }
+  return oklchToHex({ l: Number(match[1]), c: Number(match[2]), h: Number(match[3]) })
+}
+
+describe("gradientDestructive", () => {
+  it("keeps the destructive ink at 4.5 to 1 along every gradient, at 3 to 1 on its own tinted fills and under the foreground hover tints, and its own foreground legible", () => {
+    for (const gradient of gradientPalette) {
+      for (const scheme of [gradient.light, gradient.dark]) {
+        const { destructive, destructiveForeground } = gradientDestructive(scheme)
+        const inkHex = oklchStringToHex(destructive)
+        const foregroundHex =
+          gradientForeground(scheme).startsWith("oklch(0.985") ? NEAR_WHITE_HEX : NEAR_BLACK_HEX
+        expect(
+          destructiveInkLegible(inkHex, scheme, foregroundHex, 4.5, 3),
+          `${gradient.id} ${destructive}`
+        ).toBe(true)
+        expect(
+          contrastRatio(inkHex, oklchStringToHex(destructiveForeground)),
+          `${gradient.id} foreground`
+        ).toBeGreaterThanOrEqual(4.5)
+      }
+    }
+  })
+
+  it("emits the destructive pair per gradient and wires it into the surface rule", () => {
+    const css = appearanceCss(defaultAdminAppearance)
+    expect(css).toContain("--gradient-ember-destructive:")
+    expect(css).toContain("--gradient-ember-destructive-foreground:")
+    expect(css).toContain("--destructive: var(--surface-destructive);")
+    expect(css).toContain(
+      '[data-gradient="ember"] {\n  --surface-gradient: var(--gradient-ember);\n  --surface-foreground: var(--gradient-ember-foreground);\n  --surface-destructive: var(--gradient-ember-destructive);'
+    )
+  })
+})
 
 describe("gradientCss", () => {
   it("formats a linear-gradient with three stops at 0/50/100 percent", () => {

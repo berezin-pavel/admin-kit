@@ -47,6 +47,15 @@ the columns menu; `description` and `breadcrumbs` are not rendered in that mode.
 every block that has a title: `page-form` sections and `page-auth`'s card joined the
 widgets, `page-header`, `page-entity` sections and the table.
 
+**Changed** — red on a gradient is legible now: every gradient carries its own destructive pair
+(`--gradient-<id>-destructive` and `-destructive-foreground`, computed by `gradientDestructive`
+so the ink keeps 4.5:1 along the gradient, 3:1 on its own tinted fills and under the foreground
+hover tints, and its foreground stays legible on it), and `[data-gradient]` surfaces and the
+popups opened from them redefine `--destructive`/`--destructive-foreground` from it — menu items,
+row actions, bulk actions, field errors and danger badges on a gradient block all pick it up.
+The selection bar's "select all matching" link paints in the surface foreground on a gradient
+instead of the accent.
+
 **Project** — the demo's orders list (both demos) runs `header={false}` with the table's
 heading hidden by default (`orders.table: { heading: "none" }`), so the section name shows
 only in the sidebar or the header bar.

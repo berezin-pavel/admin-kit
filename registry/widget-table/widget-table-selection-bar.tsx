@@ -44,6 +44,7 @@ export function WidgetTableSelectionBar({
           type="button"
           variant="link"
           size="sm"
+          className="[[data-gradient]_&]:text-foreground [[data-gradient]_&]:underline"
           onClick={onSelectAllMatching}
         >
           {selectAllMatchingLabel(totalCount)}

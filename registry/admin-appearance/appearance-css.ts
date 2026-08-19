@@ -1,4 +1,11 @@
-import { contrastRatio, sampleGradient } from "./appearance-color"
+import {
+  composite,
+  contrastRatio,
+  formatOklch,
+  oklchToHex,
+  sampleGradient,
+  type Oklch,
+} from "./appearance-color"
 import {
   deriveAccentTokens,
   NEAR_BLACK,
@@ -38,6 +45,70 @@ export function gradientForeground(stops: GradientStops): string {
   return worstAgainst(NEAR_WHITE_HEX) >= worstAgainst(NEAR_BLACK_HEX)
     ? NEAR_WHITE
     : NEAR_BLACK
+}
+
+const DESTRUCTIVE_CONTRAST_MIN = 4.55
+const DESTRUCTIVE_HOVER_CONTRAST_MIN = 3.05
+const DESTRUCTIVE_SAMPLE_COUNT = 33
+const DESTRUCTIVE_LIGHTNESS_STEP = 0.01
+const DESTRUCTIVE_CHROMA_STEP = 0.004
+const DESTRUCTIVE_MAX_ITERATIONS = 80
+const DESTRUCTIVE_ON_DARK: Oklch = { l: 0.78, c: 0.13, h: 22 }
+const DESTRUCTIVE_ON_LIGHT: Oklch = { l: 0.5, c: 0.2, h: 27 }
+const DESTRUCTIVE_FILL_ALPHAS: readonly number[] = [0.1, 0.2]
+const DESTRUCTIVE_HOVER_TINT_ALPHAS: readonly number[] = [0.08, 0.16]
+
+export function destructiveInkLegible(
+  inkHex: string,
+  stops: GradientStops,
+  foregroundHex: string,
+  minimum = DESTRUCTIVE_CONTRAST_MIN,
+  hoverMinimum = DESTRUCTIVE_HOVER_CONTRAST_MIN
+): boolean {
+  return sampleGradient(stops.stops, DESTRUCTIVE_SAMPLE_COUNT).every(
+    (sample) =>
+      contrastRatio(inkHex, sample) >= minimum &&
+      DESTRUCTIVE_FILL_ALPHAS.every(
+        (alpha) =>
+          contrastRatio(inkHex, composite(inkHex, alpha, sample, "srgb")) >=
+          hoverMinimum
+      ) &&
+      DESTRUCTIVE_HOVER_TINT_ALPHAS.every(
+        (alpha) =>
+          contrastRatio(inkHex, composite(foregroundHex, alpha, sample, "srgb")) >=
+          hoverMinimum
+      )
+  )
+}
+
+export function gradientDestructive(stops: GradientStops): {
+  destructive: string
+  destructiveForeground: string
+} {
+  const lightText = gradientForeground(stops) === NEAR_WHITE
+  const foregroundHex = lightText ? NEAR_WHITE_HEX : NEAR_BLACK_HEX
+  let ink: Oklch = lightText ? DESTRUCTIVE_ON_DARK : DESTRUCTIVE_ON_LIGHT
+
+  for (let iteration = 0; iteration < DESTRUCTIVE_MAX_ITERATIONS; iteration++) {
+    if (destructiveInkLegible(oklchToHex(ink), stops, foregroundHex)) {
+      break
+    }
+    ink = lightText
+      ? {
+          l: Math.min(ink.l + DESTRUCTIVE_LIGHTNESS_STEP, 0.97),
+          c: Math.max(ink.c - DESTRUCTIVE_CHROMA_STEP, 0.04),
+          h: ink.h,
+        }
+      : { l: Math.max(ink.l - DESTRUCTIVE_LIGHTNESS_STEP, 0.15), c: ink.c, h: ink.h }
+  }
+
+  const inkHex = oklchToHex(ink)
+  const destructiveForeground =
+    contrastRatio(inkHex, NEAR_WHITE_HEX) >= contrastRatio(inkHex, NEAR_BLACK_HEX)
+      ? NEAR_WHITE
+      : NEAR_BLACK
+
+  return { destructive: formatOklch(ink), destructiveForeground }
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -113,6 +184,11 @@ function gradientVariableBlock(scheme: "light" | "dark"): string {
     lines.push(`  --gradient-${gradient.id}: ${gradientCss(stops)};`)
     lines.push(`  --gradient-${gradient.id}-foreground: ${gradientForeground(stops)};`)
     lines.push(`  --gradient-${gradient.id}-soft: ${gradientCss(soft)};`)
+    const { destructive, destructiveForeground } = gradientDestructive(stops)
+    lines.push(`  --gradient-${gradient.id}-destructive: ${destructive};`)
+    lines.push(
+      `  --gradient-${gradient.id}-destructive-foreground: ${destructiveForeground};`
+    )
   }
   return lines.join("\n")
 }
@@ -137,7 +213,9 @@ const SURFACE_DECLARATIONS = `
   --sidebar-border: var(--border);
   --sidebar-accent: var(--muted);
   --sidebar-active: color-mix(in oklch, var(--surface-foreground) 14%, transparent);
-  --sidebar-active-foreground: var(--surface-foreground);`
+  --sidebar-active-foreground: var(--surface-foreground);
+  --destructive: var(--surface-destructive);
+  --destructive-foreground: var(--surface-destructive-foreground);`
 
 const SURFACE_RULE = `[data-gradient] {${SURFACE_DECLARATIONS}
 }`
@@ -155,7 +233,7 @@ function popupSelectorBlocks(): string {
   return gradientIds
     .map(
       (id) =>
-        `body:has([data-gradient="${id}"] ${OPEN_TRIGGER}) ${POPUP_SLOTS} {\n  --surface-gradient: var(--gradient-${id});\n  --surface-foreground: var(--gradient-${id}-foreground);\n}`
+        `body:has([data-gradient="${id}"] ${OPEN_TRIGGER}) ${POPUP_SLOTS} {\n  --surface-gradient: var(--gradient-${id});\n  --surface-foreground: var(--gradient-${id}-foreground);\n  --surface-destructive: var(--gradient-${id}-destructive);\n  --surface-destructive-foreground: var(--gradient-${id}-destructive-foreground);\n}`
     )
     .join("\n\n")
 }
@@ -190,7 +268,7 @@ function surfaceSelectorBlocks(): string {
   return gradientIds
     .map(
       (id) =>
-        `[data-gradient="${id}"] {\n  --surface-gradient: var(--gradient-${id});\n  --surface-foreground: var(--gradient-${id}-foreground);\n}`
+        `[data-gradient="${id}"] {\n  --surface-gradient: var(--gradient-${id});\n  --surface-foreground: var(--gradient-${id}-foreground);\n  --surface-destructive: var(--gradient-${id}-destructive);\n  --surface-destructive-foreground: var(--gradient-${id}-destructive-foreground);\n}`
     )
     .join("\n\n")
 }
