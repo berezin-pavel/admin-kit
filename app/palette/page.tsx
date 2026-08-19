@@ -98,7 +98,7 @@ export default function PalettePage() {
           <div className="flex flex-col gap-2">
             <h1 className="text-3xl font-semibold">Palette</h1>
             <p className="text-muted-foreground">
-              The fixed set of eighty-six gradients and twenty accents admin-kit
+              The fixed set of one hundred three gradients and twenty accents admin-kit
               ships with — the only source of colour choices, each measured
               for text contrast along the whole gradient and, for accents,
               every filled pair the derivation produces.

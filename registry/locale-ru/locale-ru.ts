@@ -17,6 +17,23 @@ const dateRangePresetLabelsRu: Record<string, string> = {
 }
 
 const gradientNamesRu: Record<GradientId, string> = {
+  red: "Красный",
+  crimson: "Багровый",
+  orange: "Оранжевый",
+  gold: "Золото",
+  yellow: "Жёлтый",
+  chartreuse: "Шартрёз",
+  green: "Зелёный",
+  jade: "Нефрит",
+  blue: "Синий",
+  navy: "Тёмно-синий",
+  indigo: "Индиго",
+  violet: "Фиолетовый",
+  purple: "Пурпурный",
+  fuchsia: "Фуксия",
+  pink: "Розовый",
+  brown: "Коричневый",
+  maroon: "Бордовый",
   ember: "Жар",
   cherry: "Вишня",
   wine: "Вино",
@@ -106,6 +123,7 @@ const gradientNamesRu: Record<GradientId, string> = {
 }
 
 const gradientFamilyNamesRu: Record<GradientFamily, string> = {
+  monochrome: "Однотонные",
   jewel: "Самоцветы",
   vivid: "Яркие",
   fresh: "Свежие",

@@ -191,6 +191,7 @@ export function fitStopsForText(
 }
 
 export const gradientFamilies = [
+  "monochrome",
   "jewel",
   "vivid",
   "fresh",
@@ -204,6 +205,7 @@ export const gradientFamilies = [
 export type GradientFamily = (typeof gradientFamilies)[number]
 
 export const gradientFamilyNames: Record<GradientFamily, string> = {
+  monochrome: "Monochrome",
   jewel: "Jewel",
   vivid: "Vivid",
   fresh: "Fresh",
@@ -215,6 +217,23 @@ export const gradientFamilyNames: Record<GradientFamily, string> = {
 }
 
 export const gradientIds = [
+  "red",
+  "crimson",
+  "orange",
+  "gold",
+  "yellow",
+  "chartreuse",
+  "green",
+  "jade",
+  "blue",
+  "navy",
+  "indigo",
+  "violet",
+  "purple",
+  "fuchsia",
+  "pink",
+  "brown",
+  "maroon",
   "ember",
   "cherry",
   "wine",
@@ -316,6 +335,24 @@ export interface GradientIntent {
 const DEFAULT_ANGLE = 135
 
 export const gradientIntents: Record<GradientId, GradientIntent> = {
+  red: { name: "Red", family: "monochrome", angle: DEFAULT_ANGLE, stops: ["#5e000d", "#a21929", "#e2484f"], text: "light" },
+  crimson: { name: "Crimson", family: "monochrome", angle: DEFAULT_ANGLE, stops: ["#521526", "#8d364b", "#c86077"], text: "light" },
+  orange: { name: "Orange", family: "monochrome", angle: DEFAULT_ANGLE, stops: ["#3e1000", "#802a00", "#c94700"], text: "light" },
+  gold: { name: "Gold", family: "monochrome", angle: DEFAULT_ANGLE, stops: ["#3c1d00", "#783f00", "#b96500"], text: "light" },
+  yellow: { name: "Yellow", family: "monochrome", angle: DEFAULT_ANGLE, stops: ["#241c00", "#534400", "#887000"], text: "light" },
+  chartreuse: { name: "Chartreuse", family: "monochrome", angle: DEFAULT_ANGLE, stops: ["#182800", "#385500", "#5b8900"], text: "light" },
+  green: { name: "Green", family: "monochrome", angle: DEFAULT_ANGLE, stops: ["#004300", "#06750d", "#38a937"], text: "light" },
+  jade: { name: "Jade", family: "monochrome", angle: DEFAULT_ANGLE, stops: ["#004225", "#007545", "#00ab68"], text: "light" },
+  blue: { name: "Blue", family: "monochrome", angle: DEFAULT_ANGLE, stops: ["#002e5c", "#0059a7", "#2d88e2"], text: "light" },
+  navy: { name: "Navy", family: "monochrome", angle: DEFAULT_ANGLE, stops: ["#13244b", "#364d82", "#607cba"], text: "light" },
+  indigo: { name: "Indigo", family: "monochrome", angle: DEFAULT_ANGLE, stops: ["#2a1870", "#4f44ac", "#7b74e8"], text: "light" },
+  violet: { name: "Violet", family: "monochrome", angle: DEFAULT_ANGLE, stops: ["#3d0076", "#692fb4", "#9860f0"], text: "light" },
+  purple: { name: "Purple", family: "monochrome", angle: DEFAULT_ANGLE, stops: ["#44085f", "#753597", "#a862cf"], text: "light" },
+  fuchsia: { name: "Fuchsia", family: "monochrome", angle: DEFAULT_ANGLE, stops: ["#520057", "#88228d", "#c24dc7"], text: "light" },
+  pink: { name: "Pink", family: "monochrome", angle: DEFAULT_ANGLE, stops: ["#4b1639", "#7f3d66", "#b76798"], text: "light" },
+  brown: { name: "Brown", family: "monochrome", angle: DEFAULT_ANGLE, stops: ["#492e21", "#7d5642", "#b3826a"], text: "light" },
+  maroon: { name: "Maroon", family: "monochrome", angle: DEFAULT_ANGLE, stops: ["#3f191d", "#743e42", "#aa686d"], text: "light" },
+
   ember: { name: "Ember", family: "jewel", angle: DEFAULT_ANGLE, stops: ["#7f1d1d", "#b91c1c", "#dc2626", "#ea580c", "#f59e0b"], text: "light" },
   cherry: { name: "Cherry", family: "jewel", angle: DEFAULT_ANGLE, stops: ["#881337", "#be123c", "#e11d48", "#f472b6"], text: "light" },
   wine: { name: "Wine", family: "jewel", angle: DEFAULT_ANGLE, stops: ["#4a044e", "#831843", "#9f1239", "#7c2d12"], text: "light" },

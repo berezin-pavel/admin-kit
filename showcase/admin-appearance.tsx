@@ -9,7 +9,7 @@ export const adminAppearanceEntry: ShowcaseEntry = {
   item: "admin-appearance",
   title: "Appearance",
   description:
-    "The palette, provider, and Block that carry the administrator's colour choice: eighty-six gradients and twenty accents, each contrast-checked, nothing entered by hand. A block resolves its own gradient by id from AppearanceProvider's value, so giving a block a colour is a click in its corner rather than a code change. The provider is optional and editable defaults to false — a block with no provider around it, or a read-only one, still paints whatever gradient it was given directly.",
+    "The palette, provider, and Block that carry the administrator's colour choice: one hundred three gradients and twenty accents, each contrast-checked, nothing entered by hand. A block resolves its own gradient by id from AppearanceProvider's value, so giving a block a colour is a click in its corner rather than a code change. The provider is optional and editable defaults to false — a block with no provider around it, or a read-only one, still paints whatever gradient it was given directly.",
   views: [
     {
       id: "blocks",

@@ -50,9 +50,9 @@ function meanOklabDistance(a: GradientStops, b: GradientStops): number {
 }
 
 describe("gradientIds and gradientPalette", () => {
-  it("has exactly eighty-six unique ids in the declared order", () => {
-    expect(gradientIds).toHaveLength(86)
-    expect(new Set(gradientIds).size).toBe(86)
+  it("has exactly one hundred three unique ids in the declared order", () => {
+    expect(gradientIds).toHaveLength(103)
+    expect(new Set(gradientIds).size).toBe(103)
     expect(gradientPalette.map((gradient) => gradient.id)).toEqual([
       ...gradientIds,
     ])
@@ -214,6 +214,30 @@ describe("gradientIds and gradientPalette", () => {
           `${gradientPalette[i].id} vs ${gradientPalette[j].id}: distance=${distance.toFixed(4)}`
         ).toBeGreaterThanOrEqual(0.045)
       }
+    }
+  })
+
+  it("keeps every monochrome gradient to three same-hue stops", () => {
+    for (const gradient of gradientPalette) {
+      if (gradient.family !== "monochrome") {
+        continue
+      }
+      const intent = gradientIntents[gradient.id]
+      expect(intent.stops).toHaveLength(3)
+
+      const oklchStops = intent.stops
+        .map((hex) => hexToOklch(hex))
+        .filter((oklch) => oklch.c >= 0.03)
+      let hueSpread = 0
+      for (let i = 0; i < oklchStops.length; i++) {
+        for (let j = i + 1; j < oklchStops.length; j++) {
+          hueSpread = Math.max(
+            hueSpread,
+            circularHueDistance(oklchStops[i].h, oklchStops[j].h)
+          )
+        }
+      }
+      expect(hueSpread, `${gradient.id}: hue spread ${hueSpread.toFixed(1)}`).toBeLessThanOrEqual(8)
     }
   })
 
