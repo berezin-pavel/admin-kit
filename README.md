@@ -67,7 +67,7 @@ your layout, and put the menu in the shell's footer:
 
 ```tsx
 <AppearanceStyle value={appearance} />
-<AppearanceThemeColor backdrop={resolvePageBackdrop(appearance, pageId)} />
+<AppearanceCanvas backdrop={resolvePageBackdrop(appearance, pageId)} />
 <AppearanceProvider value={appearance} onChange={save} editable={isAdmin}>
   <AdminShell
     sidebarGradient={appearance.sidebar ?? undefined}
@@ -80,12 +80,15 @@ your layout, and put the menu in the shell's footer:
 ```
 
 Rendering the style on the server means the colours arrive in the first
-HTML, so there is no flash of the installed palette. The backdrop is
-painted on the shell, on the document canvas behind it (the body goes
-transparent while a backdrop is on) and, through `AppearanceThemeColor`,
-into a `theme-color` meta per scheme — that is what colours Safari's
-toolbar and the mobile status bar to match the page. Every card in the
-work area is a `Block` with an id — widgets, page sections and page
+HTML, so there is no flash of the installed palette. `AppearanceCanvas`
+is the one place that paints the browser canvas: place it once per page,
+next to the theme-color metas it also renders, and it puts the current
+backdrop's gradient on `html` and makes `body` transparent — the
+stylesheet itself only paints `[data-backdrop]` elements, so an inline
+preview of a block carrying a backdrop (a documentation page showing
+`page-auth`, say) never repaints the whole document. That is also what
+colours Safari's toolbar and the mobile status bar to match the page.
+Every card in the work area is a `Block` with an id — widgets, page sections and page
 headers already are, through their `blockId` prop — and while
 `editable` is on, hovering a block reveals a corner button with the
 swatch grid, so a new block gets its colour by a click, not by a code

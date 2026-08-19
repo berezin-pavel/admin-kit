@@ -25,6 +25,14 @@ Sections used below: **New** (items you can now install), **Changed** (installed
 re-pulling), **Breaking** (props or files that changed shape — read before overwriting), and
 **Project** (showcase, CI, docs — nothing that reaches your project).
 
+## Unreleased
+
+**Breaking** — `AppearanceThemeColor` is now `AppearanceCanvas`. The stylesheet no
+longer paints `html`/`body` from any `[data-backdrop]` element in the page — an
+inline preview carrying a backdrop no longer repaints the whole document.
+`AppearanceCanvas` is now the one place that paints the document canvas: render it
+where you used to render the theme-color metas.
+
 ## 0.30.0 — 2026-08-19
 
 **New** — a `monochrome` gradient family, first in the list: seventeen single-hue, three-stop

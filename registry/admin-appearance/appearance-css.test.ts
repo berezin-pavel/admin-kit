@@ -163,10 +163,10 @@ describe("appearanceCss", () => {
     expect(css).toMatch(/\[data-heading="none"\] \[data-slot="card-title"\] \{[^}]*clip: rect\(0, 0, 0, 0\)/)
   })
 
-  it("paints the whole document behind a backdrop so the browser canvas matches", () => {
+  it("does not paint the document canvas from any data-backdrop element", () => {
     const css = appearanceCss(defaultAdminAppearance)
-    expect(css).toContain('html:has([data-backdrop="ocean"]:not([data-backdrop-vivid])) {\n  background-image: var(--gradient-ocean-soft);')
-    expect(css).toContain('html:has([data-backdrop="ocean"][data-backdrop-vivid]) {\n  background-image: var(--gradient-ocean);')
+    expect(css).not.toContain("html:has(")
+    expect(css).not.toContain("body:has([data-backdrop]")
   })
 
   it("paints a popup opened from a gradient surface with that surface's gradient", () => {
@@ -174,12 +174,6 @@ describe("appearanceCss", () => {
     expect(css).toContain('body:has([data-gradient] :is([aria-haspopup], [role="combobox"])[aria-expanded="true"]) :is([data-slot="popover-content"], [data-slot="select-content"], [data-slot="dropdown-menu-content"], [data-slot="dropdown-menu-sub-content"], [data-slot="combobox-content"]) {')
     expect(css).toContain(
       'body:has([data-gradient="ember"] :is([aria-haspopup], [role="combobox"])[aria-expanded="true"]) :is([data-slot="popover-content"], [data-slot="select-content"], [data-slot="dropdown-menu-content"], [data-slot="dropdown-menu-sub-content"], [data-slot="combobox-content"]) {\n  --surface-gradient: var(--gradient-ember);'
-    )
-  })
-
-  it("lets the document canvas show through the body while a backdrop is on", () => {
-    expect(appearanceCss(defaultAdminAppearance)).toContain(
-      "body:has([data-backdrop]) {\n  background-color: transparent;\n}"
     )
   })
 

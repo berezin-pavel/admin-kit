@@ -11,7 +11,7 @@ import { DemoLanguageToggle } from "@/components/demo-language-toggle"
 import { DemoLayoutToggle } from "@/components/demo-layout-toggle"
 import { DemoThemeToggle } from "@/components/demo-theme-toggle"
 import { DemoUserMenu } from "@/components/demo-user-menu"
-import { AppearanceThemeColor } from "@/registry/admin-appearance/appearance-style"
+import { AppearanceCanvas } from "@/registry/admin-appearance/appearance-style"
 import { AdminShell } from "@/registry/admin-shell/admin-shell"
 import type { AdminNavLinkRenderer } from "@/registry/admin-shell/admin-shell"
 import { AdminToaster } from "@/registry/admin-toaster/admin-toaster"
@@ -62,7 +62,7 @@ export function DemoShell({ children }: { children: ReactNode }) {
 
   return (
     <>
-      <AppearanceThemeColor backdrop={backdrop} />
+      <AppearanceCanvas backdrop={backdrop} />
       <AdminShell
         appName={demoDictionary[locale].appName}
         nav={getDemoNav(locale)}

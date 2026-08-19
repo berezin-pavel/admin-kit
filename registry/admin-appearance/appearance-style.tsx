@@ -21,7 +21,7 @@ export function backdropThemeColors(
     : { light: entry.light.stops[0], dark: entry.dark.stops[0] }
 }
 
-export function AppearanceThemeColor({
+export function AppearanceCanvas({
   backdrop,
 }: {
   backdrop: PageBackdrop | null | undefined
@@ -29,6 +29,13 @@ export function AppearanceThemeColor({
   const colors = backdropThemeColors(backdrop)
   return (
     <>
+      {backdrop && (
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `html{background-image:var(--gradient-${backdrop.gradient}${backdrop.soft ? "-soft" : ""})}body{background-color:transparent}`,
+          }}
+        />
+      )}
       <meta
         name="theme-color"
         media="(prefers-color-scheme: light)"

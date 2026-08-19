@@ -197,7 +197,7 @@ function surfaceSelectorBlocks(): string {
 function backdropSelectorBlocks(): string {
   const blocks = gradientIds.map(
     (id) =>
-      `[data-backdrop="${id}"] {\n  --backdrop-gradient: var(--gradient-${id}-soft);\n  --backdrop-text: var(--foreground);\n}\n\n[data-backdrop="${id}"][data-backdrop-vivid] {\n  --backdrop-gradient: var(--gradient-${id});\n  --backdrop-text: var(--gradient-${id}-foreground);\n}\n\nhtml:has([data-backdrop="${id}"]:not([data-backdrop-vivid])) {\n  background-image: var(--gradient-${id}-soft);\n}\n\nhtml:has([data-backdrop="${id}"][data-backdrop-vivid]) {\n  background-image: var(--gradient-${id});\n}`
+      `[data-backdrop="${id}"] {\n  --backdrop-gradient: var(--gradient-${id}-soft);\n  --backdrop-text: var(--foreground);\n}\n\n[data-backdrop="${id}"][data-backdrop-vivid] {\n  --backdrop-gradient: var(--gradient-${id});\n  --backdrop-text: var(--gradient-${id}-foreground);\n}`
   )
   return blocks.join("\n\n")
 }
@@ -227,7 +227,6 @@ export function appearanceCss(appearance: AdminAppearance): string {
     POPUP_RULE,
     popupSelectorBlocks(),
     `[data-backdrop] {\n  background-image: var(--backdrop-gradient);\n  --backdrop-foreground: var(--backdrop-text);\n}`,
-    `body:has([data-backdrop]) {\n  background-color: transparent;\n}`,
     backdropSelectorBlocks(),
     HEADING_RULE,
   ].join("\n\n")

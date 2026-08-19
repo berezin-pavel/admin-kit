@@ -6,6 +6,7 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 
 import { cn } from "@/lib/utils"
+import { AppearanceCanvas } from "@/registry/admin-appearance/appearance-style"
 import { CheckboxField } from "@/registry/checkbox-field/checkbox-field"
 import { PageAuth } from "@/registry/page-auth/page-auth"
 import { TextField } from "@/registry/text-field/text-field"
@@ -48,46 +49,51 @@ export default function DemoSignInPage() {
   }
 
   return (
-    <PageAuth
-      appName={strings.appName}
-      title={signIn.title}
-      description={signIn.description}
-      submitting={submitting}
-      submitLabel={signIn.submitLabel}
-      error={error}
-      onSubmit={handleSubmit}
-      gradient={appearance.signIn ?? undefined}
-      blockId="sign-in"
-      footer={
-        <Link
-          href="/demo"
-          className={cn(
-            "underline",
-            appearance.signIn ? undefined : "text-primary"
-          )}
-        >
-          {signIn.backToDemoLabel}
-        </Link>
-      }
-    >
-      <TextField
-        label={signIn.emailLabel}
-        type="email"
-        value={email}
-        onChange={setEmail}
-        placeholder={signIn.emailPlaceholder}
+    <>
+      <AppearanceCanvas
+        backdrop={appearance.signIn ? { gradient: appearance.signIn, soft: false } : null}
       />
-      <TextField
-        label={signIn.passwordLabel}
-        type="password"
-        value={password}
-        onChange={setPassword}
-      />
-      <CheckboxField
-        label={signIn.rememberLabel}
-        checked={remember}
-        onChange={setRemember}
-      />
-    </PageAuth>
+      <PageAuth
+        appName={strings.appName}
+        title={signIn.title}
+        description={signIn.description}
+        submitting={submitting}
+        submitLabel={signIn.submitLabel}
+        error={error}
+        onSubmit={handleSubmit}
+        gradient={appearance.signIn ?? undefined}
+        blockId="sign-in"
+        footer={
+          <Link
+            href="/demo"
+            className={cn(
+              "underline",
+              appearance.signIn ? undefined : "text-primary"
+            )}
+          >
+            {signIn.backToDemoLabel}
+          </Link>
+        }
+      >
+        <TextField
+          label={signIn.emailLabel}
+          type="email"
+          value={email}
+          onChange={setEmail}
+          placeholder={signIn.emailPlaceholder}
+        />
+        <TextField
+          label={signIn.passwordLabel}
+          type="password"
+          value={password}
+          onChange={setPassword}
+        />
+        <CheckboxField
+          label={signIn.rememberLabel}
+          checked={remember}
+          onChange={setRemember}
+        />
+      </PageAuth>
+    </>
   )
 }
