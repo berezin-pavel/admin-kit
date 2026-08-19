@@ -83,7 +83,7 @@ test("a per-page backdrop chosen in the menu paints only that page", async ({
   })
 
   await page.goto("/demo")
-  await expect(page.locator("[data-backdrop]").first()).toHaveAttribute("data-backdrop", "ocean", {
+  await expect(page.locator("[data-backdrop]").first()).toHaveAttribute("data-backdrop", "sand", {
     timeout: HYDRATION_POLL_TIMEOUT,
   })
 })
@@ -94,7 +94,7 @@ test("unchecking soften paints the vivid backdrop", async ({ page }) => {
   await page.keyboard.press("Escape")
 
   const root = page.locator("[data-backdrop]").first()
-  await expect(root).toHaveAttribute("data-backdrop", "ocean")
+  await expect(root).toHaveAttribute("data-backdrop", "sand")
   await expect(root).toHaveAttribute("data-backdrop-vivid", "")
 
   await page.reload()
@@ -106,7 +106,7 @@ test("unchecking soften paints the vivid backdrop", async ({ page }) => {
 })
 
 test("the sidebar gradient and its burger panel follow the menu", async ({ page }) => {
-  await expect(page.locator("aside")).toHaveAttribute("data-gradient", "forest")
+  await expect(page.locator("aside")).toHaveAttribute("data-gradient", "jade")
 
   const menu = await openMenu(page)
   await menu.getByRole("combobox", { name: "Sidebar" }).click()

@@ -14,11 +14,11 @@ import {
 const STORAGE_KEY = "admin-kit-demo-appearance"
 
 export const DEMO_APPEARANCE_DEFAULT: AdminAppearance = {
-  accent: "emerald",
-  sidebar: "forest",
-  header: null,
+  accent: "amber",
+  sidebar: "jade",
+  header: "jade",
   signIn: "dusk",
-  page: { gradient: "ocean", soft: true },
+  page: { gradient: "sand", soft: true },
   pages: {},
   blocks: {
     "overview.orders": { gradient: "ember" },

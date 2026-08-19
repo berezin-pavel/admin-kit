@@ -44,6 +44,10 @@ per section with its items) and every section renders its previews on its own pa
 `image-field` joined the Pages and Fields sections instead of "Other". The `/palette` page shows
 each gradient as one full-width, taller block so the sweep is actually visible.
 
+**Project** — the demo's default look is jade sidebar and header, an amber accent, a soft sand page
+backdrop and a plain white orders table (the owner picked the green; the rest was chosen to sit
+with it).
+
 **Project** — the flush demo gained the order page (`/demo-flush/order`), so both demos now
 carry the same three pages; the orders list and the breadcrumbs link within the demo they are
 shown in (`demoBasePath`), the appearance menu lists all three pages in both, and per-page
