@@ -472,7 +472,13 @@ test("hovered controls on a gradient keep their text at 4.5 to 1 in both schemes
 }) => {
   test.setTimeout(900_000)
 
-  const hoverRoutes = ["/palette", "/demo", "/demo/orders", "/preview/admin-shell/sidebar-gradient"]
+  const hoverRoutes = [
+    "/palette",
+    "/demo",
+    "/demo/orders",
+    "/demo-flush",
+    "/preview/admin-shell/sidebar-gradient",
+  ]
   const allFailures: HoverFailure[] = []
   let totalMeasured = 0
 

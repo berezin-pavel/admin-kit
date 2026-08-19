@@ -111,3 +111,21 @@ test("the orders page exports a selection, hides a column and resets its filters
   await reset.click()
   await expect(page.getByRole("row").first()).toBeVisible()
 })
+
+test("the flush demo runs a full-width header with the account menu at its right", async ({
+  page,
+}) => {
+  await page.goto("/demo-flush")
+  await page.waitForLoadState("networkidle")
+
+  const root = page.locator('[data-variant="flush"]')
+  await expect(root).toBeVisible()
+  const header = page.locator('[data-slot="admin-header"]')
+  await expect(header).toContainText("My Store")
+  await expect(header.getByRole("button", { name: "Open user menu" })).toBeVisible()
+  await expect(page.locator("aside").getByRole("button", { name: /Alex Morgan/ })).toHaveCount(0)
+
+  await page.getByRole("link", { name: "Orders" }).click()
+  await expect(page).toHaveURL(/\/demo-flush\/orders$/)
+  await expect(page.getByRole("heading", { name: "Orders" })).toBeVisible()
+})
