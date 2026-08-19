@@ -164,14 +164,14 @@ describe("Block gradient resolution", () => {
 })
 
 describe("Block corner menu interaction", () => {
-  it("shows the no-gradient tile plus all one hundred fifteen palette swatches as radios", async () => {
+  it("shows the no-gradient tile plus all one hundred six palette swatches as radios", async () => {
     const user = userEvent.setup()
     const onChangeSpy = vi.fn<(next: AdminAppearance) => void>()
     render(<Harness onChangeSpy={onChangeSpy} />)
 
     await user.click(screen.getByRole("button", { name: "Block appearance" }))
 
-    expect(screen.getAllByRole("radio")).toHaveLength(116)
+    expect(screen.getAllByRole("radio")).toHaveLength(107)
   })
 
   it("names a swatch in a tooltip on hover", async () => {
@@ -284,7 +284,7 @@ describe("Block corner menu interaction", () => {
     await user.click(screen.getByRole("button", { name: "Block appearance" }))
 
     const gradientGroup = screen.getByRole("radiogroup", { name: "Gradient" })
-    expect(within(gradientGroup).getAllByRole("radio")).toHaveLength(116)
+    expect(within(gradientGroup).getAllByRole("radio")).toHaveLength(107)
 
     const headingGroup = screen.getByRole("radiogroup", { name: "Heading" })
     expect(within(headingGroup).getAllByRole("radio")).toHaveLength(3)

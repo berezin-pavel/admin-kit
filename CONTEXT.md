@@ -71,5 +71,5 @@ A gradient painted behind blocks — the work area of a page or the sign-in scre
 _Avoid_: page background, wallpaper
 
 **Palette**:
-The fixed set of one hundred fifteen gradients, grouped into nine families (a single-hue monochrome set first, then jewel, vivid, fresh, night, earth, metal, pastel, neutral), and twenty accents shipped with the kit, each measured for text contrast, including on hover. The only source of colour choices; nothing is entered by hand.
+The fixed set of one hundred six gradients, grouped into nine families (a single-hue monochrome set first, then jewel, vivid, fresh, night, earth, metal, pastel, neutral), and twenty accents shipped with the kit, each measured for text contrast, including on hover. The only source of colour choices; nothing is entered by hand.
 _Avoid_: presets, swatches, color list

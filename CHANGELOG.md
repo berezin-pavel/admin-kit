@@ -27,9 +27,15 @@ re-pulling), **Breaking** (props or files that changed shape — read before ove
 
 ## Unreleased
 
+**Breaking** — nine gradients are gone: `plum`, `garnet`, `charcoal`, `denim`, `terracotta`,
+`mocha`, `clay`, `cocoa`, `rose-gold` (near-duplicates of their neighbours); a stored appearance
+that names one of them is rejected by `isAdminAppearance` and falls back to the default. The palette
+is one hundred six gradients. `graphite` is a smooth dark-grey sweep now instead of a zigzag that
+ended in teal.
+
 **New** — twelve more `monochrome` gradients: salmon, tangerine, spring, sea-green, turquoise,
 periwinkle, iris and mauve on dark text, petrol, royal-blue, raspberry and toffee on white — the
-family is twenty-nine and the palette one hundred fifteen; `locale-ru` names them.
+family is twenty-nine; `locale-ru` names them.
 
 **Project** — the showcase's home page became an entry point (demos, palette, theme tokens, a card
 per section with its items) and every section renders its previews on its own page under
