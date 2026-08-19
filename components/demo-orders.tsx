@@ -301,6 +301,7 @@ export function DemoOrders() {
     <>
       <PageList
         blockId="orders"
+        header={false}
         title={strings.title}
         description={strings.description}
         actions={

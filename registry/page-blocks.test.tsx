@@ -1,9 +1,11 @@
 import { render, screen, within } from "@testing-library/react"
+import userEvent from "@testing-library/user-event"
 import { describe, expect, it } from "vitest"
 
 import { defaultAdminAppearance } from "@/registry/admin-appearance/appearance-palette"
 import { AppearanceProvider } from "@/registry/admin-appearance/appearance-provider"
 import { PageEntity } from "@/registry/page-entity/page-entity"
+import { PageAuth } from "@/registry/page-auth/page-auth"
 import { PageForm } from "@/registry/page-form/page-form"
 import { PageHeader } from "@/registry/page-header/page-header"
 import { PageList } from "@/registry/page-list/page-list"
@@ -50,6 +52,25 @@ describe("page-list blocks", () => {
 
     expect(blockById(container, "orders.header")).toBeInTheDocument()
     expect(blockById(container, "orders.table")).toBeInTheDocument()
+  })
+
+  it("moves the title and the actions into the table block when header is false", () => {
+    const { container } = render(
+      <PageList
+        blockId="orders"
+        header={false}
+        title="Orders"
+        actions={<button type="button">Reload</button>}
+        columns={[{ id: "number", title: "Number", cell: () => "cell" }]}
+        rows={[]}
+      />
+    )
+
+    expect(blockById(container, "orders.header")).not.toBeInTheDocument()
+    const table = blockById(container, "orders.table") as HTMLElement
+    expect(within(table).getByText("Orders")).toBeInTheDocument()
+    expect(within(table).getByRole("button", { name: "Reload" })).toBeInTheDocument()
+    expect(container.querySelector("h1")).not.toBeInTheDocument()
   })
 
   it("renders no block ids without blockId, but still renders blocks", () => {
@@ -211,6 +232,31 @@ describe("page-form blocks", () => {
     )
 
     expect(screen.getByText("Home")).toBeInTheDocument()
+  })
+})
+
+describe("heading choice on section blocks", () => {
+  it("offers the heading choice for a form section and a sign-in card", async () => {
+    const { container } = render(
+      <AppearanceProvider value={defaultAdminAppearance} onChange={() => {}} editable>
+        <PageForm
+          blockId="edit"
+          title="Edit order"
+          sections={[{ title: "Details", children: <p>Fields</p> }]}
+        />
+        <PageAuth appName="Store" title="Sign in" blockId="sign-in.card" onSubmit={() => {}}>
+          <p>Form</p>
+        </PageAuth>
+      </AppearanceProvider>
+    )
+
+    for (const id of ["edit.0", "sign-in.card"]) {
+      const block = blockById(container, id) as HTMLElement
+      const trigger = within(block).getByRole("button", { name: "Block appearance" })
+      await userEvent.click(trigger)
+      expect(screen.getByRole("radiogroup", { name: "Heading" })).toBeInTheDocument()
+      await userEvent.keyboard("{Escape}")
+    }
   })
 })
 

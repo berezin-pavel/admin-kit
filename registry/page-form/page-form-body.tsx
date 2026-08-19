@@ -53,6 +53,7 @@ export function PageFormBody({
           <Block
             key={sectionId}
             id={blockId ? `${blockId}.${sectionId}` : undefined}
+            headings
           >
             {section.title || section.description ? (
               <CardHeader>

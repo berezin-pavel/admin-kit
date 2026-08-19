@@ -70,7 +70,7 @@ export function PageAuth({
           >
             {appName}
           </p>
-          <Block id={blockId}>
+          <Block id={blockId} headings>
             <CardHeader>
               <CardTitle>{title}</CardTitle>
               {description ? (

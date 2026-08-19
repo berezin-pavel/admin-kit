@@ -34,6 +34,7 @@ export type PageStatus = "ready" | "loading" | "error" | "forbidden" | "offline"
 
 export interface PageListProps<Row> {
   blockId?: string
+  header?: boolean
   title: string
   description?: string
   actions?: ReactNode
@@ -81,6 +82,7 @@ function getStatusContent(status: PageStatus): ReactNode {
 
 export function PageList<Row>({
   blockId,
+  header = true,
   title,
   description,
   actions,
@@ -119,16 +121,20 @@ export function PageList<Row>({
 }: PageListProps<Row>) {
   return (
     <div className={cn("flex flex-col gap-4", className)}>
-      <PageHeader
-        title={title}
-        description={description}
-        actions={actions}
-        breadcrumbs={breadcrumbs}
-        blockId={blockId ? `${blockId}.header` : undefined}
-      />
+      {header ? (
+        <PageHeader
+          title={title}
+          description={description}
+          actions={actions}
+          breadcrumbs={breadcrumbs}
+          blockId={blockId ? `${blockId}.header` : undefined}
+        />
+      ) : null}
 
       <WidgetTable
         blockId={blockId ? `${blockId}.table` : undefined}
+        title={header ? undefined : title}
+        actions={header ? undefined : actions}
         columns={columns}
         rows={status === "ready" ? rows : []}
         getRowKey={getRowKey}

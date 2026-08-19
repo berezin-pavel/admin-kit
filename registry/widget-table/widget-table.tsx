@@ -113,6 +113,7 @@ export interface WidgetTableProps<Row> {
   empty?: ReactNode
   className?: string
   toolbar?: ReactNode
+  actions?: ReactNode
   pagination?: WidgetTablePagination
   footer?: ReactNode
   sort?: WidgetTableSort
@@ -227,6 +228,7 @@ export function WidgetTable<Row>({
   empty,
   className,
   toolbar,
+  actions,
   pagination,
   footer,
   sort,
@@ -263,7 +265,7 @@ export function WidgetTable<Row>({
   const pageSelection = getPageSelection(pageKeys, selectedKeys ?? new Set())
   const hasActiveSelection = hasSelection && (selectedKeys?.size ?? 0) > 0
   const hasHeader = Boolean(
-    title || toolbar || hasServiceGroup || hasActiveSelection
+    title || toolbar || actions || hasServiceGroup || hasActiveSelection
   )
 
   return (
@@ -333,6 +335,7 @@ export function WidgetTable<Row>({
                 label={resolvedLabels.columnsLabel}
               />
             ) : null}
+            {actions}
           </div>
         </CardHeader>
       ) : null}

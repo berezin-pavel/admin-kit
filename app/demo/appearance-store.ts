@@ -36,7 +36,7 @@ export const DEMO_APPEARANCE_DEFAULT: AdminAppearance = {
     "overview.products": { gradient: "sand" },
     "overview.split": { gradient: "berry" },
     "overview.activity": { gradient: "slate" },
-    "orders.header": { heading: "large" },
+    "orders.table": { heading: "none" },
     "order.order": { gradient: "sky" },
     "order.customer": { gradient: "mint" },
     "order.delivery": { gradient: "graphite" },
