@@ -127,5 +127,30 @@ test("the flush demo runs a full-width header with the account menu at its right
 
   await page.getByRole("link", { name: "Orders" }).click()
   await expect(page).toHaveURL(/\/demo-flush\/orders$/)
-  await expect(page.getByRole("heading", { name: "Orders" })).toBeVisible()
+  const table = page.locator('[data-block-id="orders.table"]')
+  await expect(table).toHaveAttribute("data-heading", "none", { timeout: 15_000 })
+  await expect(table.getByRole("button", { name: "Reload" })).toBeVisible()
+  await expect(page.locator('[data-block-id="orders.header"]')).toHaveCount(0)
+})
+
+test("the header gradient picked in the menu paints the flush demo's bar", async ({ page }) => {
+  await page.goto("/demo-flush")
+  await page.evaluate(() => window.localStorage.removeItem("admin-kit-demo-appearance"))
+  await page.reload()
+  await page.waitForLoadState("networkidle")
+
+  const trigger = page.getByRole("button", { name: "Appearance", exact: true })
+  const menu = page.getByRole("dialog", { name: "Appearance", exact: true })
+  await expect(async () => {
+    await trigger.click()
+    await expect(menu).toBeVisible({ timeout: 2_000 })
+  }).toPass({ timeout: 15_000 })
+  await menu.getByRole("combobox", { name: "Header" }).click()
+  await page.getByRole("option", { name: "Midnight" }).click()
+  await page.keyboard.press("Escape")
+
+  await expect(page.locator('[data-slot="admin-header"]')).toHaveAttribute(
+    "data-gradient",
+    "midnight"
+  )
 })

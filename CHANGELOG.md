@@ -8,7 +8,7 @@ items changed, and what breaks if you pull them.
 **Install an item, pinned to a release:**
 
 ```bash
-pnpm dlx shadcn@latest add berezin-pavel/admin-kit/widget-table#v0.31.0
+pnpm dlx shadcn@latest add berezin-pavel/admin-kit/widget-table#v0.32.0
 ```
 
 **See what an update would change before taking it:**
@@ -25,7 +25,7 @@ Sections used below: **New** (items you can now install), **Changed** (installed
 re-pulling), **Breaking** (props or files that changed shape — read before overwriting), and
 **Project** (showcase, CI, docs — nothing that reaches your project).
 
-## Unreleased
+## 0.32.0 — 2026-08-19
 
 **Breaking** — `AdminAppearance` gained a required `header: GradientId | null`, the
 gradient of the shell's header bar. `isAdminAppearance` rejects a stored value that
@@ -37,7 +37,19 @@ literal you build by hand.
 `sidebarGradient` paints the sidebar; it works in both variants, with the card
 layout's header and with the flush layout's full-width bar. The burger panel keeps
 following `sidebarGradient`. `appearance-menu` grew a "Header" select between
-"Sidebar" and "Sign-in screen" (`labels.header`, `locale-ru`: "Шапка").
+"Sidebar" and "Sign-in screen" (`labels.header`, `locale-ru` carries the Russian).
+
+**Changed** — `page-list` takes `header={false}`: the page-header block is dropped, `title`
+becomes the table block's own title (so the block menu's heading choice — regular, large,
+hidden — applies to it) and `actions` move into the table header's right group, next to
+the columns menu; `description` and `breadcrumbs` are not rendered in that mode.
+`widget-table` gained the matching `actions` slot. The heading choice is now offered on
+every block that has a title: `page-form` sections and `page-auth`'s card joined the
+widgets, `page-header`, `page-entity` sections and the table.
+
+**Project** — the demo's orders list (both demos) runs `header={false}` with the table's
+heading hidden by default (`orders.table: { heading: "none" }`), so the section name shows
+only in the sidebar or the header bar.
 
 ## 0.31.0 — 2026-08-19
 
