@@ -148,7 +148,10 @@ export default function PalettePage() {
                           className="w-32"
                         />
                         <div className="flex items-center gap-2">
-                          <Checkbox id={`${gradient.id}-checkbox`} />
+                          <Checkbox
+                            id={`${gradient.id}-checkbox`}
+                            aria-label={`${gradient.name} sample checkbox`}
+                          />
                           <Label htmlFor={`${gradient.id}-checkbox`}>Checkbox</Label>
                         </div>
                         <Badge variant="outline">Badge</Badge>
