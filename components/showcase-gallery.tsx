@@ -30,7 +30,7 @@ export function ShowcaseGallery({ group }: { group: ShowcaseResolvedGroup }) {
                     <span>{view.name}</span>
                     <Link
                       href={`/preview/${entry.item}/${view.id}`}
-                      className="text-xs text-muted-foreground/70 underline-offset-4 hover:text-foreground hover:underline"
+                      className="text-xs text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
                     >
                       Open full page
                     </Link>

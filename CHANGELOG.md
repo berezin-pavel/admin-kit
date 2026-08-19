@@ -27,6 +27,10 @@ re-pulling), **Breaking** (props or files that changed shape — read before ove
 
 ## Unreleased
 
+**New** — twelve more `monochrome` gradients: salmon, tangerine, spring, sea-green, turquoise,
+periwinkle, iris and mauve on dark text, petrol, royal-blue, raspberry and toffee on white — the
+family is twenty-nine and the palette one hundred fifteen; `locale-ru` names them.
+
 **Project** — the showcase's home page became an entry point (demos, palette, theme tokens, a card
 per section with its items) and every section renders its previews on its own page under
 `/sections/<id>`; the theme tokens table moved to `/tokens`. The section menu became plain links

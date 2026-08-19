@@ -49,29 +49,29 @@ export function ShowcaseTokens() {
         <p className="max-w-2xl text-muted-foreground">
           A color swatch, the variable name, and its value — for the light
           and dark schemes at once. Values are read directly from{" "}
-          <code className="rounded bg-muted px-1.5 py-0.5 text-sm">
+          <code className="rounded bg-muted px-1.5 py-0.5 text-sm text-foreground">
             app/globals.css
           </code>{" "}
           (the{" "}
-          <code className="rounded bg-muted px-1.5 py-0.5 text-sm">:root</code>{" "}
+          <code className="rounded bg-muted px-1.5 py-0.5 text-sm text-foreground">:root</code>{" "}
           and{" "}
-          <code className="rounded bg-muted px-1.5 py-0.5 text-sm">.dark</code>
+          <code className="rounded bg-muted px-1.5 py-0.5 text-sm text-foreground">.dark</code>
           {" "}blocks), so this section never drifts from the theme after the
           next edit.
         </p>
         <p className="max-w-2xl text-sm text-muted-foreground">
           Four tokens —{" "}
-          <code className="rounded bg-muted px-1 py-0.5">success</code>,{" "}
-          <code className="rounded bg-muted px-1 py-0.5">
+          <code className="rounded bg-muted px-1 py-0.5 text-foreground">success</code>,{" "}
+          <code className="rounded bg-muted px-1 py-0.5 text-foreground">
             success-foreground
           </code>
-          , <code className="rounded bg-muted px-1 py-0.5">warning</code> and{" "}
-          <code className="rounded bg-muted px-1 py-0.5">
+          , <code className="rounded bg-muted px-1 py-0.5 text-foreground">warning</code> and{" "}
+          <code className="rounded bg-muted px-1 py-0.5 text-foreground">
             warning-foreground
           </code>{" "}
           — on top of the standard shadcn set, added by the admin-kit theme
           (see{" "}
-          <code className="rounded bg-muted px-1 py-0.5">
+          <code className="rounded bg-muted px-1 py-0.5 text-foreground">
             docs/adr/0003-success-and-warning-tokens.md
           </code>
           ) and shown here alongside the rest.
