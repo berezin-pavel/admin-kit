@@ -34,6 +34,9 @@ function readPreviews() {
 }
 
 const additionalRoutes = [
+  "/",
+  "/tokens",
+  "/sections/widgets",
   "/palette",
   "/demo",
   "/demo/orders",

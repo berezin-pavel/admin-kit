@@ -115,6 +115,16 @@ admin-kit colors won't be applied over the project's existing palette —
 the files will arrive, but `--primary` and the other variables will stay
 as they were.
 
+## Showcase
+
+The showcase's home page is an entry point: the demos, the palette, the
+theme tokens and a card per section listing its items. Each section —
+Shell, Appearance, Controls, Localization, Widgets, Page parts, Fields,
+Feedback, Pages, States — renders its items' views on its own page under
+`/sections/<id>`, every view linking to a full-page preview; the theme
+tokens table lives at `/tokens`. Nothing is previewed on the home page,
+so it opens instantly however many items the kit grows to.
+
 ## Demo
 
 The showcase runs two demo panels built from the same widgets and pages,

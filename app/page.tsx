@@ -1,69 +1,51 @@
 import Link from "next/link"
 
-import { ShowcaseGallery } from "@/components/showcase-gallery"
-import { ShowcaseNav } from "@/components/showcase-nav"
-import { SHOWCASE_NAV_SENTINEL_ID } from "@/components/showcase-nav-body"
-import { ShowcaseTokens } from "@/components/showcase-tokens"
-import { ThemeToggle } from "@/components/theme-toggle"
-import { buttonVariants } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
+import { ShowcaseHeader } from "@/components/showcase-header"
+import { resolveShowcaseGroups, showcaseGroupHref } from "@/lib/showcase-groups"
 import { showcaseEntries } from "@/showcase/entries"
 
 export default function Page() {
+  const groups = resolveShowcaseGroups(showcaseEntries)
+
   return (
-    <main className="mx-auto flex max-w-6xl flex-col gap-8 px-6 py-8 md:py-12">
-      <header className="flex items-start justify-between gap-6">
-        <div className="flex flex-col gap-3">
-          <div className="flex flex-col gap-2">
-            <h1 className="text-3xl font-semibold">admin-kit</h1>
-            <p className="text-muted-foreground">
-              Admin panel parts you install into your project with the shadcn
-              CLI and update whenever you decide.
-            </p>
-          </div>
-          <div className="flex gap-2">
-            <Link
-              href="/demo"
-              className={cn(buttonVariants({ size: "sm" }), "w-fit")}
+    <main className="mx-auto flex max-w-6xl flex-col gap-10 px-6 py-8 md:py-12">
+      <ShowcaseHeader />
+      <section className="flex flex-col gap-6">
+        <h2 className="text-2xl font-semibold">Sections</h2>
+        <ul className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {groups.map((group) => (
+            <li
+              key={group.id}
+              className="flex flex-col gap-3 rounded-xl border border-border p-5"
             >
-              View demo
-            </Link>
-            <Link
-              href="/demo-flush"
-              className={cn(
-                buttonVariants({ variant: "outline", size: "sm" }),
-                "w-fit"
-              )}
-            >
-              Flush demo
-            </Link>
-            <Link
-              href="/palette"
-              className={cn(
-                buttonVariants({ variant: "outline", size: "sm" }),
-                "w-fit"
-              )}
-            >
-              Palette
-            </Link>
-          </div>
-        </div>
-        <ThemeToggle />
-      </header>
-      <div className="flex flex-col gap-8 md:flex-row md:items-start md:gap-10">
-        <ShowcaseNav entries={showcaseEntries} />
-        <div className="min-w-0 flex-1">
-          <div className="flex flex-col gap-16">
-            <ShowcaseTokens />
-            <ShowcaseGallery entries={showcaseEntries} />
-          </div>
-          <div
-            id={SHOWCASE_NAV_SENTINEL_ID}
-            aria-hidden="true"
-            className="h-px"
-          />
-        </div>
-      </div>
+              <div className="flex items-baseline justify-between gap-3">
+                <Link
+                  href={showcaseGroupHref(group.id)}
+                  className="text-lg font-semibold underline-offset-4 hover:underline"
+                >
+                  {group.title}
+                </Link>
+                <span className="text-xs text-muted-foreground">
+                  {group.entries.length}{" "}
+                  {group.entries.length === 1 ? "item" : "items"}
+                </span>
+              </div>
+              <ul className="flex flex-wrap gap-x-3 gap-y-1 text-sm">
+                {group.entries.map((entry) => (
+                  <li key={entry.item}>
+                    <Link
+                      href={`${showcaseGroupHref(group.id)}#${entry.item}`}
+                      className="text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+                    >
+                      {entry.title}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </li>
+          ))}
+        </ul>
+      </section>
     </main>
   )
 }

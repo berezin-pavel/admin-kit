@@ -122,17 +122,17 @@ export default function PalettePage() {
         {gradientFamilies.map((family) => (
           <div key={family} className="flex flex-col gap-4">
             <h3 className="text-lg font-semibold">{gradientFamilyNames[family]}</h3>
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+            <div className="grid grid-cols-1 gap-8">
               {gradientPalette
                 .filter((gradient) => gradient.family === family)
                 .map((gradient) => (
                   <div key={gradient.id} className="flex flex-col gap-2">
-                    <Block gradient={gradient.id}>
+                    <Block gradient={gradient.id} className="min-h-64">
                       <CardHeader>
                         <CardTitle>{gradient.name}</CardTitle>
                         <CardDescription>Revenue 12,480 · +8.2%</CardDescription>
                       </CardHeader>
-                      <CardContent className="flex flex-wrap items-center gap-2">
+                      <CardContent className="mt-auto flex flex-wrap items-center gap-2">
                         <Button variant="outline" size="sm">
                           Outline
                         </Button>
@@ -160,7 +160,7 @@ export default function PalettePage() {
                     </Block>
                     <div className="flex flex-col gap-1">
                       <div
-                        className="h-6 rounded-md"
+                        className="h-12 rounded-md"
                         style={{
                           backgroundImage: `var(--gradient-${gradient.id}-soft)`,
                         }}

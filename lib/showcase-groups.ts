@@ -66,6 +66,9 @@ export const SHOWCASE_ENTRY_GROUPS: readonly ShowcaseGroupDefinition[] = [
       "color-field",
       "file-field",
       "tags-field",
+      "image-field",
+      "combobox-field",
+      "multi-select-field",
     ],
   },
   {
@@ -76,7 +79,7 @@ export const SHOWCASE_ENTRY_GROUPS: readonly ShowcaseGroupDefinition[] = [
   {
     id: "pages",
     title: "Pages",
-    items: ["page-list", "page-entity", "page-form"],
+    items: ["page-list", "page-entity", "page-form", "page-tabs", "page-auth"],
   },
   {
     id: "states",
@@ -118,4 +121,8 @@ export function resolveShowcaseGroups(
   }
 
   return groups
+}
+
+export function showcaseGroupHref(groupId: string): string {
+  return `/sections/${groupId}`
 }

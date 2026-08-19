@@ -2,108 +2,26 @@
 
 import { ChevronDown } from "lucide-react"
 import Link from "next/link"
-import { useEffect, useMemo, useState } from "react"
+import { useState } from "react"
 
 import { cn } from "@/lib/utils"
-
-export const SHOWCASE_NAV_SENTINEL_ID = "showcase-nav-sentinel"
 
 export interface ShowcaseNavItem {
   id: string
   title: string
+  href: string
   children?: readonly ShowcaseNavItem[]
-}
-
-function useActiveSection(ids: readonly string[]) {
-  const [activeId, setActiveId] = useState<string | null>(null)
-
-  useEffect(() => {
-    const elements = ids
-      .map((id) => document.getElementById(id))
-      .filter((element): element is HTMLElement => element !== null)
-
-    if (elements.length === 0) return
-
-    const orderedIds = [...elements]
-      .sort((a, b) =>
-        a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1
-      )
-      .map((element) => element.id)
-    const lastId = orderedIds[orderedIds.length - 1]
-
-    const visible = new Set<string>()
-    let atBottom = false
-
-    const applyActive = () => {
-      if (atBottom) {
-        setActiveId(lastId)
-        return
-      }
-      for (let index = orderedIds.length - 1; index >= 0; index -= 1) {
-        if (visible.has(orderedIds[index])) {
-          setActiveId(orderedIds[index])
-          return
-        }
-      }
-    }
-
-    const sectionObserver = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            visible.add(entry.target.id)
-          } else {
-            visible.delete(entry.target.id)
-          }
-        }
-        applyActive()
-      },
-      { rootMargin: "-88px 0px -70% 0px", threshold: 0 }
-    )
-    elements.forEach((element) => sectionObserver.observe(element))
-
-    const sentinel = document.getElementById(SHOWCASE_NAV_SENTINEL_ID)
-    const bottomObserver = sentinel
-      ? new IntersectionObserver(
-          ([entry]) => {
-            atBottom = entry.isIntersecting
-            applyActive()
-          },
-          { threshold: 0 }
-        )
-      : null
-    if (sentinel && bottomObserver) {
-      bottomObserver.observe(sentinel)
-    }
-
-    return () => {
-      sectionObserver.disconnect()
-      bottomObserver?.disconnect()
-    }
-  }, [ids])
-
-  return {
-    activeId,
-    activate: (id: string) => setActiveId(id),
-  }
 }
 
 export function ShowcaseNavBody({
   items,
   referenceItems,
+  activeId,
 }: {
   items: readonly ShowcaseNavItem[]
   referenceItems: readonly ShowcaseNavItem[]
+  activeId?: string
 }) {
-  const ids = useMemo(
-    () => [
-      ...referenceItems.map((item) => item.id),
-      ...items.map((item) => item.id),
-    ],
-    [items, referenceItems]
-  )
-  const { activeId, activate } = useActiveSection(ids)
-
   return (
     <>
       <details className="-mx-6 border-b border-border bg-background/95 px-6 py-2 backdrop-blur md:hidden">
@@ -115,7 +33,6 @@ export function ShowcaseNavBody({
           items={items}
           referenceItems={referenceItems}
           activeId={activeId}
-          onNavigate={activate}
           className="max-h-[70svh] overflow-y-auto py-3"
         />
       </details>
@@ -123,7 +40,6 @@ export function ShowcaseNavBody({
         items={items}
         referenceItems={referenceItems}
         activeId={activeId}
-        onNavigate={activate}
         className="hidden md:block"
       />
     </>
@@ -134,23 +50,17 @@ function NavLinkList({
   items,
   referenceItems,
   activeId,
-  onNavigate,
   className,
 }: {
   items: readonly ShowcaseNavItem[]
   referenceItems: readonly ShowcaseNavItem[]
-  activeId: string | null
-  onNavigate: (id: string) => void
+  activeId?: string
   className?: string
 }) {
   return (
     <div className={cn("flex flex-col gap-2 text-sm", className)}>
-      <NavItemList
-        items={referenceItems}
-        activeId={activeId}
-        onNavigate={onNavigate}
-      />
-      <NavItemList items={items} activeId={activeId} onNavigate={onNavigate} />
+      <NavItemList items={referenceItems} activeId={activeId} />
+      <NavItemList items={items} activeId={activeId} />
     </div>
   )
 }
@@ -158,23 +68,14 @@ function NavLinkList({
 function NavItemList({
   items,
   activeId,
-  onNavigate,
-  className,
 }: {
   items: readonly ShowcaseNavItem[]
-  activeId: string | null
-  onNavigate: (id: string) => void
-  className?: string
+  activeId?: string
 }) {
   return (
-    <ul className={cn("flex flex-col gap-1", className)}>
+    <ul className="flex flex-col gap-1">
       {items.map((item) => (
-        <NavItem
-          key={item.id}
-          item={item}
-          activeId={activeId}
-          onNavigate={onNavigate}
-        />
+        <NavItem key={item.id} item={item} activeId={activeId} />
       ))}
     </ul>
   )
@@ -183,11 +84,9 @@ function NavItemList({
 function NavItem({
   item,
   activeId,
-  onNavigate,
 }: {
   item: ShowcaseNavItem
-  activeId: string | null
-  onNavigate: (id: string) => void
+  activeId?: string
 }) {
   const isActive = item.id === activeId
   const [openedByUser, setOpenedByUser] = useState<boolean | null>(null)
@@ -199,11 +98,10 @@ function NavItem({
     <li>
       <div className="flex items-center gap-1">
         <Link
-          href={`#${item.id}`}
+          href={item.href}
           aria-current={isActive ? "page" : undefined}
-          onClick={() => onNavigate(item.id)}
           className={cn(
-            "block flex-1 cursor-default rounded-md px-2 py-1 transition-colors",
+            "block flex-1 rounded-md px-2 py-1 transition-colors",
             isActive
               ? "bg-muted font-medium text-foreground"
               : "text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -234,9 +132,8 @@ function NavItem({
           {item.children?.map((child) => (
             <li key={child.id}>
               <Link
-                href={`#${child.id}`}
-                onClick={() => onNavigate(item.id)}
-                className="block cursor-default rounded-md px-2 py-0.5 text-xs text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                href={child.href}
+                className="block rounded-md px-2 py-0.5 text-xs text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
               >
                 {child.title}
               </Link>
