@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button"
 import {
   AdminShell,
   type AdminNavItem,
+  type AdminShellVariant,
 } from "@/registry/admin-shell/admin-shell"
 import { AdminToaster, notify } from "@/registry/admin-toaster/admin-toaster"
 import {
@@ -51,11 +52,15 @@ export function AdminShellFooterView({
   header = true,
   defaultCollapsed = false,
   sidebarGradient,
+  variant,
+  actions,
   children,
 }: {
   header?: boolean
   defaultCollapsed?: boolean
   sidebarGradient?: string
+  variant?: AdminShellVariant
+  actions?: React.ReactNode
   children?: React.ReactNode
 }) {
   const [collapsed, setCollapsed] = useState(defaultCollapsed)
@@ -128,6 +133,8 @@ export function AdminShellFooterView({
       nav={nav}
       activeHref="/orders"
       collapsed={collapsed}
+      variant={variant}
+      actions={actions}
       sidebarActions={notifications}
       sidebarProfile={accountRow}
       sidebarFooter={footer}
@@ -144,6 +151,7 @@ export function AdminShellFooterView({
       activeHref="/orders"
       header={false}
       collapsed={collapsed}
+      variant={variant}
       sidebarActions={notifications}
       sidebarProfile={accountRow}
       sidebarFooter={footer}

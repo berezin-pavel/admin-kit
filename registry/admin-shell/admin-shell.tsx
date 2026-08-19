@@ -23,6 +23,8 @@ export interface AdminShellLabels {
   sections?: string
 }
 
+export type AdminShellVariant = "card" | "flush"
+
 type AdminShellBaseProps = {
   appName: string
   logo?: ReactNode
@@ -33,6 +35,7 @@ type AdminShellBaseProps = {
   sidebarActions?: ReactNode
   sidebarProfile?: ReactNode
   collapsed?: boolean
+  variant?: AdminShellVariant
   sidebarGradient?: string
   backdrop?: string | null
   children?: ReactNode
@@ -53,6 +56,7 @@ export function AdminShell({
   sidebarActions,
   sidebarProfile,
   collapsed = false,
+  variant = "card",
   sidebarGradient,
   backdrop,
   header = true,
@@ -84,6 +88,30 @@ export function AdminShell({
       </div>
     ) : null
 
+  const flush = variant === "flush"
+  const headerBar = flush && header !== false
+
+  const headerBrand = headerBar ? (
+    <div
+      className={cn(
+        "flex h-full shrink-0 items-center gap-1 px-2 text-sm font-semibold md:mr-3 md:border-r md:border-sidebar-border",
+        collapsed ? "md:w-14" : "md:w-60"
+      )}
+    >
+      <span className="flex min-w-0 flex-1 items-center gap-2 px-2">
+        {brand}
+        <span className={cn("truncate", collapsed ? "sr-only" : "hidden md:inline")}>
+          {appName}
+        </span>
+      </span>
+      {sidebarActions && !collapsed ? (
+        <div className="hidden shrink-0 items-center gap-1 md:flex">
+          {sidebarActions}
+        </div>
+      ) : null}
+    </div>
+  ) : null
+
   const menu = (
     <AdminMenu
       appName={appName}
@@ -100,101 +128,144 @@ export function AdminShell({
     </AdminMenu>
   )
 
+  const topBar =
+    header === false ? (
+      <div
+        data-slot="admin-top-bar"
+        className={cn(
+          "flex h-12 shrink-0 items-center gap-2 bg-card px-2 md:hidden",
+          flush
+            ? "border-b border-border"
+            : "rounded-xl ring-1 ring-foreground/10"
+        )}
+      >
+        {menu}
+        {brand}
+        <span className="min-w-0 flex-1 truncate text-sm font-semibold">
+          {appName}
+        </span>
+        {narrowActions}
+      </div>
+    ) : null
+
+  const sidebar = (
+    <aside
+      className={cn(
+        "hidden w-60 shrink-0 flex-col overflow-hidden bg-card md:flex",
+        flush
+          ? "border-r border-sidebar-border"
+          : "rounded-xl ring-1 ring-foreground/10",
+        collapsed && "md:w-14"
+      )}
+      data-gradient={sidebarGradient || undefined}
+    >
+      {headerBar ? null : collapsed ? (
+        brand ? (
+          <div className="flex h-12 shrink-0 items-center px-2">
+            <span className="flex size-10 items-center justify-center">
+              {brand}
+            </span>
+          </div>
+        ) : null
+      ) : (
+        <div className="flex h-12 shrink-0 items-center gap-1 px-2 text-sm font-semibold">
+          <span className="flex min-w-0 flex-1 items-center gap-2 px-2">
+            {brand}
+            <span className="truncate">{appName}</span>
+          </span>
+          {sidebarActions ? (
+            <div className="flex shrink-0 items-center gap-1">
+              {sidebarActions}
+            </div>
+          ) : null}
+        </div>
+      )}
+      {sidebarProfile ? (
+        <div
+          className={cn(
+            "shrink-0 border-b border-sidebar-border px-2 pb-2",
+            headerBar && "pt-2",
+            collapsed ? adminRailProfileClassName : adminRowProfileClassName
+          )}
+        >
+          {sidebarProfile}
+        </div>
+      ) : null}
+      {collapsed && sidebarActions ? (
+        <div className="flex shrink-0 flex-col items-center gap-1 px-2 py-2">
+          {sidebarActions}
+        </div>
+      ) : null}
+      <AdminNav
+        nav={nav}
+        activeHref={activeHref}
+        renderLink={renderLink}
+        collapsed={collapsed}
+        sectionsLabel={sectionsLabel}
+      />
+      {sidebarFooter ? (
+        <div
+          className={cn(
+            "mt-auto flex shrink-0 items-center gap-2 border-t border-sidebar-border p-2",
+            collapsed ? "flex-col" : "flex-row"
+          )}
+        >
+          {sidebarFooter}
+        </div>
+      ) : null}
+    </aside>
+  )
+
+  const workArea = (
+    <div className="flex min-h-0 min-w-0 flex-1 flex-col">
+      {header && !headerBar ? (
+        <AdminHeader
+          section={section}
+          actions={actions}
+          menu={menu}
+          narrowActions={narrowActions}
+        />
+      ) : null}
+      <main className="min-h-0 flex-1 overflow-y-auto p-4 md:p-6">
+        {children}
+      </main>
+    </div>
+  )
+
   return (
     <div
       className={cn(
-        "flex h-svh flex-col gap-2 bg-background p-2 text-foreground md:flex-row md:gap-4 md:p-4",
+        "flex h-svh flex-col bg-background text-foreground",
+        flush
+          ? !headerBar && "md:flex-row"
+          : "gap-2 p-2 md:flex-row md:gap-4 md:p-4",
         className
       )}
+      data-variant={variant}
       data-backdrop={backdrop || undefined}
     >
-      {header === false ? (
-        <div
-          data-slot="admin-top-bar"
-          className="flex h-12 shrink-0 items-center gap-2 rounded-xl bg-card px-2 ring-1 ring-foreground/10 md:hidden"
-        >
-          {menu}
-          {brand}
-          <span className="min-w-0 flex-1 truncate text-sm font-semibold">
-            {appName}
-          </span>
-          {narrowActions}
-        </div>
-      ) : null}
-      <aside
-        className={cn(
-          "hidden w-60 shrink-0 flex-col overflow-hidden rounded-xl bg-card ring-1 ring-foreground/10 md:flex",
-          collapsed && "md:w-14"
-        )}
-        data-gradient={sidebarGradient || undefined}
-      >
-        {collapsed ? (
-          brand ? (
-            <div className="flex h-12 shrink-0 items-center px-2">
-              <span className="flex size-10 items-center justify-center">
-                {brand}
-              </span>
-            </div>
-          ) : null
-        ) : (
-          <div className="flex h-12 shrink-0 items-center gap-1 px-2 text-sm font-semibold">
-            <span className="flex min-w-0 flex-1 items-center gap-2 px-2">
-              {brand}
-              <span className="truncate">{appName}</span>
-            </span>
-            {sidebarActions ? (
-              <div className="flex shrink-0 items-center gap-1">
-                {sidebarActions}
-              </div>
-            ) : null}
-          </div>
-        )}
-        {sidebarProfile ? (
-          <div
-            className={cn(
-              "shrink-0 border-b border-sidebar-border px-2 pb-2",
-              collapsed ? adminRailProfileClassName : adminRowProfileClassName
-            )}
-          >
-            {sidebarProfile}
-          </div>
-        ) : null}
-        {collapsed && sidebarActions ? (
-          <div className="flex shrink-0 flex-col items-center gap-1 px-2 py-2">
-            {sidebarActions}
-          </div>
-        ) : null}
-        <AdminNav
-          nav={nav}
-          activeHref={activeHref}
-          renderLink={renderLink}
-          collapsed={collapsed}
-          sectionsLabel={sectionsLabel}
-        />
-        {sidebarFooter ? (
-          <div
-            className={cn(
-              "mt-auto flex shrink-0 items-center gap-2 border-t border-sidebar-border p-2",
-              collapsed ? "flex-col" : "flex-row"
-            )}
-          >
-            {sidebarFooter}
-          </div>
-        ) : null}
-      </aside>
-      <div className="flex min-h-0 min-w-0 flex-1 flex-col">
-        {header ? (
+      {topBar}
+      {headerBar ? (
+        <>
           <AdminHeader
             section={section}
             actions={actions}
             menu={menu}
             narrowActions={narrowActions}
+            leading={headerBrand}
+            className="bg-card px-2 pr-4 md:px-0 md:pr-6"
           />
-        ) : null}
-        <main className="min-h-0 flex-1 overflow-y-auto p-4 md:p-6">
-          {children}
-        </main>
-      </div>
+          <div className="flex min-h-0 flex-1">
+            {sidebar}
+            {workArea}
+          </div>
+        </>
+      ) : (
+        <>
+          {sidebar}
+          {workArea}
+        </>
+      )}
     </div>
   )
 }

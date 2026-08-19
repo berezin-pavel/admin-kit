@@ -8,6 +8,7 @@ import { usePathname } from "next/navigation"
 import { Store } from "lucide-react"
 
 import { DemoLanguageToggle } from "@/components/demo-language-toggle"
+import { DemoLayoutToggle } from "@/components/demo-layout-toggle"
 import { DemoThemeToggle } from "@/components/demo-theme-toggle"
 import { DemoUserMenu } from "@/components/demo-user-menu"
 import { AppearanceThemeColor } from "@/registry/admin-appearance/appearance-style"
@@ -26,6 +27,7 @@ import {
   DEMO_APPEARANCE_PAGES,
 } from "@/app/demo/appearance-store"
 import { getDemoNav } from "@/app/demo/data"
+import { useDemoLayout } from "@/app/demo/layout-store"
 import { demoDictionary } from "@/app/demo/locale"
 import { useDemoLocale } from "@/app/demo/locale-store"
 
@@ -43,6 +45,7 @@ export function DemoShell({ children }: { children: ReactNode }) {
   const [collapsed, setCollapsed] = useState(false)
   const pathname = usePathname()
   const locale = useDemoLocale()
+  const layout = useDemoLayout()
   const appearance = useDemoAppearance()
   const nav = demoDictionary[locale].nav
   const pageLabelById: Record<string, string> = {
@@ -65,7 +68,9 @@ export function DemoShell({ children }: { children: ReactNode }) {
         nav={getDemoNav(locale)}
         activeHref={pathname}
         renderLink={renderDemoLink}
-        header={false}
+        variant={layout === "card" ? "card" : "flush"}
+        header={layout === "flush-header"}
+        actions={undefined}
         logo={
           <span className="flex size-5 items-center justify-center rounded-md bg-primary text-primary-foreground">
             <Store className="size-3" />
@@ -83,6 +88,7 @@ export function DemoShell({ children }: { children: ReactNode }) {
               onToggle={() => setCollapsed((prev) => !prev)}
               labels={locale === "ru" ? localeRu.sidebarToggle : undefined}
             />
+            <DemoLayoutToggle />
             <DemoThemeToggle />
             <DemoLanguageToggle />
             <AppearanceMenu

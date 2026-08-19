@@ -25,6 +25,22 @@ Sections used below: **New** (items you can now install), **Changed** (installed
 re-pulling), **Breaking** (props or files that changed shape — read before overwriting), and
 **Project** (showcase, CI, docs — nothing that reaches your project).
 
+## Unreleased
+
+**Changed** — `admin-shell` takes a `variant` prop (`card` | `flush`, default `card`, and the
+card look is unchanged). `flush` drops the shell's padding: the sidebar reaches the top, the
+bottom and the left edge of the screen and is separated by a border instead of rounded corners
+and a ring. With the header on, `flush` also lifts it out of the work column into a fixed
+full-width bar whose left cell carries the brand above the sidebar and lines up with it — the
+sidebar then starts with the account row. The work area stays the only thing that scrolls, and
+narrow screens keep the burger panel they had. `admin-header` gained a `leading` slot rendered
+before the section title (that is where the brand cell goes) and a `data-slot="admin-header"`
+marker.
+
+**Project** — the showcase gained two `admin-shell` views (`flush` and `flush-header`), and the
+demo a layout toggle in the sidebar footer that cycles card → flush → flush with header and
+remembers the choice in localStorage.
+
 ## 0.29.0 — 2026-08-19
 
 **Changed** — the palette is 86 multi-stop (4–5 stops) gradients in eight families instead of
