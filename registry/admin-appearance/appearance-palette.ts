@@ -338,9 +338,9 @@ export const gradientIntents: Record<GradientId, GradientIntent> = {
   red: { name: "Red", family: "monochrome", angle: DEFAULT_ANGLE, stops: ["#5e000d", "#a21929", "#e2484f"], text: "light" },
   crimson: { name: "Crimson", family: "monochrome", angle: DEFAULT_ANGLE, stops: ["#521526", "#8d364b", "#c86077"], text: "light" },
   orange: { name: "Orange", family: "monochrome", angle: DEFAULT_ANGLE, stops: ["#3e1000", "#802a00", "#c94700"], text: "light" },
-  gold: { name: "Gold", family: "monochrome", angle: DEFAULT_ANGLE, stops: ["#3c1d00", "#783f00", "#b96500"], text: "light" },
-  yellow: { name: "Yellow", family: "monochrome", angle: DEFAULT_ANGLE, stops: ["#241c00", "#534400", "#887000"], text: "light" },
-  chartreuse: { name: "Chartreuse", family: "monochrome", angle: DEFAULT_ANGLE, stops: ["#182800", "#385500", "#5b8900"], text: "light" },
+  gold: { name: "Gold", family: "monochrome", angle: DEFAULT_ANGLE, stops: ["#d78c00", "#eb9f2c", "#ffb245"], text: "dark" },
+  yellow: { name: "Yellow", family: "monochrome", angle: DEFAULT_ANGLE, stops: ["#e0bb00", "#f7d22a", "#ffe648"], text: "dark" },
+  chartreuse: { name: "Chartreuse", family: "monochrome", angle: DEFAULT_ANGLE, stops: ["#85c100", "#9edb2e", "#b7f652"], text: "dark" },
   green: { name: "Green", family: "monochrome", angle: DEFAULT_ANGLE, stops: ["#004300", "#06750d", "#38a937"], text: "light" },
   jade: { name: "Jade", family: "monochrome", angle: DEFAULT_ANGLE, stops: ["#004225", "#007545", "#00ab68"], text: "light" },
   blue: { name: "Blue", family: "monochrome", angle: DEFAULT_ANGLE, stops: ["#002e5c", "#0059a7", "#2d88e2"], text: "light" },
@@ -466,7 +466,10 @@ export function darkVariant(intent: GradientIntent): GradientStops {
 
   const stops = intent.stops.map((hex, index) => {
     const oklch = hexToOklch(hex)
-    const l = index % 2 === 0 ? PASTEL_DEEP_L_LOW : PASTEL_DEEP_L_HIGH
+    const l =
+      index === intent.stops.length - 1 || index % 2 === 1
+        ? PASTEL_DEEP_L_HIGH
+        : PASTEL_DEEP_L_LOW
     const c = oklch.c * PASTEL_DEEP_CHROMA_SCALE
     return oklchToHex(fitChromaToGamut({ l, c, h: oklch.h }))
   })
