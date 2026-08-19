@@ -25,6 +25,20 @@ Sections used below: **New** (items you can now install), **Changed** (installed
 re-pulling), **Breaking** (props or files that changed shape — read before overwriting), and
 **Project** (showcase, CI, docs — nothing that reaches your project).
 
+## Unreleased
+
+**Breaking** — `AdminAppearance` gained a required `header: GradientId | null`, the
+gradient of the shell's header bar. `isAdminAppearance` rejects a stored value that
+lacks it, so an appearance saved before this release falls back to
+`defaultAdminAppearance` — there is no migration. Add `header` to any appearance
+literal you build by hand.
+
+**Changed** — `admin-shell` takes `headerGradient`, painting the header bar the way
+`sidebarGradient` paints the sidebar; it works in both variants, with the card
+layout's header and with the flush layout's full-width bar. The burger panel keeps
+following `sidebarGradient`. `appearance-menu` grew a "Header" select between
+"Sidebar" and "Sign-in screen" (`labels.header`, `locale-ru`: "Шапка").
+
 ## 0.31.0 — 2026-08-19
 
 **Breaking** — `AppearanceThemeColor` is now `AppearanceCanvas`. The stylesheet no

@@ -89,6 +89,25 @@ describe("isAdminAppearance", () => {
     ).toBe(true)
   })
 
+  it("rejects an unknown header gradient", () => {
+    expect(
+      isAdminAppearance({ ...DEMO_APPEARANCE_DEFAULT, header: "nonexistent" })
+    ).toBe(false)
+  })
+
+  it("rejects a stored value from before the header gradient existed", () => {
+    const stored: Record<string, unknown> = { ...DEMO_APPEARANCE_DEFAULT }
+    delete stored.header
+
+    expect(isAdminAppearance(stored)).toBe(false)
+  })
+
+  it("accepts a header gradient from the palette", () => {
+    expect(
+      isAdminAppearance({ ...DEMO_APPEARANCE_DEFAULT, header: "slate" })
+    ).toBe(true)
+  })
+
   it("rejects an unknown page gradient", () => {
     expect(
       isAdminAppearance({

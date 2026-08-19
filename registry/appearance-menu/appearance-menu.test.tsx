@@ -103,6 +103,52 @@ describe("AppearanceMenu sidebar and sign-in selects", () => {
     expect(last?.sidebar).toBeNull()
   })
 
+  it("sets the header gradient", async () => {
+    const onChange = vi.fn<(next: AdminAppearance) => void>()
+    render(<AppearanceMenu value={defaultAdminAppearance} onChange={onChange} />)
+
+    const user = await openMenu()
+    await user.click(screen.getByRole("combobox", { name: "Header" }))
+    await user.click(await screen.findByRole("option", { name: "Ember" }))
+
+    const last = onChange.mock.calls.at(-1)?.[0]
+    expect(last?.header).toBe("ember")
+    expect(last?.sidebar).toBeNull()
+  })
+
+  it("clears the header gradient with No gradient", async () => {
+    const onChange = vi.fn<(next: AdminAppearance) => void>()
+    render(
+      <AppearanceMenu
+        value={{ ...defaultAdminAppearance, header: "ember" }}
+        onChange={onChange}
+      />
+    )
+
+    const user = await openMenu()
+    await user.click(screen.getByRole("combobox", { name: "Header" }))
+    await user.click(await screen.findByRole("option", { name: "No gradient" }))
+
+    const last = onChange.mock.calls.at(-1)?.[0]
+    expect(last?.header).toBeNull()
+  })
+
+  it("labels the header select in Russian", async () => {
+    render(
+      <AppearanceMenu
+        value={defaultAdminAppearance}
+        onChange={() => {}}
+        labels={localeRu.appearanceMenu}
+      />
+    )
+
+    await openMenu(localeRu.appearanceMenu.label)
+
+    expect(
+      screen.getByRole("combobox", { name: localeRu.appearanceMenu.header })
+    ).toBeInTheDocument()
+  })
+
   it("sets the sign-in gradient", async () => {
     const onChange = vi.fn<(next: AdminAppearance) => void>()
     render(<AppearanceMenu value={defaultAdminAppearance} onChange={onChange} />)

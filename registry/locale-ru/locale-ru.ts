@@ -173,6 +173,7 @@ const appearanceMenuRu = {
   label: "Оформление",
   accent: "Акцентный цвет",
   sidebar: "Сайдбар",
+  header: "Шапка",
   signIn: "Экран входа",
   page: "Фон страниц",
   pages: "По страницам",

@@ -82,6 +82,7 @@ export function DemoShell({
     ),
     collapsed,
     sidebarGradient: appearance.sidebar ?? undefined,
+    headerGradient: appearance.header ?? undefined,
     backdrop,
     labels: locale === "ru" ? localeRu.adminShell : undefined,
     sidebarFooter: (

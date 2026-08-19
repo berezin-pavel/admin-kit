@@ -8,6 +8,7 @@ export interface AdminHeaderProps {
   menu?: ReactNode
   narrowActions?: ReactNode
   leading?: ReactNode
+  gradient?: string
   className?: string
 }
 
@@ -17,11 +18,13 @@ export function AdminHeader({
   menu,
   narrowActions,
   leading,
+  gradient,
   className,
 }: AdminHeaderProps) {
   return (
     <header
       data-slot="admin-header"
+      data-gradient={gradient || undefined}
       className={cn(
         "flex h-14 shrink-0 items-center justify-between gap-4 border-b border-border px-6",
         className

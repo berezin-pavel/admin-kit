@@ -39,6 +39,7 @@ export interface AppearanceMenuLabels {
   label?: string
   accent?: string
   sidebar?: string
+  header?: string
   signIn?: string
   page?: string
   pages?: string
@@ -80,6 +81,7 @@ const defaultLabels: Required<
   label: "Appearance",
   accent: "Accent color",
   sidebar: "Sidebar",
+  header: "Header",
   signIn: "Sign-in screen",
   page: "Page background",
   pages: "Per page",
@@ -93,6 +95,7 @@ function resolveLabels(labels: AppearanceMenuLabels | undefined): ResolvedLabels
     label: labels?.label ?? defaultLabels.label,
     accent: labels?.accent ?? defaultLabels.accent,
     sidebar: labels?.sidebar ?? defaultLabels.sidebar,
+    header: labels?.header ?? defaultLabels.header,
     signIn: labels?.signIn ?? defaultLabels.signIn,
     page: labels?.page ?? defaultLabels.page,
     pages: labels?.pages ?? defaultLabels.pages,
@@ -218,6 +221,7 @@ export function AppearanceMenu({
   const labels = resolveLabels(labelsProp)
   const baseId = useId()
   const sidebarId = `${baseId}-sidebar`
+  const headerId = `${baseId}-header`
   const signInId = `${baseId}-sign-in`
   const pageId = `${baseId}-page`
 
@@ -227,6 +231,10 @@ export function AppearanceMenu({
 
   const selectSidebar = (next: GradientChoice) => {
     onChange({ ...value, sidebar: next === "none" ? null : next })
+  }
+
+  const selectHeader = (next: GradientChoice) => {
+    onChange({ ...value, header: next === "none" ? null : next })
   }
 
   const selectSignIn = (next: GradientChoice) => {
@@ -349,6 +357,38 @@ export function AppearanceMenu({
               <SelectTrigger id={sidebarId} className="w-full">
                 <SelectValue>
                   {renderGradientChoice(value.sidebar ?? "none", labels)}
+                </SelectValue>
+              </SelectTrigger>
+              <SelectContent
+                align="start"
+                alignItemWithTrigger={false}
+                className="w-auto min-w-(--anchor-width)"
+              >
+                <SelectItem value="none">{labels.none}</SelectItem>
+                <GradientSelectItems labels={labels} />
+              </SelectContent>
+            </Select>
+          </section>
+
+          <section className="flex flex-col gap-1.5">
+            <Label
+              htmlFor={headerId}
+              className="text-xs font-medium text-muted-foreground"
+            >
+              {labels.header}
+            </Label>
+            <Select<GradientChoice>
+              value={value.header ?? "none"}
+              onValueChange={(next) => {
+                if (next === null) {
+                  return
+                }
+                selectHeader(next)
+              }}
+            >
+              <SelectTrigger id={headerId} className="w-full">
+                <SelectValue>
+                  {renderGradientChoice(value.header ?? "none", labels)}
                 </SelectValue>
               </SelectTrigger>
               <SelectContent

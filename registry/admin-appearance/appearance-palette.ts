@@ -627,6 +627,7 @@ export interface PageBackdrop {
 export interface AdminAppearance {
   accent: AccentId
   sidebar: GradientId | null
+  header: GradientId | null
   signIn: GradientId | null
   page: PageBackdrop | null
   pages: Record<string, PageBackdrop | null>
@@ -636,6 +637,7 @@ export interface AdminAppearance {
 export const defaultAdminAppearance: AdminAppearance = {
   accent: "emerald",
   sidebar: null,
+  header: null,
   signIn: null,
   page: null,
   pages: {},

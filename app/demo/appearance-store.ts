@@ -16,6 +16,7 @@ const STORAGE_KEY = "admin-kit-demo-appearance"
 export const DEMO_APPEARANCE_DEFAULT: AdminAppearance = {
   accent: "emerald",
   sidebar: "forest",
+  header: null,
   signIn: "dusk",
   page: { gradient: "ocean", soft: true },
   pages: {},
@@ -108,6 +109,9 @@ export function isAdminAppearance(value: unknown): value is AdminAppearance {
     return false
   }
   if (value.sidebar !== null && !isGradientId(value.sidebar)) {
+    return false
+  }
+  if (value.header !== null && !isGradientId(value.header)) {
     return false
   }
   if (value.signIn !== null && !isGradientId(value.signIn)) {

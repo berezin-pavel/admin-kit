@@ -56,9 +56,12 @@ describe("isAdminAppearance", () => {
     ).toBe(false)
   })
 
-  it("rejects an unknown gradient id in sidebar, signIn, page, pages, or blocks", () => {
+  it("rejects an unknown gradient id in sidebar, header, signIn, page, pages, or blocks", () => {
     expect(
       isAdminAppearance({ ...defaultAdminAppearance, sidebar: "nonexistent" })
+    ).toBe(false)
+    expect(
+      isAdminAppearance({ ...defaultAdminAppearance, header: "nonexistent" })
     ).toBe(false)
     expect(
       isAdminAppearance({ ...defaultAdminAppearance, signIn: "nonexistent" })
@@ -129,11 +132,19 @@ describe("isAdminAppearance", () => {
     ).toBe(false)
   })
 
+  it("rejects a stored value from before the header gradient existed", () => {
+    const stored: Record<string, unknown> = { ...defaultAdminAppearance }
+    delete stored.header
+
+    expect(isAdminAppearance(stored)).toBe(false)
+  })
+
   it("accepts a fully populated appearance", () => {
     expect(
       isAdminAppearance({
         accent: "blue",
         sidebar: "ocean",
+        header: "slate",
         signIn: "midnight",
         page: null,
         pages: { orders: { gradient: "ocean", soft: true } },

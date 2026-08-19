@@ -281,6 +281,7 @@ describe("defaultAdminAppearance", () => {
     expect(defaultAdminAppearance).toEqual({
       accent: "emerald",
       sidebar: null,
+      header: null,
       signIn: null,
       page: null,
       pages: {},

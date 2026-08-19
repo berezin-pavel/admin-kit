@@ -63,7 +63,7 @@ A registry item with the work area's content ready-made for a specific task — 
 _Avoid_: screen, section, view
 
 **Appearance**:
-The administrator's global choice of an accent colour and gradients — for the sidebar, the sign-in screen, each page's backdrop and each block. Picked from fixed, contrast-checked palettes; the kit renders it and the consumer stores it.
+The administrator's global choice of an accent colour and gradients — for the sidebar, the header bar, the sign-in screen, each page's backdrop and each block. Picked from fixed, contrast-checked palettes; the kit renders it and the consumer stores it.
 _Avoid_: theme settings, customization, skin
 
 **Backdrop**:

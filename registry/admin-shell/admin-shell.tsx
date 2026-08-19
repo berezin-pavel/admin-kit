@@ -38,6 +38,7 @@ type AdminShellBaseProps = {
   collapsed?: boolean
   variant?: AdminShellVariant
   sidebarGradient?: string
+  headerGradient?: string
   backdrop?: PageBackdrop | null
   children?: ReactNode
   className?: string
@@ -59,6 +60,7 @@ export function AdminShell({
   collapsed = false,
   variant = "card",
   sidebarGradient,
+  headerGradient,
   backdrop,
   header = true,
   actions,
@@ -225,6 +227,7 @@ export function AdminShell({
           actions={actions}
           menu={menu}
           narrowActions={narrowActions}
+          gradient={headerGradient}
         />
       ) : null}
       <main className="min-h-0 flex-1 overflow-y-auto p-4 md:p-6">
@@ -255,6 +258,7 @@ export function AdminShell({
             menu={menu}
             narrowActions={narrowActions}
             leading={headerBrand}
+            gradient={headerGradient}
             className="bg-card px-2 pr-4 md:px-0 md:pr-6"
           />
           <div className="flex min-h-0 flex-1">

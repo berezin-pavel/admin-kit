@@ -133,6 +133,70 @@ describe("the shell paints its surfaces through data attributes", () => {
     )
   })
 
+  it("sets data-gradient on the header of the card variant", () => {
+    const { container } = render(
+      <AdminShell
+        appName="Store"
+        nav={[]}
+        activeHref="/"
+        headerGradient="ocean"
+      >
+        <p>Work</p>
+      </AdminShell>
+    )
+
+    expect(
+      container.querySelector('[data-slot="admin-header"]')
+    ).toHaveAttribute("data-gradient", "ocean")
+  })
+
+  it("sets data-gradient on the full-width header of the flush variant", () => {
+    const { container } = render(
+      <AdminShell
+        appName="Store"
+        nav={[]}
+        activeHref="/"
+        variant="flush"
+        headerGradient="ember"
+      >
+        <p>Work</p>
+      </AdminShell>
+    )
+
+    expect(
+      container.querySelector('[data-slot="admin-header"]')
+    ).toHaveAttribute("data-gradient", "ember")
+  })
+
+  it("leaves the header without data-gradient otherwise", () => {
+    const { container } = render(
+      <AdminShell appName="Store" nav={[]} activeHref="/">
+        <p>Work</p>
+      </AdminShell>
+    )
+
+    expect(
+      container.querySelector('[data-slot="admin-header"]')
+    ).not.toHaveAttribute("data-gradient")
+  })
+
+  it("leaves the header untouched by the sidebar's gradient", () => {
+    const { container } = render(
+      <AdminShell
+        appName="Store"
+        nav={[]}
+        activeHref="/"
+        sidebarGradient="ocean"
+      >
+        <p>Work</p>
+      </AdminShell>
+    )
+
+    expect(
+      container.querySelector('[data-slot="admin-header"]')
+    ).not.toHaveAttribute("data-gradient")
+  })
+
   it("leaves the sidebar and the work area without data-gradient otherwise", () => {
     const { container } = render(
       <AdminShell appName="Store" nav={[]} activeHref="/">

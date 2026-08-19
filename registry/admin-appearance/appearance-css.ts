@@ -89,6 +89,7 @@ export function isAdminAppearance(value: unknown): value is AdminAppearance {
     isRecord(value) &&
     isAccentId(value.accent) &&
     isNullableGradientId(value.sidebar) &&
+    isNullableGradientId(value.header) &&
     isNullableGradientId(value.signIn) &&
     isNullablePageBackdrop(value.page) &&
     isPageRecord(value.pages) &&
