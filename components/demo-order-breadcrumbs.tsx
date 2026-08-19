@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 
 import {
   Breadcrumbs,
@@ -10,6 +11,7 @@ import { localeRu } from "@/registry/locale-ru/locale-ru"
 
 import { demoDictionary } from "@/app/demo/locale"
 import { useDemoLocale } from "@/app/demo/locale-store"
+import { demoBasePath } from "@/app/demo/paths"
 
 const renderDemoBreadcrumbLink: BreadcrumbsLinkRenderer = ({
   href,
@@ -26,7 +28,7 @@ export function DemoOrderBreadcrumbs() {
   const strings = demoDictionary[locale]
 
   const items = [
-    { label: strings.nav.orders, href: "/demo/orders" },
+    { label: strings.nav.orders, href: `${demoBasePath(usePathname())}/orders` },
     { label: strings.nav.order },
   ]
 

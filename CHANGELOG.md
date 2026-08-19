@@ -25,6 +25,13 @@ Sections used below: **New** (items you can now install), **Changed** (installed
 re-pulling), **Breaking** (props or files that changed shape — read before overwriting), and
 **Project** (showcase, CI, docs — nothing that reaches your project).
 
+## Unreleased
+
+**Project** — the flush demo gained the order page (`/demo-flush/order`), so both demos now
+carry the same three pages; the orders list and the breadcrumbs link within the demo they are
+shown in (`demoBasePath`), the appearance menu lists all three pages in both, and per-page
+appearance keeps being shared between the demos.
+
 ## 0.32.0 — 2026-08-19
 
 **Breaking** — `AdminAppearance` gained a required `header: GradientId | null`, the

@@ -58,7 +58,7 @@ export function demoPageId(pathname: string): string | undefined {
   if (pathname === "/demo/orders" || pathname === "/demo-flush/orders") {
     return "orders"
   }
-  if (pathname === "/demo/order") {
+  if (pathname === "/demo/order" || pathname === "/demo-flush/order") {
     return "order"
   }
   return undefined

@@ -131,6 +131,12 @@ test("the flush demo runs a full-width header with the account menu at its right
   await expect(table).toHaveAttribute("data-heading", "none", { timeout: 15_000 })
   await expect(table.getByRole("button", { name: "Reload" })).toBeVisible()
   await expect(page.locator('[data-block-id="orders.header"]')).toHaveCount(0)
+
+  await table.getByRole("link", { name: "#4187" }).click()
+  await expect(page).toHaveURL(/\/demo-flush\/order$/)
+  await expect(page.getByRole("tab", { name: "Overview" })).toBeVisible()
+  await page.getByRole("link", { name: "Orders" }).first().click()
+  await expect(page).toHaveURL(/\/demo-flush\/orders$/)
 })
 
 test("the header gradient picked in the menu paints the flush demo's bar", async ({ page }) => {

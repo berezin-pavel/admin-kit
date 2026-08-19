@@ -124,8 +124,8 @@ rounded panel, there is no header, and the account sits in the sidebar's
 profile row. `/demo-flush` is `admin-shell`'s `variant="flush"` with the
 header on — the sidebar reaches the screen edges, a full-width bar runs
 above it with the brand in its left cell, and the account is an icon menu
-at the right of that bar. The flush panel carries the overview and the
-orders list; the card one has the order page as well. Both read the same
+at the right of that bar. Both panels carry the same three pages — the
+overview, the orders list and the order — under their own routes. Both read the same
 stored appearance, and a page's backdrop is shared between them.
 
 ## Registry items

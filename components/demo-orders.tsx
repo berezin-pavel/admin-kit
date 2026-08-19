@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react"
 import type { Key } from "react"
-import { useRouter } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import Link from "next/link"
 import { Download, Eye, Pencil, RotateCw, Trash2 } from "lucide-react"
 
@@ -35,6 +35,7 @@ import {
 } from "@/app/demo/data"
 import { demoDictionary } from "@/app/demo/locale"
 import { useDemoLocale } from "@/app/demo/locale-store"
+import { demoBasePath } from "@/app/demo/paths"
 
 const PAGE_SIZE_OPTIONS = [10, 20, 50, 100] as const
 const DEFAULT_PAGE_SIZE = 50
@@ -67,6 +68,7 @@ function sortOrderRows(
 
 export function DemoOrders() {
   const router = useRouter()
+  const basePath = demoBasePath(usePathname())
   const locale = useDemoLocale()
   const strings = demoDictionary[locale].orders
   const statusLabel = orderStatusLabelByLocale[locale]
@@ -148,7 +150,7 @@ export function DemoOrders() {
       sortable: true,
       alwaysVisible: true,
       cell: (row) => (
-        <Link href="/demo/order" className="font-medium hover:underline">
+        <Link href={`${basePath}/order`} className="font-medium hover:underline">
           #{row.number}
         </Link>
       ),
@@ -182,13 +184,13 @@ export function DemoOrders() {
               id: "view",
               label: strings.viewOrderAction,
               icon: Eye,
-              onSelect: () => router.push("/demo/order"),
+              onSelect: () => router.push(`${basePath}/order`),
             },
             {
               id: "edit",
               label: strings.editOrderAction,
               icon: Pencil,
-              onSelect: () => router.push("/demo/order?tab=edit"),
+              onSelect: () => router.push(`${basePath}/order?tab=edit`),
             },
             {
               id: "delete",

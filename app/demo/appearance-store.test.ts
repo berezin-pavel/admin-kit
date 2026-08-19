@@ -55,6 +55,7 @@ describe("demoPageId", () => {
 
   it("maps the flush demo orders route", () => {
     expect(demoPageId("/demo-flush/orders")).toBe("orders")
+    expect(demoPageId("/demo-flush/order")).toBe("order")
   })
 
   it("returns undefined outside the demo shell", () => {

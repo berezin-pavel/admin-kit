@@ -106,6 +106,7 @@ export function getDemoFlushNav(locale: DemoLocale): readonly AdminNavItem[] {
   return [
     { href: "/demo-flush", title: titles.overview, icon: LayoutDashboard },
     { href: "/demo-flush/orders", title: titles.orders, icon: ShoppingCart },
+    { href: "/demo-flush/order", title: titles.order, icon: Package },
   ]
 }
 

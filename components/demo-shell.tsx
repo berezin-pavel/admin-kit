@@ -31,7 +31,6 @@ import { useDemoLocale } from "@/app/demo/locale-store"
 
 export type DemoShellLayout = "card" | "flush-header"
 
-const FLUSH_APPEARANCE_PAGE_IDS = ["overview", "orders"]
 
 const renderDemoLink: AdminNavLinkRenderer = ({
   href,
@@ -61,9 +60,7 @@ export function DemoShell({
     orders: nav.orders,
     order: nav.order,
   }
-  const appearanceMenuPages = DEMO_APPEARANCE_PAGES.filter(
-    (page) => !flush || FLUSH_APPEARANCE_PAGE_IDS.includes(page.id)
-  ).map((page) => ({
+  const appearanceMenuPages = DEMO_APPEARANCE_PAGES.map((page) => ({
     id: page.id,
     label: pageLabelById[page.id] ?? page.id,
   }))
