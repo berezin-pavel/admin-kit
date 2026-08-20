@@ -112,6 +112,32 @@ describe("GlobalSearch filtering", () => {
     expect(optionNames()).toEqual(["Invite a teammate"])
   })
 
+  it("keeps a named empty-string group distinct from the ungrouped bucket", () => {
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {})
+    const itemsWithEmptyGroup: readonly GlobalSearchItem[] = [
+      { id: "a", label: "Named empty group", group: "" },
+      { id: "b", label: "Truly ungrouped" },
+    ]
+    render(
+      <GlobalSearch
+        items={itemsWithEmptyGroup}
+        open={true}
+        onOpenChange={() => {}}
+        onSelect={() => {}}
+      />
+    )
+
+    expect(screen.getAllByRole("group")).toHaveLength(1)
+    expect(optionNames()).toEqual(["Named empty group", "Truly ungrouped"])
+    expect(
+      errorSpy.mock.calls.some((call) =>
+        String(call[0]).includes("same key")
+      )
+    ).toBe(false)
+
+    errorSpy.mockRestore()
+  })
+
   it("shows the empty label when nothing matches", async () => {
     const user = userEvent.setup()
     render(<OpenSearch />)
@@ -245,7 +271,7 @@ describe("GlobalSearch hotkey", () => {
       />
     )
 
-    fireEvent.keyDown(document.body, { key: "k", metaKey: true })
+    fireEvent.keyDown(document.body, { code: "KeyK", metaKey: true })
 
     expect(onOpenChange).toHaveBeenCalledWith(true)
   })
@@ -262,11 +288,27 @@ describe("GlobalSearch hotkey", () => {
     )
 
     fireEvent.keyDown(screen.getByRole("combobox"), {
-      key: "k",
+      code: "KeyK",
       ctrlKey: true,
     })
 
     expect(onOpenChange).toHaveBeenCalledWith(false)
+  })
+
+  it("opens on a non-Latin keyboard layout where key isn't \"k\"", () => {
+    const onOpenChange = vi.fn()
+    render(
+      <GlobalSearch
+        items={items}
+        open={false}
+        onOpenChange={onOpenChange}
+        onSelect={() => {}}
+      />
+    )
+
+    fireEvent.keyDown(document.body, { key: "л", code: "KeyK", metaKey: true })
+
+    expect(onOpenChange).toHaveBeenCalledWith(true)
   })
 
   it("ignores the hotkey while a closed search sits behind a text input", () => {
@@ -284,7 +326,7 @@ describe("GlobalSearch hotkey", () => {
     )
 
     fireEvent.keyDown(screen.getByLabelText("Elsewhere"), {
-      key: "k",
+      code: "KeyK",
       metaKey: true,
     })
 
@@ -303,7 +345,7 @@ describe("GlobalSearch hotkey", () => {
       />
     )
 
-    fireEvent.keyDown(document.body, { key: "k", metaKey: true })
+    fireEvent.keyDown(document.body, { code: "KeyK", metaKey: true })
 
     expect(onOpenChange).not.toHaveBeenCalled()
   })

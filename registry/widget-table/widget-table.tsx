@@ -81,6 +81,7 @@ export interface WidgetTableLabels {
   filteredEmptyDescription?: string
   clearFiltersLabel?: string
   columnsLabel?: string
+  region?: string
 }
 
 export const widgetTableLabelDefaults: Required<WidgetTableLabels> = {
@@ -102,6 +103,7 @@ export const widgetTableLabelDefaults: Required<WidgetTableLabels> = {
     "No records match the current filter. Try adjusting or clearing it.",
   clearFiltersLabel: "Clear filters",
   columnsLabel: "Columns",
+  region: "Table",
 }
 
 export interface WidgetTableProps<Row> {
@@ -132,7 +134,6 @@ export interface WidgetTableProps<Row> {
   onHiddenColumnIdsChange?: (ids: readonly string[]) => void
   stickyHeader?: boolean
   maxBodyHeight?: string
-  onExport?: (rows: readonly Row[]) => void
 }
 
 export function toggleHiddenColumnId(
@@ -146,10 +147,11 @@ export function toggleHiddenColumnId(
 }
 
 function csvField(value: string): string {
-  if (/["\n\r,]/.test(value)) {
-    return `"${value.replace(/"/g, '""')}"`
+  const safeValue = /^[=+\-@]/.test(value) ? `'${value}` : value
+  if (/["\n\r,]/.test(safeValue)) {
+    return `"${safeValue.replace(/"/g, '""')}"`
   }
-  return value
+  return safeValue
 }
 
 export function toCsv<Row>(
@@ -198,12 +200,17 @@ export function formatPaginationRange(
   pagination: WidgetTablePagination,
   range: (rangeStart: number, rangeEnd: number, total: number) => string
 ) {
-  const rangeStart =
-    pagination.total === 0 ? 0 : (pagination.page - 1) * pagination.pageSize + 1
   const rangeEnd = Math.min(
     pagination.page * pagination.pageSize,
     pagination.total
   )
+  const rangeStart =
+    pagination.total === 0
+      ? 0
+      : Math.min(
+          (pagination.page - 1) * pagination.pageSize + 1,
+          rangeEnd
+        )
   return range(rangeStart, rangeEnd, pagination.total)
 }
 
@@ -403,7 +410,7 @@ export function WidgetTable<Row>({
             data-slot="table-container"
             tabIndex={stickyHeader ? 0 : undefined}
             role={stickyHeader ? "region" : undefined}
-            aria-label={stickyHeader ? title : undefined}
+            aria-label={stickyHeader ? (title ?? resolvedLabels.region) : undefined}
             className={cn(
               "relative w-full outline-none focus-visible:ring-3 focus-visible:ring-ring/50",
               stickyHeader && "overflow-auto",

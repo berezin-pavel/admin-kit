@@ -130,14 +130,14 @@ function groupItems(
 
   const buckets: { key: string; label?: string; items: GlobalSearchItem[] }[] = [
     ...[...named].map(([label, groupItemList]) => ({
-      key: label,
+      key: `group:${label}`,
       label,
       items: groupItemList,
     })),
   ]
 
   if (loose.length > 0) {
-    buckets.push({ key: "", label: undefined, items: loose })
+    buckets.push({ key: "loose", label: undefined, items: loose })
   }
 
   let index = 0
@@ -193,7 +193,7 @@ export function GlobalSearch({
     }
 
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key.toLowerCase() !== "k") {
+      if (event.code !== "KeyK") {
         return
       }
 

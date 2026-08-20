@@ -7,7 +7,11 @@ import { describe, expect, it } from "vitest"
 
 import {
   WidgetTable,
+  formatPaginationRange,
+  toCsv,
+  widgetTableLabelDefaults,
   type WidgetTableColumn,
+  type WidgetTablePagination,
   type WidgetTableSelectionAction,
 } from "./widget-table"
 
@@ -168,18 +172,90 @@ describe("widget table sticky header", () => {
 
     expect(screen.getByRole("region", { name: "Orders" })).toBeInTheDocument()
   })
+
+  it("falls back to the region label default when there is no title", () => {
+    render(<WidgetTable columns={columns} rows={rows} stickyHeader />)
+
+    expect(
+      screen.getByRole("region", { name: widgetTableLabelDefaults.region })
+    ).toBeInTheDocument()
+  })
+
+  it("honors a custom region label", () => {
+    render(
+      <WidgetTable
+        columns={columns}
+        rows={rows}
+        stickyHeader
+        labels={{ region: "Custom region" }}
+      />
+    )
+
+    expect(
+      screen.getByRole("region", { name: "Custom region" })
+    ).toBeInTheDocument()
+  })
+})
+
+describe("toCsv formula injection", () => {
+  const injectionColumns: readonly WidgetTableColumn<{ value: string }>[] = [
+    { id: "value", title: "Value", cell: (row) => row.value },
+  ]
+
+  it.each(["=SUM(A1)", "+1+1", "-1+1", "@SUM(A1)"])(
+    "prefixes a %s cell with a single quote",
+    (value) => {
+      const csv = toCsv(injectionColumns, [{ value }])
+      const dataLine = csv.split("\r\n")[1]
+
+      expect(dataLine).toBe(`'${value}`)
+    }
+  )
+
+  it("prefixes a plain negative number too, as the price of the guard", () => {
+    const csv = toCsv(injectionColumns, [{ value: "-5" }])
+    const dataLine = csv.split("\r\n")[1]
+
+    expect(dataLine).toBe("'-5")
+  })
+
+  it("leaves an ordinary value untouched", () => {
+    const csv = toCsv(injectionColumns, [{ value: "Bennett" }])
+    const dataLine = csv.split("\r\n")[1]
+
+    expect(dataLine).toBe("Bennett")
+  })
+})
+
+describe("formatPaginationRange", () => {
+  it("clamps the start of the range to the end when the last page is short", () => {
+    const pagination: WidgetTablePagination = {
+      page: 3,
+      pageSize: 10,
+      total: 15,
+    }
+
+    expect(
+      formatPaginationRange(pagination, widgetTableLabelDefaults.range)
+    ).toBe("15–15 of 15")
+  })
+
+  it("keeps a normal middle-page range untouched", () => {
+    const pagination: WidgetTablePagination = {
+      page: 2,
+      pageSize: 10,
+      total: 35,
+    }
+
+    expect(
+      formatPaginationRange(pagination, widgetTableLabelDefaults.range)
+    ).toBe("11–20 of 35")
+  })
 })
 
 describe("widget table export button removal", () => {
   it("no longer renders a header export button", () => {
-    render(
-      <WidgetTable
-        title="Orders"
-        columns={columns}
-        rows={rows}
-        onExport={() => {}}
-      />
-    )
+    render(<WidgetTable title="Orders" columns={columns} rows={rows} />)
 
     expect(
       screen.queryByRole("button", { name: /export/i })

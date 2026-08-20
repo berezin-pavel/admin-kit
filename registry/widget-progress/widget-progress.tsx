@@ -54,11 +54,13 @@ export function WidgetProgress({
   className,
 }: WidgetProgressProps) {
   const clampedValue = Math.min(Math.max(value, 0), max)
-  const percent = Math.round((clampedValue / max) * 100)
+  const percent = max <= 0 ? 0 : Math.round((clampedValue / max) * 100)
   const targetPercent =
     target === undefined
       ? undefined
-      : (Math.min(Math.max(target, 0), max) / max) * 100
+      : max <= 0
+        ? 0
+        : (Math.min(Math.max(target, 0), max) / max) * 100
 
   return (
     <Block id={blockId} gradient={gradient} headings className={className}>

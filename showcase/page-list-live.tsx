@@ -1,10 +1,15 @@
 "use client"
 
+import { Download } from "lucide-react"
 import { useState } from "react"
+import type { Key } from "react"
 
 import { Button } from "@/components/ui/button"
 import { PageList, type PageListFilter } from "@/registry/page-list/page-list"
-import { toCsv } from "@/registry/widget-table/widget-table"
+import {
+  toCsv,
+  type WidgetTableSelectionAction,
+} from "@/registry/widget-table/widget-table"
 
 import { roleFilterOptions, userColumns, userRows } from "./page-list-data"
 
@@ -16,6 +21,9 @@ export function PageListLive() {
   const [page, setPage] = useState(1)
   const [hiddenColumnIds, setHiddenColumnIds] = useState<readonly string[]>(
     []
+  )
+  const [selectedKeys, setSelectedKeys] = useState<ReadonlySet<Key>>(
+    new Set()
   )
   const [csv, setCsv] = useState("")
 
@@ -55,6 +63,18 @@ export function PageListLive() {
     },
   ]
 
+  const selectionActions: readonly WidgetTableSelectionAction[] = [
+    {
+      id: "export",
+      label: "Export",
+      icon: Download,
+      onSelect: () => {
+        const selectedRows = matched.filter((row) => selectedKeys.has(row.id))
+        setCsv(toCsv(userColumns, selectedRows))
+      },
+    },
+  ]
+
   return (
     <div className="flex flex-col gap-3">
       <PageList
@@ -86,7 +106,9 @@ export function PageListLive() {
         onResetFilters={resetFilters}
         hiddenColumnIds={hiddenColumnIds}
         onHiddenColumnIdsChange={setHiddenColumnIds}
-        onExport={(rows) => setCsv(toCsv(userColumns, rows))}
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+        selectionActions={selectionActions}
       />
       {csv ? (
         <pre className="overflow-x-auto rounded-lg border border-border bg-muted p-3 text-xs">
