@@ -332,7 +332,9 @@
       "registryDependencies": [
         "berezin-pavel/admin-kit/date-range-field",
         "berezin-pavel/admin-kit/global-search",
-        "berezin-pavel/admin-kit/notifications-menu"
+        "berezin-pavel/admin-kit/notifications-menu",
+        "berezin-pavel/admin-kit/admin-appearance",
+        "berezin-pavel/admin-kit/appearance-menu"
       ],
       "dependencies": [
         "date-fns"
@@ -605,7 +607,8 @@
         "berezin-pavel/admin-kit/state-error",
         "berezin-pavel/admin-kit/state-forbidden",
         "berezin-pavel/admin-kit/state-offline",
-        "berezin-pavel/admin-kit/admin-appearance"
+        "berezin-pavel/admin-kit/admin-appearance",
+        "berezin-pavel/admin-kit/page-header"
       ],
       "files": [
         {
@@ -1030,7 +1033,8 @@
         "berezin-pavel/admin-kit/state-error",
         "berezin-pavel/admin-kit/state-forbidden",
         "berezin-pavel/admin-kit/state-offline",
-        "berezin-pavel/admin-kit/admin-appearance"
+        "berezin-pavel/admin-kit/admin-appearance",
+        "berezin-pavel/admin-kit/page-header"
       ],
       "files": [
         {
@@ -1154,7 +1158,8 @@
         "berezin-pavel/admin-kit/state-loading",
         "berezin-pavel/admin-kit/state-offline",
         "berezin-pavel/admin-kit/widget-table",
-        "berezin-pavel/admin-kit/admin-appearance"
+        "berezin-pavel/admin-kit/admin-appearance",
+        "berezin-pavel/admin-kit/page-header"
       ],
       "dependencies": [
         "lucide-react"
