@@ -8,7 +8,7 @@ items changed, and what breaks if you pull them.
 **Install an item, pinned to a release:**
 
 ```bash
-pnpm dlx shadcn@latest add berezin-pavel/admin-kit/widget-table#v0.33.0
+pnpm dlx shadcn@latest add berezin-pavel/admin-kit/widget-table#v0.34.0
 ```
 
 **See what an update would change before taking it:**
@@ -25,7 +25,7 @@ Sections used below: **New** (items you can now install), **Changed** (installed
 re-pulling), **Breaking** (props or files that changed shape — read before overwriting), and
 **Project** (showcase, CI, docs — nothing that reaches your project).
 
-## Unreleased
+## 0.34.0 — 2026-08-20
 
 **Changed** — `admin-appearance/appearance-themes.ts` ships twenty presets instead of five. The
 original Slate, Mist, Sage, Ivory and Dune keep their colours, and fifteen more neutral ones join
