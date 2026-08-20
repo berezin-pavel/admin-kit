@@ -15,12 +15,17 @@ import {
 } from "./appearance-accent"
 import {
   accentPalette,
+  customColorStops,
+  customColorVariable,
   gradientIds,
   gradientPalette,
   isAccentId,
+  isCustomColor,
   isGradientId,
+  softStops,
   type AdminAppearance,
   type BlockHeading,
+  type CustomColor,
   type GradientStops,
   type PageBackdrop,
 } from "./appearance-palette"
@@ -119,6 +124,14 @@ function isNullableGradientId(value: unknown): value is null {
   return value === null || isGradientId(value)
 }
 
+function isSurfaceChoice(value: unknown): boolean {
+  return isGradientId(value) || isCustomColor(value)
+}
+
+function isNullableSurfaceChoice(value: unknown): boolean {
+  return value === null || isSurfaceChoice(value)
+}
+
 function isBlockAppearance(value: unknown) {
   if (!isRecord(value)) {
     return false
@@ -138,7 +151,7 @@ function isBlockAppearance(value: unknown) {
 function isPageBackdrop(value: unknown): value is PageBackdrop {
   return (
     isRecord(value) &&
-    isGradientId(value.gradient) &&
+    isSurfaceChoice(value.gradient) &&
     typeof value.soft === "boolean"
   )
 }
@@ -158,22 +171,103 @@ function isBlockAppearanceRecord(value: unknown): value is Record<string, unknow
 export function isAdminAppearance(value: unknown): value is AdminAppearance {
   return (
     isRecord(value) &&
-    isAccentId(value.accent) &&
-    isNullableGradientId(value.sidebar) &&
-    isNullableGradientId(value.header) &&
-    isNullableGradientId(value.signIn) &&
+    (isAccentId(value.accent) || isCustomColor(value.accent)) &&
+    isNullableSurfaceChoice(value.sidebar) &&
+    isNullableSurfaceChoice(value.header) &&
+    isNullableSurfaceChoice(value.signIn) &&
     isNullablePageBackdrop(value.page) &&
     isPageRecord(value.pages) &&
     isBlockAppearanceRecord(value.blocks)
   )
 }
 
-function accentHexOf(accentId: string): string {
-  const accent = accentPalette.find((candidate) => candidate.id === accentId)
-  if (!accent) {
-    throw new Error(`Unknown accent id: ${accentId}`)
+function accentHexOf(accent: AdminAppearance["accent"]): string {
+  if (isCustomColor(accent)) {
+    return accent.toLowerCase()
   }
-  return accent.hex
+  const entry = accentPalette.find((candidate) => candidate.id === accent)
+  if (!entry) {
+    throw new Error(`Unknown accent id: ${accent}`)
+  }
+  return entry.hex
+}
+
+const PURE_WHITE = "oklch(1 0 0)"
+const PURE_BLACK = "oklch(0 0 0)"
+const PURE_WHITE_HEX = "#ffffff"
+const PURE_BLACK_HEX = "#000000"
+const SOLID_CONTRAST_MIN = 4.5
+
+export function solidForeground(color: CustomColor): string {
+  const hex = color.toLowerCase()
+  const near = gradientForeground(customColorStops(color))
+  const nearHex = near === NEAR_WHITE ? NEAR_WHITE_HEX : NEAR_BLACK_HEX
+  if (contrastRatio(hex, nearHex) >= SOLID_CONTRAST_MIN) {
+    return near
+  }
+  return contrastRatio(hex, PURE_WHITE_HEX) >= contrastRatio(hex, PURE_BLACK_HEX)
+    ? PURE_WHITE
+    : PURE_BLACK
+}
+
+export function customColorsOf(appearance: AdminAppearance): CustomColor[] {
+  const found = new Set<string>()
+  const add = (value: unknown) => {
+    if (isCustomColor(value)) {
+      found.add(value.toLowerCase())
+    }
+  }
+
+  add(appearance.sidebar)
+  add(appearance.header)
+  add(appearance.signIn)
+  add(appearance.page?.gradient)
+  for (const backdrop of Object.values(appearance.pages)) {
+    add(backdrop?.gradient)
+  }
+
+  return [...found].sort() as CustomColor[]
+}
+
+function customSoftLines(
+  colors: readonly CustomColor[],
+  scheme: "light" | "dark"
+): string {
+  return colors
+    .map(
+      (color) =>
+        `  ${customColorVariable(color)}-soft: ${gradientCss(softStops(customColorStops(color), scheme))};`
+    )
+    .join("\n")
+}
+
+export function customColorSurface(color: CustomColor): string {
+  const hex = color.toLowerCase()
+  const stops = customColorStops(color)
+  const { destructive, destructiveForeground } = gradientDestructive(stops)
+  return [
+    `  --surface-gradient: ${gradientCss({ angle: stops.angle, stops: [hex, hex] })};`,
+    `  --surface-foreground: ${solidForeground(color)};`,
+    `  --surface-destructive: ${destructive};`,
+    `  --surface-destructive-foreground: ${destructiveForeground};`,
+  ].join("\n")
+}
+
+function customColorBlocks(colors: readonly CustomColor[]): string {
+  return colors
+    .map((color) => {
+      const hex = color.toLowerCase()
+      const stops = customColorStops(color)
+      const surface = customColorSurface(color)
+      const solid = gradientCss({ angle: stops.angle, stops: [hex, hex] })
+      return [
+        `[data-gradient="${hex}"] {\n${surface}\n}`,
+        `body:has([data-gradient="${hex}"] ${OPEN_TRIGGER}) ${POPUP_SLOTS} {\n${surface}\n}`,
+        `[data-backdrop="${hex}"] {\n  --backdrop-gradient: var(${customColorVariable(color)}-soft);\n  --backdrop-text: var(--foreground);\n}`,
+        `[data-backdrop="${hex}"][data-backdrop-vivid] {\n  --backdrop-gradient: ${solid};\n  --backdrop-text: ${solidForeground(color)};\n}`,
+      ].join("\n\n")
+    })
+    .join("\n\n")
 }
 
 function gradientVariableBlock(scheme: "light" | "dark"): string {
@@ -295,8 +389,18 @@ export function appearanceCss(appearance: AdminAppearance): string {
     ([token, value]) => `  --${token}: ${value};`
   )
 
-  const lightBlock = `:root:root {\n${[...lightTokenLines, lightGradientLines].join("\n")}\n}`
-  const darkBlock = `:root:root.dark {\n${[...darkTokenLines, darkGradientLines].join("\n")}\n}`
+  const customColors = customColorsOf(appearance)
+
+  const lightBlock = `:root:root {\n${[
+    ...lightTokenLines,
+    lightGradientLines,
+    ...(customColors.length > 0 ? [customSoftLines(customColors, "light")] : []),
+  ].join("\n")}\n}`
+  const darkBlock = `:root:root.dark {\n${[
+    ...darkTokenLines,
+    darkGradientLines,
+    ...(customColors.length > 0 ? [customSoftLines(customColors, "dark")] : []),
+  ].join("\n")}\n}`
 
   return [
     lightBlock,
@@ -307,6 +411,7 @@ export function appearanceCss(appearance: AdminAppearance): string {
     popupSelectorBlocks(),
     `[data-backdrop] {\n  background-image: var(--backdrop-gradient);\n  --backdrop-foreground: var(--backdrop-text);\n}`,
     backdropSelectorBlocks(),
+    ...(customColors.length > 0 ? [customColorBlocks(customColors)] : []),
     HEADING_RULE,
   ].join("\n\n")
 }

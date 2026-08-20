@@ -4,6 +4,7 @@ import { useSyncExternalStore } from "react"
 
 import {
   isAccentId,
+  isCustomColor,
   isGradientId,
   type AdminAppearance,
   type BlockAppearance,
@@ -89,10 +90,14 @@ function isBlockAppearance(value: unknown): value is BlockAppearance {
   return true
 }
 
+function isSurfaceChoice(value: unknown): boolean {
+  return isGradientId(value) || isCustomColor(value)
+}
+
 function isPageBackdrop(value: unknown): value is PageBackdrop {
   return (
     isRecord(value) &&
-    isGradientId(value.gradient) &&
+    isSurfaceChoice(value.gradient) &&
     typeof value.soft === "boolean"
   )
 }
@@ -105,16 +110,16 @@ export function isAdminAppearance(value: unknown): value is AdminAppearance {
   if (!isRecord(value)) {
     return false
   }
-  if (!isAccentId(value.accent)) {
+  if (!isAccentId(value.accent) && !isCustomColor(value.accent)) {
     return false
   }
-  if (value.sidebar !== null && !isGradientId(value.sidebar)) {
+  if (value.sidebar !== null && !isSurfaceChoice(value.sidebar)) {
     return false
   }
-  if (value.header !== null && !isGradientId(value.header)) {
+  if (value.header !== null && !isSurfaceChoice(value.header)) {
     return false
   }
-  if (value.signIn !== null && !isGradientId(value.signIn)) {
+  if (value.signIn !== null && !isSurfaceChoice(value.signIn)) {
     return false
   }
   if (!isNullablePageBackdrop(value.page)) {

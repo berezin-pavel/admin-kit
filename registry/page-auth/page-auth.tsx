@@ -11,7 +11,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Block } from "@/registry/admin-appearance/block"
-import type { GradientId } from "@/registry/admin-appearance/appearance-palette"
+import type { SurfaceChoice } from "@/registry/admin-appearance/appearance-palette"
 
 export interface PageAuthProps {
   appName: string
@@ -24,7 +24,7 @@ export interface PageAuthProps {
   error?: string
   footer?: ReactNode
   aside?: ReactNode
-  gradient?: GradientId
+  gradient?: SurfaceChoice
   blockId?: string
   className?: string
 }

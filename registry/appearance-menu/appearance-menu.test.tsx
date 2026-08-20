@@ -4,6 +4,7 @@ import { describe, expect, it, vi } from "vitest"
 
 import { AppearanceMenu } from "./appearance-menu"
 import { defaultAdminAppearance, type AdminAppearance } from "@/registry/admin-appearance/appearance-palette"
+import { appearanceThemes } from "@/registry/admin-appearance/appearance-themes"
 import { localeRu } from "@/registry/locale-ru/locale-ru"
 
 async function openMenu(name = "Appearance") {
@@ -414,6 +415,192 @@ describe("AppearanceMenu localization", () => {
 
     expect(
       screen.getByRole("button", { name: localeRu.appearanceMenu.label })
+    ).toBeInTheDocument()
+  })
+})
+
+describe("AppearanceMenu themes", () => {
+  it("renders a button per theme", async () => {
+    render(<AppearanceMenu value={defaultAdminAppearance} onChange={() => {}} />)
+
+    await openMenu()
+
+    for (const theme of appearanceThemes) {
+      expect(screen.getByRole("button", { name: theme.name })).toBeInTheDocument()
+    }
+    expect(appearanceThemes).toHaveLength(5)
+  })
+
+  it("hands the whole preset to onChange when a theme is picked", async () => {
+    const onChange = vi.fn<(next: AdminAppearance) => void>()
+    render(<AppearanceMenu value={defaultAdminAppearance} onChange={onChange} />)
+
+    const user = await openMenu()
+    await user.click(screen.getByRole("button", { name: "Sage" }))
+
+    expect(onChange).toHaveBeenCalledWith(
+      appearanceThemes.find((theme) => theme.id === "sage")?.appearance
+    )
+  })
+
+  it("names the themes in Russian", async () => {
+    render(
+      <AppearanceMenu
+        value={defaultAdminAppearance}
+        onChange={() => {}}
+        labels={localeRu.appearanceMenu}
+      />
+    )
+
+    await openMenu(localeRu.appearanceMenu.label)
+
+    expect(
+      screen.getByRole("button", { name: localeRu.appearanceMenu.themes.slate })
+    ).toBeInTheDocument()
+  })
+})
+
+describe("AppearanceMenu custom accent", () => {
+  it("applies a hex typed into the accent field", async () => {
+    const onChange = vi.fn<(next: AdminAppearance) => void>()
+    render(<AppearanceMenu value={defaultAdminAppearance} onChange={onChange} />)
+
+    const user = await openMenu()
+    const field = screen.getByRole("textbox", { name: "Custom color hex" })
+    await user.clear(field)
+    await user.type(field, "#123456")
+
+    expect(onChange).toHaveBeenCalledWith({
+      ...defaultAdminAppearance,
+      accent: "#123456",
+    })
+  })
+
+  it("stays quiet while the typed value is not a colour", async () => {
+    const onChange = vi.fn<(next: AdminAppearance) => void>()
+    render(<AppearanceMenu value={defaultAdminAppearance} onChange={onChange} />)
+
+    const user = await openMenu()
+    const field = screen.getByRole("textbox", { name: "Custom color hex" })
+    await user.clear(field)
+    await user.type(field, "#12zz")
+
+    expect(onChange).not.toHaveBeenCalled()
+  })
+
+  it("shows the custom accent and checks no palette radio", async () => {
+    render(
+      <AppearanceMenu
+        value={{ ...defaultAdminAppearance, accent: "#123456" }}
+        onChange={() => {}}
+      />
+    )
+
+    await openMenu()
+
+    expect(screen.getByRole("textbox", { name: "Custom color hex" })).toHaveValue(
+      "#123456"
+    )
+    for (const radio of screen.getAllByRole("radio")) {
+      expect(radio).toHaveAttribute("aria-checked", "false")
+    }
+  })
+})
+
+describe("AppearanceMenu custom surface colours", () => {
+  it("puts a starting colour in the slot when Custom color is picked", async () => {
+    const onChange = vi.fn<(next: AdminAppearance) => void>()
+    render(<AppearanceMenu value={defaultAdminAppearance} onChange={onChange} />)
+
+    const user = await openMenu()
+    await user.click(screen.getByRole("combobox", { name: "Sidebar" }))
+    await user.click(await screen.findByRole("option", { name: "Custom color…" }))
+
+    const last = onChange.mock.calls.at(-1)?.[0]
+    expect(last?.sidebar).toBe("#6b7280")
+  })
+
+  it("keeps the colour already in the slot when Custom color is picked again", async () => {
+    const onChange = vi.fn<(next: AdminAppearance) => void>()
+    render(
+      <AppearanceMenu
+        value={{ ...defaultAdminAppearance, sidebar: "#0f172a" }}
+        onChange={onChange}
+      />
+    )
+
+    const user = await openMenu()
+    await user.click(screen.getByRole("combobox", { name: "Sidebar" }))
+    await user.click(await screen.findByRole("option", { name: "Custom color…" }))
+
+    const last = onChange.mock.calls.at(-1)?.[0]
+    expect(last?.sidebar).toBe("#0f172a")
+  })
+
+  it("shows the colour in the trigger and offers its own inputs", async () => {
+    render(
+      <AppearanceMenu
+        value={{ ...defaultAdminAppearance, sidebar: "#0f172a" }}
+        onChange={() => {}}
+      />
+    )
+
+    await openMenu()
+
+    expect(screen.getByRole("combobox", { name: "Sidebar" })).toHaveTextContent(
+      "#0f172a"
+    )
+    expect(
+      screen.getAllByRole("textbox", { name: "Custom color hex" })
+    ).toHaveLength(2)
+  })
+
+  it("applies a hex typed beside the sidebar select", async () => {
+    const onChange = vi.fn<(next: AdminAppearance) => void>()
+    render(
+      <AppearanceMenu
+        value={{ ...defaultAdminAppearance, sidebar: "#0f172a" }}
+        onChange={onChange}
+      />
+    )
+
+    const user = await openMenu()
+    const fields = screen.getAllByRole("textbox", { name: "Custom color hex" })
+    await user.clear(fields[1])
+    await user.type(fields[1], "#eceff3")
+
+    const last = onChange.mock.calls.at(-1)?.[0]
+    expect(last?.sidebar).toBe("#eceff3")
+  })
+
+  it("softens a custom page background by default", async () => {
+    const onChange = vi.fn<(next: AdminAppearance) => void>()
+    render(<AppearanceMenu value={defaultAdminAppearance} onChange={onChange} />)
+
+    const user = await openMenu()
+    await user.click(screen.getByRole("combobox", { name: "Page background" }))
+    await user.click(await screen.findByRole("option", { name: "Custom color…" }))
+
+    const last = onChange.mock.calls.at(-1)?.[0]
+    expect(last?.page).toEqual({ gradient: "#6b7280", soft: true })
+  })
+
+  it("names the custom option in Russian", async () => {
+    render(
+      <AppearanceMenu
+        value={defaultAdminAppearance}
+        onChange={() => {}}
+        labels={localeRu.appearanceMenu}
+      />
+    )
+
+    const user = await openMenu(localeRu.appearanceMenu.label)
+    await user.click(
+      screen.getByRole("combobox", { name: localeRu.appearanceMenu.sidebar })
+    )
+
+    expect(
+      await screen.findByRole("option", { name: localeRu.appearanceMenu.custom })
     ).toBeInTheDocument()
   })
 })

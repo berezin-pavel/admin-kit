@@ -66,6 +66,24 @@ carry the same three pages; the orders list and the breadcrumbs link within the 
 shown in (`demoBasePath`), the appearance menu lists all three pages in both, and per-page
 appearance keeps being shared between the demos.
 
+**Changed** — `admin-appearance` and `appearance-menu` take colours of your own. Every slot that
+held a `GradientId` now holds a `SurfaceChoice` — `GradientId | CustomColor`, where a
+`CustomColor` is a `#rrggbb` string — in `accent` (there `AccentId | CustomColor`), `sidebar`,
+`header`, `signIn` and every `PageBackdrop.gradient`; `blocks` are unchanged. The widening is
+backward compatible: a stored appearance made of palette ids still validates. `isCustomColor` is
+the new guard, `isAdminAppearance` accepts both kinds, and `appearanceCss` emits a full rule set
+per custom colour — surface, popup and both backdrop rules, plus a per-scheme soft tint. The text
+colour is not a choice: it is measured against the colour and drops to pure white or black where
+the kit's near-white and near-black would miss 4.5:1. `page-auth`'s `gradient` prop widened to
+`SurfaceChoice` the same way. In the menu, every gradient select gained a "Custom color…" item and
+shows a colour and a hex input while the slot holds one, and the accent grid gained the same pair
+of inputs below it. New labels: `custom`, `customColor`, `customColorHex`, `theme`, `themes`.
+
+**New** — `appearanceThemes` in `admin-appearance/appearance-themes.ts`: five calm presets (Slate,
+Mist, Sage, Ivory, Dune), each a whole `AdminAppearance` built out of custom colours, so no
+gradient rename can stale them. The appearance menu's first section applies one with a click;
+`locale-ru` names them.
+
 ## 0.32.0 — 2026-08-19
 
 **Breaking** — `AdminAppearance` gained a required `header: GradientId | null`, the

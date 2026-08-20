@@ -6,7 +6,12 @@ import {
   AppearanceStyle,
   backdropThemeColors,
 } from "./appearance-style"
-import { defaultAdminAppearance, gradientPalette } from "./appearance-palette"
+import {
+  customColorStops,
+  defaultAdminAppearance,
+  gradientPalette,
+  softStops,
+} from "./appearance-palette"
 
 describe("AppearanceStyle", () => {
   it("renders a style tag with the gradient and accent tokens", () => {
@@ -68,6 +73,39 @@ describe("AppearanceCanvas", () => {
     expect(backdropThemeColors({ gradient: "ocean", soft: true })).toEqual({
       light: ocean?.softLight.stops[0],
       dark: ocean?.softDark.stops[0],
+    })
+  })
+
+  it("paints the canvas from the custom colour's soft variable", () => {
+    const { container } = render(
+      <AppearanceCanvas backdrop={{ gradient: "#aabbcc", soft: true }} />
+    )
+
+    expect(container.querySelector("style")?.innerHTML).toBe(
+      "html{background-image:var(--custom-aabbcc-soft)}body{background-color:transparent}"
+    )
+  })
+
+  it("paints the canvas with the custom colour itself when it is not softened", () => {
+    const { container } = render(
+      <AppearanceCanvas backdrop={{ gradient: "#AABBCC", soft: false }} />
+    )
+
+    expect(container.querySelector("style")?.innerHTML).toBe(
+      "html{background-image:linear-gradient(135deg, #aabbcc 0%, #aabbcc 100%)}body{background-color:transparent}"
+    )
+  })
+
+  it("takes the theme colours of a custom backdrop from the colour and its soft tints", () => {
+    const stops = customColorStops("#aabbcc")
+
+    expect(backdropThemeColors({ gradient: "#aabbcc", soft: false })).toEqual({
+      light: "#aabbcc",
+      dark: "#aabbcc",
+    })
+    expect(backdropThemeColors({ gradient: "#aabbcc", soft: true })).toEqual({
+      light: softStops(stops, "light").stops[0],
+      dark: softStops(stops, "dark").stops[0],
     })
   })
 

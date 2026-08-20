@@ -63,13 +63,21 @@ A registry item with the work area's content ready-made for a specific task — 
 _Avoid_: screen, section, view
 
 **Appearance**:
-The administrator's global choice of an accent colour and gradients — for the sidebar, the header bar, the sign-in screen, each page's backdrop and each block. Picked from fixed, contrast-checked palettes; the kit renders it and the consumer stores it.
+The administrator's global choice of an accent colour and surfaces — for the sidebar, the header bar, the sign-in screen, each page's backdrop and each block. Each surface is a gradient of the palette or a custom colour; the kit renders the choice and the consumer stores it.
 _Avoid_: theme settings, customization, skin
+
+**Custom colour**:
+A single `#rrggbb` colour entered by the administrator instead of a palette gradient, in the accent or in any surface but a block's. The colour is the administrator's; the text colour on it is not — the kit derives it and measures it at 4.5:1, dropping to pure white or black where its near-white and near-black would miss. Only a validated colour reaches the stylesheet.
+_Avoid_: hex, brand color, custom gradient
+
+**Theme preset**:
+A whole named appearance shipped with the kit (`appearanceThemes`), applied in one click and then editable like any other. Built out of custom colours, so renaming a gradient cannot break one.
+_Avoid_: theme, skin, template
 
 **Backdrop**:
 A gradient painted behind blocks — the work area of a page or the sign-in screen. Stored as a pair of a gradient and a `soft` flag: soft by default, a light or dark tint of the gradient, and vivid when the flag is off (the appearance menu's soften checkbox). Never overrides text tokens, because no text sits on it.
 _Avoid_: page background, wallpaper
 
 **Palette**:
-The fixed set of sixty-three gradients — every one of them three stops of a single hue — grouped into five families (neutral, warm, green, blue, violet), and twenty accents shipped with the kit, each measured for text contrast, including on hover. The only source of colour choices; nothing is entered by hand.
+The fixed set of sixty-three gradients — every one of them three stops of a single hue — grouped into five families (neutral, warm, green, blue, violet), and twenty accents shipped with the kit, each measured for text contrast, including on hover. The first source of colour choices, and the only one for blocks; anywhere else a custom colour may be typed instead, and then the kit measures the text against it.
 _Avoid_: presets, swatches, color list

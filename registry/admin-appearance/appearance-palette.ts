@@ -516,6 +516,27 @@ export function isAccentId(value: unknown): value is AccentId {
   )
 }
 
+export type CustomColor = `#${string}`
+
+const CUSTOM_COLOR_PATTERN = /^#[0-9a-f]{6}$/i
+
+export function isCustomColor(value: unknown): value is CustomColor {
+  return typeof value === "string" && CUSTOM_COLOR_PATTERN.test(value)
+}
+
+export type SurfaceChoice = GradientId | CustomColor
+
+export const CUSTOM_COLOR_ANGLE = 135
+
+export function customColorStops(color: CustomColor): GradientStops {
+  const hex = color.toLowerCase()
+  return { angle: CUSTOM_COLOR_ANGLE, stops: [hex, hex, hex] }
+}
+
+export function customColorVariable(color: CustomColor): string {
+  return `--custom-${color.slice(1).toLowerCase()}`
+}
+
 export type BlockHeading = "regular" | "large" | "none"
 
 export interface BlockAppearance {
@@ -524,15 +545,15 @@ export interface BlockAppearance {
 }
 
 export interface PageBackdrop {
-  gradient: GradientId
+  gradient: SurfaceChoice
   soft: boolean
 }
 
 export interface AdminAppearance {
-  accent: AccentId
-  sidebar: GradientId | null
-  header: GradientId | null
-  signIn: GradientId | null
+  accent: AccentId | CustomColor
+  sidebar: SurfaceChoice | null
+  header: SurfaceChoice | null
+  signIn: SurfaceChoice | null
   page: PageBackdrop | null
   pages: Record<string, PageBackdrop | null>
   blocks: Record<string, BlockAppearance>

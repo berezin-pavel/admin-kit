@@ -125,8 +125,17 @@ const adminAppearanceRu = {
   families: gradientFamilyNamesRu,
 } satisfies AppearanceLabels
 
+const appearanceThemeNamesRu: Record<string, string> = {
+  slate: "Сланец",
+  mist: "Дымка",
+  sage: "Шалфей",
+  ivory: "Слоновая кость",
+  dune: "Дюна",
+}
+
 const appearanceMenuRu = {
   label: "Оформление",
+  theme: "Тема",
   accent: "Акцентный цвет",
   sidebar: "Сайдбар",
   header: "Шапка",
@@ -136,9 +145,13 @@ const appearanceMenuRu = {
   inherit: "Как по умолчанию",
   none: "Без градиента",
   soft: "Смягчить цвет",
+  custom: "Свой цвет…",
+  customColor: "Свой цвет",
+  customColorHex: "HEX-код цвета",
   gradients: gradientNamesRu,
   accents: accentNamesRu,
   families: gradientFamilyNamesRu,
+  themes: appearanceThemeNamesRu,
 } satisfies AppearanceMenuLabels
 
 export const localeRu = {
