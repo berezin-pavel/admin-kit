@@ -9,6 +9,7 @@ import {
   useState,
   type ComponentType,
 } from "react"
+import type { ReactNode } from "react"
 import { Search, X } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -32,6 +33,26 @@ export interface GlobalSearchLabels {
   empty?: string
   title?: string
   close?: string
+}
+
+function highlightMatch(label: string, query: string): ReactNode {
+  const needle = query.trim().toLowerCase()
+  if (!needle) {
+    return label
+  }
+  const index = label.toLowerCase().indexOf(needle)
+  if (index === -1) {
+    return label
+  }
+  return (
+    <>
+      {label.slice(0, index)}
+      <mark className="rounded-xs bg-primary/15 font-semibold text-inherit">
+        {label.slice(index, index + needle.length)}
+      </mark>
+      {label.slice(index + needle.length)}
+    </>
+  )
 }
 
 export interface GlobalSearchProps {
@@ -299,7 +320,7 @@ export function GlobalSearch({
               aria-label={titleLabel}
               aria-activedescendant={activeId}
               placeholder={placeholderLabel}
-              className="h-11 rounded-none border-0 px-0 focus-visible:ring-0"
+              className="h-11 rounded-none border-0 bg-transparent px-0 focus-visible:ring-0 dark:bg-transparent"
             />
             <button
               type="button"
@@ -345,7 +366,9 @@ export function GlobalSearch({
                       {Icon ? (
                         <Icon className="size-4 shrink-0 text-muted-foreground" />
                       ) : null}
-                      <span className="truncate">{item.label}</span>
+                      <span className="truncate">
+                        {highlightMatch(item.label, query)}
+                      </span>
                       {item.hint ? (
                         <span className="ml-auto shrink-0 pl-2 text-xs text-muted-foreground">
                           {item.hint}

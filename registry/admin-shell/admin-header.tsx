@@ -32,7 +32,7 @@ export function AdminHeader({
       data-slot="admin-header"
       data-gradient={gradient || undefined}
       className={cn(
-        "flex h-14 shrink-0 items-center justify-between gap-4 border-b border-border",
+        "flex h-14 shrink-0 items-center justify-between gap-4 border-b border-foreground/10",
         rowClassName ?? "px-6",
         className
       )}

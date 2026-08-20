@@ -763,3 +763,31 @@ describe("AppearanceMenu theme state and closing", () => {
     ).not.toBeInTheDocument()
   })
 })
+
+describe("AppearanceMenu reset", () => {
+  it("hands the defaults to onChange from the reset button", async () => {
+    const onChange = vi.fn<(next: AdminAppearance) => void>()
+    render(
+      <AppearanceMenu
+        value={{ ...defaultAdminAppearance, sidebar: "ember" }}
+        onChange={onChange}
+        defaults={defaultAdminAppearance}
+      />
+    )
+
+    const user = await openMenu()
+    await user.click(screen.getByRole("button", { name: "Reset to defaults" }))
+
+    expect(onChange).toHaveBeenCalledWith(defaultAdminAppearance)
+  })
+
+  it("offers no reset button without defaults", async () => {
+    render(<AppearanceMenu value={defaultAdminAppearance} onChange={() => {}} />)
+
+    await openMenu()
+
+    expect(
+      screen.queryByRole("button", { name: "Reset to defaults" })
+    ).not.toBeInTheDocument()
+  })
+})

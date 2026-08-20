@@ -79,7 +79,8 @@ export function NotificationsMenu({
             {unreadCount > 0 ? (
               <Badge
                 aria-hidden="true"
-                className="absolute -top-1.5 -right-1.5 h-4 min-w-4 justify-center px-1 text-[0.625rem] leading-none"
+                variant="destructive"
+                className="absolute -top-1.5 -right-1.5 h-4 min-w-4 justify-center bg-destructive px-1 text-[0.625rem] leading-none text-destructive-foreground dark:bg-destructive dark:text-destructive-foreground"
               >
                 {unreadCount > 9 ? "9+" : unreadCount}
               </Badge>
@@ -121,7 +122,7 @@ export function NotificationsMenu({
                   data-read={notification.read ? "" : undefined}
                   className={cn(
                     "items-start gap-2 py-2",
-                    !notification.read && "bg-primary/5"
+                    !notification.read && "bg-destructive/5"
                   )}
                   onClick={() => onSelect?.(notification.id)}
                 >
@@ -135,14 +136,14 @@ export function NotificationsMenu({
                           "size-4",
                           notification.read
                             ? "text-muted-foreground"
-                            : "text-primary"
+                            : "text-destructive"
                         )}
                       />
                     ) : (
                       <span
                         className={cn(
                           "size-2 rounded-full",
-                          notification.read ? "bg-transparent" : "bg-primary"
+                          notification.read ? "bg-transparent" : "bg-destructive"
                         )}
                       />
                     )}
@@ -160,7 +161,7 @@ export function NotificationsMenu({
                       {!notification.read ? (
                         <span
                           aria-hidden="true"
-                          className="size-1.5 shrink-0 rounded-full bg-primary"
+                          className="size-1.5 shrink-0 rounded-full bg-destructive"
                         />
                       ) : null}
                     </span>

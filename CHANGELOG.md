@@ -8,7 +8,7 @@ items changed, and what breaks if you pull them.
 **Install an item, pinned to a release:**
 
 ```bash
-pnpm dlx shadcn@latest add berezin-pavel/admin-kit/widget-table#v0.41.0
+pnpm dlx shadcn@latest add berezin-pavel/admin-kit/widget-table#v0.42.0
 ```
 
 **See what an update would change before taking it:**
@@ -24,6 +24,20 @@ say yes; `-o` overwrites deliberately. Items you have edited in place are yours 
 Sections used below: **New** (items you can now install), **Changed** (installed items worth
 re-pulling), **Breaking** (props or files that changed shape — read before overwriting), and
 **Project** (showcase, CI, docs — nothing that reaches your project).
+
+## 0.42.0 — 2026-08-20
+
+**Changed** — the sidebar collapses smoothly (`transition-[width]`, 300ms, on the sidebar and
+the flush header's brand cell); unread marks went red — the bell's badge and the unread dot,
+icon and row wash use the destructive pair, with explicit `dark:` classes because the badge
+primitive's `dark:bg-destructive/20` otherwise wins and turns the badge near-invisible on dark
+(the `status-badge` danger tone got the same fix); the search dialog highlights the matched
+substring in every result, its input keeps the dialog's own background in the dark scheme, and
+the flush shell's borders match the blocks (`foreground/10`). `appearance-menu` takes
+`defaults` — when passed, a ghost "Reset to defaults" button at the popup's bottom hands that
+value to `onChange` (`labels.reset`, Russian in `locale-ru`).
+
+**Project** — the demo passes its default appearance to the menu, so the reset lands on Jade.
 
 ## 0.41.0 — 2026-08-20
 

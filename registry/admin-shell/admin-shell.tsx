@@ -103,7 +103,7 @@ export function AdminShell({
   const headerBrand = headerBar ? (
     <div
       className={cn(
-        "flex h-full shrink-0 items-center gap-1 px-2 text-sm font-semibold md:mr-3 md:border-r md:border-sidebar-border",
+        "flex h-full shrink-0 items-center gap-1 px-2 text-sm font-semibold transition-[width] duration-300 ease-in-out md:mr-3 md:border-r md:border-foreground/10",
         collapsed ? "md:w-14" : "md:w-60"
       )}
     >
@@ -160,9 +160,9 @@ export function AdminShell({
   const sidebar = (
     <aside
       className={cn(
-        "hidden w-60 shrink-0 flex-col overflow-hidden bg-card md:flex",
+        "hidden w-60 shrink-0 flex-col overflow-hidden bg-card transition-[width] duration-300 ease-in-out md:flex",
         flush
-          ? "border-r border-sidebar-border"
+          ? "border-r border-foreground/10"
           : "rounded-xl ring-1 ring-foreground/10",
         collapsed && "md:w-14"
       )}

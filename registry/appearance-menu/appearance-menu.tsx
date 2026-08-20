@@ -66,6 +66,7 @@ export interface AppearanceMenuLabels {
   customColor?: string
   customColorHex?: string
   close?: string
+  reset?: string
   gradients?: Partial<Record<GradientId, string>>
   accents?: Partial<Record<AccentId, string>>
   families?: Partial<Record<GradientFamily, string>>
@@ -80,6 +81,7 @@ export interface AppearanceMenuPage {
 export interface AppearanceMenuProps {
   value: AdminAppearance
   onChange: (next: AdminAppearance) => void
+  defaults?: AdminAppearance
   pages?: readonly AppearanceMenuPage[]
   labels?: AppearanceMenuLabels
   className?: string
@@ -116,6 +118,7 @@ const defaultLabels: Required<
   customColor: "Custom color",
   customColorHex: "Custom color hex",
   close: "Close",
+  reset: "Reset to defaults",
 }
 
 function resolveLabels(labels: AppearanceMenuLabels | undefined): ResolvedLabels {
@@ -134,6 +137,7 @@ function resolveLabels(labels: AppearanceMenuLabels | undefined): ResolvedLabels
     customColor: labels?.customColor ?? defaultLabels.customColor,
     customColorHex: labels?.customColorHex ?? defaultLabels.customColorHex,
     close: labels?.close ?? defaultLabels.close,
+    reset: labels?.reset ?? defaultLabels.reset,
     gradients: labels?.gradients ?? {},
     accents: labels?.accents ?? {},
     families: { ...gradientFamilyNames, ...labels?.families },
@@ -405,6 +409,7 @@ function ThemeOption({
 export function AppearanceMenu({
   value,
   onChange,
+  defaults,
   pages = [],
   labels: labelsProp,
   className,
@@ -687,6 +692,18 @@ export function AppearanceMenu({
                 })}
               </div>
             </section>
+          ) : null}
+
+          {defaults ? (
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="w-full text-muted-foreground"
+              onClick={() => onChange(defaults)}
+            >
+              {labels.reset}
+            </Button>
           ) : null}
         </div>
       </PopoverContent>

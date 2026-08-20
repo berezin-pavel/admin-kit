@@ -22,6 +22,7 @@ import { localeRu } from "@/registry/locale-ru/locale-ru"
 import { SidebarToggle } from "@/registry/sidebar-toggle/sidebar-toggle"
 
 import {
+  DEMO_APPEARANCE_DEFAULT,
   demoPageId,
   setDemoAppearance,
   useDemoAppearance,
@@ -105,6 +106,7 @@ export function DemoShell({
         <AppearanceMenu
           value={appearance}
           onChange={setDemoAppearance}
+          defaults={DEMO_APPEARANCE_DEFAULT}
           pages={appearanceMenuPages}
           labels={locale === "ru" ? localeRu.appearanceMenu : undefined}
         />

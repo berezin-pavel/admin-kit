@@ -211,6 +211,7 @@ const appearanceMenuRu = {
   customColor: "Свой цвет",
   customColorHex: "HEX-код цвета",
   close: "Закрыть",
+  reset: "Сбросить настройки",
   gradients: gradientNamesRu,
   accents: accentNamesRu,
   families: gradientFamilyNamesRu,
