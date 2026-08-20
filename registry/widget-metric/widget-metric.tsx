@@ -93,7 +93,7 @@ export function WidgetMetric({
                   className={cn(
                     "flex items-center gap-1 text-sm whitespace-nowrap",
                     !painted &&
-                      (tone === "negative" ? "text-destructive" : "text-primary")
+                      (tone === "negative" ? "text-destructive" : "text-success")
                   )}
                 >
                   <TrendIcon className="size-4" />
