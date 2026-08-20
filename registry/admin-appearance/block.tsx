@@ -31,6 +31,7 @@ import {
   type GradientId,
 } from "./appearance-palette"
 import { DragHandle, useDragOffset } from "./drag-handle"
+import { useRadioGroupNav } from "./radio-group-nav"
 
 export interface BlockProps extends ComponentProps<typeof Card> {
   id?: string
@@ -45,6 +46,15 @@ const headingChoices: readonly {
   { value: "regular", labelKey: "headingRegular" },
   { value: "large", labelKey: "headingLarge" },
   { value: "none", labelKey: "headingNone" },
+]
+
+const flatGradientOptions: readonly (GradientId | null)[] = [
+  null,
+  ...gradientFamilies.flatMap((family) =>
+    gradientPalette
+      .filter((entry) => entry.family === family)
+      .map((entry) => entry.id)
+  ),
 ]
 
 export function Block({
@@ -120,6 +130,17 @@ function BlockMenu({
     onChange(setBlockAppearance(value, id, { heading: next }))
   }
 
+  const gradientNav = useRadioGroupNav({
+    count: flatGradientOptions.length,
+    selectedIndex:
+      gradient === undefined ? -1 : flatGradientOptions.indexOf(gradient),
+  })
+
+  const headingNav = useRadioGroupNav({
+    count: headingChoices.length,
+    selectedIndex: headingChoices.findIndex((choice) => choice.value === heading),
+  })
+
   return (
     <Popover
       open={open}
@@ -179,6 +200,7 @@ function BlockMenu({
                       aria-label={labels.none}
                       onClick={() => selectGradient(null)}
                       className="flex size-7 items-center justify-center rounded-md bg-muted ring-1 ring-foreground/10"
+                      {...gradientNav.itemProps(0)}
                     >
                       <Ban
                         className="size-3.5 text-muted-foreground"
@@ -215,6 +237,9 @@ function BlockMenu({
                                 style={{
                                   backgroundImage: `var(--gradient-${entry.id})`,
                                 }}
+                                {...gradientNav.itemProps(
+                                  flatGradientOptions.indexOf(entry.id)
+                                )}
                               >
                                 {selected ? (
                                   <Check
@@ -242,7 +267,7 @@ function BlockMenu({
                 {labels.heading}
               </span>
               <div role="radiogroup" aria-label={labels.heading} className="flex gap-1.5">
-                {headingChoices.map((choice) => (
+                {headingChoices.map((choice, index) => (
                   <Button
                     key={choice.value}
                     type="button"
@@ -251,6 +276,7 @@ function BlockMenu({
                     variant="outline"
                     size="sm"
                     onClick={() => selectHeading(choice.value)}
+                    {...headingNav.itemProps(index)}
                   >
                     {labels[choice.labelKey]}
                   </Button>

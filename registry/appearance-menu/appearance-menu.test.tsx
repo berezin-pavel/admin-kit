@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react"
+import { fireEvent, render, screen, within } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
@@ -45,6 +45,43 @@ describe("AppearanceMenu accent", () => {
     await user.click(screen.getByRole("radio", { name: "Blue" }))
 
     expect(onChange).toHaveBeenCalledWith({ ...defaultAdminAppearance, accent: "blue" })
+  })
+
+  it("gives the accent radiogroup a single tab stop, on the checked swatch", async () => {
+    render(
+      <AppearanceMenu
+        value={{ ...defaultAdminAppearance, accent: "blue" }}
+        onChange={() => {}}
+      />
+    )
+
+    await openMenu()
+
+    const group = screen.getByRole("radiogroup", { name: "Accent color" })
+    const radios = within(group).getAllByRole("radio")
+    const tabbable = radios.filter((radio) => radio.tabIndex === 0)
+    expect(tabbable).toHaveLength(1)
+    expect(tabbable[0]).toHaveAttribute("aria-label", "Blue")
+  })
+
+  it("moves focus through the accent swatches with the arrow keys", async () => {
+    render(
+      <AppearanceMenu value={defaultAdminAppearance} onChange={() => {}} />
+    )
+
+    const user = await openMenu()
+    const group = screen.getByRole("radiogroup", { name: "Accent color" })
+    const radios = within(group).getAllByRole("radio")
+    radios[0].focus()
+
+    await user.keyboard("{ArrowRight}")
+    expect(radios[1]).toHaveFocus()
+
+    await user.keyboard("{ArrowLeft}")
+    expect(radios[0]).toHaveFocus()
+
+    await user.keyboard("{End}")
+    expect(radios.at(-1)).toHaveFocus()
   })
 })
 

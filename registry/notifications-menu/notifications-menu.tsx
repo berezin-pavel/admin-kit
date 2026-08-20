@@ -31,6 +31,7 @@ export interface NotificationsMenuLabels {
   empty?: string
   markAllRead?: string
   unread?: (count: number) => string
+  unreadItem?: string
 }
 
 export interface NotificationsMenuProps {
@@ -57,6 +58,7 @@ export function NotificationsMenu({
   const emptyLabel = labels?.empty ?? "You're all caught up"
   const markAllReadLabel = labels?.markAllRead ?? "Mark all as read"
   const unreadLabel = labels?.unread ?? ((count: number) => `${count} unread`)
+  const unreadItemLabel = labels?.unreadItem ?? "Unread"
 
   const unreadCount = notifications.filter(
     (notification) => !notification.read
@@ -89,22 +91,19 @@ export function NotificationsMenu({
         }
       />
       <DropdownMenuContent side={side} align={align} className="w-88 p-1">
-        <DropdownMenuGroup>
-          <DropdownMenuLabel className="flex items-center justify-between gap-2 px-1.5 py-1.5">
-            <span className="font-medium text-popover-foreground">
-              {titleLabel}
-            </span>
-            {onMarkAllRead && unreadCount > 0 ? (
-              <Button
-                variant="ghost"
-                size="xs"
-                className="-my-1 font-normal text-muted-foreground"
-                onClick={onMarkAllRead}
-              >
-                {markAllReadLabel}
-              </Button>
-            ) : null}
+        <DropdownMenuGroup className="flex items-center justify-between gap-2 px-1.5 py-1.5">
+          <DropdownMenuLabel className="p-0 text-sm font-medium text-popover-foreground">
+            {titleLabel}
           </DropdownMenuLabel>
+          {onMarkAllRead && unreadCount > 0 ? (
+            <DropdownMenuItem
+              closeOnClick={false}
+              onClick={onMarkAllRead}
+              className="h-6 w-auto shrink-0 gap-1 rounded-[10px] px-2 py-0 text-xs font-normal text-muted-foreground hover:bg-muted hover:text-foreground focus:bg-muted focus:text-foreground"
+            >
+              {markAllReadLabel}
+            </DropdownMenuItem>
+          ) : null}
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         {notifications.length === 0 ? (
@@ -159,10 +158,13 @@ export function NotificationsMenu({
                         {notification.title}
                       </span>
                       {!notification.read ? (
-                        <span
-                          aria-hidden="true"
-                          className="size-1.5 shrink-0 rounded-full bg-destructive"
-                        />
+                        <>
+                          <span className="sr-only">{unreadItemLabel}</span>
+                          <span
+                            aria-hidden="true"
+                            className="size-1.5 shrink-0 rounded-full bg-destructive"
+                          />
+                        </>
                       ) : null}
                     </span>
                     {notification.description ? (

@@ -50,8 +50,11 @@ export function TagsField({
   const id = React.useId()
   const errorId = `${id}-error`
   const hintId = `${id}-hint`
+  const listboxId = `${id}-listbox`
+  const optionId = (index: number) => `${id}-option-${index}`
   const [draft, setDraft] = React.useState("")
   const [open, setOpen] = React.useState(false)
+  const [activeIndex, setActiveIndex] = React.useState(-1)
 
   const filteredSuggestions = React.useMemo(() => {
     if (!suggestions || draft.trim() === "") {
@@ -67,9 +70,22 @@ export function TagsField({
     )
   }, [suggestions, draft, value])
 
+  const showListbox = open && filteredSuggestions.length > 0
+  const activeSuggestionIndex =
+    activeIndex >= 0 && activeIndex < filteredSuggestions.length
+      ? activeIndex
+      : -1
+
   const commitDraft = () => {
     onChange(addTag(value, draft))
     setDraft("")
+    setActiveIndex(-1)
+  }
+
+  const selectSuggestion = (suggestion: string) => {
+    onChange(addTag(value, suggestion))
+    setDraft("")
+    setActiveIndex(-1)
   }
 
   return (
@@ -100,17 +116,78 @@ export function TagsField({
           ))}
           <input
             id={id}
+            role="combobox"
+            aria-expanded={showListbox}
+            aria-controls={listboxId}
+            aria-autocomplete="list"
+            aria-activedescendant={
+              showListbox && activeSuggestionIndex >= 0
+                ? optionId(activeSuggestionIndex)
+                : undefined
+            }
             value={draft}
             disabled={disabled}
             placeholder={value.length === 0 ? placeholder : undefined}
             aria-invalid={error ? true : undefined}
             aria-describedby={error ? errorId : hint ? hintId : undefined}
             onFocus={() => setOpen(true)}
-            onBlur={() => setOpen(false)}
-            onChange={(event) => setDraft(event.target.value)}
+            onBlur={() => {
+              setOpen(false)
+              setActiveIndex(-1)
+            }}
+            onChange={(event) => {
+              setDraft(event.target.value)
+              setActiveIndex(-1)
+            }}
             onKeyDown={(event) => {
-              if (event.key === "Enter" || event.key === ",") {
+              if (event.key === "ArrowDown") {
+                if (filteredSuggestions.length > 0) {
+                  event.preventDefault()
+                  setOpen(true)
+                  setActiveIndex((current) =>
+                    current + 1 >= filteredSuggestions.length ? 0 : current + 1
+                  )
+                }
+                return
+              }
+
+              if (event.key === "ArrowUp") {
+                if (showListbox) {
+                  event.preventDefault()
+                  setActiveIndex((current) =>
+                    current - 1 < 0 ? filteredSuggestions.length - 1 : current - 1
+                  )
+                }
+                return
+              }
+
+              if (event.key === "Escape") {
+                if (showListbox) {
+                  event.preventDefault()
+                  setOpen(false)
+                  setActiveIndex(-1)
+                }
+                return
+              }
+
+              if (event.key === ",") {
+                if (event.nativeEvent.isComposing) {
+                  return
+                }
                 event.preventDefault()
+                commitDraft()
+                return
+              }
+
+              if (event.key === "Enter") {
+                if (event.nativeEvent.isComposing) {
+                  return
+                }
+                event.preventDefault()
+                if (showListbox && activeSuggestionIndex >= 0) {
+                  selectSuggestion(filteredSuggestions[activeSuggestionIndex])
+                  return
+                }
                 commitDraft()
                 return
               }
@@ -122,21 +199,28 @@ export function TagsField({
             className="min-w-24 flex-1 border-0 bg-transparent p-0 text-sm text-foreground outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed"
           />
         </div>
-        {open && filteredSuggestions.length > 0 ? (
-          <ul className="absolute z-10 mt-1 max-h-48 w-full overflow-auto rounded-lg border border-border bg-popover p-1 text-sm text-popover-foreground shadow-md">
-            {filteredSuggestions.map((suggestion) => (
-              <li key={suggestion}>
-                <button
-                  type="button"
-                  className="w-full rounded-md px-2 py-1.5 text-left hover:bg-muted"
-                  onMouseDown={(event) => event.preventDefault()}
-                  onClick={() => {
-                    onChange(addTag(value, suggestion))
-                    setDraft("")
-                  }}
-                >
-                  {suggestion}
-                </button>
+        {showListbox ? (
+          <ul
+            id={listboxId}
+            role="listbox"
+            className="absolute z-10 mt-1 max-h-48 w-full overflow-auto rounded-lg border border-border bg-popover p-1 text-sm text-popover-foreground shadow-md"
+          >
+            {filteredSuggestions.map((suggestion, index) => (
+              <li
+                key={suggestion}
+                id={optionId(index)}
+                role="option"
+                aria-selected={index === activeSuggestionIndex}
+                onMouseDown={(event) => event.preventDefault()}
+                onClick={() => selectSuggestion(suggestion)}
+                className={cn(
+                  "cursor-pointer rounded-md px-2 py-1.5",
+                  index === activeSuggestionIndex
+                    ? "bg-muted"
+                    : "hover:bg-muted"
+                )}
+              >
+                {suggestion}
               </li>
             ))}
           </ul>

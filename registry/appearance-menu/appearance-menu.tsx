@@ -50,6 +50,7 @@ import {
   DragHandle,
   useDragOffset,
 } from "@/registry/admin-appearance/drag-handle"
+import { useRadioGroupNav } from "@/registry/admin-appearance/radio-group-nav"
 
 export interface AppearanceMenuLabels {
   label?: string
@@ -473,6 +474,11 @@ export function AppearanceMenu({
     onChange({ ...value, pages: { ...value.pages, [pageEntryId]: next } })
   }
 
+  const accentNav = useRadioGroupNav({
+    count: accentPalette.length,
+    selectedIndex: accentPalette.findIndex((entry) => entry.id === value.accent),
+  })
+
   return (
     <Popover
       open={open}
@@ -569,7 +575,7 @@ export function AppearanceMenu({
               aria-label={labels.accent}
               className="grid grid-cols-10 gap-1.5"
             >
-              {accentPalette.map((entry) => {
+              {accentPalette.map((entry, index) => {
                 const selected = value.accent === entry.id
                 return (
                   <button
@@ -584,6 +590,7 @@ export function AppearanceMenu({
                       selected && "ring-2 ring-ring ring-offset-2 ring-offset-popover"
                     )}
                     style={{ backgroundColor: entry.hex }}
+                    {...accentNav.itemProps(index)}
                   />
                 )
               })}

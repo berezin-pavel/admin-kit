@@ -306,6 +306,109 @@ describe("Block corner menu interaction", () => {
   })
 })
 
+describe("Block corner menu keyboard navigation", () => {
+  it("gives the gradient radiogroup a single tab stop, on the checked swatch", async () => {
+    const user = userEvent.setup()
+    const onChangeSpy = vi.fn<(next: AdminAppearance) => void>()
+    render(
+      <Harness
+        onChangeSpy={onChangeSpy}
+        initial={{
+          ...defaultAdminAppearance,
+          blocks: { a: { gradient: "ember" } },
+        }}
+      />
+    )
+
+    await user.click(screen.getByRole("button", { name: "Block appearance" }))
+
+    const radios = screen.getAllByRole("radio")
+    const tabbable = radios.filter((radio) => radio.tabIndex === 0)
+    expect(tabbable).toHaveLength(1)
+    expect(tabbable[0]).toHaveAttribute("aria-label", "Ember")
+    for (const radio of radios) {
+      if (radio !== tabbable[0]) {
+        expect(radio).toHaveAttribute("tabindex", "-1")
+      }
+    }
+  })
+
+  it("moves focus with ArrowRight and updates the tab stop without selecting", async () => {
+    const user = userEvent.setup()
+    const onChangeSpy = vi.fn<(next: AdminAppearance) => void>()
+    render(<Harness onChangeSpy={onChangeSpy} />)
+
+    await user.click(screen.getByRole("button", { name: "Block appearance" }))
+
+    const noGradient = screen.getByRole("radio", { name: "No gradient" })
+    noGradient.focus()
+    await user.keyboard("{ArrowRight}")
+
+    const radios = screen.getAllByRole("radio")
+    const focused = radios.find((radio) => radio === document.activeElement)
+    expect(focused).not.toBe(noGradient)
+    expect(focused).toHaveAttribute("tabindex", "0")
+    expect(noGradient).toHaveAttribute("tabindex", "-1")
+    expect(onChangeSpy).not.toHaveBeenCalled()
+  })
+
+  it("wraps to the last swatch with ArrowLeft from the first item", async () => {
+    const user = userEvent.setup()
+    render(<Harness onChangeSpy={vi.fn()} />)
+
+    await user.click(screen.getByRole("button", { name: "Block appearance" }))
+
+    const gradientGroup = screen.getByRole("radiogroup", { name: "Gradient" })
+    const radios = within(gradientGroup).getAllByRole("radio")
+    radios[0].focus()
+    await user.keyboard("{ArrowLeft}")
+
+    expect(radios.at(-1)).toHaveFocus()
+  })
+
+  it("jumps to the first and last swatch with Home and End", async () => {
+    const user = userEvent.setup()
+    render(<Harness onChangeSpy={vi.fn()} />)
+
+    await user.click(screen.getByRole("button", { name: "Block appearance" }))
+
+    const gradientGroup = screen.getByRole("radiogroup", { name: "Gradient" })
+    const radios = within(gradientGroup).getAllByRole("radio")
+    radios[3].focus()
+
+    await user.keyboard("{End}")
+    expect(radios.at(-1)).toHaveFocus()
+
+    await user.keyboard("{Home}")
+    expect(radios[0]).toHaveFocus()
+  })
+
+  it("selects the focused swatch with Enter, same as clicking it", async () => {
+    const user = userEvent.setup()
+    const onChangeSpy = vi.fn<(next: AdminAppearance) => void>()
+    render(<Harness onChangeSpy={onChangeSpy} />)
+
+    await user.click(screen.getByRole("button", { name: "Block appearance" }))
+    screen.getByRole("radio", { name: "No gradient" }).focus()
+    await user.keyboard("{ArrowRight}{Enter}")
+
+    const last = onChangeSpy.mock.calls.at(-1)?.[0]
+    expect(last?.blocks.a.gradient).not.toBeUndefined()
+  })
+
+  it("gives the heading radiogroup its own single tab stop", async () => {
+    const user = userEvent.setup()
+    render(<Harness onChangeSpy={vi.fn()} headings />)
+
+    await user.click(screen.getByRole("button", { name: "Block appearance" }))
+
+    const headingGroup = screen.getByRole("radiogroup", { name: "Heading" })
+    const radios = within(headingGroup).getAllByRole("radio")
+    const tabbable = radios.filter((radio) => radio.tabIndex === 0)
+    expect(tabbable).toHaveLength(1)
+  })
+})
+
 describe("Block corner menu drag handle", () => {
   const pointer = (type: string, clientX: number, clientY: number) =>
     new MouseEvent(type, { bubbles: true, clientX, clientY })
