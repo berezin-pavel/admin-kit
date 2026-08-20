@@ -160,3 +160,25 @@ test("the header gradient picked in the menu paints the flush demo's bar", async
     "midnight"
   )
 })
+
+test("the header search opens on Cmd+K and routes to the picked page", async ({ page }) => {
+  await page.goto("/demo-flush")
+  await page.waitForLoadState("networkidle")
+
+  await page.keyboard.press("ControlOrMeta+k")
+  const dialog = page.getByRole("dialog", { name: "Search" })
+  await expect(dialog).toBeVisible()
+  await page.getByRole("option", { name: /Orders Navigation/ }).click()
+  await expect(page).toHaveURL(/\/demo-flush\/orders$/)
+})
+
+test("the bell counts unread and mark-all-read clears the badge", async ({ page }) => {
+  await page.goto("/demo-flush")
+  await page.waitForLoadState("networkidle")
+
+  const bell = page.getByRole("button", { name: "Notifications, 3 unread" })
+  await bell.click()
+  await expect(page.getByText("New order #4187")).toBeVisible()
+  await page.getByText("Mark all as read").click()
+  await expect(page.getByRole("button", { name: "Notifications" })).toBeVisible()
+})
