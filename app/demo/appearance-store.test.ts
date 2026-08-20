@@ -1,15 +1,57 @@
-import { describe, expect, it } from "vitest"
+import { afterEach, describe, expect, it, vi } from "vitest"
 
+import { appearanceThemes } from "@/registry/admin-appearance/appearance-themes"
+import type {
+  AdminAppearance,
+  CustomColor,
+} from "@/registry/admin-appearance/appearance-palette"
+
+import { DEMO_APPEARANCE_COOKIE } from "./demo-cookie"
 import {
   DEMO_APPEARANCE_DEFAULT,
   DEMO_APPEARANCE_PAGES,
   demoPageId,
   isAdminAppearance,
+  parseDemoAppearance,
 } from "./appearance-store"
+
+const jadeTheme = appearanceThemes.find((theme) => theme.id === "jade")
+
+function withAccent(accent: CustomColor): AdminAppearance {
+  return { ...DEMO_APPEARANCE_DEFAULT, accent }
+}
+
+function cookieFor(value: unknown): string {
+  return `${DEMO_APPEARANCE_COOKIE}=${encodeURIComponent(JSON.stringify(value))}`
+}
+
+async function loadStore(cookie: string) {
+  vi.resetModules()
+  vi.stubGlobal("document", { cookie })
+  return import("./appearance-store")
+}
+
+afterEach(() => {
+  vi.unstubAllGlobals()
+})
 
 describe("DEMO_APPEARANCE_DEFAULT", () => {
   it("passes its own validation guard", () => {
     expect(isAdminAppearance(DEMO_APPEARANCE_DEFAULT)).toBe(true)
+  })
+
+  it("finds the Jade theme in the shipped presets", () => {
+    expect(jadeTheme).toBeDefined()
+  })
+
+  it("is the Jade preset plus the demo's heading choices", () => {
+    expect(DEMO_APPEARANCE_DEFAULT).toEqual({
+      ...jadeTheme?.appearance,
+      blocks: {
+        "overview.finance": { heading: "large" },
+        "orders.table": { heading: "none" },
+      },
+    })
   })
 
   it("leaves every block at the theme's own colours", () => {
@@ -170,5 +212,79 @@ describe("isAdminAppearance", () => {
     expect(
       isAdminAppearance({ ...DEMO_APPEARANCE_DEFAULT, blocks: {} })
     ).toBe(true)
+  })
+})
+
+describe("parseDemoAppearance", () => {
+  it("returns undefined without a stored value", () => {
+    expect(parseDemoAppearance(undefined)).toBeUndefined()
+    expect(parseDemoAppearance("")).toBeUndefined()
+  })
+
+  it("returns undefined for a value that is not JSON", () => {
+    expect(parseDemoAppearance("not-json")).toBeUndefined()
+  })
+
+  it("returns undefined for JSON the guard rejects", () => {
+    expect(parseDemoAppearance(JSON.stringify({ accent: "coral" }))).toBeUndefined()
+  })
+
+  it("returns a stored appearance", () => {
+    const stored = withAccent("#112233")
+    expect(parseDemoAppearance(JSON.stringify(stored))).toEqual(stored)
+  })
+})
+
+describe("the appearance cookie", () => {
+  it("supplies the appearance when nothing was seeded", async () => {
+    const stored = withAccent("#112233")
+    const store = await loadStore(cookieFor(stored))
+
+    expect(store.getDemoAppearance()).toEqual(stored)
+  })
+
+  it("falls back to the default when the cookie is unreadable", async () => {
+    const store = await loadStore(`${DEMO_APPEARANCE_COOKIE}=not-json`)
+
+    expect(store.getDemoAppearance()).toEqual(DEMO_APPEARANCE_DEFAULT)
+  })
+
+  it("falls back to the default when the cookie is absent", async () => {
+    const store = await loadStore("admin-kit-demo-locale=ru")
+
+    expect(store.getDemoAppearance()).toEqual(DEMO_APPEARANCE_DEFAULT)
+  })
+
+  it("loses to the value the server seeded", async () => {
+    const stored = withAccent("#112233")
+    const seeded = withAccent("#445566")
+    const store = await loadStore(cookieFor(stored))
+
+    store.seedDemoAppearance(seeded)
+
+    expect(store.getDemoAppearance()).toEqual(seeded)
+  })
+
+  it("keeps the first seed when a later navigation seeds a stale value", async () => {
+    const first = withAccent("#445566")
+    const stale = withAccent("#778899")
+    const store = await loadStore("")
+
+    store.seedDemoAppearance(first)
+    store.seedDemoAppearance(stale)
+
+    expect(store.getDemoAppearance()).toEqual(first)
+  })
+
+  it("is written by the setter with a year's lifetime", async () => {
+    const store = await loadStore("")
+    const next = withAccent("#112233")
+
+    store.setDemoAppearance(next)
+
+    expect(document.cookie).toBe(
+      `${cookieFor(next)}; path=/; max-age=31536000; SameSite=Lax`
+    )
+    expect(store.getDemoAppearance()).toEqual(next)
   })
 })

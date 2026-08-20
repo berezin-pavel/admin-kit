@@ -11,14 +11,19 @@ import {
   type BlockHeading,
 } from "@/registry/admin-appearance/appearance-palette"
 
-const STORAGE_KEY = "admin-kit-demo-appearance"
+import {
+  DEMO_APPEARANCE_COOKIE,
+  isServerRender,
+  readDemoCookie,
+  writeDemoCookie,
+} from "./demo-cookie"
 
 export const DEMO_APPEARANCE_DEFAULT: AdminAppearance = {
-  accent: "#2563eb",
-  sidebar: "#334155",
-  header: "#334155",
-  signIn: "#0f172a",
-  page: "#e2e8f0",
+  accent: "#12876f",
+  sidebar: "#24473d",
+  header: "#24473d",
+  signIn: "#16302a",
+  page: "#e6efeb",
   pages: {},
   blocks: {
     "overview.finance": { heading: "large" },
@@ -112,22 +117,30 @@ export function isAdminAppearance(value: unknown): value is AdminAppearance {
   return true
 }
 
+export function parseDemoAppearance(
+  raw: string | undefined
+): AdminAppearance | undefined {
+  if (!raw) {
+    return undefined
+  }
+  try {
+    const parsed: unknown = JSON.parse(raw)
+    return isAdminAppearance(parsed) ? parsed : undefined
+  } catch {
+    return undefined
+  }
+}
+
 type Listener = () => void
 
 const listeners = new Set<Listener>()
 let cachedAppearance: AdminAppearance | undefined
 
 function readStoredAppearance(): AdminAppearance {
-  try {
-    const stored = window.localStorage.getItem(STORAGE_KEY)
-    if (!stored) {
-      return DEMO_APPEARANCE_DEFAULT
-    }
-    const parsed: unknown = JSON.parse(stored)
-    return isAdminAppearance(parsed) ? parsed : DEMO_APPEARANCE_DEFAULT
-  } catch {
-    return DEMO_APPEARANCE_DEFAULT
-  }
+  return (
+    parseDemoAppearance(readDemoCookie(DEMO_APPEARANCE_COOKIE)) ??
+    DEMO_APPEARANCE_DEFAULT
+  )
 }
 
 function subscribe(listener: Listener) {
@@ -143,12 +156,23 @@ function getSnapshot(): AdminAppearance {
 }
 
 function getServerSnapshot(): AdminAppearance {
-  return DEMO_APPEARANCE_DEFAULT
+  return cachedAppearance ?? DEMO_APPEARANCE_DEFAULT
+}
+
+export function seedDemoAppearance(value: AdminAppearance) {
+  if (!isServerRender() && cachedAppearance !== undefined) {
+    return
+  }
+  cachedAppearance = value
+}
+
+export function getDemoAppearance(): AdminAppearance {
+  return getSnapshot()
 }
 
 export function setDemoAppearance(next: AdminAppearance) {
   cachedAppearance = next
-  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next))
+  writeDemoCookie(DEMO_APPEARANCE_COOKIE, JSON.stringify(next))
   listeners.forEach((listener) => listener())
 }
 

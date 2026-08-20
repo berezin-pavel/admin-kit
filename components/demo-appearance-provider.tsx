@@ -6,10 +6,37 @@ import { AppearanceProvider } from "@/registry/admin-appearance/appearance-provi
 import { AppearanceStyle } from "@/registry/admin-appearance/appearance-style"
 import { localeRu } from "@/registry/locale-ru/locale-ru"
 
-import { setDemoAppearance, useDemoAppearance } from "@/app/demo/appearance-store"
-import { useDemoLocale } from "@/app/demo/locale-store"
+import {
+  parseDemoAppearance,
+  seedDemoAppearance,
+  setDemoAppearance,
+  useDemoAppearance,
+} from "@/app/demo/appearance-store"
+import {
+  parseDemoLocale,
+  seedDemoLocale,
+  useDemoLocale,
+} from "@/app/demo/locale-store"
 
-export function DemoAppearanceProvider({ children }: { children: ReactNode }) {
+export function DemoAppearanceProvider({
+  children,
+  appearanceCookie,
+  localeCookie,
+}: {
+  children: ReactNode
+  appearanceCookie?: string
+  localeCookie?: string
+}) {
+  const initialAppearance = parseDemoAppearance(appearanceCookie)
+  if (initialAppearance) {
+    seedDemoAppearance(initialAppearance)
+  }
+
+  const initialLocale = parseDemoLocale(localeCookie)
+  if (initialLocale) {
+    seedDemoLocale(initialLocale)
+  }
+
   const appearance = useDemoAppearance()
   const locale = useDemoLocale()
 

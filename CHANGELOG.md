@@ -56,6 +56,12 @@ and both pass `finalFocus={false}`, so closing does not leave a focus ring on th
 **Project** — the demo's flush layout offsets its toaster below the header bar
 (`<AdminToaster className="top-[4.5rem]" />`); the card layout keeps the default top edge.
 
+**Project** — the demo keeps the appearance and the language in cookies instead of
+`localStorage`, and both demo layouts read them on the server, so the first paint already carries
+the stored settings: a reload no longer shows the defaults for a frame before hydration swaps the
+colours and flips the texts. The stored value is seeded into the stores from the server render,
+and the client reads the cookie only when nothing was seeded. The demo's default theme is Jade.
+
 ## 0.39.0 — 2026-08-20
 
 **New** — three chrome parts a panel needs on its first day. `global-search` is the ⌘K dialog:

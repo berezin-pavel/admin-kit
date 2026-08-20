@@ -2,6 +2,13 @@
 
 import { useSyncExternalStore } from "react"
 
+import {
+  DEMO_LOCALE_COOKIE,
+  isServerRender,
+  readDemoCookie,
+  writeDemoCookie,
+} from "./demo-cookie"
+
 export type DemoLocale = "en" | "ru"
 
 export const DEMO_LOCALE_OPTIONS: readonly { value: DemoLocale; label: string }[] = [
@@ -9,21 +16,27 @@ export const DEMO_LOCALE_OPTIONS: readonly { value: DemoLocale; label: string }[
   { value: "ru", label: "RU" },
 ]
 
-const STORAGE_KEY = "admin-kit-demo-locale"
-const DEFAULT_LOCALE: DemoLocale = "en"
+export const DEMO_LOCALE_DEFAULT: DemoLocale = "en"
 
 type Listener = () => void
 
 const listeners = new Set<Listener>()
 let cachedLocale: DemoLocale | undefined
 
-export function isDemoLocale(value: string | null): value is DemoLocale {
+export function isDemoLocale(value: unknown): value is DemoLocale {
   return value === "en" || value === "ru"
 }
 
+export function parseDemoLocale(
+  raw: string | undefined
+): DemoLocale | undefined {
+  return isDemoLocale(raw) ? raw : undefined
+}
+
 function readStoredLocale(): DemoLocale {
-  const stored = window.localStorage.getItem(STORAGE_KEY)
-  return isDemoLocale(stored) ? stored : DEFAULT_LOCALE
+  return (
+    parseDemoLocale(readDemoCookie(DEMO_LOCALE_COOKIE)) ?? DEMO_LOCALE_DEFAULT
+  )
 }
 
 function subscribe(listener: Listener) {
@@ -39,12 +52,23 @@ function getSnapshot(): DemoLocale {
 }
 
 function getServerSnapshot(): DemoLocale {
-  return DEFAULT_LOCALE
+  return cachedLocale ?? DEMO_LOCALE_DEFAULT
+}
+
+export function seedDemoLocale(value: DemoLocale) {
+  if (!isServerRender() && cachedLocale !== undefined) {
+    return
+  }
+  cachedLocale = value
+}
+
+export function getDemoLocale(): DemoLocale {
+  return getSnapshot()
 }
 
 export function setDemoLocale(next: DemoLocale) {
   cachedLocale = next
-  window.localStorage.setItem(STORAGE_KEY, next)
+  writeDemoCookie(DEMO_LOCALE_COOKIE, next)
   listeners.forEach((listener) => listener())
 }
 

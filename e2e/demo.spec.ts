@@ -141,7 +141,9 @@ test("the flush demo runs a full-width header with the account menu at its right
 
 test("the header gradient picked in the menu paints the flush demo's bar", async ({ page }) => {
   await page.goto("/demo-flush")
-  await page.evaluate(() => window.localStorage.removeItem("admin-kit-demo-appearance"))
+  await page.evaluate(() => {
+    document.cookie = "admin-kit-demo-appearance=; max-age=0; path=/"
+  })
   await page.reload()
   await page.waitForLoadState("networkidle")
 
