@@ -24,12 +24,7 @@ import {
   PageEntity,
   type PageEntitySection,
 } from "@/registry/page-entity/page-entity"
-import {
-  PageTabs,
-  PageTabsPanels,
-  PageTabsStrip,
-  type PageTabsItem,
-} from "@/registry/page-tabs/page-tabs"
+import { PageTabs, type PageTabsItem } from "@/registry/page-tabs/page-tabs"
 import { StatusBadge } from "@/registry/status-badge/status-badge"
 import { WidgetActivity } from "@/registry/widget-activity/widget-activity"
 import { WidgetList } from "@/registry/widget-list/widget-list"
@@ -41,7 +36,6 @@ import {
   orderStatusLabelByLocale,
   orderStatusTone,
 } from "@/app/demo/data"
-import { useDemoHeaderContent } from "@/app/demo/header-slot"
 import { demoDictionary } from "@/app/demo/locale"
 import { useDemoLocale } from "@/app/demo/locale-store"
 
@@ -49,7 +43,7 @@ const RELOAD_DELAY_MS = 1200
 
 const EDIT_TAB = "edit"
 
-export function DemoOrderEntity({ headerTabs = false }: { headerTabs?: boolean }) {
+export function DemoOrderEntity() {
   const [cancelling, setCancelling] = useState(false)
   const [confirmOpen, setConfirmOpen] = useState(false)
   const [cancelled, setCancelled] = useState(false)
@@ -228,74 +222,49 @@ export function DemoOrderEntity({ headerTabs = false }: { headerTabs?: boolean }
 
   const actionButtons = (
     <>
-      <>
-        <Button
-          variant="outline"
-          onClick={reload}
-          disabled={reloading}
-        >
-          <RotateCw className={cn("size-4", reloading && "animate-spin")} />
-          {strings.reloadButton}
-        </Button>
-        <Button
-          variant="outline"
-          onClick={() => {
-            setDraftTotal(total)
-            setDraftChannel(channel)
-            setEditOpen(true)
-          }}
-        >
-          {strings.editButton}
-        </Button>
-        <Button
-          variant="outline"
-          onClick={() =>
-            notify.success(strings.sendReceiptToastTitle, {
-              description: strings.sendReceiptToastDescription,
-            })
-          }
-        >
-          {strings.sendReceiptButton}
-        </Button>
-        <Button
-          variant="destructive"
-          disabled={cancelled}
-          onClick={() => setConfirmOpen(true)}
-        >
-          {strings.cancelOrderButton}
-        </Button>
-      </>
-    </>
-  )
-
-  useDemoHeaderContent(
-    headerTabs
-      ? {
-          tabs: (
-            <PageTabsStrip
-              items={tabItems}
-              value={tab}
-              onValueChange={setTab}
-              actions={actionButtons}
-            />
-          ),
+      <Button variant="outline" onClick={reload} disabled={reloading}>
+        <RotateCw className={cn("size-4", reloading && "animate-spin")} />
+        {strings.reloadButton}
+      </Button>
+      <Button
+        variant="outline"
+        onClick={() => {
+          setDraftTotal(total)
+          setDraftChannel(channel)
+          setEditOpen(true)
+        }}
+      >
+        {strings.editButton}
+      </Button>
+      <Button
+        variant="outline"
+        onClick={() =>
+          notify.success(strings.sendReceiptToastTitle, {
+            description: strings.sendReceiptToastDescription,
+          })
         }
-      : null
+      >
+        {strings.sendReceiptButton}
+      </Button>
+      <Button
+        variant="destructive"
+        disabled={cancelled}
+        onClick={() => setConfirmOpen(true)}
+      >
+        {strings.cancelOrderButton}
+      </Button>
+    </>
   )
 
   return (
     <div className="flex flex-col gap-4">
-      {headerTabs ? (
-        <PageTabsPanels items={tabItems} value={tab} />
-      ) : (
-        <PageTabs
-          blockId="order"
-          items={tabItems}
-          value={tab}
-          onValueChange={setTab}
-          actions={actionButtons}
-        />
-      )}
+      <PageTabs
+        blockId="order"
+        items={tabItems}
+        value={tab}
+        onValueChange={setTab}
+        actions={actionButtons}
+      />
       <FormDialog
         open={editOpen}
         onOpenChange={setEditOpen}

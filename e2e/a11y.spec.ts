@@ -45,7 +45,6 @@ const additionalRoutes = [
   "/demo-flush",
   "/demo-flush/orders",
   "/demo-flush/order",
-  "/demo-flush/order-header",
 ]
 
 test("no showcase preview or demo route has a WCAG A or AA violation", async ({

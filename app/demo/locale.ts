@@ -7,6 +7,20 @@ export interface DemoDictionary {
     orders: string
     order: string
   }
+  search: {
+    button: string
+    shortcut: string
+    placeholder: string
+    empty: string
+    title: string
+  }
+  notifications: {
+    button: string
+    title: string
+    empty: string
+    markAllRead: string
+    unreadLabel: (count: number) => string
+  }
   overview: {
     title: string
     metricOrdersTitle: string
@@ -230,6 +244,20 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       overview: "Overview",
       orders: "Orders",
       order: "Order #4187",
+    },
+    search: {
+      button: "Search",
+      shortcut: "⌘K",
+      placeholder: "Search pages and orders",
+      empty: "Nothing found",
+      title: "Search",
+    },
+    notifications: {
+      button: "Notifications",
+      title: "Notifications",
+      empty: "No notifications yet",
+      markAllRead: "Mark all as read",
+      unreadLabel: (count) => `${count} unread`,
     },
     overview: {
       title: "Overview",
@@ -478,6 +506,20 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       overview: "Обзор",
       orders: "Заказы",
       order: "Заказ №4187",
+    },
+    search: {
+      button: "Поиск",
+      shortcut: "⌘K",
+      placeholder: "Поиск по страницам и заказам",
+      empty: "Ничего не найдено",
+      title: "Поиск",
+    },
+    notifications: {
+      button: "Уведомления",
+      title: "Уведомления",
+      empty: "Уведомлений пока нет",
+      markAllRead: "Отметить все прочитанными",
+      unreadLabel: (count) => `${count} непрочитанных`,
     },
     overview: {
       title: "Обзор",

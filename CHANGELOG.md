@@ -40,6 +40,16 @@ nothing at all: it draws a rounded accent square with your lucide icon, or the f
 the app name until you have one. `locale-ru` gained the `globalSearch` and `notificationsMenu`
 slices; `app-logo` has no strings of its own.
 
+**Changed** — toasts stack at the top right instead of the bottom right: the viewport is pinned
+to the top edge, the stack peeks downwards, toasts enter and leave through the top edge, and the
+swipe-to-dismiss directions are up and right.
+
+**Project** — the demo wires a global search and a notifications bell into the chrome: the flush
+layout puts them in the header bar left of the account menu, the card layout puts them in the
+sidebar's brand row; the brand mark is the installable `app-logo` instead of the demo's own span;
+the "Order · header tabs" page is gone along with the demo's header-slot plumbing (the kit's
+`section`/`headerTabs` slots and `PageTabsStrip`/`PageTabsPanels` stay).
+
 ## 0.38.0 — 2026-08-20
 
 **Changed** — `admin-header`'s `tabs` slot renders in the header row itself, in place of the

@@ -7,15 +7,13 @@ import { usePathname } from "next/navigation"
 
 import { Store } from "lucide-react"
 
+import { DemoHeaderControls } from "@/components/demo-header-controls"
 import { DemoLanguageToggle } from "@/components/demo-language-toggle"
 import { DemoThemeToggle } from "@/components/demo-theme-toggle"
 import { DemoUserMenu } from "@/components/demo-user-menu"
 import { AppearanceCanvas } from "@/registry/admin-appearance/appearance-style"
 import { AdminShell } from "@/registry/admin-shell/admin-shell"
-import {
-  DemoHeaderSlotProvider,
-  useDemoHeaderState,
-} from "@/app/demo/header-slot"
+import { AppLogo } from "@/registry/app-logo/app-logo"
 import type { AdminNavLinkRenderer } from "@/registry/admin-shell/admin-shell"
 import { AdminToaster } from "@/registry/admin-toaster/admin-toaster"
 import { AppearanceMenu } from "@/registry/appearance-menu/appearance-menu"
@@ -59,7 +57,6 @@ export function DemoShell({
   const appearance = useDemoAppearance()
   const nav = demoDictionary[locale].nav
   const flush = layout === "flush-header"
-  const [headerContent, setHeaderContent] = useDemoHeaderState()
   const pageLabelById: Record<string, string> = {
     overview: nav.overview,
     orders: nav.orders,
@@ -77,11 +74,7 @@ export function DemoShell({
     nav: flush ? getDemoFlushNav(locale) : getDemoNav(locale),
     activeHref: pathname,
     renderLink: renderDemoLink,
-    logo: (
-      <span className="flex size-5 items-center justify-center rounded-md bg-primary text-primary-foreground">
-        <Store className="size-3" />
-      </span>
-    ),
+    logo: <AppLogo name={demoDictionary[locale].appName} icon={Store} />,
     collapsed,
     sidebarGradient: appearance.sidebar ?? undefined,
     headerGradient: appearance.header ?? undefined,
@@ -107,15 +100,18 @@ export function DemoShell({
   }
 
   return (
-    <DemoHeaderSlotProvider onContent={setHeaderContent}>
+    <>
       <AppearanceCanvas backdrop={backdrop} />
       {flush ? (
         <AdminShell
           {...sharedProps}
           variant="flush"
-          section={headerContent?.title}
-          headerTabs={headerContent?.tabs}
-          actions={<DemoUserMenu variant="icon" />}
+          actions={
+            <>
+              <DemoHeaderControls variant="header" />
+              <DemoUserMenu variant="icon" />
+            </>
+          }
         >
           {children}
           <AdminToaster />
@@ -125,12 +121,13 @@ export function DemoShell({
           {...sharedProps}
           variant="card"
           header={false}
+          sidebarActions={<DemoHeaderControls variant="sidebar" />}
           sidebarProfile={<DemoUserMenu variant="row" />}
         >
           {children}
           <AdminToaster />
         </AdminShell>
       )}
-    </DemoHeaderSlotProvider>
+    </>
   )
 }

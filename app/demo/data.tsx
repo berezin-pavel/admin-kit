@@ -1,6 +1,7 @@
 import type { ComponentType } from "react"
 import {
   Backpack,
+  ChartColumn,
   Coffee,
   CreditCard,
   Crown,
@@ -11,7 +12,9 @@ import {
   LayoutDashboard,
   Package,
   PackageCheck,
+  RotateCcw,
   Shirt,
+  TriangleAlert,
   UserRound,
   ShoppingCart,
   SportShoe,
@@ -24,6 +27,8 @@ import { enUS, ru } from "date-fns/locale"
 
 import type { AdminNavItem } from "@/registry/admin-shell/admin-shell"
 import type { ComboboxFieldOption } from "@/registry/combobox-field/combobox-field"
+import type { GlobalSearchItem } from "@/registry/global-search/global-search"
+import type { NotificationItem } from "@/registry/notifications-menu/notifications-menu"
 import type { DateRange } from "@/registry/date-range-field/date-range-field"
 import type { SelectFieldOption } from "@/registry/select-field/select-field"
 import {
@@ -76,19 +81,17 @@ export const orderStatusLabelByLocale: Record<
 
 const NAV_TITLES: Record<
   DemoLocale,
-  { overview: string; orders: string; order: string; orderHeader: string }
+  { overview: string; orders: string; order: string }
 > = {
   en: {
     overview: "Overview",
     orders: "Orders",
     order: "Order #4187",
-    orderHeader: "Order · header tabs",
   },
   ru: {
     overview: "Обзор",
     orders: "Заказы",
     order: "Заказ №4187",
-    orderHeader: "Заказ · табы в шапке",
   },
 }
 
@@ -109,8 +112,157 @@ export function getDemoFlushNav(locale: DemoLocale): readonly AdminNavItem[] {
     { href: "/demo-flush", title: titles.overview, icon: LayoutDashboard },
     { href: "/demo-flush/orders", title: titles.orders, icon: ShoppingCart },
     { href: "/demo-flush/order", title: titles.order, icon: Package },
-    { href: "/demo-flush/order-header", title: titles.orderHeader, icon: Package },
   ]
+}
+
+const SEARCH_LABELS: Record<
+  DemoLocale,
+  { pagesGroup: string; pagesHint: string; ordersGroup: string; ordersHint: string }
+> = {
+  en: {
+    pagesGroup: "Pages",
+    pagesHint: "Navigation",
+    ordersGroup: "Orders",
+    ordersHint: "Order card",
+  },
+  ru: {
+    pagesGroup: "Страницы",
+    pagesHint: "Навигация",
+    ordersGroup: "Заказы",
+    ordersHint: "Карточка заказа",
+  },
+}
+
+const SEARCH_ORDER_COUNT = 6
+
+export function getDemoSearchItems(
+  locale: DemoLocale
+): readonly GlobalSearchItem[] {
+  const titles = NAV_TITLES[locale]
+  const labels = SEARCH_LABELS[locale]
+
+  const pages: readonly GlobalSearchItem[] = [
+    {
+      id: "page:/demo",
+      label: titles.overview,
+      group: labels.pagesGroup,
+      icon: LayoutDashboard,
+      hint: labels.pagesHint,
+    },
+    {
+      id: "page:/demo/orders",
+      label: titles.orders,
+      group: labels.pagesGroup,
+      icon: ShoppingCart,
+      hint: labels.pagesHint,
+    },
+    {
+      id: "page:/demo/order",
+      label: titles.order,
+      group: labels.pagesGroup,
+      icon: Package,
+      hint: labels.pagesHint,
+    },
+  ]
+
+  const orders: readonly GlobalSearchItem[] = getDemoOrderRows(locale)
+    .slice(0, SEARCH_ORDER_COUNT)
+    .map((row) => ({
+      id: `order:${row.number}`,
+      label: `#${row.number} — ${row.customer}`,
+      group: labels.ordersGroup,
+      icon: PackageCheck,
+      hint: labels.ordersHint,
+    }))
+
+  return [...pages, ...orders]
+}
+
+const NOTIFICATION_META: readonly {
+  id: string
+  read: boolean
+  icon: ComponentType<{ className?: string }>
+}[] = [
+  { id: "order-placed", read: false, icon: Package },
+  { id: "payment-received", read: false, icon: CreditCard },
+  { id: "refund-requested", read: false, icon: RotateCcw },
+  { id: "stock-low", read: true, icon: TriangleAlert },
+  { id: "weekly-digest", read: true, icon: ChartColumn },
+]
+
+const NOTIFICATION_COPY: Record<
+  DemoLocale,
+  readonly { title: string; description: string; timestamp: string }[]
+> = {
+  en: [
+    {
+      title: "New order #4187",
+      description: "Smith E. paid for four items",
+      timestamp: "14:12",
+    },
+    {
+      title: "Payment received",
+      description: "$1,240 credited for order #4186",
+      timestamp: "13:40",
+    },
+    {
+      title: "Refund requested",
+      description: "Cooper D. asks to return the headphones",
+      timestamp: "11:05",
+    },
+    {
+      title: "Low stock",
+      description: "Six running shoes left in the warehouse",
+      timestamp: "Yesterday",
+    },
+    {
+      title: "Weekly digest",
+      description: "Revenue is 12% above the previous week",
+      timestamp: "Monday",
+    },
+  ],
+  ru: [
+    {
+      title: "Новый заказ №4187",
+      description: "Смирнова Е. оплатила четыре товара",
+      timestamp: "14:12",
+    },
+    {
+      title: "Платёж получен",
+      description: "112 400 ₽ зачислены по заказу №4186",
+      timestamp: "13:40",
+    },
+    {
+      title: "Запрошен возврат",
+      description: "Кузнецов Д. просит вернуть наушники",
+      timestamp: "11:05",
+    },
+    {
+      title: "Мало товара",
+      description: "На складе осталось шесть пар кроссовок",
+      timestamp: "Вчера",
+    },
+    {
+      title: "Итоги недели",
+      description: "Выручка на 12% выше прошлой недели",
+      timestamp: "Понедельник",
+    },
+  ],
+}
+
+export function getDemoNotifications(
+  locale: DemoLocale
+): readonly NotificationItem[] {
+  const copy = NOTIFICATION_COPY[locale]
+
+  return NOTIFICATION_META.map((meta, index) => ({
+    id: meta.id,
+    read: meta.read,
+    icon: meta.icon,
+    title: copy[index].title,
+    description: copy[index].description,
+    timestamp: copy[index].timestamp,
+  }))
 }
 
 const MONTHS: Record<DemoLocale, readonly string[]> = {
