@@ -1,9 +1,9 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import type { ReactNode } from "react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 
 import { Store } from "lucide-react"
 
@@ -56,7 +56,25 @@ export function DemoShell({
   const locale = useDemoLocale()
   const appearance = useDemoAppearance()
   const nav = demoDictionary[locale].nav
+  const router = useRouter()
   const flush = layout === "flush-header"
+
+  useEffect(() => {
+    const items = flush ? getDemoFlushNav(locale) : getDemoNav(locale)
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (!event.ctrlKey || event.metaKey || event.altKey || event.shiftKey) {
+        return
+      }
+      const index = Number.parseInt(event.key, 10)
+      if (Number.isNaN(index) || index < 1 || index > items.length) {
+        return
+      }
+      event.preventDefault()
+      router.push(items[index - 1].href)
+    }
+    document.addEventListener("keydown", onKeyDown)
+    return () => document.removeEventListener("keydown", onKeyDown)
+  }, [flush, locale, router])
   const pageLabelById: Record<string, string> = {
     overview: nav.overview,
     orders: nav.orders,
@@ -82,11 +100,6 @@ export function DemoShell({
     labels: locale === "ru" ? localeRu.adminShell : undefined,
     sidebarFooter: (
       <>
-        <SidebarToggle
-          collapsed={collapsed}
-          onToggle={() => setCollapsed((prev) => !prev)}
-          labels={locale === "ru" ? localeRu.sidebarToggle : undefined}
-        />
         <DemoThemeToggle />
         <DemoLanguageToggle />
         <AppearanceMenu
@@ -94,6 +107,11 @@ export function DemoShell({
           onChange={setDemoAppearance}
           pages={appearanceMenuPages}
           labels={locale === "ru" ? localeRu.appearanceMenu : undefined}
+        />
+        <SidebarToggle
+          collapsed={collapsed}
+          onToggle={() => setCollapsed((prev) => !prev)}
+          labels={locale === "ru" ? localeRu.sidebarToggle : undefined}
         />
       </>
     ),

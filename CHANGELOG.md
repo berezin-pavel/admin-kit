@@ -8,7 +8,7 @@ items changed, and what breaks if you pull them.
 **Install an item, pinned to a release:**
 
 ```bash
-pnpm dlx shadcn@latest add berezin-pavel/admin-kit/widget-table#v0.40.0
+pnpm dlx shadcn@latest add berezin-pavel/admin-kit/widget-table#v0.41.0
 ```
 
 **See what an update would change before taking it:**
@@ -25,10 +25,20 @@ Sections used below: **New** (items you can now install), **Changed** (installed
 re-pulling), **Breaking** (props or files that changed shape — read before overwriting), and
 **Project** (showcase, CI, docs — nothing that reaches your project).
 
-## Unreleased
+## 0.41.0 — 2026-08-20
+
+**Changed** — unread notifications actually look unread: a semibold title with an accent dot,
+an accent-tinted icon and a faint accent wash on the row; read ones stay quiet. The search
+dialog's result list is a `max-h` again, so a short result set shrinks the box (the box still
+never moves — it grew downward from a pinned top since 0.40.0). Closing a dragged appearance
+popup no longer flies back to its anchor: a dragged popup fades out in place instantly.
 
 **Changed** — `user-menu`'s icon trigger shows a bare account icon while there is no
 `avatarUrl`, matching the bell exactly; the avatar circle appears only when a picture arrives.
+
+**Project** — the demo's theme toggle renders scheme-picked placeholders before hydration, so
+the button no longer blinks on reload; the sidebar footer ends on the collapse button; Ctrl+digit
+jumps between the demo's nav sections (Ctrl deliberately, not Cmd).
 
 ## 0.40.0 — 2026-08-20
 

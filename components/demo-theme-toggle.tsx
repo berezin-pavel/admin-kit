@@ -22,15 +22,26 @@ export function DemoThemeToggle() {
   const mounted = useMounted()
   const locale = useDemoLocale()
 
+  const labels = locale === "ru" ? localeRu.themeToggle : undefined
+
   if (!mounted) {
-    return null
+    return (
+      <>
+        <span className="contents dark:hidden">
+          <ThemeToggle isDark={false} onToggle={() => {}} labels={labels} />
+        </span>
+        <span className="hidden dark:contents">
+          <ThemeToggle isDark onToggle={() => {}} labels={labels} />
+        </span>
+      </>
+    )
   }
 
   return (
     <ThemeToggle
       isDark={resolvedTheme === "dark"}
       onToggle={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
-      labels={locale === "ru" ? localeRu.themeToggle : undefined}
+      labels={labels}
     />
   )
 }
