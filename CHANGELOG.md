@@ -8,7 +8,7 @@ items changed, and what breaks if you pull them.
 **Install an item, pinned to a release:**
 
 ```bash
-pnpm dlx shadcn@latest add berezin-pavel/admin-kit/widget-table#v0.34.0
+pnpm dlx shadcn@latest add berezin-pavel/admin-kit/widget-table#v0.35.0
 ```
 
 **See what an update would change before taking it:**
@@ -25,7 +25,13 @@ Sections used below: **New** (items you can now install), **Changed** (installed
 re-pulling), **Breaking** (props or files that changed shape — read before overwriting), and
 **Project** (showcase, CI, docs — nothing that reaches your project).
 
-## Unreleased
+## 0.35.0 — 2026-08-20
+
+**Changed** — a metric's positive trend paints with the `success` token instead of the accent:
+the accent is not contrast-guaranteed as text on a card (the demo's amber sat at 3.9:1 on white),
+while `success` is measured for it. The dark scheme's `success` pair flipped like `destructive`
+did earlier — a lighter fill with dark text — so the trend and the success badge stay legible on
+dark cards.
 
 **Breaking** — `PageBackdrop` is gone. `AdminAppearance.page` and every entry of
 `AdminAppearance.pages` is now `SurfaceChoice | null`, `resolvePageBackdrop` returns that, and

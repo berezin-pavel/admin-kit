@@ -49,7 +49,8 @@ test("a block's corner button changes that block's gradient and heading", async 
   page,
 }) => {
   const block = page.locator('[data-block-id="overview.average"]')
-  await expect(block).toHaveAttribute("data-gradient", "lagoon")
+  await expect(block).toBeVisible()
+  await expect(block).not.toHaveAttribute("data-gradient", /./)
 
   await block.hover()
   await block.getByRole("button", { name: "Block appearance" }).click()
@@ -88,23 +89,6 @@ test("a per-page backdrop chosen in the menu paints only that page", async ({
   })
 })
 
-test("unchecking soften paints the vivid backdrop", async ({ page }) => {
-  const menu = await openMenu(page)
-  await menu.getByRole("checkbox", { name: "Soften the colour" }).first().click()
-  await page.keyboard.press("Escape")
-
-  const root = page.locator("[data-backdrop]").first()
-  await expect(root).toHaveAttribute("data-backdrop", "sand")
-  await expect(root).toHaveAttribute("data-backdrop-vivid", "")
-
-  await page.reload()
-  await expect(page.locator("[data-backdrop]").first()).toHaveAttribute(
-    "data-backdrop-vivid",
-    "",
-    { timeout: HYDRATION_POLL_TIMEOUT }
-  )
-})
-
 test("the sidebar gradient and its burger panel follow the menu", async ({ page }) => {
   await expect(page.locator("aside")).toHaveAttribute("data-gradient", "jade")
 
@@ -127,7 +111,8 @@ test("a theme preset restyles the whole panel and a custom colour paints the sid
   page,
 }) => {
   const menu = await openMenu(page)
-  await menu.getByRole("button", { name: "Mist" }).click()
+  await menu.getByRole("combobox", { name: "Theme" }).click()
+  await page.getByRole("option", { name: "Mist" }).click()
 
   await expect(page.locator("aside")).toHaveAttribute("data-gradient", "#eceff3")
 
