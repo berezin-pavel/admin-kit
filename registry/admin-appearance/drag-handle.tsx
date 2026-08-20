@@ -62,10 +62,12 @@ export function useDragOffset<Element extends HTMLElement = HTMLDivElement>() {
     window.addEventListener("pointermove", move)
     window.addEventListener("pointerup", stop)
     window.addEventListener("pointercancel", stop)
+    window.addEventListener("lostpointercapture", stop)
     return () => {
       window.removeEventListener("pointermove", move)
       window.removeEventListener("pointerup", stop)
       window.removeEventListener("pointercancel", stop)
+      window.removeEventListener("lostpointercapture", stop)
       if (scheduled.current) {
         window.cancelAnimationFrame(frame.current)
         scheduled.current = false
@@ -86,6 +88,10 @@ export function useDragOffset<Element extends HTMLElement = HTMLDivElement>() {
     origin.current = {
       x: event.clientX - offset.current.x,
       y: event.clientY - offset.current.y,
+    }
+    const handle = event.currentTarget
+    if (typeof handle.setPointerCapture === "function") {
+      handle.setPointerCapture(event.pointerId)
     }
   }
 

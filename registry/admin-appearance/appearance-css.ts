@@ -20,6 +20,7 @@ import {
   customColorVariable,
   gradientIds,
   gradientPalette,
+  hoverOverlayAlphas,
   isAccentId,
   isCustomColor,
   isGradientId,
@@ -32,6 +33,16 @@ import {
 
 const BLOCK_HEADINGS: readonly BlockHeading[] = ["regular", "large", "none"]
 
+const PURE_WHITE = "oklch(1 0 0)"
+const PURE_BLACK = "oklch(0 0 0)"
+const PURE_WHITE_HEX = "#ffffff"
+const PURE_BLACK_HEX = "#000000"
+const SOLID_CONTRAST_MIN = 4.5
+
+function distinctSamples(stops: readonly string[], count: number): string[] {
+  return [...new Set(sampleGradient(stops, count))]
+}
+
 export function gradientCss(stops: GradientStops): string {
   const count = stops.stops.length
   const parts = stops.stops.map((hex, index) => {
@@ -42,7 +53,7 @@ export function gradientCss(stops: GradientStops): string {
 }
 
 export function gradientForeground(stops: GradientStops): string {
-  const samples = sampleGradient(stops.stops, 33)
+  const samples = distinctSamples(stops.stops, 33)
 
   const worstAgainst = (candidateHex: string) =>
     Math.min(...samples.map((sample) => contrastRatio(sample, candidateHex)))
@@ -57,7 +68,7 @@ const DESTRUCTIVE_HOVER_CONTRAST_MIN = 3.05
 const DESTRUCTIVE_SAMPLE_COUNT = 33
 const DESTRUCTIVE_LIGHTNESS_STEP = 0.01
 const DESTRUCTIVE_CHROMA_STEP = 0.004
-const DESTRUCTIVE_MAX_ITERATIONS = 80
+const DESTRUCTIVE_MAX_ITERATIONS = 260
 const DESTRUCTIVE_ON_DARK: Oklch = { l: 0.78, c: 0.13, h: 22 }
 const DESTRUCTIVE_ON_LIGHT: Oklch = { l: 0.5, c: 0.2, h: 27 }
 const DESTRUCTIVE_FILL_ALPHAS: readonly number[] = [0.1, 0.2]
@@ -70,7 +81,7 @@ export function destructiveInkLegible(
   minimum = DESTRUCTIVE_CONTRAST_MIN,
   hoverMinimum = DESTRUCTIVE_HOVER_CONTRAST_MIN
 ): boolean {
-  return sampleGradient(stops.stops, DESTRUCTIVE_SAMPLE_COUNT).every(
+  return distinctSamples(stops.stops, DESTRUCTIVE_SAMPLE_COUNT).every(
     (sample) =>
       contrastRatio(inkHex, sample) >= minimum &&
       DESTRUCTIVE_FILL_ALPHAS.every(
@@ -86,34 +97,73 @@ export function destructiveInkLegible(
   )
 }
 
+function towardsAchromatic(ink: Oklch, lightText: boolean): Oklch {
+  return lightText
+    ? {
+        l: Math.min(ink.l + DESTRUCTIVE_LIGHTNESS_STEP, 1),
+        c: Math.max(ink.c - DESTRUCTIVE_CHROMA_STEP, 0),
+        h: ink.h,
+      }
+    : {
+        l: Math.max(ink.l - DESTRUCTIVE_LIGHTNESS_STEP, 0),
+        c: ink.c,
+        h: ink.h,
+      }
+}
+
+function destructivePair(inkHex: string, destructive: string) {
+  return {
+    destructive,
+    destructiveForeground:
+      contrastRatio(inkHex, NEAR_WHITE_HEX) >= contrastRatio(inkHex, NEAR_BLACK_HEX)
+        ? NEAR_WHITE
+        : NEAR_BLACK,
+  }
+}
+
 export function gradientDestructive(stops: GradientStops): {
   destructive: string
   destructiveForeground: string
 } {
   const lightText = gradientForeground(stops) === NEAR_WHITE
   const foregroundHex = lightText ? NEAR_WHITE_HEX : NEAR_BLACK_HEX
+  const samples = distinctSamples(stops.stops, DESTRUCTIVE_SAMPLE_COUNT)
+  const baseContrast = (candidateHex: string) =>
+    Math.min(...samples.map((sample) => contrastRatio(candidateHex, sample)))
+
   let ink: Oklch = lightText ? DESTRUCTIVE_ON_DARK : DESTRUCTIVE_ON_LIGHT
+  let best = { hex: oklchToHex(ink), value: formatOklch(ink) }
+  let bestContrast = -Infinity
 
   for (let iteration = 0; iteration < DESTRUCTIVE_MAX_ITERATIONS; iteration++) {
-    if (destructiveInkLegible(oklchToHex(ink), stops, foregroundHex)) {
+    const inkHex = oklchToHex(ink)
+    const contrast = baseContrast(inkHex)
+    if (contrast > bestContrast) {
+      bestContrast = contrast
+      best = { hex: inkHex, value: formatOklch(ink) }
+    }
+    if (destructiveInkLegible(inkHex, stops, foregroundHex)) {
+      return destructivePair(inkHex, formatOklch(ink))
+    }
+    const next = towardsAchromatic(ink, lightText)
+    if (next.l === ink.l && next.c === ink.c) {
       break
     }
-    ink = lightText
-      ? {
-          l: Math.min(ink.l + DESTRUCTIVE_LIGHTNESS_STEP, 0.97),
-          c: Math.max(ink.c - DESTRUCTIVE_CHROMA_STEP, 0.04),
-          h: ink.h,
-        }
-      : { l: Math.max(ink.l - DESTRUCTIVE_LIGHTNESS_STEP, 0.15), c: ink.c, h: ink.h }
+    ink = next
   }
 
-  const inkHex = oklchToHex(ink)
-  const destructiveForeground =
-    contrastRatio(inkHex, NEAR_WHITE_HEX) >= contrastRatio(inkHex, NEAR_BLACK_HEX)
-      ? NEAR_WHITE
-      : NEAR_BLACK
+  for (const pure of [
+    { hex: PURE_WHITE_HEX, value: PURE_WHITE },
+    { hex: PURE_BLACK_HEX, value: PURE_BLACK },
+  ]) {
+    const contrast = baseContrast(pure.hex)
+    if (contrast > bestContrast) {
+      bestContrast = contrast
+      best = pure
+    }
+  }
 
-  return { destructive: formatOklch(ink), destructiveForeground }
+  return destructivePair(best.hex, best.value)
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -182,26 +232,52 @@ function accentHexOf(accent: AdminAppearance["accent"]): string {
   return entry.hex
 }
 
-const PURE_WHITE = "oklch(1 0 0)"
-const PURE_BLACK = "oklch(0 0 0)"
-const PURE_WHITE_HEX = "#ffffff"
-const PURE_BLACK_HEX = "#000000"
-const SOLID_CONTRAST_MIN = 4.5
-
 function solidStops(hex: string): GradientStops {
   return { angle: CUSTOM_COLOR_ANGLE, stops: [hex, hex, hex] }
 }
 
-export function solidForeground(color: string): string {
+const FOREGROUND_VALUES: Record<string, string> = {
+  [NEAR_WHITE_HEX]: NEAR_WHITE,
+  [NEAR_BLACK_HEX]: NEAR_BLACK,
+  [PURE_WHITE_HEX]: PURE_WHITE,
+  [PURE_BLACK_HEX]: PURE_BLACK,
+}
+
+export function solidForegroundHex(color: string): string {
   const hex = color.toLowerCase()
-  const near = gradientForeground(solidStops(hex))
-  const nearHex = near === NEAR_WHITE ? NEAR_WHITE_HEX : NEAR_BLACK_HEX
+  const nearHex =
+    gradientForeground(solidStops(hex)) === NEAR_WHITE
+      ? NEAR_WHITE_HEX
+      : NEAR_BLACK_HEX
   if (contrastRatio(hex, nearHex) >= SOLID_CONTRAST_MIN) {
-    return near
+    return nearHex
   }
   return contrastRatio(hex, PURE_WHITE_HEX) >= contrastRatio(hex, PURE_BLACK_HEX)
-    ? PURE_WHITE
-    : PURE_BLACK
+    ? PURE_WHITE_HEX
+    : PURE_BLACK_HEX
+}
+
+export function solidForeground(color: string): string {
+  return FOREGROUND_VALUES[solidForegroundHex(color)]
+}
+
+export function solidInkHex(color: string): string {
+  const hex = color.toLowerCase()
+  const foregroundHex = solidForegroundHex(hex)
+  const foregroundHolds = hoverOverlayAlphas.every(
+    (alpha) =>
+      contrastRatio(
+        foregroundHex,
+        composite(foregroundHex, alpha, hex, "srgb")
+      ) >= SOLID_CONTRAST_MIN
+  )
+  if (foregroundHolds) {
+    return foregroundHex
+  }
+  return contrastRatio(foregroundHex, PURE_BLACK_HEX) >=
+    contrastRatio(foregroundHex, PURE_WHITE_HEX)
+    ? PURE_BLACK_HEX
+    : PURE_WHITE_HEX
 }
 
 const CUSTOM_DARK_BASE = 0.18
@@ -255,9 +331,15 @@ function customColorLines(
       const stops = solidStops(hex)
       const variable = customColorVariable(color)
       const { destructive, destructiveForeground } = gradientDestructive(stops)
+      const inkHex = solidInkHex(hex)
+      const ink =
+        inkHex === solidForegroundHex(hex)
+          ? `var(${variable}-foreground)`
+          : inkHex
       return [
         `  ${variable}: ${gradientCss({ angle: stops.angle, stops: [hex, hex] })};`,
         `  ${variable}-foreground: ${solidForeground(hex)};`,
+        `  ${variable}-ink: ${ink};`,
         `  ${variable}-destructive: ${destructive};`,
         `  ${variable}-destructive-foreground: ${destructiveForeground};`,
       ]
@@ -270,6 +352,7 @@ export function customColorSurface(color: CustomColor): string {
   return [
     `  --surface-gradient: var(${variable});`,
     `  --surface-foreground: var(${variable}-foreground);`,
+    `  --surface-ink: var(${variable}-ink);`,
     `  --surface-destructive: var(${variable}-destructive);`,
     `  --surface-destructive-foreground: var(${variable}-destructive-foreground);`,
   ].join("\n")
@@ -311,14 +394,15 @@ const SURFACE_DECLARATIONS = `
   background-image: var(--surface-gradient);
   color: var(--surface-foreground);
   --foreground: var(--surface-foreground);
-  --card: color-mix(in oklch, var(--surface-foreground) 20%, transparent);
+  --surface-ink: var(--surface-foreground);
+  --card: color-mix(in oklch, var(--surface-ink) 20%, transparent);
   --card-foreground: var(--surface-foreground);
   --muted-foreground: var(--surface-foreground);
-  --background: color-mix(in oklch, var(--surface-foreground) 8%, transparent);
-  --muted: color-mix(in oklch, var(--surface-foreground) 16%, transparent);
-  --accent: color-mix(in oklch, var(--surface-foreground) 16%, transparent);
+  --background: color-mix(in oklch, var(--surface-ink) 8%, transparent);
+  --muted: color-mix(in oklch, var(--surface-ink) 16%, transparent);
+  --accent: color-mix(in oklch, var(--surface-ink) 16%, transparent);
   --accent-foreground: var(--surface-foreground);
-  --secondary: color-mix(in oklch, var(--surface-foreground) 16%, transparent);
+  --secondary: color-mix(in oklch, var(--surface-ink) 16%, transparent);
   --secondary-foreground: var(--surface-foreground);
   --border: color-mix(in oklch, var(--surface-foreground) 30%, transparent);
   --input: var(--border);
@@ -326,7 +410,7 @@ const SURFACE_DECLARATIONS = `
   --sidebar-foreground: var(--surface-foreground);
   --sidebar-border: var(--border);
   --sidebar-accent: var(--muted);
-  --sidebar-active: color-mix(in oklch, var(--surface-foreground) 14%, transparent);
+  --sidebar-active: color-mix(in oklch, var(--surface-ink) 14%, transparent);
   --sidebar-active-foreground: var(--surface-foreground);
   --destructive: var(--surface-destructive);
   --destructive-foreground: var(--surface-destructive-foreground);`

@@ -231,12 +231,22 @@ describe("appearanceCss", () => {
 
   it("makes nested card surfaces transparent on a gradient", () => {
     const css = appearanceCss(defaultAdminAppearance)
-    expect(css).toMatch(/\[data-gradient\] \{[^}]*--card: color-mix\(in oklch, var\(--surface-foreground\) 20%, transparent\);/)
+    expect(css).toMatch(/\[data-gradient\] \{[^}]*--card: color-mix\(in oklch, var\(--surface-ink\) 20%, transparent\);/)
   })
 
   it("gives --secondary the same tint strength as --muted", () => {
     expect(css).toContain(
-      "--secondary: color-mix(in oklch, var(--surface-foreground) 16%, transparent);"
+      "--secondary: color-mix(in oklch, var(--surface-ink) 16%, transparent);"
+    )
+  })
+
+  it("tints backgrounds from the ink pole and defaults that pole to the text colour", () => {
+    expect(css).toContain("--surface-ink: var(--surface-foreground);")
+    for (const token of ["--background", "--muted", "--accent", "--sidebar-active"]) {
+      expect(css, token).toContain(`${token}: color-mix(in oklch, var(--surface-ink)`)
+    }
+    expect(css).toContain(
+      "--border: color-mix(in oklch, var(--surface-foreground) 30%, transparent);"
     )
   })
 

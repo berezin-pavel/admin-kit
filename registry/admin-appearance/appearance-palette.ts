@@ -576,7 +576,7 @@ export function isAccentId(value: unknown): value is AccentId {
 
 export type CustomColor = `#${string}`
 
-const CUSTOM_COLOR_PATTERN = /^#[0-9a-f]{6}$/i
+const CUSTOM_COLOR_PATTERN = /^#[0-9a-f]{6}$/
 
 export function isCustomColor(value: unknown): value is CustomColor {
   return typeof value === "string" && CUSTOM_COLOR_PATTERN.test(value)

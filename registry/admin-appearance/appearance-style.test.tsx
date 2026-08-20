@@ -10,6 +10,7 @@ import { customDarkColor } from "./appearance-css"
 import {
   defaultAdminAppearance,
   gradientPalette,
+  type SurfaceChoice,
 } from "./appearance-palette"
 
 describe("AppearanceStyle", () => {
@@ -73,7 +74,7 @@ describe("AppearanceCanvas", () => {
   it("paints a custom backdrop with the colour itself, softened or not", () => {
     const { container: soft } = render(<AppearanceCanvas backdrop="#aabbcc" />)
     const { container: vivid } = render(
-      <AppearanceCanvas backdrop="#AABBCC" vivid />
+      <AppearanceCanvas backdrop="#aabbcc" vivid />
     )
 
     expect(soft.querySelector("style")?.innerHTML).toBe(
@@ -82,6 +83,29 @@ describe("AppearanceCanvas", () => {
     expect(vivid.querySelector("style")?.innerHTML).toBe(
       "html{background-image:var(--custom-aabbcc)}body{background-color:transparent}"
     )
+  })
+
+  it("renders no style tag for a backdrop that is neither a gradient nor a colour", () => {
+    for (const backdrop of [
+      'ocean"}html{display:none',
+      "#AABBCC",
+      "nonexistent",
+    ] as SurfaceChoice[]) {
+      const { container } = render(<AppearanceCanvas backdrop={backdrop} />)
+
+      expect(container.querySelector("style"), backdrop).toBeNull()
+    }
+  })
+
+  it("still falls back to the theme's own colours for an invalid backdrop", () => {
+    document.head
+      .querySelectorAll('meta[name="theme-color"]')
+      .forEach((node) => node.remove())
+    render(<AppearanceCanvas backdrop={"nonexistent" as SurfaceChoice} />)
+    const metas = document.head.querySelectorAll('meta[name="theme-color"]')
+
+    expect(metas[0]).toHaveAttribute("content", "#ffffff")
+    expect(metas[1]).toHaveAttribute("content", "#0a0a0a")
   })
 
   it("takes the dark theme colour of a custom backdrop from its dark variant", () => {

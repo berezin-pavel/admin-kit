@@ -3,6 +3,7 @@ import {
   customColorVariable,
   gradientPalette,
   isCustomColor,
+  isGradientId,
   type AdminAppearance,
   type SurfaceChoice,
 } from "./appearance-palette"
@@ -35,9 +36,15 @@ export function backdropThemeColors(
     : { light: entry.softLight.stops[0], dark: entry.softDark.stops[0] }
 }
 
-function canvasBackgroundImage(backdrop: SurfaceChoice, vivid: boolean): string {
+function canvasBackgroundImage(
+  backdrop: SurfaceChoice,
+  vivid: boolean
+): string | null {
   if (isCustomColor(backdrop)) {
     return `var(${customColorVariable(backdrop)})`
+  }
+  if (!isGradientId(backdrop)) {
+    return null
   }
   return `var(--gradient-${backdrop}${vivid ? "" : "-soft"})`
 }
@@ -50,12 +57,15 @@ export function AppearanceCanvas({
   vivid?: boolean
 }) {
   const colors = backdropThemeColors(backdrop, vivid)
+  const backgroundImage = backdrop
+    ? canvasBackgroundImage(backdrop, vivid)
+    : null
   return (
     <>
-      {backdrop && (
+      {backgroundImage && (
         <style
           dangerouslySetInnerHTML={{
-            __html: `html{background-image:${canvasBackgroundImage(backdrop, vivid)}}body{background-color:transparent}`,
+            __html: `html{background-image:${backgroundImage}}body{background-color:transparent}`,
           }}
         />
       )}

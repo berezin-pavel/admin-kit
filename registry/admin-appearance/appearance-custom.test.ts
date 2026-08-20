@@ -4,15 +4,24 @@ import {
   appearanceCss,
   customColorsOf,
   customDarkColor,
+  gradientDestructive,
   isAdminAppearance,
   solidForeground,
+  solidForegroundHex,
+  solidInkHex,
 } from "./appearance-css"
-import { contrastRatio, hexToOklch, oklchToHex } from "./appearance-color"
+import {
+  composite,
+  contrastRatio,
+  hexToOklch,
+  oklchToHex,
+} from "./appearance-color"
 import {
   customColorStops,
   customColorVariable,
   defaultAdminAppearance,
   gradientIds,
+  hoverOverlayAlphas,
   isCustomColor,
   type AdminAppearance,
   type CustomColor,
@@ -30,10 +39,14 @@ function oklchStringToHex(value: string): string {
 const CUSTOM: CustomColor = "#aabbcc"
 
 describe("isCustomColor", () => {
-  it("accepts a six-digit hex in either case", () => {
+  it("accepts a lowercase six-digit hex", () => {
     expect(isCustomColor("#a1b2c3")).toBe(true)
-    expect(isCustomColor("#A1B2C3")).toBe(true)
     expect(isCustomColor("#000000")).toBe(true)
+  })
+
+  it("rejects an uppercase hex, which the attribute selector would never match", () => {
+    expect(isCustomColor("#A1B2C3")).toBe(false)
+    expect(isCustomColor("#a1b2C3")).toBe(false)
   })
 
   it("rejects anything that is not a six-digit hex", () => {
@@ -61,7 +74,7 @@ describe("isAdminAppearance with custom colours", () => {
         ...defaultAdminAppearance,
         accent: "#123456",
         sidebar: "#abcdef",
-        header: "#ABCDEF",
+        header: "#fedcba",
         signIn: "#0f172a",
         page: "#e2e8f0",
         pages: { orders: "#111111" },
@@ -77,6 +90,21 @@ describe("isAdminAppearance with custom colours", () => {
         header: "#abcdef",
       })
     ).toBe(true)
+  })
+
+  it("rejects an uppercase colour, which would not match its own css rule", () => {
+    expect(
+      isAdminAppearance({ ...defaultAdminAppearance, sidebar: "#AABBCC" })
+    ).toBe(false)
+    expect(
+      isAdminAppearance({ ...defaultAdminAppearance, accent: "#AABBCC" })
+    ).toBe(false)
+    expect(
+      isAdminAppearance({
+        ...defaultAdminAppearance,
+        pages: { orders: "#AABBCC" },
+      })
+    ).toBe(false)
   })
 
   it("rejects a malformed colour in any slot", () => {
@@ -98,10 +126,10 @@ describe("isAdminAppearance with custom colours", () => {
 })
 
 describe("customColorsOf", () => {
-  it("collects every distinct custom colour once, lowercased", () => {
+  it("collects every distinct custom colour once", () => {
     const appearance: AdminAppearance = {
       ...defaultAdminAppearance,
-      sidebar: "#AABBCC",
+      sidebar: "#aabbcc",
       header: "#aabbcc",
       signIn: "#112233",
       page: "#445566",
@@ -113,6 +141,15 @@ describe("customColorsOf", () => {
       "#445566",
       "#aabbcc",
     ])
+  })
+
+  it("skips an uppercase colour, which is not a valid custom colour", () => {
+    expect(
+      customColorsOf({
+        ...defaultAdminAppearance,
+        sidebar: "#AABBCC" as CustomColor,
+      })
+    ).toEqual([])
   })
 
   it("finds nothing in an appearance built from the palette", () => {
@@ -165,13 +202,19 @@ describe("appearanceCss with a custom colour", () => {
     expect(css).not.toContain("--custom-aabbcc-soft")
   })
 
-  it("lowercases the colour before it reaches the css", () => {
+  it("keeps an uppercase colour out of the css, rule and all", () => {
     const upper = appearanceCss({
       ...defaultAdminAppearance,
-      sidebar: "#AABBCC",
+      sidebar: "#AABBCC" as CustomColor,
     })
-    expect(upper).toContain('[data-gradient="#aabbcc"]')
     expect(upper).not.toContain("#AABBCC")
+    expect(upper).not.toContain('[data-gradient="#aabbcc"]')
+  })
+
+  it("names the ink pole per scheme and points the surface at it", () => {
+    expect(css).toContain("  --custom-aabbcc-ink: ")
+    expect(css.match(/--custom-aabbcc-ink:/g)).toHaveLength(2)
+    expect(css).toContain("--surface-ink: var(--custom-aabbcc-ink);")
   })
 
   it("emits nothing custom when the appearance is built from the palette", () => {
@@ -240,6 +283,88 @@ describe("solidForeground", () => {
       stops: [CUSTOM, CUSTOM, CUSTOM],
     })
   })
+})
+
+const CUBE_CHANNELS = Array.from({ length: 16 }, (_, index) => index * 17)
+
+function cubeColor(red: number, green: number, blue: number): CustomColor {
+  return `#${[red, green, blue]
+    .map((channel) => channel.toString(16).padStart(2, "0"))
+    .join("")}` as CustomColor
+}
+
+describe("solidInkHex", () => {
+  it("keeps the text colour as the tint pole where the tints stay legible", () => {
+    for (const hex of ["#0f172a", "#f8fafc"] as CustomColor[]) {
+      expect(solidInkHex(hex), hex).toBe(solidForegroundHex(hex))
+    }
+  })
+
+  it("flips to the opposite pole where a foreground tint would eat the contrast", () => {
+    const hex: CustomColor = "#667777"
+    const foregroundHex = solidForegroundHex(hex)
+
+    expect(
+      contrastRatio(
+        foregroundHex,
+        composite(foregroundHex, 0.202, hex, "srgb")
+      )
+    ).toBeLessThan(4.5)
+    expect(solidInkHex(hex)).not.toBe(foregroundHex)
+    expect(["#000000", "#ffffff"]).toContain(solidInkHex(hex))
+  })
+})
+
+describe("a custom surface across the colour cube", () => {
+  it.each(CUBE_CHANNELS)(
+    "keeps the destructive ink at 4.5 to 1 for every colour whose red is %i",
+    (red) => {
+      let worst = Infinity
+      let worstHex = ""
+
+      for (const green of CUBE_CHANNELS) {
+        for (const blue of CUBE_CHANNELS) {
+          const hex = cubeColor(red, green, blue)
+          const { destructive } = gradientDestructive(customColorStops(hex))
+          const ratio = contrastRatio(oklchStringToHex(destructive), hex)
+          if (ratio < worst) {
+            worst = ratio
+            worstHex = `${hex} ${destructive}`
+          }
+        }
+      }
+
+      expect(worst, worstHex).toBeGreaterThanOrEqual(4.5)
+    }
+  )
+
+  it.each(CUBE_CHANNELS)(
+    "keeps every tint drawn from the ink pole legible for colours whose red is %i",
+    (red) => {
+      let worst = Infinity
+      let worstCase = ""
+
+      for (const green of CUBE_CHANNELS) {
+        for (const blue of CUBE_CHANNELS) {
+          const hex = cubeColor(red, green, blue)
+          const foregroundHex = solidForegroundHex(hex)
+          const inkHex = solidInkHex(hex)
+          for (const alpha of hoverOverlayAlphas) {
+            const ratio = contrastRatio(
+              foregroundHex,
+              composite(inkHex, alpha, hex, "srgb")
+            )
+            if (ratio < worst) {
+              worst = ratio
+              worstCase = `${hex} ink ${inkHex} at ${alpha}`
+            }
+          }
+        }
+      }
+
+      expect(worst, worstCase).toBeGreaterThanOrEqual(4.5)
+    }
+  )
 })
 
 describe("customDarkColor", () => {
