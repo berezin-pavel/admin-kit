@@ -111,8 +111,10 @@ export function UserMenu({
               className="size-4 shrink-0 text-muted-foreground"
             />
           </>
-        ) : (
+        ) : avatarUrl ? (
           avatar
+        ) : (
+          <User aria-hidden="true" className="size-4" />
         )}
       </DropdownMenuTrigger>
       <DropdownMenuContent side={side} align={align}>

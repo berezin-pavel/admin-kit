@@ -89,20 +89,39 @@ describe("UserMenu trigger contract", () => {
     }
   )
 
-  it.each(["icon", "row"] as const)(
-    "falls back to an icon in the %s variant's fixed-size avatar",
-    (variant) => {
-      const { container } = render(
-        <UserMenu variant={variant} name="Alex Morgan" items={items} />
-      )
+  it("falls back to an icon in the row variant's fixed-size avatar", () => {
+    const { container } = render(
+      <UserMenu variant="row" name="Alex Morgan" items={items} />
+    )
 
-      const fallback = container.querySelector(
-        '[data-slot="avatar-fallback"]'
-      )
+    const fallback = container.querySelector('[data-slot="avatar-fallback"]')
 
-      expect(fallback).not.toHaveTextContent(/\w/)
-      expect(fallback?.querySelector("svg")).toBeInTheDocument()
-      expect(fallback?.parentElement).toHaveAttribute("data-size", "sm")
-    }
-  )
+    expect(fallback).not.toHaveTextContent(/\w/)
+    expect(fallback?.querySelector("svg")).toBeInTheDocument()
+    expect(fallback?.parentElement).toHaveAttribute("data-size", "sm")
+  })
+
+  it("draws a bare icon in the icon variant until an avatar url arrives", () => {
+    const { container, rerender } = render(
+      <UserMenu variant="icon" name="Alex Morgan" items={items} />
+    )
+
+    expect(
+      container.querySelector('[data-slot="avatar"]')
+    ).not.toBeInTheDocument()
+    expect(
+      container.querySelector('[data-slot="user-menu"] svg')
+    ).toBeInTheDocument()
+
+    rerender(
+      <UserMenu
+        variant="icon"
+        name="Alex Morgan"
+        avatarUrl="/demo-images/front.svg"
+        items={items}
+      />
+    )
+
+    expect(container.querySelector('[data-slot="avatar"]')).toBeInTheDocument()
+  })
 })

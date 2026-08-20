@@ -25,6 +25,11 @@ Sections used below: **New** (items you can now install), **Changed** (installed
 re-pulling), **Breaking** (props or files that changed shape — read before overwriting), and
 **Project** (showcase, CI, docs — nothing that reaches your project).
 
+## Unreleased
+
+**Changed** — `user-menu`'s icon trigger shows a bare account icon while there is no
+`avatarUrl`, matching the bell exactly; the avatar circle appears only when a picture arrives.
+
 ## 0.40.0 — 2026-08-20
 
 **Changed** — the search dialog's shortcut chip paints in `text-foreground/80`: muted-on-muted
