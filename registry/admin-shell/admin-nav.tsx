@@ -15,6 +15,7 @@ export interface AdminNavLinkProps {
   isActive: boolean
   className: string
   children: ReactNode
+  "aria-current": "page" | undefined
 }
 
 export type AdminNavLinkRenderer = (props: AdminNavLinkProps) => ReactNode
@@ -28,8 +29,13 @@ export interface AdminNavProps {
   sectionsLabel?: string
 }
 
-const renderNavLink: AdminNavLinkRenderer = ({ href, className, children }) => (
-  <a href={href} className={className}>
+const renderNavLink: AdminNavLinkRenderer = ({
+  href,
+  className,
+  children,
+  "aria-current": ariaCurrent,
+}) => (
+  <a href={href} className={className} aria-current={ariaCurrent}>
     {children}
   </a>
 )
@@ -58,10 +64,11 @@ export function AdminNav({
         const Icon = item.icon
 
         return (
-          <div key={item.href} aria-current={isActive ? "page" : undefined}>
+          <div key={item.href}>
             {renderItem({
               href: item.href,
               isActive,
+              "aria-current": isActive ? "page" : undefined,
               className: cn(
                 "cursor-default text-[0.9375rem] transition-colors",
                 adminRowClassName(collapsed),

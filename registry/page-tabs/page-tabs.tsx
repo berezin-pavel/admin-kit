@@ -32,6 +32,7 @@ export interface PageTabsStripProps {
   value: string
   onValueChange: (value: string) => void
   actions?: ReactNode
+  idPrefix?: string
   className?: string
 }
 
@@ -40,6 +41,7 @@ export function PageTabsStrip({
   value,
   onValueChange,
   actions,
+  idPrefix = "page-tabs",
   className,
 }: PageTabsStripProps) {
   return (
@@ -49,7 +51,7 @@ export function PageTabsStrip({
       className={cn("flex-1 gap-0", className)}
     >
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <TabsStripList items={items} />
+        <TabsStripList items={items} idPrefix={idPrefix} />
         {actions ? (
           <div className="flex items-center gap-2">{actions}</div>
         ) : null}
@@ -58,19 +60,28 @@ export function PageTabsStrip({
   )
 }
 
+export interface PageTabsPanelsProps {
+  items: readonly PageTabsItem[]
+  value: string
+  idPrefix?: string
+  className?: string
+}
+
 export function PageTabsPanels({
   items,
   value,
+  idPrefix = "page-tabs",
   className,
-}: {
-  items: readonly PageTabsItem[]
-  value: string
-  className?: string
-}) {
+}: PageTabsPanelsProps) {
   return (
     <Tabs value={value} onValueChange={() => {}} className={cn("gap-4", className)}>
       {items.map((item) => (
-        <TabsContent key={item.id} value={item.id}>
+        <TabsContent
+          key={item.id}
+          value={item.id}
+          id={`${idPrefix}-panel-${item.id}`}
+          aria-labelledby={`${idPrefix}-tab-${item.id}`}
+        >
           {item.content}
         </TabsContent>
       ))}
@@ -78,7 +89,13 @@ export function PageTabsPanels({
   )
 }
 
-function TabsStripList({ items }: { items: readonly PageTabsItem[] }) {
+function TabsStripList({
+  items,
+  idPrefix,
+}: {
+  items: readonly PageTabsItem[]
+  idPrefix?: string
+}) {
   return (
     <TabsList className="h-auto flex-wrap justify-start gap-1 bg-transparent p-0 group-data-horizontal/tabs:h-auto">
       {items.map((item) => {
@@ -89,6 +106,10 @@ function TabsStripList({ items }: { items: readonly PageTabsItem[] }) {
             key={item.id}
             value={item.id}
             disabled={item.disabled}
+            id={idPrefix ? `${idPrefix}-tab-${item.id}` : undefined}
+            aria-controls={
+              idPrefix ? `${idPrefix}-panel-${item.id}` : undefined
+            }
             className="h-10 flex-none gap-3 rounded-md border-transparent px-2 text-[0.9375rem] font-medium text-sidebar-foreground shadow-none hover:bg-sidebar-active/50 hover:text-sidebar-active-foreground data-active:bg-sidebar-active data-active:font-semibold data-active:text-sidebar-active-foreground data-active:shadow-none! dark:data-active:border-transparent! dark:data-active:bg-sidebar-active"
           >
             {Icon ? (

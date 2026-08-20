@@ -39,8 +39,9 @@ const renderDemoLink: AdminNavLinkRenderer = ({
   href,
   className,
   children,
+  "aria-current": ariaCurrent,
 }) => (
-  <Link href={href} className={className}>
+  <Link href={href} className={className} aria-current={ariaCurrent}>
     {children}
   </Link>
 )
@@ -63,11 +64,15 @@ export function DemoShell({
   useEffect(() => {
     const items = flush ? getDemoFlushNav(locale) : getDemoNav(locale)
     const onKeyDown = (event: KeyboardEvent) => {
-      if (!event.ctrlKey || event.metaKey || event.altKey || event.shiftKey) {
+      if (!event.ctrlKey || event.metaKey || event.altKey) {
         return
       }
-      const index = Number.parseInt(event.key, 10)
-      if (Number.isNaN(index) || index < 1 || index > items.length) {
+      const match = /^Digit([1-9])$/.exec(event.code)
+      if (!match) {
+        return
+      }
+      const index = Number.parseInt(match[1], 10)
+      if (index > items.length) {
         return
       }
       event.preventDefault()

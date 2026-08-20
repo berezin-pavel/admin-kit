@@ -30,6 +30,13 @@ const sectionColumnsClassName: Record<1 | 2 | 3, string> = {
 
 export type PageStatus = "ready" | "loading" | "error" | "forbidden" | "offline"
 
+export interface PageStatusLabels {
+  loading?: { label?: string }
+  error?: { title?: string }
+  forbidden?: { title?: string }
+  offline?: { title?: string }
+}
+
 export interface PageEntityProps {
   blockId?: string
   header?: boolean
@@ -40,6 +47,7 @@ export interface PageEntityProps {
   breadcrumbs?: ReactNode
   sections: readonly PageEntitySection[]
   status?: PageStatus
+  stateLabels?: PageStatusLabels
   className?: string
 }
 
@@ -53,6 +61,7 @@ export function PageEntity({
   breadcrumbs,
   sections,
   status = "ready",
+  stateLabels,
   className,
 }: PageEntityProps) {
   return (
@@ -67,13 +76,13 @@ export function PageEntity({
         />
       ) : null}
       {status === "loading" ? (
-        <StateLoading />
+        <StateLoading {...stateLabels?.loading} />
       ) : status === "error" ? (
-        <StateError />
+        <StateError {...stateLabels?.error} />
       ) : status === "forbidden" ? (
-        <StateForbidden />
+        <StateForbidden {...stateLabels?.forbidden} />
       ) : status === "offline" ? (
-        <StateOffline />
+        <StateOffline {...stateLabels?.offline} />
       ) : combined ? (
         <Block id={blockId ? `${blockId}.details` : undefined} headings>
           {sections.map((section) => (

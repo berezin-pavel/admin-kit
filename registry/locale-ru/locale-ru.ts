@@ -237,6 +237,7 @@ export const localeRu = {
     clearFiltersLabel: "Сбросить фильтры",
     columnsLabel: "Колонки",
     selectAllMatchingLabel: (count: number) => `Выбрать все: ${count}`,
+    region: "Таблица",
   },
   comboboxField: {
     placeholder: "Поиск…",
@@ -292,7 +293,11 @@ export const localeRu = {
       label: dateRangePresetLabelsRu[preset.id] ?? preset.label,
     })),
   },
-  colorField: { placeholder: "Выберите цвет", hexInputLabel: "HEX-код цвета" },
+  colorField: {
+    placeholder: "Выберите цвет",
+    hexInputLabel: "HEX-код цвета",
+    customColorLabel: "Свой цвет",
+  },
   selectField: { placeholder: "Выберите…" },
   fileField: {
     buttonLabel: "Выбрать файл",
@@ -318,6 +323,7 @@ export const localeRu = {
     removeLabel: (tag: string) => `Убрать ${tag}`,
   },
   pageForm: { submitLabel: "Сохранить", cancelLabel: "Отмена" },
+  pageList: { resetFilters: "Сбросить фильтры" },
   formDialog: { submitLabel: "Сохранить", cancelLabel: "Отмена" },
   sidebarToggle: { expand: "Развернуть сайдбар", collapse: "Свернуть сайдбар" },
   themeToggle: {
@@ -340,7 +346,13 @@ export const localeRu = {
     title: "Уведомления",
     empty: "Всё прочитано",
     markAllRead: "Отметить все прочитанными",
-    unread: (count: number) => `${count} непрочитанных`,
+    unread: (count: number) =>
+      `${count} ${
+        count % 10 === 1 && count % 100 !== 11
+          ? "непрочитанное"
+          : "непрочитанных"
+      }`,
+    unreadItem: "Непрочитанное",
   } satisfies NotificationsMenuLabels,
   breadcrumbs: { label: "Хлебные крошки" },
   adminAppearance: adminAppearanceRu,

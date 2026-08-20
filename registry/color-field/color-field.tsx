@@ -23,6 +23,7 @@ export interface ColorFieldProps {
   className?: string
   placeholder?: string
   hexInputLabel?: string
+  customColorLabel?: string
 }
 
 const DEFAULT_PRESETS = [
@@ -65,6 +66,7 @@ export function ColorField(props: ColorFieldProps): React.ReactElement {
     className,
     placeholder = "Pick a color",
     hexInputLabel = "Color HEX code",
+    customColorLabel = "Custom color",
   } = props
 
   const triggerId = React.useId()
@@ -159,7 +161,7 @@ export function ColorField(props: ColorFieldProps): React.ReactElement {
           </div>
           <div className="flex items-center gap-2">
             <label className="relative size-8 shrink-0 overflow-hidden rounded-lg border border-input">
-              <span className="sr-only">Custom color</span>
+              <span className="sr-only">{customColorLabel}</span>
               <span
                 aria-hidden="true"
                 className="absolute inset-0"

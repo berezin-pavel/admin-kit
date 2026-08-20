@@ -342,6 +342,42 @@ describe("page-tabs outside a block", () => {
     )
     expect(screen.getByText("Log")).toBeInTheDocument()
   })
+
+  it("links each tab to its panel through aria-controls and aria-labelledby", () => {
+    const { container } = render(
+      <>
+        <PageTabsStrip
+          idPrefix="order"
+          items={[
+            { id: "a", label: "Overview", content: <p>Body</p> },
+            { id: "b", label: "History", content: <p>Log</p> },
+          ]}
+          value="a"
+          onValueChange={() => {}}
+        />
+        <PageTabsPanels
+          idPrefix="order"
+          items={[
+            { id: "a", label: "Overview", content: <p>Body</p> },
+            { id: "b", label: "History", content: <p>Log</p> },
+          ]}
+          value="a"
+        />
+      </>
+    )
+
+    for (const id of ["a", "b"]) {
+      const tab = screen.getByRole("tab", {
+        name: id === "a" ? "Overview" : "History",
+      })
+      expect(tab.id).toBe(`order-tab-${id}`)
+      expect(tab.getAttribute("aria-controls")).toBe(`order-panel-${id}`)
+    }
+
+    const activePanel = container.querySelector(`#order-panel-a`)
+    expect(activePanel).toBeInTheDocument()
+    expect(activePanel).toHaveAttribute("aria-labelledby", "order-tab-a")
+  })
 })
 
 describe("heading choice on section blocks", () => {

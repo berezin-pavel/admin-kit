@@ -1,6 +1,12 @@
+import { render, screen } from "@testing-library/react"
+import userEvent from "@testing-library/user-event"
 import { describe, expect, it } from "vitest"
 
-import { isValidHexColor, toHexDigits } from "./color-field"
+import { localeRu } from "@/registry/locale-ru/locale-ru"
+
+import { ColorField, isValidHexColor, toHexDigits } from "./color-field"
+
+const noop = () => {}
 
 describe("isValidHexColor", () => {
   it("accepts a lowercase hex color with a hash", () => {
@@ -52,5 +58,34 @@ describe("toHexDigits", () => {
   it("never lets an incomplete value escape as a full color", () => {
     expect(toHexDigits("ef4")).toBe("ef4")
     expect(toHexDigits("ef4").length).toBeLessThan(6)
+  })
+})
+
+describe("customColorLabel", () => {
+  it("defaults to the English sr-only label on the custom swatch", async () => {
+    const user = userEvent.setup()
+    render(<ColorField value="#336699" onChange={noop} />)
+
+    await user.click(screen.getByRole("button"))
+
+    expect(screen.getByText("Custom color")).toBeInTheDocument()
+  })
+
+  it("renders the passed customColorLabel on the custom swatch", async () => {
+    const user = userEvent.setup()
+    render(
+      <ColorField
+        value="#336699"
+        onChange={noop}
+        customColorLabel={localeRu.colorField.customColorLabel}
+      />
+    )
+
+    await user.click(screen.getByRole("button"))
+
+    expect(
+      screen.getByText(localeRu.colorField.customColorLabel)
+    ).toBeInTheDocument()
+    expect(screen.queryByText("Custom color")).not.toBeInTheDocument()
   })
 })

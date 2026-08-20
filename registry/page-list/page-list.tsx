@@ -32,6 +32,13 @@ export interface PageListFilter {
 
 export type PageStatus = "ready" | "loading" | "error" | "forbidden" | "offline"
 
+export interface PageStatusLabels {
+  loading?: { label?: string }
+  error?: { title?: string }
+  forbidden?: { title?: string }
+  offline?: { title?: string }
+}
+
 export interface PageListProps<Row> {
   blockId?: string
   header?: boolean
@@ -57,6 +64,7 @@ export interface PageListProps<Row> {
   sortOptions?: readonly WidgetTableSortOption[]
   tableLabels?: WidgetTableLabels
   status?: PageStatus
+  stateLabels?: PageStatusLabels
   className?: string
   selectedKeys?: ReadonlySet<Key>
   onSelectionChange?: (keys: ReadonlySet<Key>) => void
@@ -65,18 +73,21 @@ export interface PageListProps<Row> {
   onClearFilters?: () => void
   hiddenColumnIds?: readonly string[]
   onHiddenColumnIdsChange?: (ids: readonly string[]) => void
-  onExport?: (rows: readonly Row[]) => void
   totalCount?: number
   onSelectAllMatching?: () => void
   stickyHeader?: boolean
   maxBodyHeight?: string
 }
 
-function getStatusContent(status: PageStatus): ReactNode {
-  if (status === "loading") return <StateLoading />
-  if (status === "error") return <StateError />
-  if (status === "forbidden") return <StateForbidden />
-  if (status === "offline") return <StateOffline />
+function getStatusContent(
+  status: PageStatus,
+  stateLabels: PageStatusLabels | undefined
+): ReactNode {
+  if (status === "loading") return <StateLoading {...stateLabels?.loading} />
+  if (status === "error") return <StateError {...stateLabels?.error} />
+  if (status === "forbidden")
+    return <StateForbidden {...stateLabels?.forbidden} />
+  if (status === "offline") return <StateOffline {...stateLabels?.offline} />
   return null
 }
 
@@ -105,6 +116,7 @@ export function PageList<Row>({
   sortOptions,
   tableLabels,
   status = "ready",
+  stateLabels,
   className,
   selectedKeys,
   onSelectionChange,
@@ -113,7 +125,6 @@ export function PageList<Row>({
   onClearFilters,
   hiddenColumnIds,
   onHiddenColumnIdsChange,
-  onExport,
   totalCount,
   onSelectAllMatching,
   stickyHeader,
@@ -148,7 +159,11 @@ export function PageList<Row>({
             />
           ) : undefined
         }
-        empty={status === "ready" ? undefined : getStatusContent(status)}
+        empty={
+          status === "ready"
+            ? undefined
+            : getStatusContent(status, stateLabels)
+        }
         pagination={
           status === "ready" && total !== undefined
             ? {
@@ -172,7 +187,6 @@ export function PageList<Row>({
         onClearFilters={onClearFilters}
         hiddenColumnIds={hiddenColumnIds}
         onHiddenColumnIdsChange={onHiddenColumnIdsChange}
-        onExport={onExport}
         totalCount={totalCount}
         onSelectAllMatching={onSelectAllMatching}
         stickyHeader={stickyHeader}

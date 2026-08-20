@@ -19,6 +19,13 @@ export interface PageFormSection {
 
 export type PageStatus = "ready" | "loading" | "error" | "forbidden" | "offline"
 
+export interface PageStatusLabels {
+  loading?: { label?: string }
+  error?: { title?: string }
+  forbidden?: { title?: string }
+  offline?: { title?: string }
+}
+
 export interface PageFormProps {
   blockId?: string
   header?: boolean
@@ -33,6 +40,7 @@ export interface PageFormProps {
   cancelLabel?: string
   submitting?: boolean
   status?: PageStatus
+  stateLabels?: PageStatusLabels
   className?: string
 }
 
@@ -50,6 +58,7 @@ export function PageForm({
   cancelLabel = "Cancel",
   submitting = false,
   status = "ready",
+  stateLabels,
   className,
 }: PageFormProps) {
   return (
@@ -64,13 +73,13 @@ export function PageForm({
         />
       ) : null}
       {status === "loading" ? (
-        <StateLoading />
+        <StateLoading {...stateLabels?.loading} />
       ) : status === "error" ? (
-        <StateError />
+        <StateError {...stateLabels?.error} />
       ) : status === "forbidden" ? (
-        <StateForbidden />
+        <StateForbidden {...stateLabels?.forbidden} />
       ) : status === "offline" ? (
-        <StateOffline />
+        <StateOffline {...stateLabels?.offline} />
       ) : (
         <PageFormBody
           blockId={blockId}

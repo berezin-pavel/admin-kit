@@ -26,6 +26,24 @@ describe("admin-nav paints only the active row", () => {
       "text-sidebar-active-foreground"
     )
   })
+
+  it("carries aria-current=page on the active link and nothing on the inactive one", () => {
+    const { getByText } = render(
+      <AdminNav
+        nav={[
+          { href: "/one", title: "One" },
+          { href: "/two", title: "Two" },
+        ]}
+        activeHref="/one"
+      />
+    )
+
+    const activeLink = getByText("One").closest("a")
+    const inactiveLink = getByText("Two").closest("a")
+
+    expect(activeLink).toHaveAttribute("aria-current", "page")
+    expect(inactiveLink).not.toHaveAttribute("aria-current")
+  })
 })
 
 describe("page-tabs paints only the selected tab", () => {
