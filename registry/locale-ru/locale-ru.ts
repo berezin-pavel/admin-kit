@@ -4,6 +4,8 @@ import { defaultDateRangePresets } from "@/registry/date-range-field/date-range-
 import type { GradientFamily, GradientId } from "@/registry/admin-appearance/appearance-palette"
 import type { AppearanceLabels } from "@/registry/admin-appearance/appearance-provider"
 import type { AppearanceMenuLabels } from "@/registry/appearance-menu/appearance-menu"
+import type { GlobalSearchLabels } from "@/registry/global-search/global-search"
+import type { NotificationsMenuLabels } from "@/registry/notifications-menu/notifications-menu"
 
 const dateRangePresetLabelsRu: Record<string, string> = {
   today: "Сегодня",
@@ -324,6 +326,20 @@ export const localeRu = {
   adminShell: { openMenu: "Открыть меню навигации", sections: "Разделы" },
   languageToggle: { label: "Переключить язык" },
   userMenu: { label: "Открыть меню пользователя" },
+  globalSearch: {
+    button: "Поиск…",
+    shortcut: "⌘K",
+    placeholder: "Введите запрос…",
+    empty: "Ничего не найдено",
+    title: "Поиск",
+  } satisfies GlobalSearchLabels,
+  notificationsMenu: {
+    button: "Уведомления",
+    title: "Уведомления",
+    empty: "Всё прочитано",
+    markAllRead: "Отметить все прочитанными",
+    unread: (count: number) => `${count} непрочитанных`,
+  } satisfies NotificationsMenuLabels,
   breadcrumbs: { label: "Хлебные крошки" },
   adminAppearance: adminAppearanceRu,
   appearanceMenu: appearanceMenuRu,

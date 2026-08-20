@@ -13,7 +13,7 @@ export interface ShowcaseResolvedGroup {
 }
 
 export const SHOWCASE_ENTRY_GROUPS: readonly ShowcaseGroupDefinition[] = [
-  { id: "shell", title: "Shell", items: ["admin-shell"] },
+  { id: "shell", title: "Shell", items: ["admin-shell", "app-logo"] },
   { id: "appearance", title: "Appearance", items: ["admin-appearance"] },
   {
     id: "controls",
@@ -21,6 +21,8 @@ export const SHOWCASE_ENTRY_GROUPS: readonly ShowcaseGroupDefinition[] = [
     items: [
       "theme-toggle",
       "sidebar-toggle",
+      "global-search",
+      "notifications-menu",
       "user-menu",
       "appearance-menu",
     ],

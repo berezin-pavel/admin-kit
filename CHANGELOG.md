@@ -25,6 +25,21 @@ Sections used below: **New** (items you can now install), **Changed** (installed
 re-pulling), **Breaking** (props or files that changed shape — read before overwriting), and
 **Project** (showcase, CI, docs — nothing that reaches your project).
 
+## Unreleased
+
+**New** — three chrome parts a panel needs on its first day. `global-search` is the ⌘K dialog:
+it filters the `items` you pass on their label and group, groups the matches, and reports the
+pick as `onSelect(id)` — the open state, the routing and the data stay yours; the trigger is a
+search-shaped field with the shortcut in a `kbd`, or an icon button for a tight header, and the
+shortcut listener steps aside while the caret is in someone else's input. `notifications-menu`
+is the bell: an unread badge capped at `9+` with the real count in the button's name, a dropdown
+of entries with a title, a two-line explanation and a preformatted timestamp, a mark-all-read
+button in its header, and a caught-up line when there is nothing to show. `app-logo` exists
+because installing the shell used to leave the brand slot empty — the collapsed rail showed
+nothing at all: it draws a rounded accent square with your lucide icon, or the first letter of
+the app name until you have one. `locale-ru` gained the `globalSearch` and `notificationsMenu`
+slices; `app-logo` has no strings of its own.
+
 ## 0.38.0 — 2026-08-20
 
 **Changed** — `admin-header`'s `tabs` slot renders in the header row itself, in place of the

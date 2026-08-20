@@ -39,6 +39,29 @@ describe("localeRu family names", () => {
   )
 })
 
+describe("localeRu control slices", () => {
+  it.each([
+    ["button"],
+    ["shortcut"],
+    ["placeholder"],
+    ["empty"],
+    ["title"],
+  ] as const)("fills globalSearch.%s", (key) => {
+    expect(localeRu.globalSearch[key]).toBeTruthy()
+  })
+
+  it.each([["button"], ["title"], ["empty"], ["markAllRead"]] as const)(
+    "fills notificationsMenu.%s",
+    (key) => {
+      expect(localeRu.notificationsMenu[key]).toBeTruthy()
+    }
+  )
+
+  it("counts unread notifications in Russian", () => {
+    expect(localeRu.notificationsMenu.unread(3)).toBe("3 непрочитанных")
+  })
+})
+
 describe("localeRu accent names", () => {
   it.each(accentIds.map((id) => [id] as const))(
     "names %s in appearanceMenu.accents",

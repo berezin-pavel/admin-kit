@@ -2,6 +2,7 @@ import { adminAppearanceEntry } from "./admin-appearance"
 import { adminShellEntry } from "./admin-shell"
 import { adminToasterEntry } from "./admin-toaster"
 import { appearanceMenuEntry } from "./appearance-menu"
+import { appLogoEntry } from "./app-logo"
 import { breadcrumbsEntry } from "./breadcrumbs"
 import { checkboxFieldEntry } from "./checkbox-field"
 import { colorFieldEntry } from "./color-field"
@@ -12,11 +13,13 @@ import { dateFieldEntry } from "./date-field"
 import { dateRangeFieldEntry } from "./date-range-field"
 import { dateTimeFieldEntry } from "./date-time-field"
 import { fileFieldEntry } from "./file-field"
+import { globalSearchEntry } from "./global-search"
 import { hintEntry } from "./hint"
 import { imageFieldEntry } from "./image-field"
 import { languageToggleEntry } from "./language-toggle"
 import { localeRuEntry } from "./locale-ru"
 import { multiSelectFieldEntry } from "./multi-select-field"
+import { notificationsMenuEntry } from "./notifications-menu"
 import { numberFieldEntry } from "./number-field"
 import { rowActionsEntry } from "./row-actions"
 import { selectFieldEntry } from "./select-field"
@@ -53,10 +56,13 @@ import { widgetTableEntry } from "./widget-table"
 
 export const showcaseEntries: readonly ShowcaseEntry[] = [
   adminShellEntry,
+  appLogoEntry,
   adminAppearanceEntry,
   appearanceMenuEntry,
   themeToggleEntry,
   sidebarToggleEntry,
+  globalSearchEntry,
+  notificationsMenuEntry,
   userMenuEntry,
   languageToggleEntry,
   localeRuEntry,
