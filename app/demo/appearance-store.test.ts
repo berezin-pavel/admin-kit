@@ -12,14 +12,17 @@ describe("DEMO_APPEARANCE_DEFAULT", () => {
     expect(isAdminAppearance(DEMO_APPEARANCE_DEFAULT)).toBe(true)
   })
 
-  it("gives every overview block its own gradient", () => {
-    const overviewBlocks = Object.entries(DEMO_APPEARANCE_DEFAULT.blocks).filter(
-      ([id]) => id.startsWith("overview.")
-    )
-    const gradients = overviewBlocks.map(([, block]) => block.gradient)
+  it("leaves every block at the theme's own colours", () => {
+    for (const [id, block] of Object.entries(DEMO_APPEARANCE_DEFAULT.blocks)) {
+      expect(block.gradient, id).toBeUndefined()
+    }
+  })
 
-    expect(overviewBlocks.length).toBeGreaterThan(0)
-    expect(new Set(gradients).size).toBe(gradients.length)
+  it("keeps only the two heading choices the demo layout depends on", () => {
+    expect(DEMO_APPEARANCE_DEFAULT.blocks).toEqual({
+      "overview.finance": { heading: "large" },
+      "orders.table": { heading: "none" },
+    })
   })
 })
 
@@ -111,21 +114,21 @@ describe("isAdminAppearance", () => {
 
   it("rejects an unknown page gradient", () => {
     expect(
-      isAdminAppearance({
-        ...DEMO_APPEARANCE_DEFAULT,
-        page: { gradient: "nonexistent", soft: true },
-      })
+      isAdminAppearance({ ...DEMO_APPEARANCE_DEFAULT, page: "nonexistent" })
     ).toBe(false)
   })
 
-  it("rejects a stored backdrop of the older bare-gradient shape", () => {
+  it("rejects a stored backdrop of the older soft-flag shape", () => {
     expect(
-      isAdminAppearance({ ...DEMO_APPEARANCE_DEFAULT, page: "ocean" })
+      isAdminAppearance({
+        ...DEMO_APPEARANCE_DEFAULT,
+        page: { gradient: "ocean", soft: true },
+      })
     ).toBe(false)
     expect(
       isAdminAppearance({
         ...DEMO_APPEARANCE_DEFAULT,
-        pages: { orders: "ocean" },
+        pages: { orders: { gradient: "ocean", soft: false } },
       })
     ).toBe(false)
   })
@@ -136,12 +139,12 @@ describe("isAdminAppearance", () => {
     ).toBe(true)
   })
 
-  it("accepts a vivid page backdrop", () => {
+  it("accepts a page backdrop from the palette and a custom one", () => {
     expect(
-      isAdminAppearance({
-        ...DEMO_APPEARANCE_DEFAULT,
-        page: { gradient: "ocean", soft: false },
-      })
+      isAdminAppearance({ ...DEMO_APPEARANCE_DEFAULT, page: "ocean" })
+    ).toBe(true)
+    expect(
+      isAdminAppearance({ ...DEMO_APPEARANCE_DEFAULT, pages: { orders: "#112233" } })
     ).toBe(true)
   })
 

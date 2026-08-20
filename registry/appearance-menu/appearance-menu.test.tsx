@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
-import { describe, expect, it, vi } from "vitest"
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
 import { AppearanceMenu } from "./appearance-menu"
 import { defaultAdminAppearance, type AdminAppearance } from "@/registry/admin-appearance/appearance-palette"
@@ -164,7 +164,7 @@ describe("AppearanceMenu sidebar and sign-in selects", () => {
 })
 
 describe("AppearanceMenu page background", () => {
-  it("sets the page gradient, softened by default", async () => {
+  it("sets the page gradient", async () => {
     const onChange = vi.fn<(next: AdminAppearance) => void>()
     render(
       <AppearanceMenu value={defaultAdminAppearance} onChange={onChange} />
@@ -175,17 +175,14 @@ describe("AppearanceMenu page background", () => {
     await user.click(await screen.findByRole("option", { name: "Ocean" }))
 
     const last = onChange.mock.calls.at(-1)?.[0]
-    expect(last?.page).toEqual({ gradient: "ocean", soft: true })
+    expect(last?.page).toBe("ocean")
   })
 
-  it("keeps the vivid choice when the gradient changes", async () => {
+  it("swaps one page gradient for another", async () => {
     const onChange = vi.fn<(next: AdminAppearance) => void>()
     render(
       <AppearanceMenu
-        value={{
-          ...defaultAdminAppearance,
-          page: { gradient: "ocean", soft: false },
-        }}
+        value={{ ...defaultAdminAppearance, page: "ocean" }}
         onChange={onChange}
       />
     )
@@ -195,17 +192,14 @@ describe("AppearanceMenu page background", () => {
     await user.click(await screen.findByRole("option", { name: "Ember" }))
 
     const last = onChange.mock.calls.at(-1)?.[0]
-    expect(last?.page).toEqual({ gradient: "ember", soft: false })
+    expect(last?.page).toBe("ember")
   })
 
   it("clears the page gradient with No gradient", async () => {
     const onChange = vi.fn<(next: AdminAppearance) => void>()
     render(
       <AppearanceMenu
-        value={{
-          ...defaultAdminAppearance,
-          page: { gradient: "ocean", soft: true },
-        }}
+        value={{ ...defaultAdminAppearance, page: "ocean" }}
         onChange={onChange}
       />
     )
@@ -217,78 +211,18 @@ describe("AppearanceMenu page background", () => {
     const last = onChange.mock.calls.at(-1)?.[0]
     expect(last?.page).toBeNull()
   })
-})
 
-describe("AppearanceMenu soften checkbox", () => {
-  it("is checked for a freshly chosen gradient", async () => {
+  it("offers no soften control any more", async () => {
     render(
       <AppearanceMenu
-        value={{
-          ...defaultAdminAppearance,
-          page: { gradient: "ocean", soft: true },
-        }}
+        value={{ ...defaultAdminAppearance, page: "ocean" }}
         onChange={() => {}}
       />
     )
 
     await openMenu()
 
-    expect(
-      screen.getByRole("checkbox", { name: "Soften the colour" })
-    ).toBeChecked()
-  })
-
-  it("turns the backdrop vivid when unchecked", async () => {
-    const onChange = vi.fn<(next: AdminAppearance) => void>()
-    render(
-      <AppearanceMenu
-        value={{
-          ...defaultAdminAppearance,
-          page: { gradient: "ocean", soft: true },
-        }}
-        onChange={onChange}
-      />
-    )
-
-    const user = await openMenu()
-    await user.click(screen.getByRole("checkbox", { name: "Soften the colour" }))
-
-    const last = onChange.mock.calls.at(-1)?.[0]
-    expect(last?.page).toEqual({ gradient: "ocean", soft: false })
-  })
-
-  it("is disabled while no gradient is set", async () => {
-    render(
-      <AppearanceMenu
-        value={{ ...defaultAdminAppearance, page: null }}
-        onChange={() => {}}
-      />
-    )
-
-    await openMenu()
-
-    expect(
-      screen.getByRole("checkbox", { name: "Soften the colour" })
-    ).toHaveAttribute("aria-disabled", "true")
-  })
-
-  it("explains itself through a tooltip", async () => {
-    render(
-      <AppearanceMenu
-        value={{
-          ...defaultAdminAppearance,
-          page: { gradient: "ocean", soft: true },
-        }}
-        onChange={() => {}}
-      />
-    )
-
-    const user = await openMenu()
-    await user.hover(screen.getByRole("checkbox", { name: "Soften the colour" }))
-
-    expect(
-      await screen.findByText("Soften the colour", {}, { timeout: 3000 })
-    ).toBeInTheDocument()
+    expect(screen.queryAllByRole("checkbox")).toHaveLength(0)
   })
 })
 
@@ -310,7 +244,7 @@ describe("AppearanceMenu per page", () => {
     await user.click(await screen.findByRole("option", { name: "Ocean" }))
 
     const last = onChange.mock.calls.at(-1)?.[0]
-    expect(last?.pages.orders).toEqual({ gradient: "ocean", soft: true })
+    expect(last?.pages.orders).toBe("ocean")
   })
 
   it("sets a page override to no backdrop with No gradient", async () => {
@@ -319,8 +253,8 @@ describe("AppearanceMenu per page", () => {
       <AppearanceMenu
         value={{
           ...defaultAdminAppearance,
-          page: { gradient: "ocean", soft: true },
-          pages: { orders: { gradient: "ocean", soft: true } },
+          page: "ocean",
+          pages: { orders: "ocean" },
         }}
         onChange={onChange}
         pages={pages}
@@ -339,10 +273,7 @@ describe("AppearanceMenu per page", () => {
     const onChange = vi.fn<(next: AdminAppearance) => void>()
     render(
       <AppearanceMenu
-        value={{
-          ...defaultAdminAppearance,
-          pages: { orders: { gradient: "ocean", soft: true } },
-        }}
+        value={{ ...defaultAdminAppearance, pages: { orders: "ocean" } }}
         onChange={onChange}
         pages={pages}
       />
@@ -356,14 +287,14 @@ describe("AppearanceMenu per page", () => {
     expect(last?.pages.orders).toBeUndefined()
   })
 
-  it("softens a single page through its own checkbox", async () => {
+  it("leaves the default page background alone when a row changes", async () => {
     const onChange = vi.fn<(next: AdminAppearance) => void>()
     render(
       <AppearanceMenu
         value={{
           ...defaultAdminAppearance,
-          page: { gradient: "ocean", soft: true },
-          pages: { orders: { gradient: "ember", soft: true } },
+          page: "ocean",
+          pages: { orders: "ember" },
         }}
         onChange={onChange}
         pages={pages}
@@ -371,35 +302,31 @@ describe("AppearanceMenu per page", () => {
     )
 
     const user = await openMenu()
-    const checkboxes = screen.getAllByRole("checkbox", {
-      name: "Soften the colour",
-    })
-    await user.click(checkboxes[1])
+    await user.click(screen.getByRole("combobox", { name: "Orders" }))
+    await user.click(await screen.findByRole("option", { name: "Grape" }))
 
     const last = onChange.mock.calls.at(-1)?.[0]
-    expect(last?.pages.orders).toEqual({ gradient: "ember", soft: false })
-    expect(last?.page).toEqual({ gradient: "ocean", soft: true })
+    expect(last?.pages.orders).toBe("grape")
+    expect(last?.page).toBe("ocean")
   })
 
-  it("disables the checkbox of a page that inherits the default", async () => {
+  it("edits a custom colour set on a single page", async () => {
+    const onChange = vi.fn<(next: AdminAppearance) => void>()
     render(
       <AppearanceMenu
-        value={{
-          ...defaultAdminAppearance,
-          page: { gradient: "ocean", soft: false },
-        }}
-        onChange={() => {}}
+        value={{ ...defaultAdminAppearance, pages: { orders: "#0f172a" } }}
+        onChange={onChange}
         pages={pages}
       />
     )
 
-    await openMenu()
-    const checkboxes = screen.getAllByRole("checkbox", {
-      name: "Soften the colour",
-    })
+    const user = await openMenu()
+    const fields = screen.getAllByRole("textbox", { name: "Custom color hex" })
+    await user.clear(fields.at(-1) as HTMLElement)
+    await user.type(fields.at(-1) as HTMLElement, "#eceff3")
 
-    expect(checkboxes[1]).toHaveAttribute("aria-disabled", "true")
-    expect(checkboxes[1]).not.toBeChecked()
+    const last = onChange.mock.calls.at(-1)?.[0]
+    expect(last?.pages.orders).toBe("#eceff3")
   })
 })
 
@@ -420,15 +347,29 @@ describe("AppearanceMenu localization", () => {
 })
 
 describe("AppearanceMenu themes", () => {
-  it("renders a button per theme", async () => {
+  it("offers every theme as an option of one select", async () => {
     render(<AppearanceMenu value={defaultAdminAppearance} onChange={() => {}} />)
 
-    await openMenu()
+    const user = await openMenu()
+    await user.click(screen.getByRole("combobox", { name: "Theme" }))
 
     for (const theme of appearanceThemes) {
-      expect(screen.getByRole("button", { name: theme.name })).toBeInTheDocument()
+      expect(
+        await screen.findByRole("option", { name: theme.name })
+      ).toBeInTheDocument()
     }
-    expect(appearanceThemes).toHaveLength(20)
+    expect(appearanceThemes).toHaveLength(26)
+  })
+
+  it("keeps the trigger on its label, since picking is an action", async () => {
+    render(<AppearanceMenu value={defaultAdminAppearance} onChange={() => {}} />)
+
+    const user = await openMenu()
+    const trigger = screen.getByRole("combobox", { name: "Theme" })
+    await user.click(trigger)
+    await user.click(await screen.findByRole("option", { name: "Sage" }))
+
+    expect(trigger).toHaveTextContent("Theme")
   })
 
   it("hands the whole preset to onChange when a theme is picked", async () => {
@@ -436,7 +377,8 @@ describe("AppearanceMenu themes", () => {
     render(<AppearanceMenu value={defaultAdminAppearance} onChange={onChange} />)
 
     const user = await openMenu()
-    await user.click(screen.getByRole("button", { name: "Sage" }))
+    await user.click(screen.getByRole("combobox", { name: "Theme" }))
+    await user.click(await screen.findByRole("option", { name: "Sage" }))
 
     expect(onChange).toHaveBeenCalledWith(
       appearanceThemes.find((theme) => theme.id === "sage")?.appearance
@@ -448,12 +390,13 @@ describe("AppearanceMenu themes", () => {
     const value: AdminAppearance = {
       ...defaultAdminAppearance,
       blocks: { revenue: { heading: "large" } },
-      pages: { orders: { gradient: "#123456", soft: false } },
+      pages: { orders: "#123456" },
     }
     render(<AppearanceMenu value={value} onChange={onChange} />)
 
     const user = await openMenu()
-    await user.click(screen.getByRole("button", { name: "Sage" }))
+    await user.click(screen.getByRole("combobox", { name: "Theme" }))
+    await user.click(await screen.findByRole("option", { name: "Sage" }))
 
     const next = onChange.mock.calls.at(-1)?.[0]
     const sage = appearanceThemes.find((theme) => theme.id === "sage")?.appearance
@@ -462,6 +405,19 @@ describe("AppearanceMenu themes", () => {
     expect(next?.pages).toEqual(value.pages)
     expect(next?.sidebar).toBe(sage?.sidebar)
     expect(next?.accent).toBe(sage?.accent)
+  })
+
+  it("applies a green preset from the new half of the list", async () => {
+    const onChange = vi.fn<(next: AdminAppearance) => void>()
+    render(<AppearanceMenu value={defaultAdminAppearance} onChange={onChange} />)
+
+    const user = await openMenu()
+    await user.click(screen.getByRole("combobox", { name: "Theme" }))
+    await user.click(await screen.findByRole("option", { name: "Pine" }))
+
+    const next = onChange.mock.calls.at(-1)?.[0]
+    expect(next?.sidebar).toBe("#1f3a2e")
+    expect(next?.page).toBe("#e8efe9")
   })
 
   it("names the themes in Russian", async () => {
@@ -473,10 +429,15 @@ describe("AppearanceMenu themes", () => {
       />
     )
 
-    await openMenu(localeRu.appearanceMenu.label)
+    const user = await openMenu(localeRu.appearanceMenu.label)
+    await user.click(
+      screen.getByRole("combobox", { name: localeRu.appearanceMenu.theme })
+    )
 
     expect(
-      screen.getByRole("button", { name: localeRu.appearanceMenu.themes.slate })
+      await screen.findByRole("option", {
+        name: localeRu.appearanceMenu.themes.slate,
+      })
     ).toBeInTheDocument()
   })
 })
@@ -594,7 +555,7 @@ describe("AppearanceMenu custom surface colours", () => {
     expect(last?.sidebar).toBe("#eceff3")
   })
 
-  it("softens a custom page background by default", async () => {
+  it("puts a starting colour in the page background too", async () => {
     const onChange = vi.fn<(next: AdminAppearance) => void>()
     render(<AppearanceMenu value={defaultAdminAppearance} onChange={onChange} />)
 
@@ -603,7 +564,7 @@ describe("AppearanceMenu custom surface colours", () => {
     await user.click(await screen.findByRole("option", { name: "Custom color…" }))
 
     const last = onChange.mock.calls.at(-1)?.[0]
-    expect(last?.page).toEqual({ gradient: "#6b7280", soft: true })
+    expect(last?.page).toBe("#6b7280")
   })
 
   it("names the custom option in Russian", async () => {
@@ -629,6 +590,17 @@ describe("AppearanceMenu custom surface colours", () => {
 describe("AppearanceMenu drag handle", () => {
   const pointer = (type: string, clientX: number, clientY: number) =>
     new MouseEvent(type, { bubbles: true, clientX, clientY })
+
+  beforeEach(() => {
+    vi.spyOn(window, "requestAnimationFrame").mockImplementation((callback) => {
+      callback(0)
+      return 0
+    })
+  })
+
+  afterEach(() => {
+    vi.restoreAllMocks()
+  })
 
   const handleOf = () => {
     const handle = document.querySelector('[data-slot="appearance-drag-handle"]')
@@ -665,6 +637,23 @@ describe("AppearanceMenu drag handle", () => {
     fireEvent(window, pointer("pointermove", 90, 90))
 
     expect(content.style.transform).toBe("translate3d(10px, 10px, 0)")
+  })
+
+  it("moves the popup without re-rendering it on every pointermove", async () => {
+    const onChange = vi.fn<(next: AdminAppearance) => void>()
+    render(<AppearanceMenu value={defaultAdminAppearance} onChange={onChange} />)
+
+    await openMenu()
+    const content = screen.getByRole("dialog", { name: "Appearance" })
+
+    fireEvent(handleOf(), pointer("pointerdown", 0, 0))
+    for (let step = 1; step <= 20; step++) {
+      fireEvent(window, pointer("pointermove", step, step * 2))
+    }
+    fireEvent(window, pointer("pointerup", 20, 40))
+
+    expect(content.style.transform).toBe("translate3d(20px, 40px, 0)")
+    expect(onChange).not.toHaveBeenCalled()
   })
 
   it("keeps the handle out of the accessibility tree", async () => {

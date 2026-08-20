@@ -1,6 +1,6 @@
 "use client"
 
-import type { ComponentProps, ReactElement } from "react"
+import { useState, type ComponentProps, type ReactElement } from "react"
 import { Ban, Check, Settings2 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -30,6 +30,7 @@ import {
   type BlockHeading,
   type GradientId,
 } from "./appearance-palette"
+import { DragHandle, useDragOffset } from "./drag-handle"
 
 export interface BlockProps extends ComponentProps<typeof Card> {
   id?: string
@@ -105,6 +106,9 @@ function BlockMenu({
   onChange,
   labels,
 }: BlockMenuProps) {
+  const [open, setOpen] = useState(false)
+  const { ref, start, reset } = useDragOffset()
+
   const selectGradient = (next: GradientId | null) => {
     onChange(setBlockAppearance(value, id, { gradient: next }))
   }
@@ -114,7 +118,15 @@ function BlockMenu({
   }
 
   return (
-    <Popover>
+    <Popover
+      open={open}
+      onOpenChange={(next) => {
+        setOpen(next)
+        if (!next) {
+          reset()
+        }
+      }}
+    >
       <PopoverTrigger
         aria-label={labels.blockMenu}
         render={
@@ -128,9 +140,11 @@ function BlockMenu({
         <Settings2 className="size-3" aria-hidden="true" />
       </PopoverTrigger>
       <PopoverContent
+        ref={ref}
         aria-label={labels.blockMenu}
         className="max-h-[70vh] w-auto overflow-y-auto"
       >
+        <DragHandle onPointerDown={start} />
         <div className="flex flex-col gap-1.5">
           <span className="text-xs font-medium text-muted-foreground">
             {labels.gradient}

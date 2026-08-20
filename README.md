@@ -68,25 +68,26 @@ white or black where the kit's near-white and near-black would not
 (the better of pure white and pure black is at least √21 ≈ 4.58:1
 against any colour, so a legible pair always exists), and it derives the
 same destructive pair that a palette gradient gets. A custom colour also
-gets a dark-scheme variant of itself: a light one is mapped into the dark
-chrome band at the same hue (`customDarkColor`), so a light-grey sidebar
-turns into a dark grey one under `.dark` instead of staying a white slab,
-while a colour that is already dark passes through untouched. Both
-variants are emitted as scheme-scoped `--custom-<hex>` variables, and
-every rule that paints the colour reads them. Only a validated colour
-ever reaches the CSS. `appearanceThemes` ships twenty calm presets built
-entirely out of such colours — Slate, Mist, Sage, Graphite, Paper, Frost,
-Night, Ink and a dozen more — and the menu's Theme grid applies one
-wholesale, keeping the per-block and per-page choices the theme knows
-nothing about. The menu's popup can be dragged out of the way by the grip
-at its top while the panel underneath is being adjusted. A page backdrop is the soft
-tint of the chosen gradient by default — the vivid variant is loud
-behind a page — but each backdrop select in the appearance menu carries
-a soften checkbox that turns the tint into the full gradient. That is
-what makes a backdrop a pair rather than an id: `page` and every entry
-of `pages` is `{ gradient, soft } | null`, and `resolvePageBackdrop`
-returns that pair. The sign-in screen, reached through `page-auth`,
-paints its backdrop vivid regardless.
+gets a dark-scheme variant of itself: every colour is compressed into the
+dark chrome band at the same hue (`customDarkColor`), so a light-grey
+sidebar turns into a dark grey one under `.dark` instead of staying a
+white slab, and a nearly black one lifts far enough off the page to still
+read as a panel. Both variants are emitted as scheme-scoped
+`--custom-<hex>` variables, and every rule that paints the colour reads
+them. Only a validated colour ever reaches the CSS. `appearanceThemes`
+ships twenty-six calm presets built entirely out of such colours — Slate,
+Mist, Sage, Graphite, Paper, Frost, Night, Ink, Pine, Navy, Arctic and
+more — offered by the menu's Theme select, which applies one wholesale
+and returns to its label, keeping the per-block and per-page choices the
+theme knows nothing about. Both popups — the appearance menu and a
+block's corner menu — can be dragged out of the way by the grip at their
+top while the panel underneath is being adjusted. A page backdrop is
+always the quiet one: a palette gradient is painted as its soft tint,
+never the vivid variant, and a custom colour is painted exactly as it was
+typed. So a backdrop is a plain choice: `page` and every entry of `pages`
+is `SurfaceChoice | null`, and `resolvePageBackdrop` returns that. The
+sign-in screen, reached through `page-auth`, is the one place that paints
+a palette gradient in full.
 
 The appearance is one serializable value. Store it wherever you store
 the rest of your settings, hand it to the provider and the stylesheet in

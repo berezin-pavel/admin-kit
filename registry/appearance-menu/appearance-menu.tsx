@@ -1,19 +1,16 @@
 "use client"
 
 import {
-  useEffect,
   useId,
   useState,
   type ChangeEvent,
   type CSSProperties,
-  type PointerEvent as ReactPointerEvent,
   type ReactElement,
   type ReactNode,
 } from "react"
-import { GripHorizontal, Palette } from "lucide-react"
+import { Palette } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import {
   Popover,
@@ -43,13 +40,16 @@ import {
   type CustomColor,
   type GradientFamily,
   type GradientId,
-  type PageBackdrop,
   type SurfaceChoice,
 } from "@/registry/admin-appearance/appearance-palette"
 import {
   appearanceThemes,
   type AppearanceTheme,
 } from "@/registry/admin-appearance/appearance-themes"
+import {
+  DragHandle,
+  useDragOffset,
+} from "@/registry/admin-appearance/drag-handle"
 
 export interface AppearanceMenuLabels {
   label?: string
@@ -62,7 +62,6 @@ export interface AppearanceMenuLabels {
   pages?: string
   inherit?: string
   none?: string
-  soft?: string
   custom?: string
   customColor?: string
   customColorHex?: string
@@ -112,7 +111,6 @@ const defaultLabels: Required<
   pages: "Per page",
   inherit: "Same as default",
   none: "No gradient",
-  soft: "Soften the colour",
   custom: "Custom color…",
   customColor: "Custom color",
   customColorHex: "Custom color hex",
@@ -130,7 +128,6 @@ function resolveLabels(labels: AppearanceMenuLabels | undefined): ResolvedLabels
     pages: labels?.pages ?? defaultLabels.pages,
     inherit: labels?.inherit ?? defaultLabels.inherit,
     none: labels?.none ?? defaultLabels.none,
-    soft: labels?.soft ?? defaultLabels.soft,
     custom: labels?.custom ?? defaultLabels.custom,
     customColor: labels?.customColor ?? defaultLabels.customColor,
     customColorHex: labels?.customColorHex ?? defaultLabels.customColorHex,
@@ -294,7 +291,7 @@ function CustomColorInputs({
         onChange={(event) =>
           onChange(event.target.value.toLowerCase() as CustomColor)
         }
-        className="size-8 shrink-0 cursor-pointer rounded-lg border border-input bg-transparent p-0.5"
+        className="size-9 shrink-0 cursor-pointer rounded-lg border border-input bg-transparent p-1"
       />
       <input
         type="text"
@@ -304,7 +301,7 @@ function CustomColorInputs({
         maxLength={7}
         spellCheck={false}
         autoComplete="off"
-        className="h-8 w-24 rounded-lg border border-input bg-transparent px-2.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 dark:bg-input/30"
+        className="h-9 w-24 shrink-0 rounded-lg border border-input bg-transparent px-2.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 dark:bg-input/30"
       />
     </div>
   )
@@ -328,150 +325,69 @@ function SurfaceSection({
       <Label htmlFor={id} className="text-xs font-medium text-muted-foreground">
         {label}
       </Label>
-      <Select<SurfaceSelectValue>
-        value={selectValueOf(value)}
-        onValueChange={(next) => {
-          if (next === null) {
-            return
-          }
-          onChange(surfaceFromSelect(next, value))
-        }}
-      >
-        <SelectTrigger id={id} className="w-full">
-          <SelectValue>{renderSurfaceChoice(value, labels)}</SelectValue>
-        </SelectTrigger>
-        <SelectContent
-          align="start"
-          alignItemWithTrigger={false}
-          className="w-auto min-w-(--anchor-width)"
+      <div className="flex items-center gap-2">
+        <Select<SurfaceSelectValue>
+          value={selectValueOf(value)}
+          onValueChange={(next) => {
+            if (next === null) {
+              return
+            }
+            onChange(surfaceFromSelect(next, value))
+          }}
         >
-          <SelectItem value="none">{labels.none}</SelectItem>
-          <SelectItem value="custom">{labels.custom}</SelectItem>
-          <SurfaceSelectItems labels={labels} />
-        </SelectContent>
-      </Select>
-      {isCustomColor(value) ? (
-        <CustomColorInputs color={value} labels={labels} onChange={onChange} />
-      ) : null}
+          <SelectTrigger
+            id={id}
+            className="min-w-0 flex-1 data-[size=default]:h-9"
+          >
+            <SelectValue>{renderSurfaceChoice(value, labels)}</SelectValue>
+          </SelectTrigger>
+          <SelectContent
+            align="start"
+            alignItemWithTrigger={false}
+            className="w-auto min-w-(--anchor-width)"
+          >
+            <SelectItem value="none">{labels.none}</SelectItem>
+            <SelectItem value="custom">{labels.custom}</SelectItem>
+            <SurfaceSelectItems labels={labels} />
+          </SelectContent>
+        </Select>
+        {isCustomColor(value) ? (
+          <CustomColorInputs color={value} labels={labels} onChange={onChange} />
+        ) : null}
+      </div>
     </section>
   )
 }
 
-function SoftCheckbox({
-  label,
-  checked,
-  disabled,
-  onCheckedChange,
-}: {
-  label: string
-  checked: boolean
-  disabled: boolean
-  onCheckedChange: (next: boolean) => void
-}): ReactElement {
-  return (
-    <Hint
-      text={label}
-      render={
-        <Checkbox
-          aria-label={label}
-          checked={checked}
-          disabled={disabled}
-          onCheckedChange={onCheckedChange}
-          className="shrink-0"
-        />
-      }
-    />
-  )
-}
-
-interface DragOffset {
-  x: number
-  y: number
-}
-
-const NO_OFFSET: DragOffset = { x: 0, y: 0 }
-
-function useDragOffset() {
-  const [offset, setOffset] = useState<DragOffset>(NO_OFFSET)
-  const [origin, setOrigin] = useState<DragOffset | null>(null)
-
-  useEffect(() => {
-    if (!origin) {
-      return
-    }
-    const move = (event: PointerEvent) => {
-      setOffset({ x: event.clientX - origin.x, y: event.clientY - origin.y })
-    }
-    const stop = () => setOrigin(null)
-
-    window.addEventListener("pointermove", move)
-    window.addEventListener("pointerup", stop)
-    window.addEventListener("pointercancel", stop)
-    return () => {
-      window.removeEventListener("pointermove", move)
-      window.removeEventListener("pointerup", stop)
-      window.removeEventListener("pointercancel", stop)
-    }
-  }, [origin])
-
-  const start = (event: ReactPointerEvent<HTMLDivElement>) => {
-    event.preventDefault()
-    setOrigin({ x: event.clientX - offset.x, y: event.clientY - offset.y })
-  }
-
-  return { offset, start, reset: () => setOffset(NO_OFFSET) }
-}
-
-function DragHandle({
-  onPointerDown,
-}: {
-  onPointerDown: (event: ReactPointerEvent<HTMLDivElement>) => void
-}): ReactElement {
-  return (
-    <div
-      aria-hidden="true"
-      data-slot="appearance-drag-handle"
-      onPointerDown={onPointerDown}
-      className="-mt-1 flex h-5 w-full shrink-0 cursor-grab touch-none select-none items-center justify-center rounded-sm text-muted-foreground active:cursor-grabbing"
-    >
-      <GripHorizontal className="size-4" />
-    </div>
-  )
-}
-
-function ThemeButton({
+function ThemeOption({
   theme,
-  labels,
-  onSelect,
+  name,
 }: {
   theme: AppearanceTheme
-  labels: ResolvedLabels
-  onSelect: () => void
+  name: string
 }): ReactElement {
   const strip: readonly SurfaceChoice[] = [
     theme.appearance.sidebar,
     accentHexOf(theme.appearance.accent) as CustomColor,
-    theme.appearance.page?.gradient ?? null,
+    theme.appearance.page,
   ].filter((choice): choice is SurfaceChoice => choice !== null)
 
   return (
-    <button
-      type="button"
-      onClick={onSelect}
-      className="flex flex-col gap-1.5 rounded-lg border border-border p-1.5 text-left text-xs hover:bg-accent"
-    >
+    <span className="flex items-center gap-2">
       <span
         aria-hidden="true"
-        className="flex h-4 overflow-hidden rounded-sm ring-1 ring-foreground/10"
+        className="flex h-3 w-8 overflow-hidden rounded-sm ring-1 ring-foreground/10"
       >
-        {strip.map((choice) => (
-          <span key={choice} className="flex-1" style={surfaceSwatchStyle(choice)} />
+        {strip.map((choice, index) => (
+          <span
+            key={`${choice}-${index}`}
+            className="flex-1"
+            style={surfaceSwatchStyle(choice)}
+          />
         ))}
       </span>
-      <span className="truncate">
-        {labels.themes[theme.id] ?? theme.name}
-      </span>
-    </button>
+      <span>{name}</span>
+    </span>
   )
 }
 
@@ -484,8 +400,9 @@ export function AppearanceMenu({
 }: AppearanceMenuProps): ReactElement {
   const labels = resolveLabels(labelsProp)
   const [open, setOpen] = useState(false)
-  const { offset, start, reset } = useDragOffset()
+  const { ref, start, reset } = useDragOffset()
   const baseId = useId()
+  const themeId = `${baseId}-theme`
   const sidebarId = `${baseId}-sidebar`
   const headerId = `${baseId}-header`
   const signInId = `${baseId}-sign-in`
@@ -499,25 +416,6 @@ export function AppearanceMenu({
     onChange({ ...value, accent })
   }
 
-  const withGradient = (
-    current: PageBackdrop | null | undefined,
-    gradient: SurfaceChoice
-  ): PageBackdrop => ({ gradient, soft: current?.soft ?? true })
-
-  const selectPageBackground = (next: SurfaceChoice | null) => {
-    onChange({
-      ...value,
-      page: next === null ? null : withGradient(value.page, next),
-    })
-  }
-
-  const togglePageSoft = (soft: boolean) => {
-    if (!value.page) {
-      return
-    }
-    onChange({ ...value, page: { ...value.page, soft } })
-  }
-
   const selectPageGradient = (
     pageEntryId: string,
     next: PageSurfaceSelectValue
@@ -528,37 +426,17 @@ export function AppearanceMenu({
       onChange({ ...value, pages: nextPages })
       return
     }
-    const current = value.pages[pageEntryId]
-    const surface = surfaceFromSelect(next, current?.gradient)
     onChange({
       ...value,
       pages: {
         ...value.pages,
-        [pageEntryId]: surface === null ? null : withGradient(current, surface),
+        [pageEntryId]: surfaceFromSelect(next, value.pages[pageEntryId]),
       },
     })
   }
 
   const setPageRowColor = (pageEntryId: string, next: CustomColor) => {
-    const current = value.pages[pageEntryId]
-    if (!current) {
-      return
-    }
-    onChange({
-      ...value,
-      pages: { ...value.pages, [pageEntryId]: { ...current, gradient: next } },
-    })
-  }
-
-  const togglePageRowSoft = (pageEntryId: string, soft: boolean) => {
-    const current = value.pages[pageEntryId]
-    if (!current) {
-      return
-    }
-    onChange({
-      ...value,
-      pages: { ...value.pages, [pageEntryId]: { ...current, soft } },
-    })
+    onChange({ ...value, pages: { ...value.pages, [pageEntryId]: next } })
   }
 
   return (
@@ -583,30 +461,51 @@ export function AppearanceMenu({
         }
       />
       <PopoverContent
+        ref={ref}
         aria-label={labels.label}
         className="max-h-[70vh] w-[24rem] overflow-y-auto"
-        style={
-          offset.x === 0 && offset.y === 0
-            ? undefined
-            : { transform: `translate3d(${offset.x}px, ${offset.y}px, 0)` }
-        }
       >
         <DragHandle onPointerDown={start} />
         <div className="flex flex-col gap-4">
           <section className="flex flex-col gap-1.5">
-            <span className="text-xs font-medium text-muted-foreground">
+            <Label
+              htmlFor={themeId}
+              className="text-xs font-medium text-muted-foreground"
+            >
               {labels.theme}
-            </span>
-            <div className="grid grid-cols-2 gap-1.5">
-              {appearanceThemes.map((theme) => (
-                <ThemeButton
-                  key={theme.id}
-                  theme={theme}
-                  labels={labels}
-                  onSelect={() => applyTheme(theme)}
-                />
-              ))}
-            </div>
+            </Label>
+            <Select<string>
+              value={null}
+              onValueChange={(next) => {
+                const theme = appearanceThemes.find(
+                  (candidate) => candidate.id === next
+                )
+                if (theme) {
+                  applyTheme(theme)
+                }
+              }}
+            >
+              <SelectTrigger
+                id={themeId}
+                className="w-full data-[size=default]:h-9"
+              >
+                <SelectValue placeholder={labels.theme} />
+              </SelectTrigger>
+              <SelectContent
+                align="start"
+                alignItemWithTrigger={false}
+                className="w-auto min-w-(--anchor-width)"
+              >
+                {appearanceThemes.map((theme) => (
+                  <SelectItem key={theme.id} value={theme.id}>
+                    <ThemeOption
+                      theme={theme}
+                      name={labels.themes[theme.id] ?? theme.name}
+                    />
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </section>
 
           <section className="flex flex-col gap-1.5">
@@ -668,55 +567,13 @@ export function AppearanceMenu({
             onChange={(next) => onChange({ ...value, signIn: next })}
           />
 
-          <section className="flex flex-col gap-1.5">
-            <Label
-              htmlFor={pageId}
-              className="text-xs font-medium text-muted-foreground"
-            >
-              {labels.page}
-            </Label>
-            <div className="flex items-center gap-2">
-              <Select<SurfaceSelectValue>
-                value={selectValueOf(value.page?.gradient ?? null)}
-                onValueChange={(next) => {
-                  if (next === null) {
-                    return
-                  }
-                  selectPageBackground(
-                    surfaceFromSelect(next, value.page?.gradient)
-                  )
-                }}
-              >
-                <SelectTrigger id={pageId} className="min-w-0 flex-1">
-                  <SelectValue>
-                    {renderSurfaceChoice(value.page?.gradient ?? null, labels)}
-                  </SelectValue>
-                </SelectTrigger>
-                <SelectContent
-                  align="start"
-                  alignItemWithTrigger={false}
-                  className="w-auto min-w-(--anchor-width)"
-                >
-                  <SelectItem value="none">{labels.none}</SelectItem>
-                  <SelectItem value="custom">{labels.custom}</SelectItem>
-                  <SurfaceSelectItems labels={labels} />
-                </SelectContent>
-              </Select>
-              <SoftCheckbox
-                label={labels.soft}
-                checked={value.page?.soft ?? true}
-                disabled={value.page === null}
-                onCheckedChange={togglePageSoft}
-              />
-            </div>
-            {value.page && isCustomColor(value.page.gradient) ? (
-              <CustomColorInputs
-                color={value.page.gradient}
-                labels={labels}
-                onChange={selectPageBackground}
-              />
-            ) : null}
-          </section>
+          <SurfaceSection
+            id={pageId}
+            label={labels.page}
+            value={value.page}
+            labels={labels}
+            onChange={(next) => onChange({ ...value, page: next })}
+          />
 
           {pages.length > 0 ? (
             <section className="flex flex-col gap-1.5">
@@ -726,13 +583,11 @@ export function AppearanceMenu({
               <div className="flex flex-col gap-2">
                 {pages.map((page) => {
                   const hasOverride = Object.hasOwn(value.pages, page.id)
-                  const override = value.pages[page.id]
+                  const override = value.pages[page.id] ?? null
                   const selectValue: PageSurfaceSelectValue = !hasOverride
                     ? "inherit"
-                    : selectValueOf(override?.gradient ?? null)
-                  const rowBackdrop = hasOverride ? override : value.page
+                    : selectValueOf(override)
                   const rowSelectId = `${baseId}-page-${page.id}`
-                  const rowColor = override?.gradient
 
                   return (
                     <div key={page.id} className="flex flex-col gap-1.5">
@@ -756,10 +611,7 @@ export function AppearanceMenu({
                             <SelectValue>
                               {selectValue === "inherit"
                                 ? labels.inherit
-                                : renderSurfaceChoice(
-                                    override?.gradient ?? null,
-                                    labels
-                                  )}
+                                : renderSurfaceChoice(override, labels)}
                             </SelectValue>
                           </SelectTrigger>
                           <SelectContent
@@ -773,16 +625,10 @@ export function AppearanceMenu({
                             <SurfaceSelectItems labels={labels} />
                           </SelectContent>
                         </Select>
-                        <SoftCheckbox
-                          label={labels.soft}
-                          checked={rowBackdrop?.soft ?? true}
-                          disabled={selectValue === "none" || selectValue === "inherit"}
-                          onCheckedChange={(soft) => togglePageRowSoft(page.id, soft)}
-                        />
                       </div>
-                      {isCustomColor(rowColor) ? (
+                      {isCustomColor(override) ? (
                         <CustomColorInputs
-                          color={rowColor}
+                          color={override}
                           labels={labels}
                           onChange={(next) => setPageRowColor(page.id, next)}
                           className="self-end"

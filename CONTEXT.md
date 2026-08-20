@@ -75,7 +75,7 @@ A whole named appearance shipped with the kit (`appearanceThemes`), applied in o
 _Avoid_: theme, skin, template
 
 **Backdrop**:
-A gradient painted behind blocks — the work area of a page or the sign-in screen. Stored as a pair of a gradient and a `soft` flag: soft by default, a light or dark tint of the gradient, and vivid when the flag is off (the appearance menu's soften checkbox). Never overrides text tokens, because no text sits on it.
+A colour painted behind blocks — the work area of a page or the sign-in screen. Stored as a plain `SurfaceChoice`: a palette gradient is painted as its soft tint, a custom colour exactly as it was typed. The sign-in screen is the one place that paints a palette gradient in full. Never overrides text tokens, because no text sits on it.
 _Avoid_: page background, wallpaper
 
 **Palette**:

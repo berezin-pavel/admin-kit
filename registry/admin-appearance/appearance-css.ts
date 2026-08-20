@@ -23,12 +23,11 @@ import {
   isAccentId,
   isCustomColor,
   isGradientId,
-  softStops,
   type AdminAppearance,
   type BlockHeading,
   type CustomColor,
   type GradientStops,
-  type PageBackdrop,
+  type SurfaceChoice,
 } from "./appearance-palette"
 
 const BLOCK_HEADINGS: readonly BlockHeading[] = ["regular", "large", "none"]
@@ -149,20 +148,10 @@ function isBlockAppearance(value: unknown) {
   return true
 }
 
-function isPageBackdrop(value: unknown): value is PageBackdrop {
-  return (
-    isRecord(value) &&
-    isSurfaceChoice(value.gradient) &&
-    typeof value.soft === "boolean"
-  )
-}
-
-function isNullablePageBackdrop(value: unknown): value is PageBackdrop | null {
-  return value === null || isPageBackdrop(value)
-}
-
-function isPageRecord(value: unknown): value is Record<string, PageBackdrop | null> {
-  return isRecord(value) && Object.values(value).every(isNullablePageBackdrop)
+function isPageRecord(
+  value: unknown
+): value is Record<string, SurfaceChoice | null> {
+  return isRecord(value) && Object.values(value).every(isNullableSurfaceChoice)
 }
 
 function isBlockAppearanceRecord(value: unknown): value is Record<string, unknown> {
@@ -176,7 +165,7 @@ export function isAdminAppearance(value: unknown): value is AdminAppearance {
     isNullableSurfaceChoice(value.sidebar) &&
     isNullableSurfaceChoice(value.header) &&
     isNullableSurfaceChoice(value.signIn) &&
-    isNullablePageBackdrop(value.page) &&
+    isNullableSurfaceChoice(value.page) &&
     isPageRecord(value.pages) &&
     isBlockAppearanceRecord(value.blocks)
   )
@@ -215,25 +204,17 @@ export function solidForeground(color: string): string {
     : PURE_BLACK
 }
 
-const CUSTOM_DARK_THRESHOLD = 0.55
-const CUSTOM_DARK_ANCHOR = 0.3
+const CUSTOM_DARK_BASE = 0.18
 const CUSTOM_DARK_SLOPE = 0.18
-const CUSTOM_DARK_MIN = 0.2
-const CUSTOM_DARK_MAX = 0.32
+const CUSTOM_DARK_MIN = 0.18
+const CUSTOM_DARK_MAX = 0.35
 const CUSTOM_DARK_CHROMA_CAP = 0.06
 
 export function customDarkColor(color: CustomColor): string {
-  const hex = color.toLowerCase()
-  const { l, c, h } = hexToOklch(hex)
-  if (l <= CUSTOM_DARK_THRESHOLD) {
-    return hex
-  }
+  const { l, c, h } = hexToOklch(color.toLowerCase())
   const lightness = Math.min(
     CUSTOM_DARK_MAX,
-    Math.max(
-      CUSTOM_DARK_MIN,
-      CUSTOM_DARK_ANCHOR - (l - CUSTOM_DARK_THRESHOLD) * CUSTOM_DARK_SLOPE
-    )
+    Math.max(CUSTOM_DARK_MIN, CUSTOM_DARK_BASE + l * CUSTOM_DARK_SLOPE)
   )
   return oklchToHex({ l: lightness, c: Math.min(c, CUSTOM_DARK_CHROMA_CAP), h })
 }
@@ -256,9 +237,9 @@ export function customColorsOf(appearance: AdminAppearance): CustomColor[] {
   add(appearance.sidebar)
   add(appearance.header)
   add(appearance.signIn)
-  add(appearance.page?.gradient)
+  add(appearance.page)
   for (const backdrop of Object.values(appearance.pages)) {
-    add(backdrop?.gradient)
+    add(backdrop)
   }
 
   return [...found].sort() as CustomColor[]
@@ -279,7 +260,6 @@ function customColorLines(
         `  ${variable}-foreground: ${solidForeground(hex)};`,
         `  ${variable}-destructive: ${destructive};`,
         `  ${variable}-destructive-foreground: ${destructiveForeground};`,
-        `  ${variable}-soft: ${gradientCss(softStops(stops, scheme))};`,
       ]
     })
     .join("\n")
@@ -304,8 +284,7 @@ function customColorBlocks(colors: readonly CustomColor[]): string {
       return [
         `[data-gradient="${hex}"] {\n${surface}\n}`,
         `body:has([data-gradient="${hex}"] ${OPEN_TRIGGER}) ${POPUP_SLOTS} {\n${surface}\n}`,
-        `[data-backdrop="${hex}"] {\n  --backdrop-gradient: var(${variable}-soft);\n  --backdrop-text: var(--foreground);\n}`,
-        `[data-backdrop="${hex}"][data-backdrop-vivid] {\n  --backdrop-gradient: var(${variable});\n  --backdrop-text: var(${variable}-foreground);\n}`,
+        `[data-backdrop="${hex}"] {\n  --backdrop-gradient: var(${variable});\n  --backdrop-text: var(${variable}-foreground);\n}`,
       ].join("\n\n")
     })
     .join("\n\n")

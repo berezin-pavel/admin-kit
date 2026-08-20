@@ -1,7 +1,7 @@
 import { useState } from "react"
-import { render, screen, within } from "@testing-library/react"
+import { fireEvent, render, screen, within } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
-import { describe, expect, it, vi } from "vitest"
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
 import { Block } from "./block"
 import { AppearanceProvider, useBlockAppearance } from "./appearance-provider"
@@ -303,6 +303,61 @@ describe("Block corner menu interaction", () => {
         within(gradientGroup).getByText(gradientFamilyNames[family])
       ).toBeInTheDocument()
     }
+  })
+})
+
+describe("Block corner menu drag handle", () => {
+  const pointer = (type: string, clientX: number, clientY: number) =>
+    new MouseEvent(type, { bubbles: true, clientX, clientY })
+
+  beforeEach(() => {
+    vi.spyOn(window, "requestAnimationFrame").mockImplementation((callback) => {
+      callback(0)
+      return 0
+    })
+  })
+
+  afterEach(() => {
+    vi.restoreAllMocks()
+  })
+
+  const handleOf = () => {
+    const handle = document.querySelector('[data-slot="appearance-drag-handle"]')
+    if (!(handle instanceof HTMLElement)) {
+      throw new Error("the popup has no drag handle")
+    }
+    return handle
+  }
+
+  it("moves the popup by the distance the handle is dragged", async () => {
+    const user = userEvent.setup()
+    render(<Harness onChangeSpy={vi.fn()} />)
+
+    await user.click(screen.getByRole("button", { name: "Block appearance" }))
+    const content = screen.getByRole("dialog", { name: "Block appearance" })
+
+    expect(content.style.transform).toBe("")
+
+    fireEvent(handleOf(), pointer("pointerdown", 100, 100))
+    fireEvent(window, pointer("pointermove", 130, 150))
+    fireEvent(window, pointer("pointerup", 130, 150))
+
+    expect(content.style.transform).toBe("translate3d(30px, 50px, 0)")
+  })
+
+  it("stops moving once the pointer is released", async () => {
+    const user = userEvent.setup()
+    render(<Harness onChangeSpy={vi.fn()} />)
+
+    await user.click(screen.getByRole("button", { name: "Block appearance" }))
+    const content = screen.getByRole("dialog", { name: "Block appearance" })
+
+    fireEvent(handleOf(), pointer("pointerdown", 0, 0))
+    fireEvent(window, pointer("pointermove", 10, 10))
+    fireEvent(window, pointer("pointerup", 10, 10))
+    fireEvent(window, pointer("pointermove", 90, 90))
+
+    expect(content.style.transform).toBe("translate3d(10px, 10px, 0)")
   })
 })
 

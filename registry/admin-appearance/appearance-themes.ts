@@ -17,7 +17,7 @@ function preset(
     sidebar: chrome,
     header: chrome,
     signIn,
-    page: page === null ? null : { gradient: page, soft: true },
+    page,
     pages: {},
     blocks: {},
   }
@@ -123,5 +123,35 @@ export const appearanceThemes: readonly AppearanceTheme[] = [
     id: "ink",
     name: "Ink",
     appearance: preset("#111111", "#2563eb", "#e5e7eb", "#000000"),
+  },
+  {
+    id: "pine",
+    name: "Pine",
+    appearance: preset("#1f3a2e", "#0d9488", "#e8efe9", "#12241c"),
+  },
+  {
+    id: "fern",
+    name: "Fern",
+    appearance: preset("#eef3ec", "#15803d", "#f3f7f1", "#1f3a2e"),
+  },
+  {
+    id: "navy",
+    name: "Navy",
+    appearance: preset("#1e2a44", "#3b82f6", "#e6eaf2", "#101a30"),
+  },
+  {
+    id: "denim",
+    name: "Denim",
+    appearance: preset("#33415e", "#2563eb", "#e8ecf3", "#1c2740"),
+  },
+  {
+    id: "arctic",
+    name: "Arctic",
+    appearance: preset("#e7eef5", "#0369a1", "#f0f5fa", "#123a56"),
+  },
+  {
+    id: "indigo-night",
+    name: "Indigo",
+    appearance: preset("#272b55", "#6366f1", "#e9eaf5", "#161936"),
   },
 ]

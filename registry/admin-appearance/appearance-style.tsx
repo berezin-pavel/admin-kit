@@ -1,13 +1,10 @@
 import { appearanceCss, customDarkColor } from "./appearance-css"
 import {
-  CUSTOM_COLOR_ANGLE,
-  customColorStops,
   customColorVariable,
   gradientPalette,
   isCustomColor,
-  softStops,
   type AdminAppearance,
-  type PageBackdrop,
+  type SurfaceChoice,
 } from "./appearance-palette"
 
 export function AppearanceStyle({ value }: { value: AdminAppearance }) {
@@ -17,56 +14,48 @@ export function AppearanceStyle({ value }: { value: AdminAppearance }) {
 const THEME_BACKGROUND = { light: "#ffffff", dark: "#0a0a0a" }
 
 export function backdropThemeColors(
-  backdrop: PageBackdrop | null | undefined
+  backdrop: SurfaceChoice | null | undefined,
+  vivid = false
 ): { light: string; dark: string } {
   if (!backdrop) {
     return THEME_BACKGROUND
   }
-  if (isCustomColor(backdrop.gradient)) {
-    const light = backdrop.gradient.toLowerCase()
-    const dark = customDarkColor(backdrop.gradient)
-    if (!backdrop.soft) {
-      return { light, dark }
-    }
+  if (isCustomColor(backdrop)) {
     return {
-      light: softStops(customColorStops(backdrop.gradient), "light").stops[0],
-      dark: softStops(
-        { angle: CUSTOM_COLOR_ANGLE, stops: [dark, dark, dark] },
-        "dark"
-      ).stops[0],
+      light: backdrop.toLowerCase(),
+      dark: customDarkColor(backdrop),
     }
   }
-  const entry = gradientPalette.find(
-    (candidate) => candidate.id === backdrop.gradient
-  )
+  const entry = gradientPalette.find((candidate) => candidate.id === backdrop)
   if (!entry) {
     return THEME_BACKGROUND
   }
-  return backdrop.soft
-    ? { light: entry.softLight.stops[0], dark: entry.softDark.stops[0] }
-    : { light: entry.light.stops[0], dark: entry.dark.stops[0] }
+  return vivid
+    ? { light: entry.light.stops[0], dark: entry.dark.stops[0] }
+    : { light: entry.softLight.stops[0], dark: entry.softDark.stops[0] }
 }
 
-function canvasBackgroundImage(backdrop: PageBackdrop): string {
-  if (isCustomColor(backdrop.gradient)) {
-    const variable = customColorVariable(backdrop.gradient)
-    return `var(${variable}${backdrop.soft ? "-soft" : ""})`
+function canvasBackgroundImage(backdrop: SurfaceChoice, vivid: boolean): string {
+  if (isCustomColor(backdrop)) {
+    return `var(${customColorVariable(backdrop)})`
   }
-  return `var(--gradient-${backdrop.gradient}${backdrop.soft ? "-soft" : ""})`
+  return `var(--gradient-${backdrop}${vivid ? "" : "-soft"})`
 }
 
 export function AppearanceCanvas({
   backdrop,
+  vivid = false,
 }: {
-  backdrop: PageBackdrop | null | undefined
+  backdrop: SurfaceChoice | null | undefined
+  vivid?: boolean
 }) {
-  const colors = backdropThemeColors(backdrop)
+  const colors = backdropThemeColors(backdrop, vivid)
   return (
     <>
       {backdrop && (
         <style
           dangerouslySetInnerHTML={{
-            __html: `html{background-image:${canvasBackgroundImage(backdrop)}}body{background-color:transparent}`,
+            __html: `html{background-image:${canvasBackgroundImage(backdrop, vivid)}}body{background-color:transparent}`,
           }}
         />
       )}

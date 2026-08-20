@@ -8,11 +8,8 @@ import {
 } from "./appearance-style"
 import { customDarkColor } from "./appearance-css"
 import {
-  CUSTOM_COLOR_ANGLE,
-  customColorStops,
   defaultAdminAppearance,
   gradientPalette,
-  softStops,
 } from "./appearance-palette"
 
 describe("AppearanceStyle", () => {
@@ -27,10 +24,8 @@ describe("AppearanceStyle", () => {
 })
 
 describe("AppearanceCanvas", () => {
-  it("paints the document canvas with the soft stop when the backdrop is softened", () => {
-    const { container } = render(
-      <AppearanceCanvas backdrop={{ gradient: "ocean", soft: true }} />
-    )
+  it("paints the document canvas with the palette gradient's soft tint", () => {
+    const { container } = render(<AppearanceCanvas backdrop="ocean" />)
     const style = container.querySelector("style")
 
     expect(style?.innerHTML).toBe(
@@ -38,10 +33,8 @@ describe("AppearanceCanvas", () => {
     )
   })
 
-  it("paints the document canvas with the vivid stop when the backdrop is not softened", () => {
-    const { container } = render(
-      <AppearanceCanvas backdrop={{ gradient: "ocean", soft: false }} />
-    )
+  it("paints the full gradient when the canvas is asked for the vivid one", () => {
+    const { container } = render(<AppearanceCanvas backdrop="ocean" vivid />)
     const style = container.querySelector("style")
 
     expect(style?.innerHTML).toBe(
@@ -56,44 +49,37 @@ describe("AppearanceCanvas", () => {
   })
 
   it("emits a theme-color meta per scheme from the backdrop's soft tint", () => {
-    const backdrop = { gradient: "ocean", soft: true } as const
-    render(<AppearanceCanvas backdrop={backdrop} />)
+    render(<AppearanceCanvas backdrop="ocean" />)
     const metas = document.head.querySelectorAll('meta[name="theme-color"]')
 
     expect(metas).toHaveLength(2)
-    expect(metas[0]).toHaveAttribute("content", backdropThemeColors(backdrop).light)
+    expect(metas[0]).toHaveAttribute("content", backdropThemeColors("ocean").light)
     expect(metas[1]).toHaveAttribute("media", "(prefers-color-scheme: dark)")
   })
 
-  it("takes the vivid stop when the backdrop is not softened", () => {
+  it("takes the soft stop unless the vivid one is asked for", () => {
     const ocean = gradientPalette.find((entry) => entry.id === "ocean")
 
-    expect(backdropThemeColors({ gradient: "ocean", soft: false })).toEqual({
+    expect(backdropThemeColors("ocean", true)).toEqual({
       light: ocean?.light.stops[0],
       dark: ocean?.dark.stops[0],
     })
-    expect(backdropThemeColors({ gradient: "ocean", soft: true })).toEqual({
+    expect(backdropThemeColors("ocean")).toEqual({
       light: ocean?.softLight.stops[0],
       dark: ocean?.softDark.stops[0],
     })
   })
 
-  it("paints the canvas from the custom colour's soft variable", () => {
-    const { container } = render(
-      <AppearanceCanvas backdrop={{ gradient: "#aabbcc", soft: true }} />
+  it("paints a custom backdrop with the colour itself, softened or not", () => {
+    const { container: soft } = render(<AppearanceCanvas backdrop="#aabbcc" />)
+    const { container: vivid } = render(
+      <AppearanceCanvas backdrop="#AABBCC" vivid />
     )
 
-    expect(container.querySelector("style")?.innerHTML).toBe(
-      "html{background-image:var(--custom-aabbcc-soft)}body{background-color:transparent}"
+    expect(soft.querySelector("style")?.innerHTML).toBe(
+      "html{background-image:var(--custom-aabbcc)}body{background-color:transparent}"
     )
-  })
-
-  it("paints the canvas from the colour's own variable when it is not softened", () => {
-    const { container } = render(
-      <AppearanceCanvas backdrop={{ gradient: "#AABBCC", soft: false }} />
-    )
-
-    expect(container.querySelector("style")?.innerHTML).toBe(
+    expect(vivid.querySelector("style")?.innerHTML).toBe(
       "html{background-image:var(--custom-aabbcc)}body{background-color:transparent}"
     )
   })
@@ -103,24 +89,15 @@ describe("AppearanceCanvas", () => {
     const dark = customDarkColor(light)
 
     expect(dark).not.toBe(light)
-    expect(backdropThemeColors({ gradient: light, soft: false })).toEqual({
-      light,
-      dark,
-    })
-    expect(backdropThemeColors({ gradient: light, soft: true })).toEqual({
-      light: softStops(customColorStops(light), "light").stops[0],
-      dark: softStops(
-        { angle: CUSTOM_COLOR_ANGLE, stops: [dark, dark, dark] },
-        "dark"
-      ).stops[0],
-    })
+    expect(backdropThemeColors(light)).toEqual({ light, dark })
+    expect(backdropThemeColors(light, true)).toEqual({ light, dark })
   })
 
-  it("leaves a dark custom backdrop as it is in both schemes", () => {
-    expect(backdropThemeColors({ gradient: "#0f172a", soft: false })).toEqual({
-      light: "#0f172a",
-      dark: "#0f172a",
-    })
+  it("adapts a dark custom backdrop for the dark scheme too", () => {
+    const colors = backdropThemeColors("#0f172a")
+
+    expect(colors.light).toBe("#0f172a")
+    expect(colors.dark).toBe(customDarkColor("#0f172a"))
   })
 
   it("falls back to the theme's own background without a backdrop", () => {

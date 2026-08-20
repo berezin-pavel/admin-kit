@@ -602,18 +602,13 @@ export interface BlockAppearance {
   heading?: BlockHeading
 }
 
-export interface PageBackdrop {
-  gradient: SurfaceChoice
-  soft: boolean
-}
-
 export interface AdminAppearance {
   accent: AccentId | CustomColor
   sidebar: SurfaceChoice | null
   header: SurfaceChoice | null
   signIn: SurfaceChoice | null
-  page: PageBackdrop | null
-  pages: Record<string, PageBackdrop | null>
+  page: SurfaceChoice | null
+  pages: Record<string, SurfaceChoice | null>
   blocks: Record<string, BlockAppearance>
 }
 
@@ -630,7 +625,7 @@ export const defaultAdminAppearance: AdminAppearance = {
 export function resolvePageBackdrop(
   appearance: AdminAppearance,
   pageId?: string
-): PageBackdrop | null {
+): SurfaceChoice | null {
   if (pageId !== undefined && Object.hasOwn(appearance.pages, pageId)) {
     return appearance.pages[pageId]
   }

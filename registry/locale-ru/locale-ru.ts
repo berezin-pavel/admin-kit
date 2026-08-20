@@ -175,6 +175,12 @@ const appearanceThemeNamesRu: Record<string, string> = {
   moss: "Мох",
   porcelain: "Фарфор",
   ink: "Чернила",
+  pine: "Сосна",
+  fern: "Папоротник",
+  navy: "Нави",
+  denim: "Деним",
+  arctic: "Арктика",
+  "indigo-night": "Индиго",
 }
 
 const appearanceMenuRu = {
@@ -188,7 +194,6 @@ const appearanceMenuRu = {
   pages: "По страницам",
   inherit: "Как по умолчанию",
   none: "Без градиента",
-  soft: "Смягчить цвет",
   custom: "Свой цвет…",
   customColor: "Свой цвет",
   customColorHex: "HEX-код цвета",

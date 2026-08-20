@@ -25,6 +25,40 @@ Sections used below: **New** (items you can now install), **Changed** (installed
 re-pulling), **Breaking** (props or files that changed shape — read before overwriting), and
 **Project** (showcase, CI, docs — nothing that reaches your project).
 
+## Unreleased
+
+**Breaking** — `PageBackdrop` is gone. `AdminAppearance.page` and every entry of
+`AdminAppearance.pages` is now `SurfaceChoice | null`, `resolvePageBackdrop` returns that, and
+`admin-shell` takes `backdrop?: SurfaceChoice | null`. A stored appearance of the old
+`{ gradient, soft }` shape fails validation and falls back to the default — there is no
+migration. `AppearanceCanvas` takes `{ backdrop, vivid? }`: a palette backdrop is painted as its
+soft tint unless `vivid` is passed, a custom colour always exactly as typed, since the person
+typed the colour they wanted. The `[data-backdrop][data-backdrop-vivid]` rules stay for palette
+gradients — `page-auth` is the only thing that sets the attribute now. `appearance-menu` lost the
+soften checkbox and its `labels.soft`; `locale-ru` lost the matching string.
+
+**Changed** — `appearance-themes.ts` ships twenty-six presets: Pine, Fern, Navy, Denim, Arctic
+and Indigo join the neutrals, so greens and blues are reachable without hand-picking a colour.
+The menu's theme grid became a Select whose options carry the same three-colour strip; the
+trigger keeps showing "Theme", because picking a preset is an action, not a state.
+
+**Changed** — dragging either popup is smooth now. `useDragOffset` and `DragHandle` moved into
+`admin-appearance/drag-handle.tsx`, keep the offset in a ref and write `transform` straight onto
+the element inside one `requestAnimationFrame`, so a pointermove no longer re-renders the popup.
+A block's corner menu got the same handle at its top.
+
+**Changed** — `customDarkColor` maps every lightness, not just light ones: L' = 0.18 + L × 0.18
+clamped to [0.18, 0.35], hue kept, chroma capped at 0.06. Dark chromes now lift off the page
+under `.dark` instead of passing through unchanged. The `--custom-<hex>-soft` variable is gone
+with the backdrop tint that used it.
+
+**Changed** — in `appearance-menu` a slot holding a custom colour keeps its select and its
+colour and hex inputs on one row, all at the same height, instead of stacking them.
+
+**Project** — the demo ships with neutral blocks: `DEMO_APPEARANCE_DEFAULT.blocks` keeps only the
+two heading choices its layout depends on, so the overview shows the chosen theme rather than
+twenty hand-set gradients.
+
 ## 0.34.0 — 2026-08-20
 
 **Changed** — `admin-appearance/appearance-themes.ts` ships twenty presets instead of five. The

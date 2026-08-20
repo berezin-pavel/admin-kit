@@ -63,8 +63,8 @@ describe("isAdminAppearance with custom colours", () => {
         sidebar: "#abcdef",
         header: "#ABCDEF",
         signIn: "#0f172a",
-        page: { gradient: "#e2e8f0", soft: true },
-        pages: { orders: { gradient: "#111111", soft: false } },
+        page: "#e2e8f0",
+        pages: { orders: "#111111" },
       })
     ).toBe(true)
   })
@@ -86,15 +86,12 @@ describe("isAdminAppearance with custom colours", () => {
       ).toBe(false)
     }
     expect(
-      isAdminAppearance({
-        ...defaultAdminAppearance,
-        page: { gradient: "#xyz", soft: true },
-      })
+      isAdminAppearance({ ...defaultAdminAppearance, page: "#xyz" })
     ).toBe(false)
     expect(
       isAdminAppearance({
         ...defaultAdminAppearance,
-        pages: { orders: { gradient: "#12345", soft: true } },
+        pages: { orders: "#12345" },
       })
     ).toBe(false)
   })
@@ -107,8 +104,8 @@ describe("customColorsOf", () => {
       sidebar: "#AABBCC",
       header: "#aabbcc",
       signIn: "#112233",
-      page: { gradient: "#445566", soft: true },
-      pages: { orders: { gradient: "#112233", soft: false } },
+      page: "#445566",
+      pages: { orders: "#112233" },
     }
 
     expect(customColorsOf(appearance)).toEqual([
@@ -149,7 +146,7 @@ describe("appearanceCss with a custom colour", () => {
     expect(dark).toContain(
       `  --custom-aabbcc: linear-gradient(135deg, ${darkHex} 0%, ${darkHex} 100%);`
     )
-    for (const suffix of ["-foreground", "-destructive", "-soft"]) {
+    for (const suffix of ["-foreground", "-destructive"]) {
       expect(
         css.match(new RegExp(`--custom-aabbcc${suffix}:`, "g")),
         suffix
@@ -161,13 +158,11 @@ describe("appearanceCss with a custom colour", () => {
     expect(css).toContain(`body:has([data-gradient="${CUSTOM}"] `)
   })
 
-  it("emits both backdrop rules from the colour's own variables", () => {
+  it("paints a custom backdrop with the colour itself, never a softened tint", () => {
     expect(css).toContain(
-      `[data-backdrop="${CUSTOM}"] {\n  --backdrop-gradient: var(--custom-aabbcc-soft);`
+      `[data-backdrop="${CUSTOM}"] {\n  --backdrop-gradient: var(--custom-aabbcc);\n  --backdrop-text: var(--custom-aabbcc-foreground);`
     )
-    expect(css).toContain(
-      `[data-backdrop="${CUSTOM}"][data-backdrop-vivid] {\n  --backdrop-gradient: var(--custom-aabbcc);`
-    )
+    expect(css).not.toContain("--custom-aabbcc-soft")
   })
 
   it("lowercases the colour before it reaches the css", () => {
@@ -253,8 +248,8 @@ describe("customDarkColor", () => {
     const before = hexToOklch(light)
     const after = hexToOklch(customDarkColor(light))
 
-    expect(after.l).toBeGreaterThanOrEqual(0.2)
-    expect(after.l).toBeLessThanOrEqual(0.32)
+    expect(after.l).toBeGreaterThanOrEqual(0.18)
+    expect(after.l).toBeLessThanOrEqual(0.35)
     expect(Math.abs(after.h - before.h)).toBeLessThan(6)
   })
 
@@ -262,37 +257,80 @@ describe("customDarkColor", () => {
     expect(hexToOklch(customDarkColor("#ffcc00")).c).toBeLessThanOrEqual(0.061)
   })
 
-  it("leaves a colour that is already dark alone", () => {
+  it("adapts a dark colour too, lifting it into the same band", () => {
     for (const hex of ["#0f172a", "#334155", "#1c1917"] as CustomColor[]) {
-      expect(customDarkColor(hex)).toBe(hex)
+      const after = hexToOklch(customDarkColor(hex))
+
+      expect(customDarkColor(hex), hex).not.toBe(hex)
+      expect(after.l, hex).toBeGreaterThanOrEqual(0.18)
+      expect(after.l, hex).toBeLessThanOrEqual(0.35)
     }
   })
 
-  it("keeps the dark variant's text legible", () => {
-    for (const hex of [
-      "#ffffff",
-      "#f4f4f5",
+  it("keeps the band monotonic up to hex rounding", () => {
+    const ramp = [
+      "#000000",
+      "#0f172a",
+      "#334155",
+      "#808080",
       "#cfe3ff",
-      "#ffcc00",
-    ] as CustomColor[]) {
-      const dark = customDarkColor(hex)
+      "#eceff3",
+      "#ffffff",
+    ] as CustomColor[]
+    const lightnesses = ramp.map((hex) => hexToOklch(customDarkColor(hex)).l)
+
+    for (let index = 1; index < lightnesses.length; index++) {
       expect(
-        contrastRatio(dark, oklchStringToHex(solidForeground(dark))),
-        hex
-      ).toBeGreaterThanOrEqual(4.5)
+        lightnesses[index],
+        `${ramp[index - 1]} → ${ramp[index]}`
+      ).toBeGreaterThanOrEqual(lightnesses[index - 1] - 0.005)
     }
+  })
+
+  it("keeps the dark variant's text legible across the colour cube", () => {
+    let worst = Infinity
+    let worstHex = ""
+
+    for (let red = 0; red < 256; red += 51) {
+      for (let green = 0; green < 256; green += 51) {
+        for (let blue = 0; blue < 256; blue += 51) {
+          const hex = `#${[red, green, blue]
+            .map((channel) => channel.toString(16).padStart(2, "0"))
+            .join("")}` as CustomColor
+          const dark = customDarkColor(hex)
+          const ratio = contrastRatio(dark, oklchStringToHex(solidForeground(dark)))
+          if (ratio < worst) {
+            worst = ratio
+            worstHex = hex
+          }
+        }
+      }
+    }
+
+    expect(worst, worstHex).toBeGreaterThanOrEqual(4.5)
   })
 })
 
 describe("appearanceThemes", () => {
-  it("ships twenty presets, the original five first", () => {
-    expect(appearanceThemes).toHaveLength(20)
+  it("ships twenty-six presets, the original five first", () => {
+    expect(appearanceThemes).toHaveLength(26)
     expect(appearanceThemes.slice(0, 5).map((theme) => theme.id)).toEqual([
       "slate",
       "mist",
       "sage",
       "ivory",
       "dune",
+    ])
+  })
+
+  it("ends on the six calm greens and blues", () => {
+    expect(appearanceThemes.slice(-6).map((theme) => theme.id)).toEqual([
+      "pine",
+      "fern",
+      "navy",
+      "denim",
+      "arctic",
+      "indigo-night",
     ])
   })
 

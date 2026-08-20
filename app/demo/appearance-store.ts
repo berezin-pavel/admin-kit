@@ -9,7 +9,6 @@ import {
   type AdminAppearance,
   type BlockAppearance,
   type BlockHeading,
-  type PageBackdrop,
 } from "@/registry/admin-appearance/appearance-palette"
 
 const STORAGE_KEY = "admin-kit-demo-appearance"
@@ -19,30 +18,11 @@ export const DEMO_APPEARANCE_DEFAULT: AdminAppearance = {
   sidebar: "jade",
   header: "jade",
   signIn: "dusk",
-  page: { gradient: "sand", soft: true },
+  page: "sand",
   pages: {},
   blocks: {
-    "overview.orders": { gradient: "ember" },
-    "overview.revenue": { gradient: "meadow" },
-    "overview.average": { gradient: "lagoon" },
-    "overview.goal-revenue": { gradient: "brown" },
-    "overview.goal-orders": { gradient: "tangerine" },
-    "overview.refunds": { gradient: "amber" },
-    "overview.payments": { gradient: "dusk" },
-    "overview.top-customers": { gradient: "mint" },
-    "overview.finance": { gradient: "midnight", heading: "large" },
-    "overview.channel": { gradient: "grape" },
-    "overview.customers": { gradient: "sky" },
-    "overview.recent-orders": { gradient: "pink" },
-    "overview.products": { gradient: "sand" },
-    "overview.split": { gradient: "purple" },
-    "overview.activity": { gradient: "slate" },
+    "overview.finance": { heading: "large" },
     "orders.table": { heading: "none" },
-    "order.order": { gradient: "sky" },
-    "order.customer": { gradient: "mint" },
-    "order.delivery": { gradient: "graphite" },
-    "order.history": { gradient: "lavender" },
-    "order.related": { gradient: "flamingo" },
   },
 }
 
@@ -94,16 +74,8 @@ function isSurfaceChoice(value: unknown): boolean {
   return isGradientId(value) || isCustomColor(value)
 }
 
-function isPageBackdrop(value: unknown): value is PageBackdrop {
-  return (
-    isRecord(value) &&
-    isSurfaceChoice(value.gradient) &&
-    typeof value.soft === "boolean"
-  )
-}
-
-function isNullablePageBackdrop(value: unknown): value is PageBackdrop | null {
-  return value === null || isPageBackdrop(value)
+function isNullableSurfaceChoice(value: unknown): boolean {
+  return value === null || isSurfaceChoice(value)
 }
 
 export function isAdminAppearance(value: unknown): value is AdminAppearance {
@@ -122,12 +94,12 @@ export function isAdminAppearance(value: unknown): value is AdminAppearance {
   if (value.signIn !== null && !isSurfaceChoice(value.signIn)) {
     return false
   }
-  if (!isNullablePageBackdrop(value.page)) {
+  if (!isNullableSurfaceChoice(value.page)) {
     return false
   }
   if (
     !isRecord(value.pages) ||
-    !Object.values(value.pages).every(isNullablePageBackdrop)
+    !Object.values(value.pages).every(isNullableSurfaceChoice)
   ) {
     return false
   }

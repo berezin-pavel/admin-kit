@@ -50,9 +50,7 @@ export default function DemoSignInPage() {
 
   return (
     <>
-      <AppearanceCanvas
-        backdrop={appearance.signIn ? { gradient: appearance.signIn, soft: false } : null}
-      />
+      <AppearanceCanvas backdrop={appearance.signIn} vivid />
       <PageAuth
         appName={strings.appName}
         title={signIn.title}
