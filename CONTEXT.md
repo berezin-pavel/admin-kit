@@ -79,5 +79,5 @@ A gradient painted behind blocks — the work area of a page or the sign-in scre
 _Avoid_: page background, wallpaper
 
 **Palette**:
-The fixed set of sixty-three gradients — every one of them three stops of a single hue — grouped into five families (neutral, warm, green, blue, violet), and twenty accents shipped with the kit, each measured for text contrast, including on hover. The first source of colour choices, and the only one for blocks; anywhere else a custom colour may be typed instead, and then the kit measures the text against it.
+The fixed set of eighty-seven gradients — every one of them three stops of a single hue — grouped into ten families (neutral, earth, red, orange, yellow, green, cyan, blue, violet, pink), and twenty accents shipped with the kit, each measured for text contrast, including on hover. The first source of colour choices, and the only one for blocks; anywhere else a custom colour may be typed instead, and then the kit measures the text against it.
 _Avoid_: presets, swatches, color list

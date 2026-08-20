@@ -250,7 +250,7 @@ describe("appearanceCss", () => {
     expect(css).toContain('[data-backdrop="ocean"][data-backdrop-vivid]')
   })
 
-  it("emits gradient variables for all sixty-three gradients", () => {
+  it("emits gradient variables for all eighty-seven gradients", () => {
     for (const id of gradientIds) {
       expect(css).toContain(`--gradient-${id}:`)
     }

@@ -50,9 +50,9 @@ function meanOklabDistance(a: GradientStops, b: GradientStops): number {
 }
 
 describe("gradientIds and gradientPalette", () => {
-  it("has exactly sixty-three unique ids in the declared order", () => {
-    expect(gradientIds).toHaveLength(63)
-    expect(new Set(gradientIds).size).toBe(63)
+  it("has exactly eighty-seven unique ids in the declared order", () => {
+    expect(gradientIds).toHaveLength(87)
+    expect(new Set(gradientIds).size).toBe(87)
     expect(gradientPalette.map((gradient) => gradient.id)).toEqual([
       ...gradientIds,
     ])
