@@ -5,6 +5,10 @@ import { AdminShell, type AdminNavItem } from "./admin-shell"
 
 const nav: readonly AdminNavItem[] = [{ href: "/", title: "Overview" }]
 
+function GaugeIcon({ className }: { className?: string }) {
+  return <svg data-testid="section-icon" className={className} />
+}
+
 describe("admin-shell variant", () => {
   it("draws the card look by default and marks the root with it", () => {
     const { container } = render(
@@ -60,5 +64,46 @@ describe("admin-shell variant", () => {
     expect(container.querySelector("aside")?.textContent).not.toContain(
       "My Store"
     )
+  })
+})
+
+describe("admin-shell section icon", () => {
+  const iconNav: readonly AdminNavItem[] = [
+    { href: "/", title: "Overview", icon: GaugeIcon },
+    { href: "/orders", title: "Orders" },
+  ]
+
+  it("puts the active item's icon beside the section title", () => {
+    const { container } = render(
+      <AdminShell appName="My Store" nav={iconNav} activeHref="/" />
+    )
+    const header = container.querySelector('[data-slot="admin-header"]')
+
+    expect(header?.querySelector('[data-testid="section-icon"]')).toBeTruthy()
+    expect(header?.textContent).toContain("Overview")
+  })
+
+  it("shows no icon when the active item has none", () => {
+    const { container } = render(
+      <AdminShell appName="My Store" nav={iconNav} activeHref="/orders" />
+    )
+    const header = container.querySelector('[data-slot="admin-header"]')
+
+    expect(header?.querySelector('[data-testid="section-icon"]')).toBeNull()
+    expect(header?.textContent).toContain("Orders")
+  })
+
+  it("drops the icon once tabs take the title's place", () => {
+    const { container } = render(
+      <AdminShell
+        appName="My Store"
+        nav={iconNav}
+        activeHref="/"
+        headerTabs={<button type="button">Details</button>}
+      />
+    )
+    const header = container.querySelector('[data-slot="admin-header"]')
+
+    expect(header?.querySelector('[data-testid="section-icon"]')).toBeNull()
   })
 })

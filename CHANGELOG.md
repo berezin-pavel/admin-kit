@@ -25,6 +25,37 @@ Sections used below: **New** (items you can now install), **Changed** (installed
 re-pulling), **Breaking** (props or files that changed shape — read before overwriting), and
 **Project** (showcase, CI, docs — nothing that reaches your project).
 
+## Unreleased
+
+**Changed** — the search dialog stops moving under the cursor. It hangs below the top edge
+(`top-[12vh]`) instead of being centred, and its result list has one fixed height, so the box
+no longer grows and shrinks around the caret as the query narrows the matches. A close cross
+sits at the right of the input row — `labels.close`, "Закрыть" in `locale-ru` — and the dialog
+hands focus back to the trigger it belongs to (`finalFocus` on the popup, pointed at the
+trigger's ref), so Escape and the cross return to the search button instead of the next control
+in the header.
+
+**Changed** — `user-menu`'s icon trigger is the same control as the notifications bell: an
+outline icon button of the same size and shape, with the avatar inside. It used to be a bare
+round avatar, which read as a different kind of thing standing beside the bell. The `row`
+variant is untouched.
+
+**Changed** — `admin-shell` passes the active nav item's icon to `admin-header`, which draws it
+before the section title (`icon?: ComponentType<{ className?: string }>`, `aria-hidden`). Items
+without an icon, a `section` override that matches no item, and a header carrying `tabs` all
+render as before.
+
+**Changed** — the appearance popups (the sidebar menu and the block's corner menu) lost three
+rough edges on closing. The drag offset is cleared when the popup opens rather than when it
+closes, so it no longer snaps back to its anchor mid-animation; each popup carries its own
+`data-gradient` — the sidebar's surface for the menu, the block's resolved gradient for the
+corner one — instead of borrowing paint from the `body:has(… [aria-expanded="true"])` rule that
+stops matching the moment the trigger collapses, so the exit animation no longer flashes white;
+and both pass `finalFocus={false}`, so closing does not leave a focus ring on the trigger.
+
+**Project** — the demo's flush layout offsets its toaster below the header bar
+(`<AdminToaster className="top-[4.5rem]" />`); the card layout keeps the default top edge.
+
 ## 0.39.0 — 2026-08-20
 
 **New** — three chrome parts a panel needs on its first day. `global-search` is the ⌘K dialog:

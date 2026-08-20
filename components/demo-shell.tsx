@@ -114,7 +114,7 @@ export function DemoShell({
           }
         >
           {children}
-          <AdminToaster />
+          <AdminToaster className="top-[4.5rem]" />
         </AdminShell>
       ) : (
         <AdminShell

@@ -471,10 +471,10 @@ export function AppearanceMenu({
     <Popover
       open={open}
       onOpenChange={(next) => {
-        setOpen(next)
-        if (!next) {
+        if (next) {
           reset()
         }
+        setOpen(next)
       }}
     >
       <Hint
@@ -491,14 +491,13 @@ export function AppearanceMenu({
       <PopoverContent
         ref={ref}
         aria-label={labels.label}
+        data-gradient={value.sidebar?.toLowerCase()}
+        finalFocus={false}
         className="max-h-[70vh] w-[24rem] overflow-y-auto"
       >
         <DragHandle
           onPointerDown={start}
-          onClose={() => {
-            setOpen(false)
-            reset()
-          }}
+          onClose={() => setOpen(false)}
           closeLabel={labels.close}
         />
         <div className="flex flex-col gap-4">

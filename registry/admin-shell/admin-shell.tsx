@@ -72,8 +72,9 @@ export function AdminShell({
   className,
   labels,
 }: AdminShellProps) {
-  const section =
-    sectionProp ?? nav.find((item) => item.href === activeHref)?.title ?? appName
+  const activeItem = nav.find((item) => item.href === activeHref)
+  const section = sectionProp ?? activeItem?.title ?? appName
+  const sectionIcon = activeItem?.icon
   const openMenuLabel = labels?.openMenu ?? "Open navigation menu"
   const sectionsLabel = labels?.sections ?? "Sections"
 
@@ -229,6 +230,7 @@ export function AdminShell({
       {header && !headerBar ? (
         <AdminHeader
           section={section}
+          icon={sectionIcon}
           actions={actions}
           menu={menu}
           narrowActions={narrowActions}
@@ -259,6 +261,7 @@ export function AdminShell({
         <>
           <AdminHeader
             section={section}
+            icon={sectionIcon}
             actions={actions}
             menu={menu}
             narrowActions={narrowActions}

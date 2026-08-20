@@ -13,6 +13,14 @@ describe("admin-toaster placement", () => {
     expect(viewport?.className).toContain("sm:right-4")
   })
 
+  it("lets a shell with a header push the viewport below it", () => {
+    render(<AdminToaster className="top-[4.5rem]" />)
+    const viewport = document.querySelector('[data-slot="toast-viewport"]')
+
+    expect(viewport?.className).toContain("top-[4.5rem]")
+    expect(viewport?.className).not.toContain("top-4")
+  })
+
   it("grows a toast downwards from the top edge", async () => {
     render(<AdminToaster />)
     notify.success("Order saved")

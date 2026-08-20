@@ -1,9 +1,10 @@
-import type { ReactNode } from "react"
+import type { ComponentType, ReactNode } from "react"
 
 import { cn } from "@/lib/utils"
 
 export interface AdminHeaderProps {
   section: string
+  icon?: ComponentType<{ className?: string }>
   actions?: ReactNode
   menu?: ReactNode
   narrowActions?: ReactNode
@@ -16,6 +17,7 @@ export interface AdminHeaderProps {
 
 export function AdminHeader({
   section,
+  icon: Icon,
   actions,
   menu,
   narrowActions,
@@ -46,7 +48,15 @@ export function AdminHeader({
             {tabs}
           </div>
         ) : (
-          <span className="truncate text-sm font-medium">{section}</span>
+          <span className="flex min-w-0 items-center gap-2">
+            {Icon ? (
+              <Icon
+                className="size-4 shrink-0 text-muted-foreground"
+                aria-hidden
+              />
+            ) : null}
+            <span className="truncate text-sm font-medium">{section}</span>
+          </span>
         )}
       </div>
       <div className="flex shrink-0 items-center gap-2">

@@ -76,6 +76,7 @@ export function Block({
         <BlockMenu
           id={id}
           gradient={stored.gradient}
+          resolvedGradient={resolvedGradient}
           heading={stored.heading}
           headings={headings}
           value={appearance.value}
@@ -90,6 +91,7 @@ export function Block({
 interface BlockMenuProps {
   id: string
   gradient: GradientId | null | undefined
+  resolvedGradient: GradientId | undefined
   heading: BlockHeading | undefined
   headings: boolean
   value: AppearanceContextValue["value"]
@@ -100,6 +102,7 @@ interface BlockMenuProps {
 function BlockMenu({
   id,
   gradient,
+  resolvedGradient,
   heading,
   headings,
   value,
@@ -121,10 +124,10 @@ function BlockMenu({
     <Popover
       open={open}
       onOpenChange={(next) => {
-        setOpen(next)
-        if (!next) {
+        if (next) {
           reset()
         }
+        setOpen(next)
       }}
     >
       <PopoverTrigger
@@ -142,6 +145,8 @@ function BlockMenu({
       <PopoverContent
         ref={ref}
         aria-label={labels.blockMenu}
+        data-gradient={resolvedGradient}
+        finalFocus={false}
         className="max-h-[70vh] w-auto overflow-y-auto"
       >
         <DragHandle

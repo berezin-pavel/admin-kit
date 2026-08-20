@@ -5,10 +5,11 @@ import {
   useEffect,
   useId,
   useMemo,
+  useRef,
   useState,
   type ComponentType,
 } from "react"
-import { Search } from "lucide-react"
+import { Search, X } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
@@ -30,6 +31,7 @@ export interface GlobalSearchLabels {
   placeholder?: string
   empty?: string
   title?: string
+  close?: string
 }
 
 export interface GlobalSearchProps {
@@ -142,7 +144,9 @@ export function GlobalSearch({
   const placeholderLabel = labels?.placeholder ?? "Type to search…"
   const emptyLabel = labels?.empty ?? "Nothing found"
   const titleLabel = labels?.title ?? "Search"
+  const closeLabel = labels?.close ?? "Close"
 
+  const triggerRef = useRef<HTMLButtonElement | null>(null)
   const baseId = useId()
   const listId = `${baseId}-list`
   const [query, setQuery] = useState("")
@@ -212,6 +216,7 @@ export function GlobalSearch({
         text={buttonLabel}
         render={
           <Button
+            ref={triggerRef}
             variant="outline"
             size="icon"
             aria-label={buttonLabel}
@@ -224,6 +229,7 @@ export function GlobalSearch({
       />
     ) : (
       <Button
+        ref={triggerRef}
         variant="outline"
         onClick={() => changeOpen(true)}
         className={cn(
@@ -248,7 +254,8 @@ export function GlobalSearch({
         <DialogContent
           data-slot="global-search"
           showCloseButton={false}
-          className="gap-0 overflow-hidden p-0 sm:max-w-lg"
+          finalFocus={triggerRef}
+          className="top-[12vh] translate-y-0 gap-0 self-start overflow-hidden p-0 sm:max-w-lg"
         >
           <DialogTitle className="sr-only">{titleLabel}</DialogTitle>
           <div className="flex items-center gap-2 border-b px-3">
@@ -294,13 +301,21 @@ export function GlobalSearch({
               placeholder={placeholderLabel}
               className="h-11 rounded-none border-0 px-0 focus-visible:ring-0"
             />
+            <button
+              type="button"
+              aria-label={closeLabel}
+              onClick={() => changeOpen(false)}
+              className="flex size-6 shrink-0 items-center justify-center rounded-sm text-muted-foreground transition-colors outline-none hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              <X className="size-4" aria-hidden="true" />
+            </button>
           </div>
           <div
             id={listId}
             role="listbox"
             aria-label={titleLabel}
             tabIndex={0}
-            className="max-h-80 overflow-y-auto p-1 outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+            className="h-80 overflow-y-auto p-1 outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
           >
             {count === 0 ? (
               <div

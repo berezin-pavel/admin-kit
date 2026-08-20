@@ -359,6 +359,60 @@ describe("Block corner menu drag handle", () => {
 
     expect(content.style.transform).toBe("translate3d(10px, 10px, 0)")
   })
+
+  it("opens back at the corner, dropping the offset of the last drag", async () => {
+    const user = userEvent.setup()
+    render(<Harness onChangeSpy={vi.fn()} />)
+
+    const trigger = screen.getByRole("button", { name: "Block appearance" })
+    await user.click(trigger)
+    const content = screen.getByRole("dialog", { name: "Block appearance" })
+
+    fireEvent(handleOf(), pointer("pointerdown", 0, 0))
+    fireEvent(window, pointer("pointermove", 20, 40))
+    fireEvent(window, pointer("pointerup", 20, 40))
+    await user.click(screen.getByRole("button", { name: "Close" }))
+
+    expect(content.style.transform).toBe("translate3d(20px, 40px, 0)")
+
+    await user.click(trigger)
+
+    expect(
+      screen.getByRole("dialog", { name: "Block appearance" }).style.transform
+    ).toBe("")
+  })
+})
+
+describe("Block corner menu surface", () => {
+  it("paints the popup with the block's own gradient", async () => {
+    const user = userEvent.setup()
+    render(
+      <Harness
+        onChangeSpy={vi.fn()}
+        initial={{
+          ...defaultAdminAppearance,
+          blocks: { a: { gradient: "ember" } },
+        }}
+      />
+    )
+
+    await user.click(screen.getByRole("button", { name: "Block appearance" }))
+
+    expect(
+      screen.getByRole("dialog", { name: "Block appearance" })
+    ).toHaveAttribute("data-gradient", "ember")
+  })
+
+  it("leaves the popup plain when the block carries no gradient", async () => {
+    const user = userEvent.setup()
+    render(<Harness onChangeSpy={vi.fn()} />)
+
+    await user.click(screen.getByRole("button", { name: "Block appearance" }))
+
+    expect(
+      screen.getByRole("dialog", { name: "Block appearance" })
+    ).not.toHaveAttribute("data-gradient")
+  })
 })
 
 describe("Block heading attribute", () => {

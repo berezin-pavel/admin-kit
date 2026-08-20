@@ -15,6 +15,18 @@ describe("UserMenu variant=\"icon\"", () => {
       screen.getByRole("button", { name: "Open user menu" })
     ).toBeInTheDocument()
   })
+
+  it("wears the bordered icon-button look of the header's other controls", () => {
+    render(
+      <UserMenu name="Alex Morgan" email="alex@example.com" items={items} />
+    )
+
+    const trigger = screen.getByRole("button", { name: "Open user menu" })
+
+    expect(trigger.className).toContain("border-border")
+    expect(trigger.className).toContain("size-8")
+    expect(trigger.className).not.toContain("rounded-full")
+  })
 })
 
 describe("UserMenu variant=\"row\"", () => {

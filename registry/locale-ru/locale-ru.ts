@@ -332,6 +332,7 @@ export const localeRu = {
     placeholder: "Введите запрос…",
     empty: "Ничего не найдено",
     title: "Поиск",
+    close: "Закрыть",
   } satisfies GlobalSearchLabels,
   notificationsMenu: {
     button: "Уведомления",

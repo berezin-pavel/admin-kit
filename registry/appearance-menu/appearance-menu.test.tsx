@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, within } from "@testing-library/react"
+import { fireEvent, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
@@ -656,6 +656,35 @@ describe("AppearanceMenu drag handle", () => {
     expect(onChange).not.toHaveBeenCalled()
   })
 
+  it("leaves the dragged transform in place while the popup closes", async () => {
+    render(<AppearanceMenu value={defaultAdminAppearance} onChange={() => {}} />)
+
+    const user = await openMenu()
+    const content = screen.getByRole("dialog", { name: "Appearance" })
+
+    fireEvent(handleOf(), pointer("pointerdown", 0, 0))
+    fireEvent(window, pointer("pointermove", 30, 50))
+    fireEvent(window, pointer("pointerup", 30, 50))
+    await user.click(screen.getByRole("button", { name: "Close" }))
+
+    expect(content.style.transform).toBe("translate3d(30px, 50px, 0)")
+  })
+
+  it("opens back at the anchor, dropping the offset of the last drag", async () => {
+    render(<AppearanceMenu value={defaultAdminAppearance} onChange={() => {}} />)
+
+    const user = await openMenu()
+    fireEvent(handleOf(), pointer("pointerdown", 0, 0))
+    fireEvent(window, pointer("pointermove", 30, 50))
+    fireEvent(window, pointer("pointerup", 30, 50))
+    await user.click(screen.getByRole("button", { name: "Close" }))
+    await user.click(screen.getByRole("button", { name: "Appearance" }))
+
+    expect(
+      screen.getByRole("dialog", { name: "Appearance" }).style.transform
+    ).toBe("")
+  })
+
   it("keeps the handle out of the accessibility tree", async () => {
     render(<AppearanceMenu value={defaultAdminAppearance} onChange={() => {}} />)
 
@@ -679,6 +708,48 @@ describe("AppearanceMenu theme state and closing", () => {
     await user.click(screen.getByRole("combobox", { name: "Theme" }))
     const option = await screen.findByRole("option", { name: "Slate" })
     expect(option).toHaveAttribute("aria-selected", "true")
+  })
+
+  it("paints itself with the sidebar surface instead of relying on the trigger", async () => {
+    render(
+      <AppearanceMenu
+        value={{ ...defaultAdminAppearance, sidebar: "ember" }}
+        onChange={() => {}}
+      />
+    )
+
+    await openMenu()
+
+    expect(screen.getByRole("dialog", { name: "Appearance" })).toHaveAttribute(
+      "data-gradient",
+      "ember"
+    )
+  })
+
+  it("lowercases a custom sidebar colour into the attribute", async () => {
+    render(
+      <AppearanceMenu
+        value={{ ...defaultAdminAppearance, sidebar: "#0F172A" }}
+        onChange={() => {}}
+      />
+    )
+
+    await openMenu()
+
+    expect(screen.getByRole("dialog", { name: "Appearance" })).toHaveAttribute(
+      "data-gradient",
+      "#0f172a"
+    )
+  })
+
+  it("carries no surface when the sidebar has none", async () => {
+    render(<AppearanceMenu value={defaultAdminAppearance} onChange={() => {}} />)
+
+    await openMenu()
+
+    expect(
+      screen.getByRole("dialog", { name: "Appearance" })
+    ).not.toHaveAttribute("data-gradient")
   })
 
   it("closes from the cross in the corner", async () => {

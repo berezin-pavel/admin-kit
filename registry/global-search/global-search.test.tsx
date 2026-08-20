@@ -175,6 +175,72 @@ describe("GlobalSearch keyboard", () => {
   })
 })
 
+describe("GlobalSearch dialog box", () => {
+  it("closes from the cross beside the input", async () => {
+    const onOpenChange = vi.fn()
+    const user = userEvent.setup()
+    render(
+      <GlobalSearch
+        items={items}
+        open={true}
+        onOpenChange={onOpenChange}
+        onSelect={() => {}}
+      />
+    )
+
+    await user.click(screen.getByRole("button", { name: "Close" }))
+
+    expect(onOpenChange).toHaveBeenCalledWith(false)
+  })
+
+  it("names the cross from the labels", () => {
+    render(
+      <GlobalSearch
+        items={items}
+        open={true}
+        onOpenChange={() => {}}
+        onSelect={() => {}}
+        labels={{ close: "Закрыть" }}
+      />
+    )
+
+    expect(screen.getByRole("button", { name: "Закрыть" })).toBeInTheDocument()
+  })
+
+  it("hangs the box below the top edge instead of centring it", () => {
+    render(
+      <GlobalSearch
+        items={items}
+        open={true}
+        onOpenChange={() => {}}
+        onSelect={() => {}}
+      />
+    )
+
+    const box = document.querySelector('[data-slot="global-search"]')
+
+    expect(box?.className).toContain("top-[12vh]")
+    expect(box?.className).toContain("translate-y-0")
+    expect(box?.className).not.toContain("-translate-y-1/2")
+  })
+
+  it("keeps the result list one fixed height, so typing never resizes the box", () => {
+    render(
+      <GlobalSearch
+        items={items}
+        open={true}
+        onOpenChange={() => {}}
+        onSelect={() => {}}
+      />
+    )
+
+    const list = screen.getByRole("listbox")
+
+    expect(list.className).toContain("h-80")
+    expect(list.className).not.toContain("max-h-80")
+  })
+})
+
 describe("GlobalSearch hotkey", () => {
   it("opens on meta+k", () => {
     const onOpenChange = vi.fn()

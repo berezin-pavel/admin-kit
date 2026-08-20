@@ -75,10 +75,10 @@ export function UserMenu({
             />
           ) : (
             <Button
-              variant="ghost"
+              variant="outline"
               size="icon"
               aria-label={label}
-              className={cn("rounded-full p-0", className)}
+              className={className}
             />
           )
         }
