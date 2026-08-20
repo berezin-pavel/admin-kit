@@ -8,7 +8,7 @@ items changed, and what breaks if you pull them.
 **Install an item, pinned to a release:**
 
 ```bash
-pnpm dlx shadcn@latest add berezin-pavel/admin-kit/widget-table#v0.42.0
+pnpm dlx shadcn@latest add berezin-pavel/admin-kit/widget-table#v0.43.0
 ```
 
 **See what an update would change before taking it:**
@@ -24,6 +24,54 @@ say yes; `-o` overwrites deliberately. Items you have edited in place are yours 
 Sections used below: **New** (items you can now install), **Changed** (installed items worth
 re-pulling), **Breaking** (props or files that changed shape — read before overwriting), and
 **Project** (showcase, CI, docs — nothing that reaches your project).
+
+## 0.43.0 — 2026-08-21
+
+The whole release is the yield of an adversarial review of the kit: every item below started as
+a confirmed defect, most with a measured failure case.
+
+**Breaking** — a custom colour is valid only as lowercase `#rrggbb` now: the uppercase form
+passed validation but never matched the generated (case-sensitive) CSS attribute selectors, so
+a stored `#AABBCC` rendered a surface with broken tokens instead of the colour. Stored
+appearances holding uppercase values fall back to defaults; the appearance menu's hex field
+lowercases what you type before applying it. `widget-table` and `page-list` drop the `onExport`
+prop — it was declared but never called since the header export button was removed; export goes
+through `selectionActions` plus the exported `toCsv`, which now also prefixes fields starting
+with `=`, `+`, `-`, `@` with an apostrophe so a spreadsheet won't execute them as formulas.
+
+**Changed** — custom-colour contrast is now guaranteed, not assumed: destructive ink on a custom
+surface searches all the way to achromatic extremes (worst case across the full 16³ hex cube
+went from 3.77 to 4.55), and hover tints pick a per-colour ink pole — a mid-lightness surface
+tints away from its text instead of toward it, so hovered fills keep ≥ 4.5 everywhere (worst
+case was 3.12, now 4.50). `AppearanceCanvas` validates a non-custom backdrop against the palette
+before writing it into a `<style>` tag. Popup drag captures the pointer, so releasing the button
+outside the window ends the drag. `page-list`, `page-entity` and `page-form` take `stateLabels`
+— the status screens were the only strings a consumer could not localize; `color-field` names
+its native picker via `customColorLabel`; `global-search` matches its hotkey by `event.code`,
+so ⌘K works on non-Latin keyboard layouts; `widget-progress` shows 0% instead of NaN% when
+`max` is 0; the table's pagination range no longer reads "21–15 of 15" past the last page, and
+a sticky-header table without a title names its scroll region via `labels.region`.
+
+**Changed (accessibility)** — the appearance swatch grids and accent grid are real radiogroups:
+one tab stop, arrow keys, Home/End (new shared hook `radio-group-nav.ts` in `admin-appearance`);
+`tags-field` suggestions moved to a combobox pattern with `aria-activedescendant` — they were
+unreachable by keyboard, and Enter during IME composition no longer commits a half-typed tag;
+`notifications-menu` marks unread items for screen readers (`labels.unreadItem`) and "Mark all
+as read" became a menu item — as a plain button inside the menu it was unreachable by keyboard;
+`admin-nav` puts `aria-current="page"` on the link itself (custom `renderLink` consumers: spread
+the new `aria-current` prop); split `PageTabsStrip`/`PageTabsPanels` wire tabs to panels across
+their two roots via `idPrefix`.
+
+**Changed (registry)** — `page-list`, `page-entity` and `page-form` declare their `page-header`
+dependency and `locale-ru` declares `admin-appearance` and `appearance-menu`: installing them
+into a clean project used to produce broken imports. `locale-ru` gained `pageList`,
+`colorField.customColorLabel`, `notificationsMenu.unreadItem`, `widgetTable.region`, and its
+unread counter declines correctly.
+
+**Project** — the demo seeds its stores on every server render, so an SSR request without a
+cookie no longer flashes the previous visitor's appearance and locale; the registry test now
+also checks the import direction (every kit import must be a declared dependency); the demo's
+Ctrl+digit hotkey matches by `event.code` and allows Shift for AZERTY layouts.
 
 ## 0.42.0 — 2026-08-20
 
