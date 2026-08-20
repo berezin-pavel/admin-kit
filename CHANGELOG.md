@@ -33,7 +33,7 @@ sat at 4.3:1.
 **Changed** — the search dialog stops moving under the cursor. It hangs below the top edge
 (`top-[12vh]`) instead of being centred, and its result list has one fixed height, so the box
 no longer grows and shrinks around the caret as the query narrows the matches. A close cross
-sits at the right of the input row — `labels.close`, "Закрыть" in `locale-ru` — and the dialog
+sits at the right of the input row — `labels.close`, Russian in `locale-ru` — and the dialog
 hands focus back to the trigger it belongs to (`finalFocus` on the popup, pointed at the
 trigger's ref), so Escape and the cross return to the search button instead of the next control
 in the header.

@@ -200,11 +200,11 @@ describe("GlobalSearch dialog box", () => {
         open={true}
         onOpenChange={() => {}}
         onSelect={() => {}}
-        labels={{ close: "Закрыть" }}
+        labels={{ close: "Dismiss" }}
       />
     )
 
-    expect(screen.getByRole("button", { name: "Закрыть" })).toBeInTheDocument()
+    expect(screen.getByRole("button", { name: "Dismiss" })).toBeInTheDocument()
   })
 
   it("hangs the box below the top edge instead of centring it", () => {
