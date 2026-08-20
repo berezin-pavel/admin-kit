@@ -330,7 +330,9 @@
       "title": "Russian locale pack",
       "description": "A Russian dictionary for the kit's items: a single const, localeRu, sliced into the exact shapes the other items' labels and locale props expect, so a slice spreads or passes straight into a prop — labels={localeRu.widgetTable}, locale={localeRu.dateField.locale}. Covers widget-table, widget-list, widget-chart, widget-activity, widget-donut, widget-progress, state-loading, state-error, state-forbidden, state-offline, widget-placeholder, confirm-dialog, date-field, date-time-field, date-range-field, color-field, file-field, image-field, tags-field, sidebar-toggle, theme-toggle, admin-shell, language-toggle, user-menu, and breadcrumbs, and bundles date-fns's ru locale for the date fields and widget-activity. The dateRangeField slice reuses date-range-field's default presets' ids and range math and only swaps in Russian labels, so the two never drift apart. Not a runtime i18n solution — it's a static dictionary, and switching locale at runtime is on the consumer.",
       "registryDependencies": [
-        "berezin-pavel/admin-kit/date-range-field"
+        "berezin-pavel/admin-kit/date-range-field",
+        "berezin-pavel/admin-kit/global-search",
+        "berezin-pavel/admin-kit/notifications-menu"
       ],
       "dependencies": [
         "date-fns"
@@ -1249,6 +1251,64 @@
           "path": "registry/page-tabs/page-tabs.tsx",
           "type": "registry:component",
           "target": "@components/page-tabs.tsx"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "global-search",
+      "type": "registry:component",
+      "title": "Global search",
+      "description": "The Cmd+K search dialog for the header: a search-shaped trigger (or an icon button for tight spots) with the shortcut in a kbd, a dialog that filters the passed items by label and group, grouped results with full listbox semantics, and keyboard selection. Controlled and data-free: the open state, the item list and what a selection does all belong to the consumer, so it works the same over client routing, server navigation or a modal. The shortcut listener stays out of the way while an input holds focus",
+      "registryDependencies": [
+        "dialog",
+        "input",
+        "button",
+        "berezin-pavel/admin-kit/hint",
+        "berezin-pavel/admin-kit/admin-theme"
+      ],
+      "files": [
+        {
+          "path": "registry/global-search/global-search.tsx",
+          "type": "registry:component",
+          "target": "@components/global-search.tsx"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "notifications-menu",
+      "type": "registry:component",
+      "title": "Notifications menu",
+      "description": "The header bell: an outline icon button whose badge caps at 9+ while the accessible name carries the real unread count, and a dropdown listing notifications with a title, a clamped description and a preformatted timestamp, a mark-all-read button when anything is unread, and a calm caught-up line when nothing is. Notifications arrive as props and clicks report ids — no polling, no store, no formatting opinions beyond the layout",
+      "registryDependencies": [
+        "dropdown-menu",
+        "button",
+        "badge",
+        "berezin-pavel/admin-kit/admin-theme"
+      ],
+      "files": [
+        {
+          "path": "registry/notifications-menu/notifications-menu.tsx",
+          "type": "registry:component",
+          "target": "@components/notifications-menu.tsx"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "app-logo",
+      "type": "registry:component",
+      "title": "App logo",
+      "description": "A ready brand mark for the shell's logo slot: a rounded accent square with your lucide icon inside, or the first letter of the app name until a real logo exists. Exists because a shell installed without a logo left the brand row and the collapsed rail empty; drop this in and both always show something",
+      "registryDependencies": [
+        "berezin-pavel/admin-kit/admin-theme"
+      ],
+      "files": [
+        {
+          "path": "registry/app-logo/app-logo.tsx",
+          "type": "registry:component",
+          "target": "@components/app-logo.tsx"
         }
       ]
     }
