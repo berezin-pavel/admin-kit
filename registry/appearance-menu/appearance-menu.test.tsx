@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react"
+import { fireEvent, render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { describe, expect, it, vi } from "vitest"
 
@@ -428,7 +428,7 @@ describe("AppearanceMenu themes", () => {
     for (const theme of appearanceThemes) {
       expect(screen.getByRole("button", { name: theme.name })).toBeInTheDocument()
     }
-    expect(appearanceThemes).toHaveLength(5)
+    expect(appearanceThemes).toHaveLength(20)
   })
 
   it("hands the whole preset to onChange when a theme is picked", async () => {
@@ -441,6 +441,27 @@ describe("AppearanceMenu themes", () => {
     expect(onChange).toHaveBeenCalledWith(
       appearanceThemes.find((theme) => theme.id === "sage")?.appearance
     )
+  })
+
+  it("keeps the block and page choices a theme knows nothing about", async () => {
+    const onChange = vi.fn<(next: AdminAppearance) => void>()
+    const value: AdminAppearance = {
+      ...defaultAdminAppearance,
+      blocks: { revenue: { heading: "large" } },
+      pages: { orders: { gradient: "#123456", soft: false } },
+    }
+    render(<AppearanceMenu value={value} onChange={onChange} />)
+
+    const user = await openMenu()
+    await user.click(screen.getByRole("button", { name: "Sage" }))
+
+    const next = onChange.mock.calls.at(-1)?.[0]
+    const sage = appearanceThemes.find((theme) => theme.id === "sage")?.appearance
+
+    expect(next?.blocks).toEqual(value.blocks)
+    expect(next?.pages).toEqual(value.pages)
+    expect(next?.sidebar).toBe(sage?.sidebar)
+    expect(next?.accent).toBe(sage?.accent)
   })
 
   it("names the themes in Russian", async () => {
@@ -602,5 +623,55 @@ describe("AppearanceMenu custom surface colours", () => {
     expect(
       await screen.findByRole("option", { name: localeRu.appearanceMenu.custom })
     ).toBeInTheDocument()
+  })
+})
+
+describe("AppearanceMenu drag handle", () => {
+  const pointer = (type: string, clientX: number, clientY: number) =>
+    new MouseEvent(type, { bubbles: true, clientX, clientY })
+
+  const handleOf = () => {
+    const handle = document.querySelector('[data-slot="appearance-drag-handle"]')
+    if (!(handle instanceof HTMLElement)) {
+      throw new Error("the popup has no drag handle")
+    }
+    return handle
+  }
+
+  it("moves the popup by the distance the handle is dragged", async () => {
+    render(<AppearanceMenu value={defaultAdminAppearance} onChange={() => {}} />)
+
+    await openMenu()
+    const content = screen.getByRole("dialog", { name: "Appearance" })
+
+    expect(content.style.transform).toBe("")
+
+    fireEvent(handleOf(), pointer("pointerdown", 100, 100))
+    fireEvent(window, pointer("pointermove", 140, 160))
+    fireEvent(window, pointer("pointerup", 140, 160))
+
+    expect(content.style.transform).toBe("translate3d(40px, 60px, 0)")
+  })
+
+  it("stops moving once the pointer is released", async () => {
+    render(<AppearanceMenu value={defaultAdminAppearance} onChange={() => {}} />)
+
+    await openMenu()
+    const content = screen.getByRole("dialog", { name: "Appearance" })
+
+    fireEvent(handleOf(), pointer("pointerdown", 0, 0))
+    fireEvent(window, pointer("pointermove", 10, 10))
+    fireEvent(window, pointer("pointerup", 10, 10))
+    fireEvent(window, pointer("pointermove", 90, 90))
+
+    expect(content.style.transform).toBe("translate3d(10px, 10px, 0)")
+  })
+
+  it("keeps the handle out of the accessibility tree", async () => {
+    render(<AppearanceMenu value={defaultAdminAppearance} onChange={() => {}} />)
+
+    await openMenu()
+
+    expect(handleOf()).toHaveAttribute("aria-hidden", "true")
   })
 })

@@ -2,6 +2,7 @@ import {
   composite,
   contrastRatio,
   formatOklch,
+  hexToOklch,
   oklchToHex,
   sampleGradient,
   type Oklch,
@@ -15,7 +16,7 @@ import {
 } from "./appearance-accent"
 import {
   accentPalette,
-  customColorStops,
+  CUSTOM_COLOR_ANGLE,
   customColorVariable,
   gradientIds,
   gradientPalette,
@@ -198,9 +199,13 @@ const PURE_WHITE_HEX = "#ffffff"
 const PURE_BLACK_HEX = "#000000"
 const SOLID_CONTRAST_MIN = 4.5
 
-export function solidForeground(color: CustomColor): string {
+function solidStops(hex: string): GradientStops {
+  return { angle: CUSTOM_COLOR_ANGLE, stops: [hex, hex, hex] }
+}
+
+export function solidForeground(color: string): string {
   const hex = color.toLowerCase()
-  const near = gradientForeground(customColorStops(color))
+  const near = gradientForeground(solidStops(hex))
   const nearHex = near === NEAR_WHITE ? NEAR_WHITE_HEX : NEAR_BLACK_HEX
   if (contrastRatio(hex, nearHex) >= SOLID_CONTRAST_MIN) {
     return near
@@ -208,6 +213,36 @@ export function solidForeground(color: CustomColor): string {
   return contrastRatio(hex, PURE_WHITE_HEX) >= contrastRatio(hex, PURE_BLACK_HEX)
     ? PURE_WHITE
     : PURE_BLACK
+}
+
+const CUSTOM_DARK_THRESHOLD = 0.55
+const CUSTOM_DARK_ANCHOR = 0.3
+const CUSTOM_DARK_SLOPE = 0.18
+const CUSTOM_DARK_MIN = 0.2
+const CUSTOM_DARK_MAX = 0.32
+const CUSTOM_DARK_CHROMA_CAP = 0.06
+
+export function customDarkColor(color: CustomColor): string {
+  const hex = color.toLowerCase()
+  const { l, c, h } = hexToOklch(hex)
+  if (l <= CUSTOM_DARK_THRESHOLD) {
+    return hex
+  }
+  const lightness = Math.min(
+    CUSTOM_DARK_MAX,
+    Math.max(
+      CUSTOM_DARK_MIN,
+      CUSTOM_DARK_ANCHOR - (l - CUSTOM_DARK_THRESHOLD) * CUSTOM_DARK_SLOPE
+    )
+  )
+  return oklchToHex({ l: lightness, c: Math.min(c, CUSTOM_DARK_CHROMA_CAP), h })
+}
+
+function customSchemeColor(
+  color: CustomColor,
+  scheme: "light" | "dark"
+): string {
+  return scheme === "light" ? color.toLowerCase() : customDarkColor(color)
 }
 
 export function customColorsOf(appearance: AdminAppearance): CustomColor[] {
@@ -229,27 +264,34 @@ export function customColorsOf(appearance: AdminAppearance): CustomColor[] {
   return [...found].sort() as CustomColor[]
 }
 
-function customSoftLines(
+function customColorLines(
   colors: readonly CustomColor[],
   scheme: "light" | "dark"
 ): string {
   return colors
-    .map(
-      (color) =>
-        `  ${customColorVariable(color)}-soft: ${gradientCss(softStops(customColorStops(color), scheme))};`
-    )
+    .flatMap((color) => {
+      const hex = customSchemeColor(color, scheme)
+      const stops = solidStops(hex)
+      const variable = customColorVariable(color)
+      const { destructive, destructiveForeground } = gradientDestructive(stops)
+      return [
+        `  ${variable}: ${gradientCss({ angle: stops.angle, stops: [hex, hex] })};`,
+        `  ${variable}-foreground: ${solidForeground(hex)};`,
+        `  ${variable}-destructive: ${destructive};`,
+        `  ${variable}-destructive-foreground: ${destructiveForeground};`,
+        `  ${variable}-soft: ${gradientCss(softStops(stops, scheme))};`,
+      ]
+    })
     .join("\n")
 }
 
 export function customColorSurface(color: CustomColor): string {
-  const hex = color.toLowerCase()
-  const stops = customColorStops(color)
-  const { destructive, destructiveForeground } = gradientDestructive(stops)
+  const variable = customColorVariable(color)
   return [
-    `  --surface-gradient: ${gradientCss({ angle: stops.angle, stops: [hex, hex] })};`,
-    `  --surface-foreground: ${solidForeground(color)};`,
-    `  --surface-destructive: ${destructive};`,
-    `  --surface-destructive-foreground: ${destructiveForeground};`,
+    `  --surface-gradient: var(${variable});`,
+    `  --surface-foreground: var(${variable}-foreground);`,
+    `  --surface-destructive: var(${variable}-destructive);`,
+    `  --surface-destructive-foreground: var(${variable}-destructive-foreground);`,
   ].join("\n")
 }
 
@@ -257,14 +299,13 @@ function customColorBlocks(colors: readonly CustomColor[]): string {
   return colors
     .map((color) => {
       const hex = color.toLowerCase()
-      const stops = customColorStops(color)
+      const variable = customColorVariable(color)
       const surface = customColorSurface(color)
-      const solid = gradientCss({ angle: stops.angle, stops: [hex, hex] })
       return [
         `[data-gradient="${hex}"] {\n${surface}\n}`,
         `body:has([data-gradient="${hex}"] ${OPEN_TRIGGER}) ${POPUP_SLOTS} {\n${surface}\n}`,
-        `[data-backdrop="${hex}"] {\n  --backdrop-gradient: var(${customColorVariable(color)}-soft);\n  --backdrop-text: var(--foreground);\n}`,
-        `[data-backdrop="${hex}"][data-backdrop-vivid] {\n  --backdrop-gradient: ${solid};\n  --backdrop-text: ${solidForeground(color)};\n}`,
+        `[data-backdrop="${hex}"] {\n  --backdrop-gradient: var(${variable}-soft);\n  --backdrop-text: var(--foreground);\n}`,
+        `[data-backdrop="${hex}"][data-backdrop-vivid] {\n  --backdrop-gradient: var(${variable});\n  --backdrop-text: var(${variable}-foreground);\n}`,
       ].join("\n\n")
     })
     .join("\n\n")
@@ -394,12 +435,12 @@ export function appearanceCss(appearance: AdminAppearance): string {
   const lightBlock = `:root:root {\n${[
     ...lightTokenLines,
     lightGradientLines,
-    ...(customColors.length > 0 ? [customSoftLines(customColors, "light")] : []),
+    ...(customColors.length > 0 ? [customColorLines(customColors, "light")] : []),
   ].join("\n")}\n}`
   const darkBlock = `:root:root.dark {\n${[
     ...darkTokenLines,
     darkGradientLines,
-    ...(customColors.length > 0 ? [customSoftLines(customColors, "dark")] : []),
+    ...(customColors.length > 0 ? [customColorLines(customColors, "dark")] : []),
   ].join("\n")}\n}`
 
   return [

@@ -6,7 +6,9 @@ import {
   AppearanceStyle,
   backdropThemeColors,
 } from "./appearance-style"
+import { customDarkColor } from "./appearance-css"
 import {
+  CUSTOM_COLOR_ANGLE,
   customColorStops,
   defaultAdminAppearance,
   gradientPalette,
@@ -86,26 +88,38 @@ describe("AppearanceCanvas", () => {
     )
   })
 
-  it("paints the canvas with the custom colour itself when it is not softened", () => {
+  it("paints the canvas from the colour's own variable when it is not softened", () => {
     const { container } = render(
       <AppearanceCanvas backdrop={{ gradient: "#AABBCC", soft: false }} />
     )
 
     expect(container.querySelector("style")?.innerHTML).toBe(
-      "html{background-image:linear-gradient(135deg, #aabbcc 0%, #aabbcc 100%)}body{background-color:transparent}"
+      "html{background-image:var(--custom-aabbcc)}body{background-color:transparent}"
     )
   })
 
-  it("takes the theme colours of a custom backdrop from the colour and its soft tints", () => {
-    const stops = customColorStops("#aabbcc")
+  it("takes the dark theme colour of a custom backdrop from its dark variant", () => {
+    const light = "#eef1f4"
+    const dark = customDarkColor(light)
 
-    expect(backdropThemeColors({ gradient: "#aabbcc", soft: false })).toEqual({
-      light: "#aabbcc",
-      dark: "#aabbcc",
+    expect(dark).not.toBe(light)
+    expect(backdropThemeColors({ gradient: light, soft: false })).toEqual({
+      light,
+      dark,
     })
-    expect(backdropThemeColors({ gradient: "#aabbcc", soft: true })).toEqual({
-      light: softStops(stops, "light").stops[0],
-      dark: softStops(stops, "dark").stops[0],
+    expect(backdropThemeColors({ gradient: light, soft: true })).toEqual({
+      light: softStops(customColorStops(light), "light").stops[0],
+      dark: softStops(
+        { angle: CUSTOM_COLOR_ANGLE, stops: [dark, dark, dark] },
+        "dark"
+      ).stops[0],
+    })
+  })
+
+  it("leaves a dark custom backdrop as it is in both schemes", () => {
+    expect(backdropThemeColors({ gradient: "#0f172a", soft: false })).toEqual({
+      light: "#0f172a",
+      dark: "#0f172a",
     })
   })
 

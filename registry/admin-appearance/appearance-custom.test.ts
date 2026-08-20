@@ -3,10 +3,11 @@ import { describe, expect, it } from "vitest"
 import {
   appearanceCss,
   customColorsOf,
+  customDarkColor,
   isAdminAppearance,
   solidForeground,
 } from "./appearance-css"
-import { contrastRatio, oklchToHex } from "./appearance-color"
+import { contrastRatio, hexToOklch, oklchToHex } from "./appearance-color"
 import {
   customColorStops,
   customColorVariable,
@@ -127,21 +128,46 @@ describe("appearanceCss with a custom colour", () => {
 
   it("emits the surface rule keyed by the colour itself", () => {
     expect(css).toContain(
-      `[data-gradient="${CUSTOM}"] {\n  --surface-gradient: linear-gradient(135deg, ${CUSTOM} 0%, ${CUSTOM} 100%);`
+      `[data-gradient="${CUSTOM}"] {\n  --surface-gradient: var(--custom-aabbcc);`
     )
-    expect(css).toContain("--surface-foreground:")
-    expect(css).toContain("--surface-destructive:")
-    expect(css).toContain("--surface-destructive-foreground:")
+    expect(css).toContain("--surface-foreground: var(--custom-aabbcc-foreground);")
+    expect(css).toContain("--surface-destructive: var(--custom-aabbcc-destructive);")
+    expect(css).toContain(
+      "--surface-destructive-foreground: var(--custom-aabbcc-destructive-foreground);"
+    )
+  })
+
+  it("defines the colour's own variables once per scheme", () => {
+    const darkBlockStart = css.indexOf(":root:root.dark {")
+    const light = css.slice(css.indexOf(":root:root {"), darkBlockStart)
+    const dark = css.slice(darkBlockStart)
+    const darkHex = customDarkColor(CUSTOM)
+
+    expect(light).toContain(
+      `  --custom-aabbcc: linear-gradient(135deg, ${CUSTOM} 0%, ${CUSTOM} 100%);`
+    )
+    expect(dark).toContain(
+      `  --custom-aabbcc: linear-gradient(135deg, ${darkHex} 0%, ${darkHex} 100%);`
+    )
+    for (const suffix of ["-foreground", "-destructive", "-soft"]) {
+      expect(
+        css.match(new RegExp(`--custom-aabbcc${suffix}:`, "g")),
+        suffix
+      ).toHaveLength(2)
+    }
   })
 
   it("emits the popup rule for a popup opened from that surface", () => {
     expect(css).toContain(`body:has([data-gradient="${CUSTOM}"] `)
   })
 
-  it("emits both backdrop rules and a per-scheme soft variable", () => {
-    expect(css).toContain(`[data-backdrop="${CUSTOM}"] {`)
-    expect(css).toContain(`[data-backdrop="${CUSTOM}"][data-backdrop-vivid] {`)
-    expect(css.match(/--custom-aabbcc-soft:/g)).toHaveLength(2)
+  it("emits both backdrop rules from the colour's own variables", () => {
+    expect(css).toContain(
+      `[data-backdrop="${CUSTOM}"] {\n  --backdrop-gradient: var(--custom-aabbcc-soft);`
+    )
+    expect(css).toContain(
+      `[data-backdrop="${CUSTOM}"][data-backdrop-vivid] {\n  --backdrop-gradient: var(--custom-aabbcc);`
+    )
   })
 
   it("lowercases the colour before it reaches the css", () => {
@@ -221,15 +247,59 @@ describe("solidForeground", () => {
   })
 })
 
+describe("customDarkColor", () => {
+  it("moves a light colour into the dark chrome band, keeping its hue", () => {
+    const light: CustomColor = "#cfe3ff"
+    const before = hexToOklch(light)
+    const after = hexToOklch(customDarkColor(light))
+
+    expect(after.l).toBeGreaterThanOrEqual(0.2)
+    expect(after.l).toBeLessThanOrEqual(0.32)
+    expect(Math.abs(after.h - before.h)).toBeLessThan(6)
+  })
+
+  it("caps the chroma of a saturated light colour", () => {
+    expect(hexToOklch(customDarkColor("#ffcc00")).c).toBeLessThanOrEqual(0.061)
+  })
+
+  it("leaves a colour that is already dark alone", () => {
+    for (const hex of ["#0f172a", "#334155", "#1c1917"] as CustomColor[]) {
+      expect(customDarkColor(hex)).toBe(hex)
+    }
+  })
+
+  it("keeps the dark variant's text legible", () => {
+    for (const hex of [
+      "#ffffff",
+      "#f4f4f5",
+      "#cfe3ff",
+      "#ffcc00",
+    ] as CustomColor[]) {
+      const dark = customDarkColor(hex)
+      expect(
+        contrastRatio(dark, oklchStringToHex(solidForeground(dark))),
+        hex
+      ).toBeGreaterThanOrEqual(4.5)
+    }
+  })
+})
+
 describe("appearanceThemes", () => {
-  it("ships five presets", () => {
-    expect(appearanceThemes.map((theme) => theme.id)).toEqual([
+  it("ships twenty presets, the original five first", () => {
+    expect(appearanceThemes).toHaveLength(20)
+    expect(appearanceThemes.slice(0, 5).map((theme) => theme.id)).toEqual([
       "slate",
       "mist",
       "sage",
       "ivory",
       "dune",
     ])
+  })
+
+  it("gives every preset a distinct id", () => {
+    const ids = appearanceThemes.map((theme) => theme.id)
+
+    expect(new Set(ids).size).toBe(ids.length)
   })
 
   it("carries a valid appearance with no block or page overrides", () => {

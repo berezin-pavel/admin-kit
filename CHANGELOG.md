@@ -25,6 +25,31 @@ Sections used below: **New** (items you can now install), **Changed** (installed
 re-pulling), **Breaking** (props or files that changed shape — read before overwriting), and
 **Project** (showcase, CI, docs — nothing that reaches your project).
 
+## Unreleased
+
+**Changed** — `admin-appearance/appearance-themes.ts` ships twenty presets instead of five. The
+original Slate, Mist, Sage, Ivory and Dune keep their colours, and fifteen more neutral ones join
+them: Graphite, Zinc, Paper, Snow, Stone, Frost, Ash, Pearl, Charcoal, Linen, Fog, Night, Moss,
+Porcelain and Ink. All twenty are built out of custom colours, so no gradient id can go stale;
+`locale-ru` names the new ones.
+
+**Changed** — applying a theme in `appearance-menu` now keeps `blocks` and `pages`: a preset
+replaces the chrome and the accent, not the choices made block by block and page by page. The
+theme row became a two-column grid to hold twenty buttons.
+
+**Changed** — a custom colour is now emitted per scheme. `customDarkColor` in
+`admin-appearance/appearance-css.ts` maps a light colour (L > 0.55 in OKLCH) into the dark chrome
+band — L' = 0.30 − (L − 0.55) × 0.18 clamped to [0.20, 0.32], hue kept, chroma capped at 0.06 —
+and leaves a colour that is already dark as it is. The gradient, foreground, destructive pair and
+soft tint of every custom colour live in scheme-scoped `--custom-<hex>*` variables, and the
+`[data-gradient]`, popup and `[data-backdrop]` rules read the variables instead of literals. A
+light-grey sidebar therefore turns dark grey under `.dark` instead of staying a white slab;
+`AppearanceCanvas` and `backdropThemeColors` take the dark `theme-color` from the same variant.
+
+**Changed** — the `appearance-menu` popup can be moved: a grip row at its top drags the popup by
+pointer, so the panel being restyled stays visible underneath. The offset survives while the popup
+is open and resets when it closes; the grip is `aria-hidden` and out of the tab order.
+
 ## 0.33.0 — 2026-08-20
 
 **Breaking** — every gradient is now three stops of a single hue: no gradient crosses from one

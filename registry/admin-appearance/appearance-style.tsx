@@ -1,5 +1,6 @@
-import { appearanceCss } from "./appearance-css"
+import { appearanceCss, customDarkColor } from "./appearance-css"
 import {
+  CUSTOM_COLOR_ANGLE,
   customColorStops,
   customColorVariable,
   gradientPalette,
@@ -22,14 +23,17 @@ export function backdropThemeColors(
     return THEME_BACKGROUND
   }
   if (isCustomColor(backdrop.gradient)) {
-    const stops = customColorStops(backdrop.gradient)
+    const light = backdrop.gradient.toLowerCase()
+    const dark = customDarkColor(backdrop.gradient)
     if (!backdrop.soft) {
-      const hex = backdrop.gradient.toLowerCase()
-      return { light: hex, dark: hex }
+      return { light, dark }
     }
     return {
-      light: softStops(stops, "light").stops[0],
-      dark: softStops(stops, "dark").stops[0],
+      light: softStops(customColorStops(backdrop.gradient), "light").stops[0],
+      dark: softStops(
+        { angle: CUSTOM_COLOR_ANGLE, stops: [dark, dark, dark] },
+        "dark"
+      ).stops[0],
     }
   }
   const entry = gradientPalette.find(
@@ -45,10 +49,8 @@ export function backdropThemeColors(
 
 function canvasBackgroundImage(backdrop: PageBackdrop): string {
   if (isCustomColor(backdrop.gradient)) {
-    const hex = backdrop.gradient.toLowerCase()
-    return backdrop.soft
-      ? `var(${customColorVariable(backdrop.gradient)}-soft)`
-      : `linear-gradient(${customColorStops(backdrop.gradient).angle}deg, ${hex} 0%, ${hex} 100%)`
+    const variable = customColorVariable(backdrop.gradient)
+    return `var(${variable}${backdrop.soft ? "-soft" : ""})`
   }
   return `var(--gradient-${backdrop.gradient}${backdrop.soft ? "-soft" : ""})`
 }

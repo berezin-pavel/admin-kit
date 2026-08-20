@@ -67,11 +67,11 @@ The administrator's global choice of an accent colour and surfaces — for the s
 _Avoid_: theme settings, customization, skin
 
 **Custom colour**:
-A single `#rrggbb` colour entered by the administrator instead of a palette gradient, in the accent or in any surface but a block's. The colour is the administrator's; the text colour on it is not — the kit derives it and measures it at 4.5:1, dropping to pure white or black where its near-white and near-black would miss. Only a validated colour reaches the stylesheet.
+A single `#rrggbb` colour entered by the administrator instead of a palette gradient, in the accent or in any surface but a block's. The colour is the administrator's; the text colour on it is not — the kit derives it and measures it at 4.5:1, dropping to pure white or black where its near-white and near-black would miss. It also has two variants, one per scheme: the colour itself in the light scheme, and in the dark one either itself, when it is already dark, or the same hue moved into the dark chrome band. Only a validated colour reaches the stylesheet.
 _Avoid_: hex, brand color, custom gradient
 
 **Theme preset**:
-A whole named appearance shipped with the kit (`appearanceThemes`), applied in one click and then editable like any other. Built out of custom colours, so renaming a gradient cannot break one.
+A whole named appearance shipped with the kit (`appearanceThemes`), applied in one click and then editable like any other. Built out of custom colours, so renaming a gradient cannot break one. Applying one replaces the chrome and the accent and leaves the per-block and per-page choices alone: a preset has an opinion about the panel, not about the blocks in it.
 _Avoid_: theme, skin, template
 
 **Backdrop**:

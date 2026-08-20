@@ -1,14 +1,16 @@
 "use client"
 
 import {
+  useEffect,
   useId,
   useState,
   type ChangeEvent,
   type CSSProperties,
+  type PointerEvent as ReactPointerEvent,
   type ReactElement,
   type ReactNode,
 } from "react"
-import { Palette } from "lucide-react"
+import { GripHorizontal, Palette } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -382,6 +384,61 @@ function SoftCheckbox({
   )
 }
 
+interface DragOffset {
+  x: number
+  y: number
+}
+
+const NO_OFFSET: DragOffset = { x: 0, y: 0 }
+
+function useDragOffset() {
+  const [offset, setOffset] = useState<DragOffset>(NO_OFFSET)
+  const [origin, setOrigin] = useState<DragOffset | null>(null)
+
+  useEffect(() => {
+    if (!origin) {
+      return
+    }
+    const move = (event: PointerEvent) => {
+      setOffset({ x: event.clientX - origin.x, y: event.clientY - origin.y })
+    }
+    const stop = () => setOrigin(null)
+
+    window.addEventListener("pointermove", move)
+    window.addEventListener("pointerup", stop)
+    window.addEventListener("pointercancel", stop)
+    return () => {
+      window.removeEventListener("pointermove", move)
+      window.removeEventListener("pointerup", stop)
+      window.removeEventListener("pointercancel", stop)
+    }
+  }, [origin])
+
+  const start = (event: ReactPointerEvent<HTMLDivElement>) => {
+    event.preventDefault()
+    setOrigin({ x: event.clientX - offset.x, y: event.clientY - offset.y })
+  }
+
+  return { offset, start, reset: () => setOffset(NO_OFFSET) }
+}
+
+function DragHandle({
+  onPointerDown,
+}: {
+  onPointerDown: (event: ReactPointerEvent<HTMLDivElement>) => void
+}): ReactElement {
+  return (
+    <div
+      aria-hidden="true"
+      data-slot="appearance-drag-handle"
+      onPointerDown={onPointerDown}
+      className="-mt-1 flex h-5 w-full shrink-0 cursor-grab touch-none select-none items-center justify-center rounded-sm text-muted-foreground active:cursor-grabbing"
+    >
+      <GripHorizontal className="size-4" />
+    </div>
+  )
+}
+
 function ThemeButton({
   theme,
   labels,
@@ -426,11 +483,17 @@ export function AppearanceMenu({
   className,
 }: AppearanceMenuProps): ReactElement {
   const labels = resolveLabels(labelsProp)
+  const [open, setOpen] = useState(false)
+  const { offset, start, reset } = useDragOffset()
   const baseId = useId()
   const sidebarId = `${baseId}-sidebar`
   const headerId = `${baseId}-header`
   const signInId = `${baseId}-sign-in`
   const pageId = `${baseId}-page`
+
+  const applyTheme = (theme: AppearanceTheme) => {
+    onChange({ ...theme.appearance, blocks: value.blocks, pages: value.pages })
+  }
 
   const selectAccent = (accent: AccentId | CustomColor) => {
     onChange({ ...value, accent })
@@ -499,7 +562,15 @@ export function AppearanceMenu({
   }
 
   return (
-    <Popover>
+    <Popover
+      open={open}
+      onOpenChange={(next) => {
+        setOpen(next)
+        if (!next) {
+          reset()
+        }
+      }}
+    >
       <Hint
         text={labels.label}
         render={
@@ -514,19 +585,25 @@ export function AppearanceMenu({
       <PopoverContent
         aria-label={labels.label}
         className="max-h-[70vh] w-[24rem] overflow-y-auto"
+        style={
+          offset.x === 0 && offset.y === 0
+            ? undefined
+            : { transform: `translate3d(${offset.x}px, ${offset.y}px, 0)` }
+        }
       >
+        <DragHandle onPointerDown={start} />
         <div className="flex flex-col gap-4">
           <section className="flex flex-col gap-1.5">
             <span className="text-xs font-medium text-muted-foreground">
               {labels.theme}
             </span>
-            <div className="grid grid-cols-3 gap-1.5">
+            <div className="grid grid-cols-2 gap-1.5">
               {appearanceThemes.map((theme) => (
                 <ThemeButton
                   key={theme.id}
                   theme={theme}
                   labels={labels}
-                  onSelect={() => onChange(theme.appearance)}
+                  onSelect={() => applyTheme(theme)}
                 />
               ))}
             </div>

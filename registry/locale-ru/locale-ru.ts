@@ -160,6 +160,21 @@ const appearanceThemeNamesRu: Record<string, string> = {
   sage: "Шалфей",
   ivory: "Слоновая кость",
   dune: "Дюна",
+  graphite: "Графит",
+  zinc: "Цинк",
+  paper: "Бумага",
+  snow: "Снег",
+  stone: "Камень",
+  frost: "Иней",
+  ash: "Пепел",
+  pearl: "Жемчуг",
+  charcoal: "Уголь",
+  linen: "Лён",
+  fog: "Туман",
+  night: "Ночь",
+  moss: "Мох",
+  porcelain: "Фарфор",
+  ink: "Чернила",
 }
 
 const appearanceMenuRu = {
