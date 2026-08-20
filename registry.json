@@ -145,6 +145,10 @@
           "path": "registry/admin-appearance/block.tsx",
           "type": "registry:component",
           "target": "@components/block.tsx"
+        },
+        {
+          "path": "registry/admin-appearance/appearance-themes.ts",
+          "type": "registry:component"
         }
       ]
     },

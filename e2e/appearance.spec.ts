@@ -122,3 +122,24 @@ test("the sidebar gradient and its burger panel follow the menu", async ({ page 
     "midnight"
   )
 })
+
+test("a theme preset restyles the whole panel and a custom colour paints the sidebar", async ({
+  page,
+}) => {
+  const menu = await openMenu(page)
+  await menu.getByRole("button", { name: "Mist" }).click()
+
+  await expect(page.locator("aside")).toHaveAttribute("data-gradient", "#eceff3")
+
+  await menu.getByRole("combobox", { name: "Sidebar" }).click()
+  await page.getByRole("option", { name: "Custom color…" }).click()
+  const hexInput = menu.getByRole("textbox", { name: "Custom color hex" }).nth(1)
+  await hexInput.fill("#4a5568")
+  await hexInput.blur()
+
+  await expect(page.locator("aside")).toHaveAttribute("data-gradient", "#4a5568")
+  const color = await page
+    .locator("aside")
+    .evaluate((el) => getComputedStyle(el).backgroundImage)
+  expect(color).toContain("linear-gradient")
+})
