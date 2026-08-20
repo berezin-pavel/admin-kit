@@ -7,12 +7,14 @@ import { AppearanceStyle } from "@/registry/admin-appearance/appearance-style"
 import { localeRu } from "@/registry/locale-ru/locale-ru"
 
 import {
+  DEMO_APPEARANCE_DEFAULT,
   parseDemoAppearance,
   seedDemoAppearance,
   setDemoAppearance,
   useDemoAppearance,
 } from "@/app/demo/appearance-store"
 import {
+  DEMO_LOCALE_DEFAULT,
   parseDemoLocale,
   seedDemoLocale,
   useDemoLocale,
@@ -27,15 +29,10 @@ export function DemoAppearanceProvider({
   appearanceCookie?: string
   localeCookie?: string
 }) {
-  const initialAppearance = parseDemoAppearance(appearanceCookie)
-  if (initialAppearance) {
-    seedDemoAppearance(initialAppearance)
-  }
-
-  const initialLocale = parseDemoLocale(localeCookie)
-  if (initialLocale) {
-    seedDemoLocale(initialLocale)
-  }
+  seedDemoAppearance(
+    parseDemoAppearance(appearanceCookie) ?? DEMO_APPEARANCE_DEFAULT
+  )
+  seedDemoLocale(parseDemoLocale(localeCookie) ?? DEMO_LOCALE_DEFAULT)
 
   const appearance = useDemoAppearance()
   const locale = useDemoLocale()

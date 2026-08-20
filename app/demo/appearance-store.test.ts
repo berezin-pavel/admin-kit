@@ -276,6 +276,17 @@ describe("the appearance cookie", () => {
     expect(store.getDemoAppearance()).toEqual(first)
   })
 
+  it("lets every server request overwrite the module cache", async () => {
+    vi.resetModules()
+    const store = await import("./appearance-store")
+    const previousRequest = withAccent("#445566")
+
+    store.seedDemoAppearance(previousRequest)
+    store.seedDemoAppearance(DEMO_APPEARANCE_DEFAULT)
+
+    expect(store.getDemoAppearance()).toEqual(DEMO_APPEARANCE_DEFAULT)
+  })
+
   it("is written by the setter with a year's lifetime", async () => {
     const store = await loadStore("")
     const next = withAccent("#112233")
