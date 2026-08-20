@@ -357,9 +357,10 @@ describe("appearanceThemes", () => {
     }
   })
 
-  it("emits css for every preset", () => {
-    for (const theme of appearanceThemes) {
-      expect(() => appearanceCss(theme.appearance), theme.id).not.toThrow()
+  it.each(appearanceThemes.map((theme) => [theme.id, theme] as const))(
+    "emits css for the %s preset",
+    (id, theme) => {
+      expect(() => appearanceCss(theme.appearance), id).not.toThrow()
     }
-  })
+  )
 })
