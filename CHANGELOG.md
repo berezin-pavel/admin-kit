@@ -8,7 +8,7 @@ items changed, and what breaks if you pull them.
 **Install an item, pinned to a release:**
 
 ```bash
-pnpm dlx shadcn@latest add berezin-pavel/admin-kit/widget-table#v0.38.0
+pnpm dlx shadcn@latest add berezin-pavel/admin-kit/widget-table#v0.39.0
 ```
 
 **See what an update would change before taking it:**
@@ -25,7 +25,7 @@ Sections used below: **New** (items you can now install), **Changed** (installed
 re-pulling), **Breaking** (props or files that changed shape — read before overwriting), and
 **Project** (showcase, CI, docs — nothing that reaches your project).
 
-## Unreleased
+## 0.39.0 — 2026-08-20
 
 **New** — three chrome parts a panel needs on its first day. `global-search` is the ⌘K dialog:
 it filters the `items` you pass on their label and group, groups the matches, and reports the
@@ -39,6 +39,11 @@ because installing the shell used to leave the brand slot empty — the collapse
 nothing at all: it draws a rounded accent square with your lucide icon, or the first letter of
 the app name until you have one. `locale-ru` gained the `globalSearch` and `notificationsMenu`
 slices; `app-logo` has no strings of its own.
+
+**Changed** — the header's action group never squeezes below its content (`shrink-0` — the
+title side truncates instead), and the search field trigger documents its `w-full`: give it a
+width at the call site, as the demo does with `w-44 lg:w-56` — a percent-sized child inside the
+auto-sized header group otherwise loops into an overflow that scrolled the whole page sideways.
 
 **Changed** — toasts stack at the top right instead of the bottom right: the viewport is pinned
 to the top edge, the stack peeks downwards, toasts enter and leave through the top edge, and the

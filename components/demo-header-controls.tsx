@@ -57,6 +57,7 @@ export function DemoHeaderControls({
         onOpenChange={setOpen}
         hotkey={variant === "header"}
         variant={variant === "header" ? "field" : "icon"}
+        className={variant === "header" ? "w-44 lg:w-56" : undefined}
         labels={strings.search}
       />
       <NotificationsMenu
