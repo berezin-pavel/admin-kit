@@ -127,6 +127,11 @@
           "target": "@components/appearance-palette.ts"
         },
         {
+          "path": "registry/admin-appearance/radio-group-nav.ts",
+          "type": "registry:component",
+          "target": "@components/radio-group-nav.ts"
+        },
+        {
           "path": "registry/admin-appearance/appearance-css.ts",
           "type": "registry:component",
           "target": "@components/appearance-css.ts"
