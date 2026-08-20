@@ -358,7 +358,7 @@ describe("AppearanceMenu themes", () => {
         await screen.findByRole("option", { name: theme.name })
       ).toBeInTheDocument()
     }
-    expect(appearanceThemes).toHaveLength(26)
+    expect(appearanceThemes).toHaveLength(36)
   })
 
   it("keeps the trigger on its label, since picking is an action", async () => {

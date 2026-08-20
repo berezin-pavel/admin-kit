@@ -182,6 +182,16 @@ const appearanceThemeNamesRu: Record<string, string> = {
   denim: "Деним",
   arctic: "Арктика",
   "indigo-night": "Индиго",
+  evergreen: "Хвоя",
+  laurel: "Лавр",
+  jade: "Нефрит",
+  meadow: "Луг",
+  willow: "Ива",
+  ocean: "Океан",
+  steel: "Сталь",
+  cobalt: "Кобальт",
+  sky: "Небо",
+  harbor: "Гавань",
 }
 
 const appearanceMenuRu = {

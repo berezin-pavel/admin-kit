@@ -76,17 +76,19 @@ export const orderStatusLabelByLocale: Record<
 
 const NAV_TITLES: Record<
   DemoLocale,
-  { overview: string; orders: string; order: string }
+  { overview: string; orders: string; order: string; orderHeader: string }
 > = {
   en: {
     overview: "Overview",
     orders: "Orders",
     order: "Order #4187",
+    orderHeader: "Order · header tabs",
   },
   ru: {
     overview: "Обзор",
     orders: "Заказы",
     order: "Заказ №4187",
+    orderHeader: "Заказ · табы в шапке",
   },
 }
 
@@ -107,6 +109,7 @@ export function getDemoFlushNav(locale: DemoLocale): readonly AdminNavItem[] {
     { href: "/demo-flush", title: titles.overview, icon: LayoutDashboard },
     { href: "/demo-flush/orders", title: titles.orders, icon: ShoppingCart },
     { href: "/demo-flush/order", title: titles.order, icon: Package },
+    { href: "/demo-flush/order-header", title: titles.orderHeader, icon: Package },
   ]
 }
 

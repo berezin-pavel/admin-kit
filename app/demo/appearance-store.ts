@@ -39,7 +39,11 @@ export function demoPageId(pathname: string): string | undefined {
   if (pathname === "/demo/orders" || pathname === "/demo-flush/orders") {
     return "orders"
   }
-  if (pathname === "/demo/order" || pathname === "/demo-flush/order") {
+  if (
+    pathname === "/demo/order" ||
+    pathname === "/demo-flush/order" ||
+    pathname === "/demo-flush/order-header"
+  ) {
     return "order"
   }
   return undefined

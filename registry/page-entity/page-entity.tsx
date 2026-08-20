@@ -77,7 +77,10 @@ export function PageEntity({
       ) : combined ? (
         <Block id={blockId ? `${blockId}.details` : undefined} headings>
           {sections.map((section) => (
-            <div key={section.id}>
+            <div
+              key={section.id}
+              className="flex flex-col gap-4 [&:not(:first-child)]:pt-2"
+            >
               {section.title ? (
                 <CardHeader>
                   <CardTitle className="text-[0.84375rem] font-semibold">

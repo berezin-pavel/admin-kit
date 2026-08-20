@@ -8,7 +8,7 @@ items changed, and what breaks if you pull them.
 **Install an item, pinned to a release:**
 
 ```bash
-pnpm dlx shadcn@latest add berezin-pavel/admin-kit/widget-table#v0.37.0
+pnpm dlx shadcn@latest add berezin-pavel/admin-kit/widget-table#v0.38.0
 ```
 
 **See what an update would change before taking it:**
@@ -24,6 +24,20 @@ say yes; `-o` overwrites deliberately. Items you have edited in place are yours 
 Sections used below: **New** (items you can now install), **Changed** (installed items worth
 re-pulling), **Breaking** (props or files that changed shape — read before overwriting), and
 **Project** (showcase, CI, docs — nothing that reaches your project).
+
+## 0.38.0 — 2026-08-20
+
+**Changed** — `admin-header`'s `tabs` slot renders in the header row itself, in place of the
+section title, instead of adding a second row — the classic tabbed-header admin layout;
+`page-entity`'s `combined` block spaces its sections like standalone cards (16px under a section
+title, 24px between sections). Ten more calm theme presets, five green-first and five blue-first:
+Evergreen, Laurel, Jade, Meadow, Willow, Ocean, Steel, Cobalt, Sky, Harbor — thirty-six in all,
+named in `locale-ru`.
+
+**Project** — the flush demo's order page went back to the block tab strip, and a separate
+"Order · header tabs" page shows the header-bar variant; the order's Cancel button is
+destructive-red again (gradient surfaces now carry a measured destructive pair, so the earlier
+outline workaround is unnecessary); the demo's breadcrumbs are gone.
 
 ## 0.37.0 — 2026-08-20
 

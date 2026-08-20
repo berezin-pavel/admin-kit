@@ -1,7 +1,6 @@
 "use client"
 
 import { useMemo, useState } from "react"
-import { usePathname } from "next/navigation"
 import { useSearchParams } from "next/navigation"
 import {
   History,
@@ -12,7 +11,6 @@ import {
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import { DemoOrderBreadcrumbs } from "@/components/demo-order-breadcrumbs"
 import { DemoOrderEdit } from "@/components/demo-order-edit"
 import { cn } from "@/lib/utils"
 import { notify } from "@/registry/admin-toaster/admin-toaster"
@@ -44,7 +42,6 @@ import {
   orderStatusTone,
 } from "@/app/demo/data"
 import { useDemoHeaderContent } from "@/app/demo/header-slot"
-import { demoBasePath, DEMO_FLUSH_BASE } from "@/app/demo/paths"
 import { demoDictionary } from "@/app/demo/locale"
 import { useDemoLocale } from "@/app/demo/locale-store"
 
@@ -52,7 +49,7 @@ const RELOAD_DELAY_MS = 1200
 
 const EDIT_TAB = "edit"
 
-export function DemoOrderEntity() {
+export function DemoOrderEntity({ headerTabs = false }: { headerTabs?: boolean }) {
   const [cancelling, setCancelling] = useState(false)
   const [confirmOpen, setConfirmOpen] = useState(false)
   const [cancelled, setCancelled] = useState(false)
@@ -63,7 +60,6 @@ export function DemoOrderEntity() {
   const [draftTotal, setDraftTotal] = useState(total)
   const [draftChannel, setDraftChannel] = useState(channel)
   const searchParams = useSearchParams()
-  const flush = demoBasePath(usePathname()) === DEMO_FLUSH_BASE
   const [tab, setTab] = useState(
     searchParams.get("tab") === EDIT_TAB ? EDIT_TAB : "overview"
   )
@@ -262,7 +258,7 @@ export function DemoOrderEntity() {
           {strings.sendReceiptButton}
         </Button>
         <Button
-          variant="outline"
+          variant="destructive"
           disabled={cancelled}
           onClick={() => setConfirmOpen(true)}
         >
@@ -273,7 +269,7 @@ export function DemoOrderEntity() {
   )
 
   useDemoHeaderContent(
-    flush
+    headerTabs
       ? {
           tabs: (
             <PageTabsStrip
@@ -289,12 +285,11 @@ export function DemoOrderEntity() {
 
   return (
     <div className="flex flex-col gap-4">
-      {flush ? (
+      {headerTabs ? (
         <PageTabsPanels items={tabItems} value={tab} />
       ) : (
         <PageTabs
           blockId="order"
-          breadcrumbs={<DemoOrderBreadcrumbs />}
           items={tabItems}
           value={tab}
           onValueChange={setTab}

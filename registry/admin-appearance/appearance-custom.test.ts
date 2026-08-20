@@ -312,8 +312,8 @@ describe("customDarkColor", () => {
 })
 
 describe("appearanceThemes", () => {
-  it("ships twenty-six presets, the original five first", () => {
-    expect(appearanceThemes).toHaveLength(26)
+  it("ships thirty-six presets, the original five first", () => {
+    expect(appearanceThemes).toHaveLength(36)
     expect(appearanceThemes.slice(0, 5).map((theme) => theme.id)).toEqual([
       "slate",
       "mist",
@@ -323,16 +323,21 @@ describe("appearanceThemes", () => {
     ])
   })
 
-  it("ends on the six calm greens and blues", () => {
-    expect(appearanceThemes.slice(-6).map((theme) => theme.id)).toEqual([
-      "pine",
-      "fern",
-      "navy",
-      "denim",
-      "arctic",
-      "indigo-night",
+  it("ends on the ten extra calm greens and blues", () => {
+    expect(appearanceThemes.slice(-10).map((theme) => theme.id)).toEqual([
+      "evergreen",
+      "laurel",
+      "jade",
+      "meadow",
+      "willow",
+      "ocean",
+      "steel",
+      "cobalt",
+      "sky",
+      "harbor",
     ])
   })
+
 
   it("gives every preset a distinct id", () => {
     const ids = appearanceThemes.map((theme) => theme.id)

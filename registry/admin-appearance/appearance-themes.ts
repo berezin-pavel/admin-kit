@@ -154,4 +154,54 @@ export const appearanceThemes: readonly AppearanceTheme[] = [
     name: "Indigo",
     appearance: preset("#272b55", "#6366f1", "#e9eaf5", "#161936"),
   },
+  {
+    id: "evergreen",
+    name: "Evergreen",
+    appearance: preset("#14332a", "#268a68", "#e7efe9", "#0d241d"),
+  },
+  {
+    id: "laurel",
+    name: "Laurel",
+    appearance: preset("#45564a", "#4f7f5c", "#edf1ec", "#2b3a2f"),
+  },
+  {
+    id: "jade",
+    name: "Jade",
+    appearance: preset("#24473d", "#12876f", "#e6efeb", "#16302a"),
+  },
+  {
+    id: "meadow",
+    name: "Meadow",
+    appearance: preset("#eaf2e8", "#3f7d4e", "#f2f7f0", "#23402b"),
+  },
+  {
+    id: "willow",
+    name: "Willow",
+    appearance: preset("#58685a", "#55855a", "#eef2ed", "#333f34"),
+  },
+  {
+    id: "ocean",
+    name: "Ocean",
+    appearance: preset("#16405c", "#2b7cb3", "#e6eef4", "#0e2a3d"),
+  },
+  {
+    id: "steel",
+    name: "Steel",
+    appearance: preset("#3d4c60", "#4f7ca8", "#e9edf2", "#263140"),
+  },
+  {
+    id: "cobalt",
+    name: "Cobalt",
+    appearance: preset("#263c6e", "#3b62c4", "#e7ebf5", "#16244a"),
+  },
+  {
+    id: "sky",
+    name: "Sky",
+    appearance: preset("#e9f1f8", "#1f6f9c", "#f2f7fb", "#143a52"),
+  },
+  {
+    id: "harbor",
+    name: "Harbor",
+    appearance: preset("#2c4257", "#35839c", "#e8eef2", "#1b2b3a"),
+  },
 ]

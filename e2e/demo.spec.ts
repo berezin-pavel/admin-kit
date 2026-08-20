@@ -112,6 +112,21 @@ test("the orders page exports a selection, hides a column and resets its filters
   await expect(page.getByRole("row").first()).toBeVisible()
 })
 
+test("the header-tabs order page runs its tabs and actions in the header bar", async ({
+  page,
+}) => {
+  await page.goto("/demo-flush/order-header")
+  await page.waitForLoadState("networkidle")
+
+  const header = page.locator('[data-slot="admin-header"]')
+  await expect(header.getByRole("tab", { name: "Overview" })).toBeVisible()
+  await expect(header.getByRole("button", { name: "Cancel order" })).toBeVisible()
+  await expect(header.getByText("Order #4187")).toHaveCount(0)
+
+  await header.getByRole("tab", { name: "History" }).click()
+  await expect(page.getByText("Order timeline")).toBeVisible()
+})
+
 test("the flush demo runs a full-width header with the account menu at its right", async ({
   page,
 }) => {
