@@ -110,7 +110,7 @@ function BlockMenu({
   labels,
 }: BlockMenuProps) {
   const [open, setOpen] = useState(false)
-  const { ref, start, reset } = useDragOffset()
+  const { ref, start, reset, hideForExit } = useDragOffset()
 
   const selectGradient = (next: GradientId | null) => {
     onChange(setBlockAppearance(value, id, { gradient: next }))
@@ -126,6 +126,8 @@ function BlockMenu({
       onOpenChange={(next) => {
         if (next) {
           reset()
+        } else {
+          hideForExit()
         }
         setOpen(next)
       }}
@@ -151,7 +153,10 @@ function BlockMenu({
       >
         <DragHandle
           onPointerDown={start}
-          onClose={() => setOpen(false)}
+          onClose={() => {
+            hideForExit()
+            setOpen(false)
+          }}
           closeLabel={labels.close}
         />
         <div className="flex flex-col gap-1.5">

@@ -31,6 +31,9 @@ export function useDragOffset<Element extends HTMLElement = HTMLDivElement>() {
     const { x, y } = offset.current
     element.current.style.transform =
       x === 0 && y === 0 ? "" : `translate3d(${x}px, ${y}px, 0)`
+    element.current.style.transition = ""
+    element.current.style.animation = ""
+    element.current.style.opacity = ""
   }, [])
 
   useEffect(() => {
@@ -93,7 +96,19 @@ export function useDragOffset<Element extends HTMLElement = HTMLDivElement>() {
     paint()
   }
 
-  return { ref, start, reset }
+  const hideForExit = useCallback(() => {
+    if (!element.current) {
+      return
+    }
+    const { x, y } = offset.current
+    if (x !== 0 || y !== 0) {
+      element.current.style.transition = "none"
+      element.current.style.animation = "none"
+      element.current.style.opacity = "0"
+    }
+  }, [])
+
+  return { ref, start, reset, hideForExit }
 }
 
 export function DragHandle({

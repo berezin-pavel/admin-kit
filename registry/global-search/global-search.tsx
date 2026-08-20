@@ -315,7 +315,7 @@ export function GlobalSearch({
             role="listbox"
             aria-label={titleLabel}
             tabIndex={0}
-            className="h-80 overflow-y-auto p-1 outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+            className="max-h-80 overflow-y-auto p-1 outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
           >
             {count === 0 ? (
               <div

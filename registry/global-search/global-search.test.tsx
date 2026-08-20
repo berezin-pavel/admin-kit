@@ -224,20 +224,12 @@ describe("GlobalSearch dialog box", () => {
     expect(box?.className).not.toContain("-translate-y-1/2")
   })
 
-  it("keeps the result list one fixed height, so typing never resizes the box", () => {
-    render(
-      <GlobalSearch
-        items={items}
-        open={true}
-        onOpenChange={() => {}}
-        onSelect={() => {}}
-      />
-    )
+  it("caps the result list height and lets a short list shrink the box", () => {
+    render(<OpenSearch />)
 
     const list = screen.getByRole("listbox")
-
-    expect(list.className).toContain("h-80")
-    expect(list.className).not.toContain("max-h-80")
+    expect(list.className).toContain("max-h-80")
+    expect(list.className).not.toContain(" h-80")
   })
 })
 

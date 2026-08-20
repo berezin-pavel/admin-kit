@@ -411,7 +411,7 @@ export function AppearanceMenu({
 }: AppearanceMenuProps): ReactElement {
   const labels = resolveLabels(labelsProp)
   const [open, setOpen] = useState(false)
-  const { ref, start, reset } = useDragOffset()
+  const { ref, start, reset, hideForExit } = useDragOffset()
   const baseId = useId()
   const themeId = `${baseId}-theme`
   const sidebarId = `${baseId}-sidebar`
@@ -473,6 +473,8 @@ export function AppearanceMenu({
       onOpenChange={(next) => {
         if (next) {
           reset()
+        } else {
+          hideForExit()
         }
         setOpen(next)
       }}
@@ -497,7 +499,10 @@ export function AppearanceMenu({
       >
         <DragHandle
           onPointerDown={start}
-          onClose={() => setOpen(false)}
+          onClose={() => {
+            hideForExit()
+            setOpen(false)
+          }}
           closeLabel={labels.close}
         />
         <div className="flex flex-col gap-4">

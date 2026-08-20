@@ -118,7 +118,11 @@ export function NotificationsMenu({
               return (
                 <DropdownMenuItem
                   key={notification.id}
-                  className="items-start gap-2 py-2"
+                  data-read={notification.read ? "" : undefined}
+                  className={cn(
+                    "items-start gap-2 py-2",
+                    !notification.read && "bg-primary/5"
+                  )}
                   onClick={() => onSelect?.(notification.id)}
                 >
                   <span
@@ -126,7 +130,14 @@ export function NotificationsMenu({
                     className="flex size-4 shrink-0 items-center justify-center pt-0.5"
                   >
                     {Icon ? (
-                      <Icon className="size-4 text-muted-foreground" />
+                      <Icon
+                        className={cn(
+                          "size-4",
+                          notification.read
+                            ? "text-muted-foreground"
+                            : "text-primary"
+                        )}
+                      />
                     ) : (
                       <span
                         className={cn(
@@ -137,8 +148,21 @@ export function NotificationsMenu({
                     )}
                   </span>
                   <span className="flex min-w-0 flex-1 flex-col gap-0.5">
-                    <span className="truncate text-sm font-medium">
-                      {notification.title}
+                    <span className="flex items-center gap-1.5">
+                      <span
+                        className={cn(
+                          "truncate text-sm",
+                          notification.read ? "font-normal" : "font-semibold"
+                        )}
+                      >
+                        {notification.title}
+                      </span>
+                      {!notification.read ? (
+                        <span
+                          aria-hidden="true"
+                          className="size-1.5 shrink-0 rounded-full bg-primary"
+                        />
+                      ) : null}
                     </span>
                     {notification.description ? (
                       <span className="line-clamp-2 text-xs text-muted-foreground">
