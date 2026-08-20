@@ -36,6 +36,8 @@ type AdminShellBaseProps = {
   sidebarActions?: ReactNode
   sidebarProfile?: ReactNode
   collapsed?: boolean
+  section?: string
+  headerTabs?: ReactNode
   variant?: AdminShellVariant
   sidebarGradient?: string
   headerGradient?: string
@@ -58,6 +60,8 @@ export function AdminShell({
   sidebarActions,
   sidebarProfile,
   collapsed = false,
+  section: sectionProp,
+  headerTabs,
   variant = "card",
   sidebarGradient,
   headerGradient,
@@ -68,7 +72,8 @@ export function AdminShell({
   className,
   labels,
 }: AdminShellProps) {
-  const section = nav.find((item) => item.href === activeHref)?.title ?? appName
+  const section =
+    sectionProp ?? nav.find((item) => item.href === activeHref)?.title ?? appName
   const openMenuLabel = labels?.openMenu ?? "Open navigation menu"
   const sectionsLabel = labels?.sections ?? "Sections"
 
@@ -227,6 +232,7 @@ export function AdminShell({
           actions={actions}
           menu={menu}
           narrowActions={narrowActions}
+          tabs={headerTabs}
           gradient={headerGradient}
         />
       ) : null}
@@ -257,8 +263,10 @@ export function AdminShell({
             menu={menu}
             narrowActions={narrowActions}
             leading={headerBrand}
+            tabs={headerTabs}
             gradient={headerGradient}
-            className="bg-card px-2 pr-4 md:px-0 md:pr-6"
+            className="bg-card"
+            rowClassName="px-2 pr-4 md:px-0 md:pr-6"
           />
           <div className="flex min-h-0 flex-1">
             {sidebar}

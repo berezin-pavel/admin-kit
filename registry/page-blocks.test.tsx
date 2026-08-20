@@ -9,7 +9,11 @@ import { PageAuth } from "@/registry/page-auth/page-auth"
 import { PageForm } from "@/registry/page-form/page-form"
 import { PageHeader } from "@/registry/page-header/page-header"
 import { PageList } from "@/registry/page-list/page-list"
-import { PageTabs } from "@/registry/page-tabs/page-tabs"
+import {
+  PageTabs,
+  PageTabsPanels,
+  PageTabsStrip,
+} from "@/registry/page-tabs/page-tabs"
 
 function blockById(container: HTMLElement, id: string) {
   return container.querySelector(`[data-block-id="${id}"]`)
@@ -232,6 +236,111 @@ describe("page-form blocks", () => {
     )
 
     expect(screen.getByText("Home")).toBeInTheDocument()
+  })
+})
+
+describe("page-entity header and combined modes", () => {
+  it("drops the header block and merges the sections into one block", () => {
+    const { container } = render(
+      <PageEntity
+        blockId="order"
+        header={false}
+        combined
+        title="Order"
+        sections={[
+          { id: "a", title: "Order", fields: [{ id: "s", label: "Status", value: "Paid" }] },
+          { id: "b", title: "Customer", fields: [{ id: "n", label: "Name", value: "Emily" }] },
+        ]}
+      />
+    )
+
+    expect(blockById(container, "order.header")).not.toBeInTheDocument()
+    expect(blockById(container, "order.a")).not.toBeInTheDocument()
+    const details = blockById(container, "order.details") as HTMLElement
+    expect(details).toBeInTheDocument()
+    expect(within(details).getByText("Customer")).toBeInTheDocument()
+    expect(within(details).getByText("Emily")).toBeInTheDocument()
+  })
+})
+
+describe("page-form headerless mode", () => {
+  it("renders no header block when header is false", () => {
+    const { container } = render(
+      <PageForm
+        blockId="edit"
+        header={false}
+        title="Edit order"
+        sections={[{ title: "Details", children: <p>Fields</p> }]}
+      />
+    )
+
+    expect(blockById(container, "edit.header")).not.toBeInTheDocument()
+    expect(container.querySelector("h1")).not.toBeInTheDocument()
+  })
+})
+
+describe("page-tabs outside a block", () => {
+  it("renders the strip without a card when block is false", () => {
+    const { container } = render(
+      <PageTabs
+        blockId="order"
+        block={false}
+        items={[
+          { id: "a", label: "Overview", content: <p>Body</p> },
+          { id: "b", label: "History", content: <p>Log</p> },
+        ]}
+        value="a"
+        onValueChange={() => {}}
+      />
+    )
+
+    expect(blockById(container, "order.tabs")).not.toBeInTheDocument()
+    expect(container.querySelector("[data-block]")).not.toBeInTheDocument()
+    expect(screen.getByRole("tab", { name: "Overview" })).toBeInTheDocument()
+  })
+
+  it("keeps a detached strip and panels in step through a shared value", () => {
+    const { rerender } = render(
+      <>
+        <PageTabsStrip
+          items={[
+            { id: "a", label: "Overview", content: <p>Body</p> },
+            { id: "b", label: "History", content: <p>Log</p> },
+          ]}
+          value="a"
+          onValueChange={() => {}}
+        />
+        <PageTabsPanels
+          items={[
+            { id: "a", label: "Overview", content: <p>Body</p> },
+            { id: "b", label: "History", content: <p>Log</p> },
+          ]}
+          value="a"
+        />
+      </>
+    )
+
+    expect(screen.getByText("Body")).toBeInTheDocument()
+    rerender(
+      <>
+        <PageTabsStrip
+          items={[
+            { id: "a", label: "Overview", content: <p>Body</p> },
+            { id: "b", label: "History", content: <p>Log</p> },
+          ]}
+          value="b"
+          onValueChange={() => {}}
+        />
+        <PageTabsPanels
+          items={[
+            { id: "a", label: "Overview", content: <p>Body</p> },
+            { id: "b", label: "History", content: <p>Log</p> },
+          ]}
+          value="b"
+        />
+      </>
+    )
+    expect(screen.getByText("Log")).toBeInTheDocument()
   })
 })
 

@@ -21,6 +21,7 @@ export type PageStatus = "ready" | "loading" | "error" | "forbidden" | "offline"
 
 export interface PageFormProps {
   blockId?: string
+  header?: boolean
   title: string
   description?: string
   actions?: ReactNode
@@ -37,6 +38,7 @@ export interface PageFormProps {
 
 export function PageForm({
   blockId,
+  header = true,
   title,
   description,
   actions,
@@ -52,13 +54,15 @@ export function PageForm({
 }: PageFormProps) {
   return (
     <div className={cn("flex flex-col gap-4", className)}>
-      <PageHeader
-        title={title}
-        description={description}
-        actions={actions}
-        breadcrumbs={breadcrumbs}
-        blockId={blockId ? `${blockId}.header` : undefined}
-      />
+      {header ? (
+        <PageHeader
+          title={title}
+          description={description}
+          actions={actions}
+          breadcrumbs={breadcrumbs}
+          blockId={blockId ? `${blockId}.header` : undefined}
+        />
+      ) : null}
       {status === "loading" ? (
         <StateLoading />
       ) : status === "error" ? (

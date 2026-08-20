@@ -32,6 +32,8 @@ export type PageStatus = "ready" | "loading" | "error" | "forbidden" | "offline"
 
 export interface PageEntityProps {
   blockId?: string
+  header?: boolean
+  combined?: boolean
   title: string
   description?: string
   actions?: ReactNode
@@ -43,6 +45,8 @@ export interface PageEntityProps {
 
 export function PageEntity({
   blockId,
+  header = true,
+  combined = false,
   title,
   description,
   actions,
@@ -53,13 +57,15 @@ export function PageEntity({
 }: PageEntityProps) {
   return (
     <div className={cn("flex flex-col gap-4", className)}>
-      <PageHeader
-        title={title}
-        description={description}
-        actions={actions}
-        breadcrumbs={breadcrumbs}
-        blockId={blockId ? `${blockId}.header` : undefined}
-      />
+      {header ? (
+        <PageHeader
+          title={title}
+          description={description}
+          actions={actions}
+          breadcrumbs={breadcrumbs}
+          blockId={blockId ? `${blockId}.header` : undefined}
+        />
+      ) : null}
       {status === "loading" ? (
         <StateLoading />
       ) : status === "error" ? (
@@ -68,6 +74,37 @@ export function PageEntity({
         <StateForbidden />
       ) : status === "offline" ? (
         <StateOffline />
+      ) : combined ? (
+        <Block id={blockId ? `${blockId}.details` : undefined} headings>
+          {sections.map((section) => (
+            <div key={section.id}>
+              {section.title ? (
+                <CardHeader>
+                  <CardTitle className="text-[0.84375rem] font-semibold">
+                    {section.title}
+                  </CardTitle>
+                </CardHeader>
+              ) : null}
+              <CardContent>
+                <dl
+                  className={cn(
+                    "grid grid-cols-1 gap-x-6 gap-y-3",
+                    sectionColumnsClassName[section.columns ?? 2]
+                  )}
+                >
+                  {section.fields.map((field) => (
+                    <div key={field.id} className="flex flex-col gap-1">
+                      <dt className="text-sm text-muted-foreground">
+                        {field.label}
+                      </dt>
+                      <dd className="text-sm">{field.value}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </CardContent>
+            </div>
+          ))}
+        </Block>
       ) : (
         <div className="flex flex-col gap-4">
           {sections.map((section) => (
