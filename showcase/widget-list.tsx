@@ -122,7 +122,7 @@ export const widgetListEntry: ShowcaseEntry = {
         <WidgetList
           title="Recent transactions"
           items={orderItemsWithMeta}
-          gradient="copper"
+          gradient="brown"
         />
       ),
     },

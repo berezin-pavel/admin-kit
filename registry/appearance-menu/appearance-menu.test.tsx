@@ -66,7 +66,7 @@ describe("AppearanceMenu sidebar and sign-in selects", () => {
     const user = await openMenu()
     await user.click(screen.getByRole("combobox", { name: "Sidebar" }))
 
-    expect(await screen.findByText("Jewel")).toBeInTheDocument()
+    expect(await screen.findByText("Warm")).toBeInTheDocument()
   })
 
   it("groups the sidebar gradient options with the Russian family label", async () => {
@@ -82,7 +82,7 @@ describe("AppearanceMenu sidebar and sign-in selects", () => {
     await user.click(screen.getByRole("combobox", { name: localeRu.appearanceMenu.sidebar }))
 
     expect(
-      await screen.findByText(localeRu.appearanceMenu.families.jewel)
+      await screen.findByText(localeRu.appearanceMenu.families.warm)
     ).toBeInTheDocument()
   })
 

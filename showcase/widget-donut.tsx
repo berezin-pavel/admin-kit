@@ -86,7 +86,7 @@ export const widgetDonutEntry: ShowcaseEntry = {
           title="Traffic sources"
           hint="Sessions over the last 30 days"
           slices={trafficSourceSlices}
-          gradient="sunset"
+          gradient="ember"
         />
       ),
     },

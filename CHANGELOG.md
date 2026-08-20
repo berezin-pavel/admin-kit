@@ -27,15 +27,28 @@ re-pulling), **Breaking** (props or files that changed shape — read before ove
 
 ## Unreleased
 
-**Breaking** — nine gradients are gone: `plum`, `garnet`, `charcoal`, `denim`, `terracotta`,
-`mocha`, `clay`, `cocoa`, `rose-gold` (near-duplicates of their neighbours); a stored appearance
-that names one of them is rejected by `isAdminAppearance` and falls back to the default. The palette
-is one hundred six gradients. `graphite` is a smooth dark-grey sweep now instead of a zigzag that
-ended in teal.
+**Breaking** — every gradient is now three stops of a single hue: no gradient crosses from one
+colour to another any more, it only moves in lightness. The palette is sixty-three gradients in
+five families — `neutral`, `warm`, `green`, `blue`, `violet` (`gradientFamilies`; the nine old
+families, `monochrome` among them, are gone, and so is the idea of a monochrome family — they all
+are). Forty-three ids were dropped as multi-hue or as near-duplicates of a surviving neighbour:
+`apricot`, `arctic`, `ash`, `aurora`, `berry`, `brass`, `brick`, `bronze`, `buttercup`, `candy`,
+`cherry`, `cool-grey`, `copper`, `coral`, `emerald`, `grapefruit`, `lemon`, `mango`, `mono`,
+`moss`, `mustard`, `nebula`, `neon`, `northern`, `pearl`, `peach`, `pistachio`, `prism`, `reef`,
+`rose`, `rosewater`, `ruby`, `sapphire`, `sherbet`, `steel`, `storm`, `sunrise`, `sunset`, `topaz`,
+`tropic`, `vapor`, `volcano`, `onyx` — and before them `plum`, `garnet`, `charcoal`, `denim`,
+`terracotta`, `mocha`, `clay`, `cocoa`, `rose-gold`. A stored appearance that names one of them
+is rejected by `isAdminAppearance` and falls back to the default. Every surviving id keeps its name, and
+`GradientIntent.stops` is a three-element tuple.
 
-**New** — twelve more `monochrome` gradients: salmon, tangerine, spring, sea-green, turquoise,
-periwinkle, iris and mauve on dark text, petrol, royal-blue, raspberry and toffee on white — the
-family is twenty-nine; `locale-ru` names them.
+**New** — twelve single-hue gradients that were not in 0.32.0 survived into this palette: salmon,
+tangerine, spring, sea-green, turquoise, periwinkle, iris and mauve on dark text, petrol,
+royal-blue, raspberry and toffee on white; `locale-ru` names them.
+
+**Changed** — the ids that stayed were re-derived from one hue each: `ember` is a deep red-orange,
+`grape` a deep violet, `dusk` a deep indigo, `midnight` a very dark blue, `ocean` and `lagoon`
+blue and teal, `sand` a light beige, `mint` a light green. Each family carries light entries that
+take dark text — `platinum` and `pewter` are the plain light greys.
 
 **Project** — the showcase's home page became an entry point (demos, palette, theme tokens, a card
 per section with its items) and every section renders its previews on its own page under

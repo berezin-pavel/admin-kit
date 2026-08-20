@@ -213,7 +213,7 @@ export const widgetChartEntry: ShowcaseEntry = {
           labels={months}
           series={revenueExpenseProfitSeries}
           hint="in thousands of dollars"
-          gradient="berry"
+          gradient="purple"
         />
       ),
     },

@@ -50,19 +50,18 @@ function meanOklabDistance(a: GradientStops, b: GradientStops): number {
 }
 
 describe("gradientIds and gradientPalette", () => {
-  it("has exactly one hundred six unique ids in the declared order", () => {
-    expect(gradientIds).toHaveLength(106)
-    expect(new Set(gradientIds).size).toBe(106)
+  it("has exactly sixty-three unique ids in the declared order", () => {
+    expect(gradientIds).toHaveLength(63)
+    expect(new Set(gradientIds).size).toBe(63)
     expect(gradientPalette.map((gradient) => gradient.id)).toEqual([
       ...gradientIds,
     ])
   })
 
-  it("has three to five valid hex stops and a valid angle for every gradient in both schemes", () => {
+  it("has exactly three valid hex stops and a valid angle for every gradient in both schemes", () => {
     for (const gradient of gradientPalette) {
       for (const scheme of [gradient.light, gradient.dark]) {
-        expect(scheme.stops.length).toBeGreaterThanOrEqual(3)
-        expect(scheme.stops.length).toBeLessThanOrEqual(5)
+        expect(scheme.stops).toHaveLength(3)
         for (const hex of scheme.stops) {
           expect(hex).toMatch(HEX_PATTERN)
         }
@@ -217,11 +216,8 @@ describe("gradientIds and gradientPalette", () => {
     }
   })
 
-  it("keeps every monochrome gradient to three same-hue stops", () => {
+  it("keeps every gradient to three same-hue stops", () => {
     for (const gradient of gradientPalette) {
-      if (gradient.family !== "monochrome") {
-        continue
-      }
       const intent = gradientIntents[gradient.id]
       expect(intent.stops).toHaveLength(3)
 
