@@ -306,7 +306,11 @@ describe("GlobalSearch hotkey", () => {
       />
     )
 
-    fireEvent.keyDown(document.body, { key: "л", code: "KeyK", metaKey: true })
+    fireEvent.keyDown(document.body, {
+      key: "\u043b",
+      code: "KeyK",
+      metaKey: true,
+    })
 
     expect(onOpenChange).toHaveBeenCalledWith(true)
   })
