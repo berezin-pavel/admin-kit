@@ -648,7 +648,11 @@ export function AppearanceMenu({
                             selectPageGradient(page.id, next)
                           }}
                         >
-                          <SelectTrigger id={rowSelectId} size="sm">
+                          <SelectTrigger
+                          id={rowSelectId}
+                          size="sm"
+                          className="data-[size=sm]:h-8"
+                        >
                             <SelectValue>
                               {selectValue === "inherit"
                                 ? labels.inherit

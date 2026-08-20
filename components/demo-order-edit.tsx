@@ -125,6 +125,7 @@ export function DemoOrderEdit({ onDone }: { onDone: () => void }) {
   return (
     <div className="flex flex-col gap-4">
       <PageForm
+        header={false}
         blockId="order.edit"
         title={strings.title}
         description={strings.description}

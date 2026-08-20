@@ -14,11 +14,11 @@ import {
 const STORAGE_KEY = "admin-kit-demo-appearance"
 
 export const DEMO_APPEARANCE_DEFAULT: AdminAppearance = {
-  accent: "amber",
-  sidebar: "jade",
-  header: "jade",
-  signIn: "dusk",
-  page: "sand",
+  accent: "#2563eb",
+  sidebar: "#334155",
+  header: "#334155",
+  signIn: "#0f172a",
+  page: "#e2e8f0",
   pages: {},
   blocks: {
     "overview.finance": { heading: "large" },

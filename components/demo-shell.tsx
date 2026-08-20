@@ -12,6 +12,10 @@ import { DemoThemeToggle } from "@/components/demo-theme-toggle"
 import { DemoUserMenu } from "@/components/demo-user-menu"
 import { AppearanceCanvas } from "@/registry/admin-appearance/appearance-style"
 import { AdminShell } from "@/registry/admin-shell/admin-shell"
+import {
+  DemoHeaderSlotProvider,
+  useDemoHeaderState,
+} from "@/app/demo/header-slot"
 import type { AdminNavLinkRenderer } from "@/registry/admin-shell/admin-shell"
 import { AdminToaster } from "@/registry/admin-toaster/admin-toaster"
 import { AppearanceMenu } from "@/registry/appearance-menu/appearance-menu"
@@ -55,6 +59,7 @@ export function DemoShell({
   const appearance = useDemoAppearance()
   const nav = demoDictionary[locale].nav
   const flush = layout === "flush-header"
+  const [headerContent, setHeaderContent] = useDemoHeaderState()
   const pageLabelById: Record<string, string> = {
     overview: nav.overview,
     orders: nav.orders,
@@ -102,12 +107,14 @@ export function DemoShell({
   }
 
   return (
-    <>
+    <DemoHeaderSlotProvider onContent={setHeaderContent}>
       <AppearanceCanvas backdrop={backdrop} />
       {flush ? (
         <AdminShell
           {...sharedProps}
           variant="flush"
+          section={headerContent?.title}
+          headerTabs={headerContent?.tabs}
           actions={<DemoUserMenu variant="icon" />}
         >
           {children}
@@ -124,6 +131,6 @@ export function DemoShell({
           <AdminToaster />
         </AdminShell>
       )}
-    </>
+    </DemoHeaderSlotProvider>
   )
 }

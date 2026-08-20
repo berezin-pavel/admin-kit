@@ -1,6 +1,7 @@
 "use client"
 
 import { useMemo, useState } from "react"
+import { usePathname } from "next/navigation"
 import { useSearchParams } from "next/navigation"
 import {
   History,
@@ -25,7 +26,12 @@ import {
   PageEntity,
   type PageEntitySection,
 } from "@/registry/page-entity/page-entity"
-import { PageTabs, type PageTabsItem } from "@/registry/page-tabs/page-tabs"
+import {
+  PageTabs,
+  PageTabsPanels,
+  PageTabsStrip,
+  type PageTabsItem,
+} from "@/registry/page-tabs/page-tabs"
 import { StatusBadge } from "@/registry/status-badge/status-badge"
 import { WidgetActivity } from "@/registry/widget-activity/widget-activity"
 import { WidgetList } from "@/registry/widget-list/widget-list"
@@ -37,6 +43,8 @@ import {
   orderStatusLabelByLocale,
   orderStatusTone,
 } from "@/app/demo/data"
+import { useDemoHeaderContent } from "@/app/demo/header-slot"
+import { demoBasePath, DEMO_FLUSH_BASE } from "@/app/demo/paths"
 import { demoDictionary } from "@/app/demo/locale"
 import { useDemoLocale } from "@/app/demo/locale-store"
 
@@ -55,6 +63,7 @@ export function DemoOrderEntity() {
   const [draftTotal, setDraftTotal] = useState(total)
   const [draftChannel, setDraftChannel] = useState(channel)
   const searchParams = useSearchParams()
+  const flush = demoBasePath(usePathname()) === DEMO_FLUSH_BASE
   const [tab, setTab] = useState(
     searchParams.get("tab") === EDIT_TAB ? EDIT_TAB : "overview"
   )
@@ -170,6 +179,8 @@ export function DemoOrderEntity() {
       content: (
         <PageEntity
           blockId="order"
+          header={false}
+          combined
           title={strings.title}
           description={strings.description}
           status={reloading ? "loading" : "ready"}
@@ -219,54 +230,77 @@ export function DemoOrderEntity() {
     },
   ]
 
+  const actionButtons = (
+    <>
+      <>
+        <Button
+          variant="outline"
+          onClick={reload}
+          disabled={reloading}
+        >
+          <RotateCw className={cn("size-4", reloading && "animate-spin")} />
+          {strings.reloadButton}
+        </Button>
+        <Button
+          variant="outline"
+          onClick={() => {
+            setDraftTotal(total)
+            setDraftChannel(channel)
+            setEditOpen(true)
+          }}
+        >
+          {strings.editButton}
+        </Button>
+        <Button
+          variant="outline"
+          onClick={() =>
+            notify.success(strings.sendReceiptToastTitle, {
+              description: strings.sendReceiptToastDescription,
+            })
+          }
+        >
+          {strings.sendReceiptButton}
+        </Button>
+        <Button
+          variant="outline"
+          disabled={cancelled}
+          onClick={() => setConfirmOpen(true)}
+        >
+          {strings.cancelOrderButton}
+        </Button>
+      </>
+    </>
+  )
+
+  useDemoHeaderContent(
+    flush
+      ? {
+          tabs: (
+            <PageTabsStrip
+              items={tabItems}
+              value={tab}
+              onValueChange={setTab}
+              actions={actionButtons}
+            />
+          ),
+        }
+      : null
+  )
+
   return (
     <div className="flex flex-col gap-4">
-      <PageTabs
-        blockId="order"
-        breadcrumbs={<DemoOrderBreadcrumbs />}
-        items={tabItems}
-        value={tab}
-        onValueChange={setTab}
-        actions={
-          <>
-            <Button
-              variant="outline"
-              onClick={reload}
-              disabled={reloading}
-            >
-              <RotateCw className={cn("size-4", reloading && "animate-spin")} />
-              {strings.reloadButton}
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => {
-                setDraftTotal(total)
-                setDraftChannel(channel)
-                setEditOpen(true)
-              }}
-            >
-              {strings.editButton}
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() =>
-                notify.success(strings.sendReceiptToastTitle, {
-                  description: strings.sendReceiptToastDescription,
-                })
-              }
-            >
-              {strings.sendReceiptButton}
-            </Button>
-            <Button
-              variant="outline"
-              disabled={cancelled}
-              onClick={() => setConfirmOpen(true)}
-            >
-              {strings.cancelOrderButton}
-            </Button>
-          </>
-        }
-      />
+      {flush ? (
+        <PageTabsPanels items={tabItems} value={tab} />
+      ) : (
+        <PageTabs
+          blockId="order"
+          breadcrumbs={<DemoOrderBreadcrumbs />}
+          items={tabItems}
+          value={tab}
+          onValueChange={setTab}
+          actions={actionButtons}
+        />
+      )}
       <FormDialog
         open={editOpen}
         onOpenChange={setEditOpen}

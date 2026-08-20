@@ -8,7 +8,7 @@ items changed, and what breaks if you pull them.
 **Install an item, pinned to a release:**
 
 ```bash
-pnpm dlx shadcn@latest add berezin-pavel/admin-kit/widget-table#v0.36.0
+pnpm dlx shadcn@latest add berezin-pavel/admin-kit/widget-table#v0.37.0
 ```
 
 **See what an update would change before taking it:**
@@ -24,6 +24,21 @@ say yes; `-o` overwrites deliberately. Items you have edited in place are yours 
 Sections used below: **New** (items you can now install), **Changed** (installed items worth
 re-pulling), **Breaking** (props or files that changed shape — read before overwriting), and
 **Project** (showcase, CI, docs — nothing that reaches your project).
+
+## 0.37.0 — 2026-08-20
+
+**Changed** — pages can hand their chrome to the shell: `page-entity` takes `header={false}`
+(no header block) and `combined` (all sections in one block, `blockId.details`); `page-form`
+takes `header={false}`; `page-tabs` takes `block={false}` (a bare strip) and exports
+`PageTabsStrip`/`PageTabsPanels` — a detached strip and panels kept in step by the same
+controlled value, so the tabs can live in the shell's header bar; `admin-shell` takes `section`
+(overrides the nav-derived header title) and `headerTabs` (a second header row under the title,
+in both the card header and the flush bar — `admin-header` gained `tabs` and `rowClassName`).
+
+**Project** — the demo defaults to the Slate theme; the flush demo's order page runs the tabs
+and the action buttons in the header bar with the sections merged into one block and no header
+blocks anywhere (the card demo keeps the tab strip as a block); per-page selects and their
+colour inputs share one height.
 
 ## 0.36.0 — 2026-08-20
 

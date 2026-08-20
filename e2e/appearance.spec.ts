@@ -84,13 +84,13 @@ test("a per-page backdrop chosen in the menu paints only that page", async ({
   })
 
   await page.goto("/demo")
-  await expect(page.locator("[data-backdrop]").first()).toHaveAttribute("data-backdrop", "sand", {
+  await expect(page.locator("[data-backdrop]").first()).toHaveAttribute("data-backdrop", "#e2e8f0", {
     timeout: HYDRATION_POLL_TIMEOUT,
   })
 })
 
 test("the sidebar gradient and its burger panel follow the menu", async ({ page }) => {
-  await expect(page.locator("aside")).toHaveAttribute("data-gradient", "jade")
+  await expect(page.locator("aside")).toHaveAttribute("data-gradient", "#334155")
 
   const menu = await openMenu(page)
   await menu.getByRole("combobox", { name: "Sidebar" }).click()
