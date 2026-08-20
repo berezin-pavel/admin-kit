@@ -458,6 +458,21 @@ describe("AppearanceMenu custom accent", () => {
     })
   })
 
+  it("lowercases an uppercase hex typed into the accent field", async () => {
+    const onChange = vi.fn<(next: AdminAppearance) => void>()
+    render(<AppearanceMenu value={defaultAdminAppearance} onChange={onChange} />)
+
+    const user = await openMenu()
+    const field = screen.getByRole("textbox", { name: "Custom color hex" })
+    await user.clear(field)
+    await user.type(field, "#AABBCC")
+
+    expect(onChange).toHaveBeenCalledWith({
+      ...defaultAdminAppearance,
+      accent: "#aabbcc",
+    })
+  })
+
   it("stays quiet while the typed value is not a colour", async () => {
     const onChange = vi.fn<(next: AdminAppearance) => void>()
     render(<AppearanceMenu value={defaultAdminAppearance} onChange={onChange} />)

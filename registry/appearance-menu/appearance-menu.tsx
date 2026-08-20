@@ -286,8 +286,9 @@ function CustomColorInputs({
   const handleText = (event: ChangeEvent<HTMLInputElement>) => {
     const next = event.target.value
     setDraft(next)
-    if (isCustomColor(next)) {
-      onChange(next.toLowerCase() as CustomColor)
+    const normalized = next.toLowerCase()
+    if (isCustomColor(normalized)) {
+      onChange(normalized)
     }
   }
 
