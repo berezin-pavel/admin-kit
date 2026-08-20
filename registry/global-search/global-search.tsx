@@ -240,7 +240,7 @@ export function GlobalSearch({
         <Search className="size-4 shrink-0" aria-hidden="true" />
         <span className="truncate">{buttonLabel}</span>
         {shortcutLabel ? (
-          <kbd className="ml-auto rounded border border-border bg-muted px-1 py-px font-mono text-[0.7rem] text-muted-foreground">
+          <kbd className="ml-auto rounded border border-border bg-muted px-1 py-px font-mono text-[0.7rem] text-foreground/80">
             {shortcutLabel}
           </kbd>
         ) : null}

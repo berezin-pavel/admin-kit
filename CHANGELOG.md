@@ -8,7 +8,7 @@ items changed, and what breaks if you pull them.
 **Install an item, pinned to a release:**
 
 ```bash
-pnpm dlx shadcn@latest add berezin-pavel/admin-kit/widget-table#v0.39.0
+pnpm dlx shadcn@latest add berezin-pavel/admin-kit/widget-table#v0.40.0
 ```
 
 **See what an update would change before taking it:**
@@ -25,7 +25,10 @@ Sections used below: **New** (items you can now install), **Changed** (installed
 re-pulling), **Breaking** (props or files that changed shape — read before overwriting), and
 **Project** (showcase, CI, docs — nothing that reaches your project).
 
-## Unreleased
+## 0.40.0 — 2026-08-20
+
+**Changed** — the search dialog's shortcut chip paints in `text-foreground/80`: muted-on-muted
+sat at 4.3:1.
 
 **Changed** — the search dialog stops moving under the cursor. It hangs below the top edge
 (`top-[12vh]`) instead of being centred, and its result list has one fixed height, so the box

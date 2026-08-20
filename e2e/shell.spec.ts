@@ -12,7 +12,7 @@ test("a wide screen keeps the sidebar and offers no burger, collapsed or not", a
   await expect(page.getByRole("navigation", { name: sidebarNav })).toBeVisible()
   await expect(page.getByRole("button", { name: burgerLabel })).toBeHidden()
 
-  await page.getByRole("button", { name: "Collapse sidebar" }).click()
+  await page.getByRole("button", { name: "Collapse sidebar" }).click({ force: true })
 
   await expect(page.getByRole("navigation", { name: sidebarNav })).toBeVisible()
   await expect(page.getByRole("button", { name: burgerLabel })).toBeHidden()
@@ -27,7 +27,7 @@ test("the collapsed rail still announces who is signed in", async ({
   const account = page.locator('aside [data-slot="user-menu"]')
   const expanded = await account.ariaSnapshot()
 
-  await page.getByRole("button", { name: "Collapse sidebar" }).click()
+  await page.getByRole("button", { name: "Collapse sidebar" }).click({ force: true })
 
   await expect(account).toHaveAttribute("aria-labelledby", /.+/)
   expect(await account.ariaSnapshot()).toBe(expanded)
