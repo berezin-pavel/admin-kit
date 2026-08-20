@@ -65,6 +65,7 @@ export interface AppearanceMenuLabels {
   custom?: string
   customColor?: string
   customColorHex?: string
+  close?: string
   gradients?: Partial<Record<GradientId, string>>
   accents?: Partial<Record<AccentId, string>>
   families?: Partial<Record<GradientFamily, string>>
@@ -114,6 +115,7 @@ const defaultLabels: Required<
   custom: "Custom color…",
   customColor: "Custom color",
   customColorHex: "Custom color hex",
+  close: "Close",
 }
 
 function resolveLabels(labels: AppearanceMenuLabels | undefined): ResolvedLabels {
@@ -131,6 +133,7 @@ function resolveLabels(labels: AppearanceMenuLabels | undefined): ResolvedLabels
     custom: labels?.custom ?? defaultLabels.custom,
     customColor: labels?.customColor ?? defaultLabels.customColor,
     customColorHex: labels?.customColorHex ?? defaultLabels.customColorHex,
+    close: labels?.close ?? defaultLabels.close,
     gradients: labels?.gradients ?? {},
     accents: labels?.accents ?? {},
     families: { ...gradientFamilyNames, ...labels?.families },
@@ -259,11 +262,13 @@ function CustomColorInputs({
   labels,
   onChange,
   className,
+  size = "default",
 }: {
   color: CustomColor
   labels: ResolvedLabels
   onChange: (next: CustomColor) => void
   className?: string
+  size?: "default" | "sm"
 }): ReactElement {
   const current = color.toLowerCase()
   const [draft, setDraft] = useState(current)
@@ -291,7 +296,10 @@ function CustomColorInputs({
         onChange={(event) =>
           onChange(event.target.value.toLowerCase() as CustomColor)
         }
-        className="size-9 shrink-0 cursor-pointer rounded-lg border border-input bg-transparent p-1"
+        className={cn(
+          "shrink-0 cursor-pointer rounded-lg border border-input bg-transparent p-1",
+          size === "sm" ? "size-8" : "size-9"
+        )}
       />
       <input
         type="text"
@@ -301,7 +309,10 @@ function CustomColorInputs({
         maxLength={7}
         spellCheck={false}
         autoComplete="off"
-        className="h-9 w-24 shrink-0 rounded-lg border border-input bg-transparent px-2.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 dark:bg-input/30"
+        className={cn(
+          "w-24 shrink-0 rounded-lg border border-input bg-transparent px-2.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 dark:bg-input/30",
+          size === "sm" ? "h-8" : "h-9"
+        )}
       />
     </div>
   )
@@ -408,6 +419,23 @@ export function AppearanceMenu({
   const signInId = `${baseId}-sign-in`
   const pageId = `${baseId}-page`
 
+  const surfaceOf = (choice: SurfaceChoice | null) =>
+    typeof choice === "string" && isCustomColor(choice)
+      ? choice.toLowerCase()
+      : choice
+
+  const matchesTheme = (theme: AppearanceTheme) =>
+    surfaceOf(value.accent as SurfaceChoice) ===
+      surfaceOf(theme.appearance.accent as SurfaceChoice) &&
+    surfaceOf(value.sidebar) === surfaceOf(theme.appearance.sidebar) &&
+    surfaceOf(value.header) === surfaceOf(theme.appearance.header) &&
+    surfaceOf(value.signIn) === surfaceOf(theme.appearance.signIn) &&
+    surfaceOf(value.page) === surfaceOf(theme.appearance.page)
+
+  const activeTheme =
+    appearanceThemes.find((theme) => matchesTheme(theme)) ?? null
+  const activeThemeId = activeTheme?.id ?? null
+
   const applyTheme = (theme: AppearanceTheme) => {
     onChange({ ...theme.appearance, blocks: value.blocks, pages: value.pages })
   }
@@ -465,7 +493,14 @@ export function AppearanceMenu({
         aria-label={labels.label}
         className="max-h-[70vh] w-[24rem] overflow-y-auto"
       >
-        <DragHandle onPointerDown={start} />
+        <DragHandle
+          onPointerDown={start}
+          onClose={() => {
+            setOpen(false)
+            reset()
+          }}
+          closeLabel={labels.close}
+        />
         <div className="flex flex-col gap-4">
           <section className="flex flex-col gap-1.5">
             <Label
@@ -475,7 +510,7 @@ export function AppearanceMenu({
               {labels.theme}
             </Label>
             <Select<string>
-              value={null}
+              value={activeThemeId}
               onValueChange={(next) => {
                 const theme = appearanceThemes.find(
                   (candidate) => candidate.id === next
@@ -489,7 +524,14 @@ export function AppearanceMenu({
                 id={themeId}
                 className="w-full data-[size=default]:h-9"
               >
-                <SelectValue placeholder={labels.theme} />
+                <SelectValue placeholder={labels.theme}>
+                  {activeTheme ? (
+                    <ThemeOption
+                      theme={activeTheme}
+                      name={labels.themes[activeTheme.id] ?? activeTheme.name}
+                    />
+                  ) : null}
+                </SelectValue>
               </SelectTrigger>
               <SelectContent
                 align="start"
@@ -590,15 +632,14 @@ export function AppearanceMenu({
                   const rowSelectId = `${baseId}-page-${page.id}`
 
                   return (
-                    <div key={page.id} className="flex flex-col gap-1.5">
-                      <div className="flex items-center gap-2">
-                        <Label
-                          htmlFor={rowSelectId}
-                          className="min-w-0 flex-1 truncate text-sm font-normal"
-                        >
-                          {page.label}
-                        </Label>
-                        <Select<PageSurfaceSelectValue>
+                    <div key={page.id} className="flex items-center gap-2">
+                      <Label
+                        htmlFor={rowSelectId}
+                        className="min-w-0 flex-1 truncate text-sm font-normal"
+                      >
+                        {page.label}
+                      </Label>
+                      <Select<PageSurfaceSelectValue>
                           value={selectValue}
                           onValueChange={(next) => {
                             if (next === null) {
@@ -622,16 +663,15 @@ export function AppearanceMenu({
                             <SelectItem value="inherit">{labels.inherit}</SelectItem>
                             <SelectItem value="none">{labels.none}</SelectItem>
                             <SelectItem value="custom">{labels.custom}</SelectItem>
-                            <SurfaceSelectItems labels={labels} />
-                          </SelectContent>
-                        </Select>
-                      </div>
+                          <SurfaceSelectItems labels={labels} />
+                        </SelectContent>
+                      </Select>
                       {isCustomColor(override) ? (
                         <CustomColorInputs
                           color={override}
                           labels={labels}
                           onChange={(next) => setPageRowColor(page.id, next)}
-                          className="self-end"
+                          size="sm"
                         />
                       ) : null}
                     </div>

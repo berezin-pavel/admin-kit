@@ -8,7 +8,7 @@ items changed, and what breaks if you pull them.
 **Install an item, pinned to a release:**
 
 ```bash
-pnpm dlx shadcn@latest add berezin-pavel/admin-kit/widget-table#v0.35.0
+pnpm dlx shadcn@latest add berezin-pavel/admin-kit/widget-table#v0.36.0
 ```
 
 **See what an update would change before taking it:**
@@ -24,6 +24,14 @@ say yes; `-o` overwrites deliberately. Items you have edited in place are yours 
 Sections used below: **New** (items you can now install), **Changed** (installed items worth
 re-pulling), **Breaking** (props or files that changed shape — read before overwriting), and
 **Project** (showcase, CI, docs — nothing that reaches your project).
+
+## 0.36.0 — 2026-08-20
+
+**Changed** — the theme select shows the theme the current appearance matches (accents and
+surfaces compared, blocks and pages ignored) and marks it selected in the list; per-page rows
+keep the select and the colour inputs on one line; both appearance popups — the menu and the
+block's corner one — carry a close cross beside the drag grip (`labels.close`, Russian in
+`locale-ru`).
 
 ## 0.35.0 — 2026-08-20
 

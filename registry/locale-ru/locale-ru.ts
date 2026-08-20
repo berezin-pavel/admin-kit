@@ -144,6 +144,7 @@ const accentNamesRu = {
 
 const adminAppearanceRu = {
   blockMenu: "Оформление блока",
+  close: "Закрыть",
   gradient: "Градиент",
   none: "Без градиента",
   heading: "Заголовок",
@@ -197,6 +198,7 @@ const appearanceMenuRu = {
   custom: "Свой цвет…",
   customColor: "Свой цвет",
   customColorHex: "HEX-код цвета",
+  close: "Закрыть",
   gradients: gradientNamesRu,
   accents: accentNamesRu,
   families: gradientFamilyNamesRu,

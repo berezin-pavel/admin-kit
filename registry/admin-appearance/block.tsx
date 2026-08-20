@@ -144,7 +144,11 @@ function BlockMenu({
         aria-label={labels.blockMenu}
         className="max-h-[70vh] w-auto overflow-y-auto"
       >
-        <DragHandle onPointerDown={start} />
+        <DragHandle
+          onPointerDown={start}
+          onClose={() => setOpen(false)}
+          closeLabel={labels.close}
+        />
         <div className="flex flex-col gap-1.5">
           <span className="text-xs font-medium text-muted-foreground">
             {labels.gradient}

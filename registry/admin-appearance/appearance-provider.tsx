@@ -18,6 +18,7 @@ import {
 
 export interface AppearanceLabels {
   blockMenu?: string
+  close?: string
   gradient?: string
   none?: string
   heading?: string
@@ -50,6 +51,7 @@ const defaultAppearanceLabels: Required<
   Omit<AppearanceLabels, "gradients" | "families">
 > = {
   blockMenu: "Block appearance",
+  close: "Close",
   gradient: "Gradient",
   none: "No gradient",
   heading: "Heading",
@@ -72,6 +74,7 @@ export function AppearanceProvider({
   const resolvedLabels = useMemo<AppearanceContextValue["labels"]>(
     () => ({
       blockMenu: labels?.blockMenu ?? defaultAppearanceLabels.blockMenu,
+      close: labels?.close ?? defaultAppearanceLabels.close,
       gradient: labels?.gradient ?? defaultAppearanceLabels.gradient,
       none: labels?.none ?? defaultAppearanceLabels.none,
       heading: labels?.heading ?? defaultAppearanceLabels.heading,

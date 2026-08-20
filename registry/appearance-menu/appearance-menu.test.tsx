@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react"
+import { fireEvent, render, screen, within } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 
@@ -662,5 +662,33 @@ describe("AppearanceMenu drag handle", () => {
     await openMenu()
 
     expect(handleOf()).toHaveAttribute("aria-hidden", "true")
+  })
+})
+
+describe("AppearanceMenu theme state and closing", () => {
+  it("shows the matching theme in the select and marks it selected", async () => {
+    const slate = appearanceThemes.find((theme) => theme.id === "slate")
+    render(
+      <AppearanceMenu
+        value={{ ...slate!.appearance, blocks: { a: { heading: "large" } } }}
+        onChange={() => {}}
+      />
+    )
+
+    const user = await openMenu()
+    await user.click(screen.getByRole("combobox", { name: "Theme" }))
+    const option = await screen.findByRole("option", { name: "Slate" })
+    expect(option).toHaveAttribute("aria-selected", "true")
+  })
+
+  it("closes from the cross in the corner", async () => {
+    render(<AppearanceMenu value={defaultAdminAppearance} onChange={() => {}} />)
+
+    const user = await openMenu()
+    await user.click(screen.getByRole("button", { name: "Close" }))
+
+    expect(
+      screen.queryByRole("dialog", { name: "Appearance" })
+    ).not.toBeInTheDocument()
   })
 })

@@ -7,7 +7,7 @@ import {
   type PointerEvent as ReactPointerEvent,
   type ReactElement,
 } from "react"
-import { GripHorizontal } from "lucide-react"
+import { GripHorizontal, X } from "lucide-react"
 
 interface DragOffset {
   x: number
@@ -98,17 +98,34 @@ export function useDragOffset<Element extends HTMLElement = HTMLDivElement>() {
 
 export function DragHandle({
   onPointerDown,
+  onClose,
+  closeLabel,
 }: {
   onPointerDown: (event: ReactPointerEvent<HTMLDivElement>) => void
+  onClose?: () => void
+  closeLabel?: string
 }): ReactElement {
   return (
-    <div
-      aria-hidden="true"
-      data-slot="appearance-drag-handle"
-      onPointerDown={onPointerDown}
-      className="-mt-1 flex h-5 w-full shrink-0 cursor-grab touch-none select-none items-center justify-center rounded-sm text-muted-foreground active:cursor-grabbing"
-    >
-      <GripHorizontal className="size-4" />
+    <div className="relative -mt-1 h-5 w-full shrink-0">
+      <div
+        aria-hidden="true"
+        data-slot="appearance-drag-handle"
+        onPointerDown={onPointerDown}
+        className="flex h-full w-full cursor-grab touch-none select-none items-center justify-center rounded-sm text-muted-foreground active:cursor-grabbing"
+      >
+        <GripHorizontal className="size-4" />
+      </div>
+      {onClose ? (
+        <button
+          type="button"
+          aria-label={closeLabel}
+          onPointerDown={(event) => event.stopPropagation()}
+          onClick={onClose}
+          className="absolute top-0 right-0 flex size-5 items-center justify-center rounded-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring outline-none"
+        >
+          <X className="size-3.5" aria-hidden="true" />
+        </button>
+      ) : null}
     </div>
   )
 }
