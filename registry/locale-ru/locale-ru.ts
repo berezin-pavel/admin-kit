@@ -318,6 +318,8 @@ export const localeRu = {
     clear: "Убрать иконку",
     showMore: (count: number) => `Показать ещё ${count}`,
     loading: "Загрузка иконок",
+    loadKeywords: () =>
+      import("./icon-names-ru").then((module) => module.loadIconKeywordsRu()),
   },
   selectField: { placeholder: "Выберите…" },
   fileField: {
