@@ -136,7 +136,12 @@ export interface WidgetTableProps<Row> {
   stickyHeader?: boolean
   maxBodyHeight?: string
   fill?: boolean
+  onRowActivate?: (row: Row, index: number) => void
+  notice?: ReactNode
 }
+
+const interactiveSelector =
+  "a, button, input, select, textarea, label, [role=checkbox], [role=menuitem], [role=button]"
 
 export function toggleHiddenColumnId(
   hidden: readonly string[],
@@ -257,6 +262,8 @@ export function WidgetTable<Row>({
   stickyHeader = false,
   maxBodyHeight = "24rem",
   fill = false,
+  onRowActivate,
+  notice,
 }: WidgetTableProps<Row>) {
   const resolvedLabels = { ...widgetTableLabelDefaults, ...labels }
   const scrollsInternally = stickyHeader || fill
@@ -366,6 +373,7 @@ export function WidgetTable<Row>({
           fill && "flex min-h-0 flex-1 flex-col"
         )}
       >
+        {notice ? <div className="border-b">{notice}</div> : null}
         {loading ? (
           <Table>
             <TableHeader>
@@ -504,7 +512,38 @@ export function WidgetTable<Row>({
                   const rowKey = getRowKey?.(row, index) ?? index
 
                   return (
-                    <TableRow key={rowKey}>
+                    <TableRow
+                      key={rowKey}
+                      data-activatable={onRowActivate ? "" : undefined}
+                      tabIndex={onRowActivate ? 0 : undefined}
+                      className={cn(
+                        onRowActivate &&
+                          "cursor-pointer focus-visible:outline-2 focus-visible:outline-ring focus-visible:-outline-offset-2"
+                      )}
+                      onClick={
+                        onRowActivate
+                          ? (event) => {
+                              const target = event.target as HTMLElement
+                              if (target.closest(interactiveSelector)) {
+                                return
+                              }
+                              onRowActivate(row, index)
+                            }
+                          : undefined
+                      }
+                      onKeyDown={
+                        onRowActivate
+                          ? (event) => {
+                              if (event.key === "Enter") {
+                                onRowActivate(row, index)
+                              } else if (event.key === " ") {
+                                event.preventDefault()
+                                onRowActivate(row, index)
+                              }
+                            }
+                          : undefined
+                      }
+                    >
                       {hasSelection ? (
                         <TableCell className="w-px [&:has([role=checkbox])]:pr-4">
                           <Checkbox

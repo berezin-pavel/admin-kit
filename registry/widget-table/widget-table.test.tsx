@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event"
 import { useState } from "react"
 import type { Key } from "react"
 import { Download, Trash2 } from "lucide-react"
-import { describe, expect, it } from "vitest"
+import { describe, expect, it, vi } from "vitest"
 
 import {
   WidgetTable,
@@ -309,6 +309,88 @@ describe("formatPaginationRange", () => {
     expect(
       formatPaginationRange(pagination, widgetTableLabelDefaults.range)
     ).toBe("11–20 of 35")
+  })
+})
+
+describe("widget table row activation", () => {
+  it("calls onRowActivate with the row and index when a cell is clicked", async () => {
+    const user = userEvent.setup()
+    const onRowActivate = vi.fn()
+    render(
+      <WidgetTable
+        title="Orders"
+        columns={columns}
+        rows={rows}
+        getRowKey={(row) => row.number}
+        onRowActivate={onRowActivate}
+      />
+    )
+
+    await user.click(screen.getByRole("cell", { name: "Bennett" }))
+
+    expect(onRowActivate).toHaveBeenCalledTimes(1)
+    expect(onRowActivate).toHaveBeenCalledWith(rows[1], 1)
+  })
+
+  it("does not activate the row when the click lands on an interactive element inside a cell", async () => {
+    const user = userEvent.setup()
+    const onRowActivate = vi.fn()
+    const actionColumns: readonly WidgetTableColumn<OrderRow>[] = [
+      { id: "number", title: "Number", cell: (row) => row.number },
+      {
+        id: "actions",
+        title: "",
+        cell: () => <button type="button">Delete</button>,
+      },
+    ]
+    render(
+      <WidgetTable
+        title="Orders"
+        columns={actionColumns}
+        rows={rows}
+        getRowKey={(row) => row.number}
+        onRowActivate={onRowActivate}
+      />
+    )
+
+    await user.click(screen.getAllByRole("button", { name: "Delete" })[0])
+
+    expect(onRowActivate).not.toHaveBeenCalled()
+  })
+
+  it("activates the focused row on Enter", async () => {
+    const user = userEvent.setup()
+    const onRowActivate = vi.fn()
+    render(
+      <WidgetTable
+        title="Orders"
+        columns={columns}
+        rows={rows}
+        getRowKey={(row) => row.number}
+        onRowActivate={onRowActivate}
+      />
+    )
+
+    const row = screen.getByRole("cell", { name: "Anna" }).closest("tr")
+    row?.focus()
+    await user.keyboard("{Enter}")
+
+    expect(onRowActivate).toHaveBeenCalledTimes(1)
+    expect(onRowActivate).toHaveBeenCalledWith(rows[0], 0)
+  })
+
+  it("leaves rows without a tabindex when onRowActivate is not given", () => {
+    render(
+      <WidgetTable
+        title="Orders"
+        columns={columns}
+        rows={rows}
+        getRowKey={(row) => row.number}
+      />
+    )
+
+    const row = screen.getByRole("cell", { name: "Anna" }).closest("tr")
+    expect(row).not.toHaveAttribute("tabindex")
   })
 })
 

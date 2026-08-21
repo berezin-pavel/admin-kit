@@ -9,6 +9,7 @@ import {
   WidgetTableExportView,
   WidgetTableFilteredEmptyView,
   WidgetTableGrowColumnView,
+  WidgetTableRowActivateView,
   WidgetTableSelectAllMatchingView,
   WidgetTableColumnsMenuView,
   WidgetTableShowcaseView,
@@ -240,6 +241,11 @@ export const widgetTableEntry: ShowcaseEntry = {
       id: "with-export",
       name: "Export as a selection action",
       render: () => <WidgetTableExportView />,
+    },
+    {
+      id: "row-activate",
+      name: "Rows activate on click or Enter",
+      render: () => <WidgetTableRowActivateView />,
     },
     {
       id: "loading",

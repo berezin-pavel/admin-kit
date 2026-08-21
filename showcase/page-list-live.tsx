@@ -11,7 +11,12 @@ import {
   type WidgetTableSelectionAction,
 } from "@/registry/widget-table/widget-table"
 
-import { roleFilterOptions, userColumns, userRows } from "./page-list-data"
+import {
+  roleFilterOptions,
+  userColumns,
+  userRows,
+  type UserRow,
+} from "./page-list-data"
 
 const PAGE_SIZE = 3
 
@@ -115,6 +120,24 @@ export function PageListLive() {
           {csv}
         </pre>
       ) : null}
+    </div>
+  )
+}
+
+export function PageListRowActivateView() {
+  const [activated, setActivated] = useState<UserRow | null>(null)
+
+  return (
+    <div className="flex flex-col gap-3">
+      <PageList
+        title="Users"
+        columns={userColumns}
+        rows={userRows}
+        onRowActivate={(row) => setActivated(row)}
+      />
+      <p className="text-sm text-muted-foreground">
+        {activated ? `Activated: ${activated.name}` : "Click a row or focus it and press Enter"}
+      </p>
     </div>
   )
 }

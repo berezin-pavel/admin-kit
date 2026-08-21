@@ -23,6 +23,7 @@ export interface PageListFilter {
   label: string
   kind: "search" | "select" | "date-range"
   value: string
+  defaultValue?: string
   options?: readonly { value: string; label: string }[]
   dateRange?: Pick<
     DateRangeFieldProps,
@@ -34,9 +35,15 @@ export type PageStatus = "ready" | "loading" | "error" | "forbidden" | "offline"
 
 export interface PageStatusLabels {
   loading?: { label?: string }
-  error?: { title?: string }
-  forbidden?: { title?: string }
-  offline?: { title?: string }
+  error?: { title?: string; description?: string }
+  forbidden?: { title?: string; description?: string }
+  offline?: { title?: string; description?: string }
+}
+
+export interface PageStateActions {
+  error?: ReactNode
+  forbidden?: ReactNode
+  offline?: ReactNode
 }
 
 export interface PageListProps<Row> {
@@ -78,17 +85,37 @@ export interface PageListProps<Row> {
   stickyHeader?: boolean
   maxBodyHeight?: string
   fill?: boolean
+  toolbar?: ReactNode
+  keepRows?: boolean
+  stateActions?: PageStateActions
+  onRowActivate?: (row: Row, index: number) => void
 }
 
 function getStatusContent(
   status: PageStatus,
-  stateLabels: PageStatusLabels | undefined
+  stateLabels: PageStatusLabels | undefined,
+  stateActions: PageStateActions | undefined,
+  className?: string
 ): ReactNode {
   if (status === "loading") return <StateLoading {...stateLabels?.loading} />
-  if (status === "error") return <StateError {...stateLabels?.error} />
+  if (status === "error")
+    return (
+      <StateError
+        {...stateLabels?.error}
+        actions={stateActions?.error}
+        className={className}
+      />
+    )
   if (status === "forbidden")
-    return <StateForbidden {...stateLabels?.forbidden} />
-  if (status === "offline") return <StateOffline {...stateLabels?.offline} />
+    return <StateForbidden {...stateLabels?.forbidden} actions={stateActions?.forbidden} />
+  if (status === "offline")
+    return (
+      <StateOffline
+        {...stateLabels?.offline}
+        actions={stateActions?.offline}
+        className={className}
+      />
+    )
   return null
 }
 
@@ -102,7 +129,7 @@ export function PageList<Row>({
   filters,
   onFilterChange,
   onResetFilters,
-  resetFiltersLabel = "Reset filters",
+  resetFiltersLabel,
   columns,
   rows,
   getRowKey,
@@ -131,7 +158,33 @@ export function PageList<Row>({
   stickyHeader,
   maxBodyHeight,
   fill = false,
+  toolbar,
+  keepRows = false,
+  stateActions,
+  onRowActivate,
 }: PageListProps<Row>) {
+  const resolvedResetFiltersLabel =
+    resetFiltersLabel ?? tableLabels?.clearFiltersLabel ?? "Reset filters"
+  const filtersContent =
+    filters && filters.length > 0 ? (
+      <PageListFilters
+        filters={filters}
+        onFilterChange={onFilterChange}
+        onResetFilters={onResetFilters}
+        resetFiltersLabel={resolvedResetFiltersLabel}
+      />
+    ) : undefined
+  const toolbarContent =
+    filtersContent && toolbar ? (
+      <div className="flex flex-wrap items-center gap-2">
+        {filtersContent}
+        {toolbar}
+      </div>
+    ) : (filtersContent ?? toolbar)
+  const keepsRowsForStatus =
+    keepRows && (status === "error" || status === "offline")
+  const showsRows = status === "ready" || keepsRowsForStatus
+
   return (
     <div
       className={cn(
@@ -156,25 +209,19 @@ export function PageList<Row>({
         title={header ? undefined : title}
         actions={header ? undefined : actions}
         columns={columns}
-        rows={status === "ready" ? rows : []}
+        rows={showsRows ? rows : []}
         getRowKey={getRowKey}
-        toolbar={
-          filters && filters.length > 0 ? (
-            <PageListFilters
-              filters={filters}
-              onFilterChange={onFilterChange}
-              onResetFilters={onResetFilters}
-              resetFiltersLabel={resetFiltersLabel}
-            />
-          ) : undefined
+        toolbar={toolbarContent}
+        notice={
+          keepsRowsForStatus
+            ? getStatusContent(status, stateLabels, stateActions, "py-6")
+            : undefined
         }
         empty={
-          status === "ready"
-            ? undefined
-            : getStatusContent(status, stateLabels)
+          showsRows ? undefined : getStatusContent(status, stateLabels, stateActions)
         }
         pagination={
-          status === "ready" && total !== undefined
+          showsRows && total !== undefined
             ? {
                 page,
                 pageSize,
@@ -201,6 +248,7 @@ export function PageList<Row>({
         stickyHeader={stickyHeader}
         maxBodyHeight={maxBodyHeight}
         fill={fill}
+        onRowActivate={onRowActivate}
       />
     </div>
   )

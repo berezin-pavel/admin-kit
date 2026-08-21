@@ -1,7 +1,8 @@
+import { Button } from "@/components/ui/button"
 import { PageList, type PageListFilter } from "@/registry/page-list/page-list"
 
-import { roleFilterOptions, userColumns } from "./page-list-data"
-import { PageListLive } from "./page-list-live"
+import { roleFilterOptions, userColumns, userRows } from "./page-list-data"
+import { PageListLive, PageListRowActivateView } from "./page-list-live"
 import type { ShowcaseEntry } from "./types"
 
 const userFilters: readonly PageListFilter[] = [
@@ -100,6 +101,48 @@ export const pageListEntry: ShowcaseEntry = {
           status="offline"
         />
       ),
+    },
+    {
+      id: "with-toolbar",
+      name: "With a custom toolbar item next to the filters",
+      render: () => (
+        <PageList
+          title="Users"
+          filters={userFilters}
+          toolbar={
+            <Button variant="outline" size="sm" disabled>
+              Export
+            </Button>
+          }
+          columns={userColumns}
+          rows={userRows}
+        />
+      ),
+    },
+    {
+      id: "offline-keeps-rows",
+      name: "Offline while keeping the rows on screen",
+      render: () => (
+        <PageList
+          title="Users"
+          columns={userColumns}
+          rows={userRows}
+          status="offline"
+          keepRows
+          stateActions={{
+            offline: (
+              <Button variant="outline" size="sm">
+                Retry
+              </Button>
+            ),
+          }}
+        />
+      ),
+    },
+    {
+      id: "row-activate",
+      name: "Rows activate on click or Enter",
+      render: () => <PageListRowActivateView />,
     },
   ],
 }

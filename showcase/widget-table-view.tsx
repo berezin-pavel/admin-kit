@@ -406,6 +406,33 @@ export function WidgetTableExportView() {
   )
 }
 
+const rowActivateColumns: readonly WidgetTableColumn<OrderRow>[] = [
+  { id: "number", title: "Number", cell: (row) => row.number },
+  { id: "customer", title: "Customer", cell: (row) => row.customer },
+  { id: "total", title: "Amount", align: "right", cell: (row) => row.total },
+]
+
+export function WidgetTableRowActivateView() {
+  const [activated, setActivated] = useState<OrderRow | null>(null)
+
+  return (
+    <div className="flex flex-col gap-3">
+      <WidgetTable
+        title="Recent orders"
+        columns={rowActivateColumns}
+        rows={allRows}
+        getRowKey={(row) => row.number}
+        onRowActivate={(row) => setActivated(row)}
+      />
+      <p className="text-sm text-muted-foreground">
+        {activated
+          ? `Activated: #${activated.number}`
+          : "Click a row or focus it and press Enter"}
+      </p>
+    </div>
+  )
+}
+
 interface GrowColumnRow {
   id: string
   name: string

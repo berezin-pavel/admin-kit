@@ -348,6 +348,7 @@ export function DemoOrders() {
           currentPage * pageSize
         )}
         getRowKey={(row) => row.number}
+        onRowActivate={() => router.push(`${basePath}/order`)}
         page={currentPage}
         pageSize={pageSize}
         total={matched.length}

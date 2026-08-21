@@ -32,9 +32,15 @@ export type PageStatus = "ready" | "loading" | "error" | "forbidden" | "offline"
 
 export interface PageStatusLabels {
   loading?: { label?: string }
-  error?: { title?: string }
-  forbidden?: { title?: string }
-  offline?: { title?: string }
+  error?: { title?: string; description?: string }
+  forbidden?: { title?: string; description?: string }
+  offline?: { title?: string; description?: string }
+}
+
+export interface PageStateActions {
+  error?: ReactNode
+  forbidden?: ReactNode
+  offline?: ReactNode
 }
 
 export interface PageEntityProps {
@@ -48,6 +54,7 @@ export interface PageEntityProps {
   sections: readonly PageEntitySection[]
   status?: PageStatus
   stateLabels?: PageStatusLabels
+  stateActions?: PageStateActions
   className?: string
 }
 
@@ -62,6 +69,7 @@ export function PageEntity({
   sections,
   status = "ready",
   stateLabels,
+  stateActions,
   className,
 }: PageEntityProps) {
   return (
@@ -78,11 +86,17 @@ export function PageEntity({
       {status === "loading" ? (
         <StateLoading {...stateLabels?.loading} />
       ) : status === "error" ? (
-        <StateError {...stateLabels?.error} />
+        <StateError {...stateLabels?.error} actions={stateActions?.error} />
       ) : status === "forbidden" ? (
-        <StateForbidden {...stateLabels?.forbidden} />
+        <StateForbidden
+          {...stateLabels?.forbidden}
+          actions={stateActions?.forbidden}
+        />
       ) : status === "offline" ? (
-        <StateOffline {...stateLabels?.offline} />
+        <StateOffline
+          {...stateLabels?.offline}
+          actions={stateActions?.offline}
+        />
       ) : combined ? (
         <Block id={blockId ? `${blockId}.details` : undefined} headings>
           {sections.map((section) => (

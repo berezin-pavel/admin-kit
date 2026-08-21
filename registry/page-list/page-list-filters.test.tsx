@@ -68,6 +68,62 @@ describe("page-list-filters reset control", () => {
     expect(onResetFilters).toHaveBeenCalledTimes(1)
   })
 
+  it("stays hidden when a select's value matches its defaultValue", () => {
+    const filters: readonly PageListFilter[] = [
+      {
+        id: "status",
+        label: "Status",
+        kind: "select",
+        value: "all",
+        defaultValue: "all",
+        options: [
+          { value: "all", label: "All" },
+          { value: "active", label: "Active" },
+        ],
+      },
+    ]
+
+    render(
+      <PageListFilters
+        filters={filters}
+        onResetFilters={() => {}}
+        resetFiltersLabel="Reset filters"
+      />
+    )
+
+    expect(
+      screen.queryByRole("button", { name: "Reset filters" })
+    ).not.toBeInTheDocument()
+  })
+
+  it("shows once a select's value moves away from its defaultValue", () => {
+    const filters: readonly PageListFilter[] = [
+      {
+        id: "status",
+        label: "Status",
+        kind: "select",
+        value: "active",
+        defaultValue: "all",
+        options: [
+          { value: "all", label: "All" },
+          { value: "active", label: "Active" },
+        ],
+      },
+    ]
+
+    render(
+      <PageListFilters
+        filters={filters}
+        onResetFilters={() => {}}
+        resetFiltersLabel="Reset filters"
+      />
+    )
+
+    expect(
+      screen.getByRole("button", { name: "Reset filters" })
+    ).toBeInTheDocument()
+  })
+
   it("shows the unset select as its placeholder, not a stale label", () => {
     const filters: readonly PageListFilter[] = [baseFilters[1]]
 

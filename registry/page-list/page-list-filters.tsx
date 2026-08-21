@@ -30,7 +30,9 @@ export function PageListFilters({
   onResetFilters,
   resetFiltersLabel,
 }: PageListFiltersProps) {
-  const hasActiveFilter = filters.some((filter) => filter.value !== "")
+  const hasActiveFilter = filters.some(
+    (filter) => filter.value !== (filter.defaultValue ?? "")
+  )
 
   return (
     <div className="flex flex-wrap items-center gap-2">
