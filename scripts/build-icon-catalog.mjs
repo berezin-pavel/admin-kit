@@ -1,57 +1,54 @@
 import { fileURLToPath } from "node:url"
-import { readFileSync, writeFileSync } from "node:fs"
+import { writeFileSync } from "node:fs"
 import { dirname, join } from "node:path"
 
-import dynamicIconImports from "lucide-react/dynamicIconImports.mjs"
+import iconNodes from "lucide-static/icon-nodes.json" with { type: "json" }
 import tags from "lucide-static/tags.json" with { type: "json" }
+import * as lucideLab from "@lucide/lab"
 
 const scriptDir = dirname(fileURLToPath(import.meta.url))
-const outputPath = join(
-  scriptDir,
-  "..",
-  "registry",
-  "icon-field",
-  "icon-catalog.ts"
-)
-const labNamesPath = join(
-  scriptDir,
-  "..",
-  "registry",
-  "icon-field",
-  "icon-lab-names.ts"
-)
+const registryDir = join(scriptDir, "..", "registry", "icon-field")
+const catalogPath = join(registryDir, "icon-catalog.ts")
+const nodesPath = join(registryDir, "icon-nodes.ts")
 
-function readLabIconPairs() {
-  const dtsPath = fileURLToPath(
-    import.meta.resolve("@lucide/lab/dist/lucide-lab.d.ts")
-  )
-  const source = readFileSync(dtsPath, "utf8")
-  const pattern = /@name ([a-z0-9-]+)[\s\S]*?declare const (\w+): IconNode;/g
+function camelToKebab(name) {
+  return name
+    .replace(/([A-Z])/g, "-$1")
+    .replace(/([a-zA-Z])([0-9])/g, "$1-$2")
+    .toLowerCase()
+}
 
-  const pairs = []
-  for (const match of source.matchAll(pattern)) {
-    pairs.push({ kebabName: match[1], exportName: match[2] })
-  }
-  return pairs
+function stripKeyAttr(node) {
+  return node.map(([element, attrs]) => [
+    element,
+    Object.fromEntries(
+      Object.entries(attrs).filter(([attrName]) => attrName !== "key")
+    ),
+  ])
 }
 
 function buildLucideSources() {
-  return Object.keys(dynamicIconImports)
+  return Object.keys(iconNodes)
     .sort()
     .map((name) => ({
       name,
       tags: tags[name] ?? [],
+      node: stripKeyAttr(iconNodes[name]),
     }))
 }
 
-function buildLabSources(labPairs, lucideNames) {
-  return [...labPairs]
-    .sort((a, b) => a.kebabName.localeCompare(b.kebabName))
-    .map(({ kebabName, exportName }) => ({
-      name: lucideNames.has(kebabName) ? `${kebabName}-lab` : kebabName,
-      tags: [],
-      exportName,
-    }))
+function buildLabSources(lucideNames) {
+  const entries = Object.entries(lucideLab).filter(([, value]) =>
+    Array.isArray(value)
+  )
+
+  return entries
+    .map(([exportName, node]) => {
+      const kebabName = camelToKebab(exportName)
+      const name = lucideNames.has(kebabName) ? `${kebabName}-lab` : kebabName
+      return { name, tags: [], node: stripKeyAttr(node) }
+    })
+    .sort((a, b) => a.name.localeCompare(b.name))
 }
 
 function formatTags(entryTags) {
@@ -62,34 +59,23 @@ function formatSource(source) {
   return `  { name: ${JSON.stringify(source.name)}, tags: ${formatTags(source.tags)} },`
 }
 
-function formatLabExportNames(labSources) {
-  return labSources
-    .map(
-      (source) =>
-        `  ${JSON.stringify(source.name)}: ${JSON.stringify(source.exportName)},`
-    )
-    .join("\n")
-}
-
 function generate() {
-  const labPairs = readLabIconPairs()
-  if (labPairs.length !== 356) {
+  const lucideSources = buildLucideSources()
+  const lucideNames = new Set(lucideSources.map((source) => source.name))
+  const labSources = buildLabSources(lucideNames)
+
+  if (labSources.length !== 356) {
     throw new Error(
-      `Expected 356 @lucide/lab icons, found ${labPairs.length}`
+      `Expected 356 @lucide/lab icons, found ${labSources.length}`
     )
   }
 
-  const lucideSources = buildLucideSources()
-  const lucideNames = new Set(lucideSources.map((source) => source.name))
-  const labSources = buildLabSources(labPairs, lucideNames)
-  const allNames = [
-    ...lucideSources.map((source) => source.name),
-    ...labSources.map((source) => source.name),
-  ]
+  const allSources = [...lucideSources, ...labSources]
+  const nameLines = allSources
+    .map((source) => `  | ${JSON.stringify(source.name)}`)
+    .join("\n")
 
-  const nameLines = allNames.map((name) => `  | ${JSON.stringify(name)}`).join("\n")
-
-  const output = `export type IconPack = "lucide" | "lab"
+  const catalogOutput = `export type IconPack = "lucide" | "lab"
 
 export interface IconCatalogEntry {
   name: string
@@ -128,29 +114,43 @@ ${nameLines}
 export const iconNames: readonly IconName[] = iconCatalog.map(
   (entry) => entry.name
 ) as readonly IconName[]
-`
 
-  writeFileSync(outputPath, output)
-  writeFileSync(
-    labNamesPath,
-    `export const labIconExportNames: Readonly<Record<string, string>> = {
-${formatLabExportNames(labSources)}
+const iconNameSet: ReadonlySet<string> = new Set(iconNames)
+
+export function isIconName(value: string): value is IconName {
+  return iconNameSet.has(value)
 }
 `
-  )
 
-  const collisions =
-    labPairs.length - labSources.filter((s) => !s.name.endsWith("-lab")).length
+  const nodesRecord = {}
+  for (const source of allSources) {
+    nodesRecord[source.name] = source.node
+  }
+  const nodesJson = JSON.stringify(nodesRecord)
+  const nodesLiteral = JSON.stringify(nodesJson)
+
+  const nodesOutput = `import type { IconNode } from "lucide-react"
+
+export const iconNodesJson: string = ${nodesLiteral}
+
+export function parseIconNodes(): Readonly<Record<string, IconNode>> {
+  return JSON.parse(iconNodesJson)
+}
+`
+
+  writeFileSync(catalogPath, catalogOutput)
+  writeFileSync(nodesPath, nodesOutput)
+
   console.log(`lucide icons: ${lucideSources.length}`)
   console.log(`lab icons: ${labSources.length}`)
-  console.log(`total: ${allNames.length}`)
+  console.log(`total: ${allSources.length}`)
   console.log(
-    `lucide icons with tags: ${lucideSources.filter((s) => s.tags.length > 0).length}`
+    `lab/lucide name collisions resolved with -lab suffix: ${
+      labSources.filter((s) => s.name.endsWith("-lab")).length
+    }`
   )
-  console.log(
-    `lab/lucide name collisions resolved with -lab suffix: ${collisions}`
-  )
-  console.log(`wrote ${outputPath}`)
+  console.log(`wrote ${catalogPath}`)
+  console.log(`wrote ${nodesPath}`)
 }
 
 generate()

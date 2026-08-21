@@ -2,7 +2,7 @@ import { render, screen, waitFor } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { describe, expect, it, vi } from "vitest"
 
-import { IconField, iconFieldLabelDefaults } from "./icon-field"
+import { IconField, iconFieldLabelDefaults, resolveIcon } from "./icon-field"
 
 vi.mock("./icon-catalog", () => {
   const iconCatalog = Array.from({ length: 20 }, (_, index) => ({
@@ -14,7 +14,22 @@ vi.mock("./icon-catalog", () => {
   return {
     iconCatalog,
     iconNames: iconCatalog.map((entry) => entry.name),
-    labIconExportNames: {},
+    isIconName: (value: string) =>
+      iconCatalog.some((entry) => entry.name === value),
+  }
+})
+
+vi.mock("./icon-nodes", () => {
+  const fixtureNode = [["path", { d: "M4 4h16v16H4z" }]]
+  const nodes: Record<string, unknown> = {
+    "shopping-cart": fixtureNode,
+  }
+  for (let index = 0; index < 20; index++) {
+    nodes[`icon-${index}`] = fixtureNode
+  }
+
+  return {
+    parseIconNodes: () => nodes,
   }
 })
 
@@ -24,6 +39,20 @@ async function openField(user: ReturnType<typeof userEvent.setup>) {
   await user.click(screen.getByTestId("icon-field-trigger"))
   await screen.findByRole("radio", { name: "icon-0" })
 }
+
+describe("resolveIcon", () => {
+  it("renders an empty span before nodes load and an svg after", async () => {
+    const ResolvedIcon = resolveIcon("shopping-cart")
+    const { container } = render(<ResolvedIcon className="size-4" />)
+
+    expect(container.querySelector("svg")).not.toBeInTheDocument()
+    expect(container.querySelector("span")).toBeInTheDocument()
+
+    await waitFor(() => {
+      expect(container.querySelector("svg")).toBeInTheDocument()
+    })
+  })
+})
 
 describe("IconField anatomy", () => {
   it("renders the label", () => {
@@ -73,6 +102,15 @@ describe("IconField anatomy", () => {
     expect(
       screen.queryByRole("button", { name: iconFieldLabelDefaults.clear })
     ).not.toBeInTheDocument()
+  })
+
+  it("renders the selected icon's svg once nodes load", async () => {
+    render(<IconField value="icon-3" onChange={noop} />)
+    const trigger = screen.getByTestId("icon-field-trigger")
+
+    await waitFor(() => {
+      expect(trigger.querySelector("svg")).toBeInTheDocument()
+    })
   })
 })
 
@@ -236,3 +274,4 @@ describe("IconField clear button", () => {
     expect(onChange).toHaveBeenCalledWith(null)
   })
 })
+

@@ -1,9 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { DynamicIcon } from "lucide-react/dynamic"
-import dynamicIconImports from "lucide-react/dynamicIconImports"
-import { Icon, XIcon, type IconNode } from "lucide-react"
+import { Icon, XIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -16,8 +14,8 @@ import {
 } from "@/components/ui/popover"
 import { useRadioGroupNav } from "@/registry/admin-appearance/radio-group-nav"
 
-import type { IconCatalogEntry, IconName } from "./icon-catalog"
-import { labIconExportNames } from "./icon-lab-names"
+import type { IconCatalogEntry } from "./icon-catalog"
+import { loadIconNodes, useIconNodes } from "./icon-nodes-store"
 import { searchIcons } from "./icon-search"
 
 export interface IconFieldLabels {
@@ -51,68 +49,7 @@ export interface IconFieldProps {
   pageSize?: number
 }
 
-type IconPack = "lucide" | "lab"
-
-const lucideNameSet = new Set(Object.keys(dynamicIconImports))
-
-function packForName(name: string): IconPack | undefined {
-  if (lucideNameSet.has(name)) {
-    return "lucide"
-  }
-  if (name in labIconExportNames) {
-    return "lab"
-  }
-  return undefined
-}
-
-export function isIconName(value: string): value is IconName {
-  return packForName(value) !== undefined
-}
-
 type IconComponent = React.ComponentType<{ className?: string }>
-
-function EmptyIconComponent() {
-  return null
-}
-
-function LucideDynamicIconRenderer({
-  name,
-  className,
-}: {
-  name: string
-  className?: string
-}) {
-  return (
-    <DynamicIcon
-      name={name as React.ComponentProps<typeof DynamicIcon>["name"]}
-      className={className}
-    />
-  )
-}
-
-const LazyLabIconRenderer = React.lazy(async () => {
-  const labModule = (await import("@lucide/lab")) as unknown as Record<
-    string,
-    IconNode
-  >
-
-  function LabIconRenderer({
-    name,
-    className,
-  }: {
-    name: string
-    className?: string
-  }) {
-    const exportName = labIconExportNames[name]
-    const node = exportName ? labModule[exportName] : undefined
-    if (!node) {
-      return null
-    }
-    return <Icon iconNode={node} className={className} />
-  }
-
-  return { default: LabIconRenderer }
-})
 
 const resolvedIconCache = new Map<string, IconComponent>()
 
@@ -122,35 +59,19 @@ export function resolveIcon(name: string): IconComponent {
     return cached
   }
 
-  const pack = packForName(name)
+  function ResolvedIcon({ className }: { className?: string }) {
+    const nodes = useIconNodes()
+    const node = nodes?.[name]
 
-  let component: IconComponent
-  if (pack === "lucide") {
-    component = function ResolvedLucideIcon({
-      className,
-    }: {
-      className?: string
-    }) {
-      return <LucideDynamicIconRenderer name={name} className={className} />
+    if (!node) {
+      return <span aria-hidden className={cn("inline-block", className)} />
     }
-  } else if (pack === "lab") {
-    component = function ResolvedLabIcon({
-      className,
-    }: {
-      className?: string
-    }) {
-      return (
-        <React.Suspense fallback={null}>
-          <LazyLabIconRenderer name={name} className={className} />
-        </React.Suspense>
-      )
-    }
-  } else {
-    component = EmptyIconComponent
+
+    return <Icon iconNode={node} className={className} aria-hidden />
   }
 
-  resolvedIconCache.set(name, component)
-  return component
+  resolvedIconCache.set(name, ResolvedIcon)
+  return ResolvedIcon
 }
 
 type CatalogState =
@@ -214,6 +135,7 @@ export function IconField(props: IconFieldProps): React.ReactElement {
     }
 
     setCatalogState({ status: "loading" })
+    loadIconNodes()
 
     Promise.all([
       import("./icon-catalog"),

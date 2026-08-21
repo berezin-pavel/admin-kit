@@ -1,29 +1,30 @@
 import { describe, expect, it } from "vitest"
-import dynamicIconImports from "lucide-react/dynamicIconImports.mjs"
+import lucideIconNodes from "lucide-static/icon-nodes.json"
 import * as lucideLab from "@lucide/lab"
 
-import { iconCatalog, iconNames } from "./icon-catalog"
+import { iconCatalog, iconNames, isIconName } from "./icon-catalog"
+import { parseIconNodes } from "./icon-nodes"
 
 const KEBAB_PATTERN = /^[a-z0-9]+(-[a-z0-9]+)*$/
 
 describe("iconCatalog freshness", () => {
-  it("carries every lucide-react dynamic icon name", () => {
-    const dynamicNames = new Set(Object.keys(dynamicIconImports))
+  it("carries one entry per lucide-static icon", () => {
+    const staticNames = new Set(Object.keys(lucideIconNodes))
     const lucideCatalogNames = new Set(
       iconCatalog
         .filter((entry) => entry.pack === "lucide")
         .map((entry) => entry.name)
     )
 
-    expect(lucideCatalogNames.size).toBe(dynamicNames.size)
-    for (const name of dynamicNames) {
+    expect(lucideCatalogNames.size).toBe(staticNames.size)
+    for (const name of staticNames) {
       expect(lucideCatalogNames.has(name)).toBe(true)
     }
   })
 
   it("carries one entry per @lucide/lab icon export", () => {
-    const labExportCount = Object.keys(lucideLab).filter(
-      (key) => key !== "default" && key !== "module.exports"
+    const labExportCount = Object.values(lucideLab).filter((value) =>
+      Array.isArray(value)
     ).length
     const labCatalogEntries = iconCatalog.filter(
       (entry) => entry.pack === "lab"
@@ -54,5 +55,17 @@ describe("iconCatalog freshness", () => {
     const lastLucideIndex = packs.lastIndexOf("lucide")
 
     expect(firstLabIndex).toBeGreaterThan(lastLucideIndex)
+  })
+
+  it("has a parsed node for every catalogue name", () => {
+    const nodes = parseIconNodes()
+    for (const name of iconNames) {
+      expect(nodes[name]).toBeDefined()
+    }
+  })
+
+  it("recognises catalogue names via isIconName", () => {
+    expect(isIconName("shopping-cart")).toBe(true)
+    expect(isIconName("not-a-real-icon")).toBe(false)
   })
 })

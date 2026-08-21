@@ -24,24 +24,16 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "a-large-small", tags: ["letter", "font size", "text", "formatting"] },
   { name: "accessibility", tags: ["disability", "disabled", "dda", "wheelchair"] },
   { name: "activity", tags: ["pulse", "action", "motion", "movement", "exercise", "fitness", "healthcare", "heart rate monitor", "vital signs", "vitals", "emergency room", "er", "intensive care", "hospital", "defibrillator", "earthquake", "siesmic", "magnitude", "richter scale", "aftershock", "tremor", "shockwave", "audio", "waveform", "synthesizer", "synthesiser", "music"] },
-  { name: "activity-square", tags: [] },
   { name: "ad", tags: ["advert", "affiliate", "brand", "campaign", "commercial", "marketing", "monetize", "paid", "partner", "promo", "sponsor", "audio description", "video description", "described video", "visual description"] },
   { name: "air-vent", tags: ["air conditioner", "ac", "central air", "cooling", "climate-control"] },
   { name: "airplay", tags: ["stream", "cast", "mirroring", "screen", "monitor", "macos", "osx"] },
-  { name: "alarm-check", tags: [] },
   { name: "alarm-clock", tags: ["morning"] },
   { name: "alarm-clock-check", tags: ["done", "todo", "tick", "complete", "task"] },
   { name: "alarm-clock-minus", tags: ["remove"] },
   { name: "alarm-clock-off", tags: ["morning", "turn-off"] },
   { name: "alarm-clock-plus", tags: ["add"] },
-  { name: "alarm-minus", tags: [] },
-  { name: "alarm-plus", tags: [] },
   { name: "alarm-smoke", tags: ["fire", "alert", "warning", "detector", "carbon monoxide", "safety", "equipment", "amenities"] },
   { name: "album", tags: ["photo", "book"] },
-  { name: "alert-circle", tags: [] },
-  { name: "alert-octagon", tags: [] },
-  { name: "alert-triangle", tags: [] },
-  { name: "align-center", tags: [] },
   { name: "align-center-horizontal", tags: ["items", "flex", "justify"] },
   { name: "align-center-vertical", tags: ["items", "flex", "justify"] },
   { name: "align-end-horizontal", tags: ["items", "bottom", "flex", "justify"] },
@@ -54,9 +46,6 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "align-horizontal-justify-start", tags: ["left", "items", "flex", "justify"] },
   { name: "align-horizontal-space-around", tags: ["center", "items", "flex", "justify", "distribute", "between"] },
   { name: "align-horizontal-space-between", tags: ["around", "items", "bottom", "flex", "justify"] },
-  { name: "align-justify", tags: [] },
-  { name: "align-left", tags: [] },
-  { name: "align-right", tags: [] },
   { name: "align-start-horizontal", tags: ["top", "items", "flex", "justify"] },
   { name: "align-start-vertical", tags: ["left", "items", "flex", "justify"] },
   { name: "align-vertical-distribute-center", tags: ["items", "flex", "justify", "space", "evenly", "around"] },
@@ -72,8 +61,6 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "ampersands", tags: ["and", "operator", "then", "code", "&&"] },
   { name: "amphora", tags: ["pottery", "artifact", "artefact", "vase", "ceramics", "clay", "archaeology", "museum", "wine", "oil"] },
   { name: "anchor", tags: ["ship"] },
-  { name: "angry", tags: [] },
-  { name: "annoyed", tags: [] },
   { name: "antenna", tags: ["signal", "connection", "connectivity", "tv", "television", "broadcast", "live", "frequency", "tune", "scan", "channels", "aerial", "receiver", "transmission", "transducer", "terrestrial", "satellite", "cable"] },
   { name: "anvil", tags: ["metal", "iron", "alloy", "materials", "heavy", "weight", "blacksmith", "forge", "acme"] },
   { name: "aperture", tags: ["camera", "photo", "pictures", "shutter", "exposure"] },
@@ -83,7 +70,6 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "archive", tags: ["index", "backup", "box", "storage", "records"] },
   { name: "archive-restore", tags: ["unarchive", "index", "backup", "box", "storage", "records"] },
   { name: "archive-x", tags: ["index", "backup", "box", "storage", "records", "junk"] },
-  { name: "area-chart", tags: [] },
   { name: "armchair", tags: ["sofa", "furniture", "leisure", "lounge", "loveseat", "couch"] },
   { name: "arrow-big-down", tags: ["backwards", "reverse", "direction", "south"] },
   { name: "arrow-big-down-dash", tags: ["backwards", "reverse", "slow", "direction", "south", "download"] },
@@ -95,69 +81,40 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "arrow-big-up-dash", tags: ["caps lock", "capitals", "keyboard", "button", "mac", "forward", "direction", "north", "faster", "speed", "boost"] },
   { name: "arrow-down", tags: ["backwards", "reverse", "direction", "south"] },
   { name: "arrow-down-0-1", tags: ["filter", "sort", "ascending", "descending", "increasing", "decreasing", "rising", "falling", "numerical"] },
-  { name: "arrow-down-01", tags: [] },
   { name: "arrow-down-1-0", tags: ["filter", "sort", "ascending", "descending", "increasing", "decreasing", "rising", "falling", "numerical"] },
-  { name: "arrow-down-10", tags: [] },
   { name: "arrow-down-a-z", tags: ["filter", "sort", "ascending", "descending", "increasing", "decreasing", "rising", "falling", "alphabetical"] },
-  { name: "arrow-down-az", tags: [] },
-  { name: "arrow-down-circle", tags: [] },
   { name: "arrow-down-from-line", tags: ["backwards", "reverse", "direction", "south", "download", "expand", "fold", "vertical"] },
   { name: "arrow-down-left", tags: ["direction", "south-west", "diagonal"] },
-  { name: "arrow-down-left-from-circle", tags: [] },
-  { name: "arrow-down-left-from-square", tags: [] },
-  { name: "arrow-down-left-square", tags: [] },
   { name: "arrow-down-narrow-wide", tags: ["filter", "sort", "ascending", "descending", "increasing", "decreasing", "rising", "falling"] },
   { name: "arrow-down-right", tags: ["direction", "south-east", "diagonal"] },
-  { name: "arrow-down-right-from-circle", tags: [] },
-  { name: "arrow-down-right-from-square", tags: [] },
-  { name: "arrow-down-right-square", tags: [] },
-  { name: "arrow-down-square", tags: [] },
   { name: "arrow-down-to-dot", tags: ["direction", "south", "waypoint", "location", "step", "into"] },
   { name: "arrow-down-to-line", tags: ["behind", "direction", "south", "download", "save", "git", "version control", "pull", "collapse", "fold", "vertical"] },
   { name: "arrow-down-up", tags: ["bidirectional", "two-way", "2-way", "swap", "switch", "network", "traffic", "flow", "mobile data", "internet", "sort", "reorder", "move"] },
   { name: "arrow-down-wide-narrow", tags: ["filter", "sort", "ascending", "descending", "increasing", "decreasing", "rising", "falling"] },
   { name: "arrow-down-z-a", tags: ["filter", "sort", "ascending", "descending", "increasing", "decreasing", "rising", "falling", "alphabetical", "reverse"] },
-  { name: "arrow-down-za", tags: [] },
   { name: "arrow-left", tags: ["previous", "back", "direction", "west", "<-"] },
-  { name: "arrow-left-circle", tags: [] },
   { name: "arrow-left-from-line", tags: ["previous", "back", "direction", "west", "expand", "fold", "horizontal", "<-|"] },
   { name: "arrow-left-right", tags: ["bidirectional", "two-way", "2-way", "swap", "switch", "transaction", "reorder", "move", "<-", "->"] },
-  { name: "arrow-left-square", tags: [] },
   { name: "arrow-left-to-line", tags: ["previous", "back", "direction", "west", "collapse", "fold", "horizontal", "|<-"] },
   { name: "arrow-right", tags: ["forward", "next", "direction", "east", "->"] },
-  { name: "arrow-right-circle", tags: [] },
   { name: "arrow-right-from-line", tags: ["next", "forward", "direction", "east", "export", "expand", "fold", "horizontal", "|->"] },
   { name: "arrow-right-left", tags: ["bidirectional", "two-way", "2-way", "swap", "switch", "transaction", "reorder", "move", "<-", "->"] },
-  { name: "arrow-right-square", tags: [] },
   { name: "arrow-right-to-line", tags: ["next", "forward", "direction", "east", "tab", "keyboard", "mac", "indent", "collapse", "fold", "horizontal", "->|"] },
   { name: "arrow-up", tags: ["forward", "direction", "north"] },
   { name: "arrow-up-0-1", tags: ["filter", "sort", "ascending", "descending", "increasing", "decreasing", "rising", "falling", "numerical"] },
-  { name: "arrow-up-01", tags: [] },
   { name: "arrow-up-1-0", tags: ["filter", "sort", "ascending", "descending", "increasing", "decreasing", "rising", "falling", "numerical"] },
-  { name: "arrow-up-10", tags: [] },
   { name: "arrow-up-a-z", tags: ["filter", "sort", "ascending", "descending", "increasing", "decreasing", "rising", "falling", "alphabetical"] },
-  { name: "arrow-up-az", tags: [] },
-  { name: "arrow-up-circle", tags: [] },
   { name: "arrow-up-down", tags: ["bidirectional", "two-way", "2-way", "swap", "switch", "network", "mobile data", "internet", "sort", "reorder", "move"] },
   { name: "arrow-up-from-dot", tags: ["direction", "north", "step", "out"] },
   { name: "arrow-up-from-line", tags: ["forward", "direction", "north", "upload", "git", "version control", "push", "expand", "fold", "vertical"] },
   { name: "arrow-up-left", tags: ["direction", "north-west", "diagonal"] },
-  { name: "arrow-up-left-from-circle", tags: [] },
-  { name: "arrow-up-left-from-square", tags: [] },
-  { name: "arrow-up-left-square", tags: [] },
   { name: "arrow-up-narrow-wide", tags: ["filter", "sort", "ascending", "descending", "increasing", "decreasing", "rising", "falling"] },
   { name: "arrow-up-right", tags: ["direction", "north-east", "diagonal"] },
-  { name: "arrow-up-right-from-circle", tags: [] },
-  { name: "arrow-up-right-from-square", tags: [] },
-  { name: "arrow-up-right-square", tags: [] },
-  { name: "arrow-up-square", tags: [] },
   { name: "arrow-up-to-line", tags: ["forward", "direction", "north", "upload", "collapse", "fold", "vertical"] },
   { name: "arrow-up-wide-narrow", tags: ["filter", "sort", "ascending", "descending", "increasing", "decreasing", "rising", "falling"] },
   { name: "arrow-up-z-a", tags: ["filter", "sort", "ascending", "descending", "increasing", "decreasing", "rising", "falling", "alphabetical", "reverse"] },
-  { name: "arrow-up-za", tags: [] },
   { name: "arrows-up-from-line", tags: ["direction", "orientation", "this way up", "vertical", "package", "box", "fragile", "postage", "shipping"] },
   { name: "asterisk", tags: ["reference", "times", "multiply", "multiplication", "operator", "code", "glob pattern", "wildcard", "*"] },
-  { name: "asterisk-square", tags: [] },
   { name: "astroid", tags: ["star", "math", "shape", "curve", "sharp", "four-pointed", "hypocycloid", "ai", "artificial intelligence"] },
   { name: "at-sign", tags: ["mention", "at", "email", "message", "@"] },
   { name: "atom", tags: ["atomic", "nuclear", "physics", "particle", "element", "molecule", "electricity", "energy", "chemistry"] },
@@ -166,7 +123,6 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "audio-waveform", tags: ["sound", "noise", "listen", "hearing", "hertz", "frequency", "wavelength", "vibrate", "sine", "synthesizer", "synthesiser", "levels", "track", "music", "playback", "radio", "broadcast", "airwaves", "voice", "vocals", "singer", "song"] },
   { name: "award", tags: ["achievement", "badge", "rosette", "prize", "winner"] },
   { name: "axe", tags: ["hatchet", "weapon", "chop", "sharp", "equipment", "fireman", "firefighter", "brigade", "lumberjack", "woodcutter", "logger", "forestry"] },
-  { name: "axis-3-d", tags: [] },
   { name: "axis-3d", tags: ["gizmo", "coordinates"] },
   { name: "baby", tags: ["child", "childproof", "children"] },
   { name: "backpack", tags: ["bag", "hiking", "travel", "camping", "school", "childhood"] },
@@ -176,7 +132,6 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "badge-check", tags: ["verified", "check"] },
   { name: "badge-dollar-sign", tags: ["discount", "offer", "sale", "voucher", "tag", "monetization", "marketing", "finance", "financial", "exchange", "transaction", "payment", "usd", "$"] },
   { name: "badge-euro", tags: ["discount", "offer", "sale", "voucher", "tag", "monetization", "marketing", "finance", "financial", "exchange", "transaction", "payment", "€"] },
-  { name: "badge-help", tags: [] },
   { name: "badge-indian-rupee", tags: ["discount", "offer", "sale", "voucher", "tag", "monetization", "marketing", "finance", "financial", "exchange", "transaction", "payment", "inr", "₹"] },
   { name: "badge-info", tags: ["verified", "unverified", "help"] },
   { name: "badge-japanese-yen", tags: ["discount", "offer", "sale", "voucher", "tag", "monetization", "marketing", "finance", "financial", "exchange", "transaction", "payment", "jpy", "¥"] },
@@ -199,13 +154,6 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "banknote-arrow-up", tags: ["bill", "currency", "money", "payment", "funds", "transaction", "cash", "finance", "deposit", "earnings", "income", "in", "credit", "prepaid", "growth", "increase"] },
   { name: "banknote-check", tags: ["banknote", "bill", "currency", "payment", "money", "finance", "document", "verification", "tick", "verified", "accepted", "done", "complete", "found", "paid", "task", "check", "success"] },
   { name: "banknote-x", tags: ["bill", "currency", "money", "payment", "funds", "transaction", "cash", "finance", "error", "failed", "rejected", "canceled", "declined", "lost", "delete", "remove"] },
-  { name: "bar-chart", tags: [] },
-  { name: "bar-chart-2", tags: [] },
-  { name: "bar-chart-3", tags: [] },
-  { name: "bar-chart-4", tags: [] },
-  { name: "bar-chart-big", tags: [] },
-  { name: "bar-chart-horizontal", tags: [] },
-  { name: "bar-chart-horizontal-big", tags: [] },
   { name: "barcode", tags: ["scan", "checkout", "till", "cart", "transaction", "purchase", "buy", "product", "packaging", "retail", "consumer"] },
   { name: "barrel", tags: ["keg", "drum", "tank", "wine", "beer", "oak", "wood", "firkin", "hogshead", "kilderkin", "barrique", "solera", "aging", "whiskey", "brewery", "distillery", "winery", "vineyard"] },
   { name: "baseline", tags: ["text", "format", "color"] },
@@ -235,8 +183,6 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "bell-off", tags: ["alarm", "notification", "silent", "reminder"] },
   { name: "bell-plus", tags: ["notification", "silent", "reminder", "add", "create", "new"] },
   { name: "bell-ring", tags: ["alarm", "notification", "sound", "reminder"] },
-  { name: "between-horizonal-end", tags: [] },
-  { name: "between-horizonal-start", tags: [] },
   { name: "between-horizontal-end", tags: ["insert", "add", "left", "slot", "squeeze", "space", "vertical", "grid", "table", "rows", "cells", "excel", "spreadsheet", "accountancy", "data", "enter", "entry", "entries", "blocks", "rectangles", "chevron"] },
   { name: "between-horizontal-start", tags: ["insert", "add", "right", "slot", "squeeze", "space", "vertical", "grid", "table", "rows", "cells", "excel", "spreadsheet", "accountancy", "data", "enter", "entry", "entries", "blocks", "rectangles", "chevron"] },
   { name: "between-vertical-end", tags: ["insert", "add", "top", "slot", "squeeze", "space", "vertical", "grid", "table", "columns", "cells", "data", "enter", "entry", "entries", "blocks", "rectangles", "chevron"] },
@@ -282,7 +228,6 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "book-open-text", tags: ["reading", "pages", "booklet", "magazine", "leaflet", "pamphlet", "library", "writing", "written", "writer", "author", "story", "script", "fiction", "novel", "information", "knowledge", "education", "high school", "university", "college", "academy", "student", "study", "learning", "homework", "research", "documentation", "revealed"] },
   { name: "book-plus", tags: ["code", "coding", "version control", "git", "repository", "remove", "delete", "read", "write", "author", "publish", "inform", "graduate", "re-educate", "study", "learn", "research", "knowledge", "improve", "upgrade", "level up"] },
   { name: "book-search", tags: ["reading", "library", "study", "education", "research", "knowledge", "discover", "browsing", "lookup", "finding", "scanning"] },
-  { name: "book-template", tags: [] },
   { name: "book-text", tags: ["reading", "booklet", "magazine", "leaflet", "pamphlet", "tome", "library", "writing", "written", "writer", "author", "story", "script", "fiction", "novel", "information", "knowledge", "education", "high school", "university", "college", "academy", "student", "study", "learning", "homework", "research", "documentation"] },
   { name: "book-type", tags: ["thesaurus", "synonym", "reading", "booklet", "magazine", "leaflet", "pamphlet", "tome", "library", "writing", "written", "writer", "author", "story", "script", "fiction", "novel", "information", "knowledge", "education", "high school", "university", "college", "academy", "student", "study", "learning", "homework", "research", "language", "translate", "typography", "fonts", "collection"] },
   { name: "book-up", tags: ["code", "coding", "version control", "git", "repository", "push"] },
@@ -302,7 +247,6 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "bottle-wine", tags: ["alcohol", "drink", "glass", "goblet", "chalice", "vineyard", "winery", "red", "white", "rose", "dry", "sparkling", "bar", "party", "nightclub", "nightlife", "sommelier", "restaurant", "dinner", "meal"] },
   { name: "bow-arrow", tags: ["archer", "archery", "game", "war", "weapon"] },
   { name: "box", tags: ["cube", "package", "container", "storage", "geometry", "3d", "isometric"] },
-  { name: "box-select", tags: [] },
   { name: "boxes", tags: ["cubes", "packages", "parts", "group", "units", "collection", "cluster", "geometry"] },
   { name: "braces", tags: ["json", "code", "token", "curly brackets", "data", "{", "}"] },
   { name: "brackets", tags: ["code", "token", "array", "list", "square", "[", "]"] },
@@ -359,7 +303,6 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "calendars", tags: ["date", "month", "year", "event", "dates", "months", "years", "events"] },
   { name: "camera", tags: ["photography", "lens", "focus", "capture", "shot", "visual", "image", "device", "equipment", "photo", "webcam", "video"] },
   { name: "camera-off", tags: ["photo", "webcam", "video"] },
-  { name: "candlestick-chart", tags: [] },
   { name: "candy", tags: ["sugar", "food", "sweet"] },
   { name: "candy-cane", tags: ["sugar", "food", "sweet", "christmas", "xmas"] },
   { name: "candy-off", tags: ["sugar free", "food", "sweet", "allergy", "intolerance", "diet"] },
@@ -407,11 +350,7 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "chart-spline", tags: ["statistics", "analytics", "diagram", "graph", "curve", "continuous", "smooth", "polynomial", "quadratic", "function", "interpolation"] },
   { name: "check", tags: ["done", "todo", "tick", "complete", "task"] },
   { name: "check-check", tags: ["done", "received", "double", "todo", "tick", "complete", "task"] },
-  { name: "check-circle", tags: [] },
-  { name: "check-circle-2", tags: [] },
   { name: "check-line", tags: ["done", "todo", "tick", "complete", "task"] },
-  { name: "check-square", tags: [] },
-  { name: "check-square-2", tags: [] },
   { name: "chef-hat", tags: ["cooking", "food", "kitchen", "restaurant"] },
   { name: "cherry", tags: ["fruit", "food"] },
   { name: "chess-bishop", tags: ["mitre", "miter", "piece", "board game", "religion"] },
@@ -421,19 +360,11 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "chess-queen", tags: ["ruler", "crown", "piece", "board game", "stalemate"] },
   { name: "chess-rook", tags: ["castle", "piece", "board game"] },
   { name: "chevron-down", tags: ["backwards", "reverse", "slow", "dropdown"] },
-  { name: "chevron-down-circle", tags: [] },
-  { name: "chevron-down-square", tags: [] },
   { name: "chevron-first", tags: ["previous", "music"] },
   { name: "chevron-last", tags: ["skip", "next", "music"] },
   { name: "chevron-left", tags: ["back", "previous", "less than", "fewer", "menu", "<"] },
-  { name: "chevron-left-circle", tags: [] },
-  { name: "chevron-left-square", tags: [] },
   { name: "chevron-right", tags: ["forward", "next", "more than", "greater", "menu", "code", "coding", "command line", "terminal", "prompt", "shell", ">"] },
-  { name: "chevron-right-circle", tags: [] },
-  { name: "chevron-right-square", tags: [] },
   { name: "chevron-up", tags: ["caret", "keyboard", "mac", "control", "ctrl", "superscript", "exponential", "power", "ahead", "fast", "^", "dropdown"] },
-  { name: "chevron-up-circle", tags: [] },
-  { name: "chevron-up-square", tags: [] },
   { name: "chevrons-down", tags: ["backwards", "reverse", "slower"] },
   { name: "chevrons-down-up", tags: ["collapse", "fold", "vertical"] },
   { name: "chevrons-left", tags: ["turn", "corner"] },
@@ -473,7 +404,6 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "circle-fading-arrow-up", tags: ["north", "up", "upgrade", "improve", "circle", "button"] },
   { name: "circle-fading-plus", tags: ["stories", "social media", "sharing", "content"] },
   { name: "circle-gauge", tags: ["dashboard", "dial", "meter", "speed", "pressure", "measure", "level"] },
-  { name: "circle-help", tags: [] },
   { name: "circle-minus", tags: ["subtract", "remove", "decrease", "reduce", "calculate", "line", "operator", "code", "coding", "minimum", "downgrade", "-"] },
   { name: "circle-off", tags: ["diameter", "zero", "Ø", "nothing", "null", "void", "cancel", "ban", "no", "stop", "forbidden", "prohibited", "error", "incorrect", "mistake", "wrong", "failure"] },
   { name: "circle-parking", tags: ["parking lot", "car park"] },
@@ -488,7 +418,6 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "circle-question-mark", tags: ["question mark"] },
   { name: "circle-slash", tags: ["diameter", "zero", "Ø", "nothing", "null", "void", "cancel", "ban", "no", "stop", "forbidden", "prohibited", "error", "incorrect", "mistake", "wrong", "failure", "divide", "division", "or", "/"] },
   { name: "circle-slash-2", tags: ["diameter", "zero", "ø", "nothing", "null", "void", "ban", "math", "divide", "division", "half", "split", "/", "average", "avg", "mean", "median", "normal"] },
-  { name: "circle-slashed", tags: [] },
   { name: "circle-small", tags: ["shape", "bullet", "gender", "genderless"] },
   { name: "circle-star", tags: ["badge", "medal", "honour", "decoration", "order", "pin", "laurel", "trophy", "medallion", "insignia", "bronze", "silver", "gold"] },
   { name: "circle-stop", tags: ["media", "music"] },
@@ -502,14 +431,12 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "clipboard-check", tags: ["copied", "pasted", "done", "todo", "tick", "complete", "task"] },
   { name: "clipboard-clock", tags: ["copy", "paste", "history", "log", "clock", "time", "watch", "alarm", "hour", "minute", "reminder", "scheduled", "deadline", "pending", "time tracking", "timesheets", "appointment", "logbook"] },
   { name: "clipboard-copy", tags: ["copy", "paste"] },
-  { name: "clipboard-edit", tags: [] },
   { name: "clipboard-list", tags: ["copy", "paste", "tasks"] },
   { name: "clipboard-minus", tags: ["copy", "delete", "remove", "erase", "document", "medical", "report", "doctor"] },
   { name: "clipboard-paste", tags: ["copy", "paste"] },
   { name: "clipboard-pen", tags: ["paste", "signature"] },
   { name: "clipboard-pen-line", tags: ["paste"] },
   { name: "clipboard-plus", tags: ["copy", "paste", "add", "create", "new", "document", "medical", "report", "doctor"] },
-  { name: "clipboard-signature", tags: [] },
   { name: "clipboard-type", tags: ["paste", "format", "text"] },
   { name: "clipboard-x", tags: ["copy", "paste", "discard", "remove"] },
   { name: "clock", tags: ["time", "watch", "alarm"] },
@@ -558,18 +485,14 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "clover", tags: ["leaf", "luck", "plant"] },
   { name: "club", tags: ["shape", "suit", "playing", "cards"] },
   { name: "code", tags: ["source", "programming", "html", "xml"] },
-  { name: "code-2", tags: [] },
-  { name: "code-square", tags: [] },
   { name: "code-xml", tags: ["source", "programming", "html", "xml"] },
   { name: "coffee", tags: ["drink", "cup", "mug", "tea", "cafe", "hot", "beverage"] },
   { name: "cog", tags: ["computing", "settings", "cog", "edit", "gear", "preferences", "controls", "configuration", "fixed", "build", "construction", "parts"] },
   { name: "coins", tags: ["money", "cash", "finance", "gamble"] },
-  { name: "columns", tags: [] },
   { name: "columns-2", tags: ["lines", "list", "queue", "preview", "panel", "parallel", "series", "split", "vertical", "horizontal", "half", "center", "middle", "even", "sidebar", "drawer", "gutter", "fold", "reflow", "typography", "pagination", "pages"] },
   { name: "columns-3", tags: ["lines", "list", "queue", "preview", "parallel", "series", "split", "vertical", "horizontal", "thirds", "triple", "center", "middle", "alignment", "even", "sidebars", "drawers", "gutters", "fold", "reflow", "typography", "pagination", "pages"] },
   { name: "columns-3-cog", tags: ["columns", "settings", "customize", "table", "grid", "adjust", "configuration", "panel", "layout"] },
   { name: "columns-4", tags: ["lines", "list", "queue", "preview", "parallel", "series", "split", "vertical", "horizontal", "thirds", "triple", "center", "middle", "alignment", "even", "sidebars", "drawers", "gutters", "fold", "reflow", "typography", "pagination", "pages", "prison", "jail", "bars", "sentence", "police", "cops", "cell", "crime", "criminal", "justice", "law", "enforcement", "grill"] },
-  { name: "columns-settings", tags: [] },
   { name: "combine", tags: ["cubes", "packages", "parts", "units", "collection", "cluster", "combine", "gather", "merge"] },
   { name: "command", tags: ["keyboard", "key", "mac", "cmd", "button"] },
   { name: "compass", tags: ["direction", "north", "east", "south", "west", "browser"] },
@@ -579,7 +502,6 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "cone", tags: ["conical", "triangle", "triangular", "geometry", "filter", "funnel", "hopper", "spotlight", "searchlight"] },
   { name: "construction", tags: ["roadwork", "maintenance", "blockade", "barricade"] },
   { name: "contact", tags: ["user", "person", "family", "friend", "acquaintance", "listing", "networking"] },
-  { name: "contact-2", tags: [] },
   { name: "contact-round", tags: ["user", "person", "family", "friend", "acquaintance", "listing", "networking"] },
   { name: "container", tags: ["storage", "shipping", "freight", "supply chain", "environment", "devops", "code", "coding"] },
   { name: "contrast", tags: ["display", "accessibility"] },
@@ -611,7 +533,6 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "crown", tags: ["diadem", "tiara", "circlet", "corona", "king", "ruler", "winner", "favourite"] },
   { name: "cuboid", tags: ["brick", "block", "box", "3d", "solid", "volume", "container", "storage", "shipping", "carton", "geometry", "rectangular", "hexahedron", "butter", "tofu", "soap", "cheese", "package", "parcel", "crate"] },
   { name: "cup-soda", tags: ["beverage", "cup", "drink", "soda", "straw", "water"] },
-  { name: "curly-braces", tags: [] },
   { name: "currency", tags: ["finance", "money"] },
   { name: "cylinder", tags: ["shape", "elliptical", "geometry", "container", "storage", "tin", "pot"] },
   { name: "dam", tags: ["electricity", "energy", "water"] },
@@ -647,8 +568,6 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "disc-3", tags: ["album", "music", "vinyl", "record", "cd", "dvd", "format", "dj", "spin", "rotate", "rpm"] },
   { name: "disc-album", tags: ["album", "music", "songs", "format", "cd", "dvd", "vinyl", "sleeve", "cover", "platinum", "compilation", "ep", "recording", "playback", "spin", "rotate", "rpm", "dj"] },
   { name: "divide", tags: ["calculate", "math", "division", "operator", "code", "÷", "/"] },
-  { name: "divide-circle", tags: [] },
-  { name: "divide-square", tags: [] },
   { name: "dna", tags: ["gene", "gmo", "helix", "heredity", "chromosome", "nucleic acid"] },
   { name: "dna-off", tags: ["gene", "gmo free", "helix", "heredity", "chromosome", "nucleic acid"] },
   { name: "dock", tags: ["desktop", "applications", "launch", "home", "menu bar", "bottom", "line", "macos", "osx"] },
@@ -659,9 +578,7 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "door-closed-locked", tags: ["entrance", "entry", "exit", "ingress", "egress", "gate", "gateway", "emergency exit", "lock"] },
   { name: "door-open", tags: ["entrance", "entry", "exit", "ingress", "egress", "gate", "gateway", "emergency exit"] },
   { name: "dot", tags: ["interpunct", "interpoint", "middot", "step", "punctuation", "period", "full stop", "end", "finish", "final", "characters", "font", "typography", "type", "center", "."] },
-  { name: "dot-square", tags: [] },
   { name: "download", tags: ["import", "export", "save"] },
-  { name: "download-cloud", tags: [] },
   { name: "drafting-compass", tags: ["geometry", "trigonometry", "radius", "diameter", "circumference", "calculate", "measure", "arc", "curve", "draw", "sketch"] },
   { name: "drama", tags: ["drama", "masks", "theater", "theatre", "entertainment", "show"] },
   { name: "drill", tags: ["power", "bit", "head", "hole", "diy", "toolbox", "build", "construction"] },
@@ -677,9 +594,6 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "earth", tags: ["world", "browser", "language", "translate", "globe"] },
   { name: "earth-lock", tags: ["vpn", "private", "privacy", "network", "world", "browser", "security", "encryption", "protection", "connection"] },
   { name: "eclipse", tags: ["lunar", "solar", "crescent moon", "sun", "earth", "day", "night", "planet", "space", "mode", "dark", "light", "toggle", "switch", "color", "css", "styles", "display", "accessibility", "contrast", "brightness", "blend", "shade"] },
-  { name: "edit", tags: [] },
-  { name: "edit-2", tags: [] },
-  { name: "edit-3", tags: [] },
   { name: "egg", tags: ["bird", "chicken", "nest", "hatch", "shell", "incubate", "soft boiled", "hard", "breakfast", "brunch", "morning", "easter"] },
   { name: "egg-fried", tags: ["food", "breakfast"] },
   { name: "egg-off", tags: ["egg free", "vegan", "hatched", "bad egg"] },
@@ -689,7 +603,6 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "equal", tags: ["calculate", "math", "operator", "assignment", "code", "="] },
   { name: "equal-approximately", tags: ["about", "calculate", "math", "operater"] },
   { name: "equal-not", tags: ["calculate", "off", "math", "operator", "code", "≠"] },
-  { name: "equal-square", tags: [] },
   { name: "eraser", tags: ["pencil", "drawing", "undo", "delete", "clear", "trash", "remove"] },
   { name: "ethernet-port", tags: ["internet", "network", "connection", "cable", "lan", "port", "router", "switch", "hub", "modem", "web", "online", "networking", "communication", "socket", "plug", "slot", "controller", "connector", "interface", "console", "signal", "data", "input", "output"] },
   { name: "euro", tags: ["currency", "money", "payment"] },
@@ -715,14 +628,8 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "ferris-wheel", tags: ["big wheel", "daisy wheel", "observation", "attraction", "entertainment", "amusement park", "theme park", "funfair"] },
   { name: "file", tags: ["document"] },
   { name: "file-archive", tags: ["zip", "package", "archive"] },
-  { name: "file-audio", tags: [] },
-  { name: "file-audio-2", tags: [] },
-  { name: "file-axis-3-d", tags: [] },
   { name: "file-axis-3d", tags: ["model", "3d", "axis", "coordinates"] },
   { name: "file-badge", tags: ["award", "achievement", "badge", "rosette", "prize", "winner"] },
-  { name: "file-badge-2", tags: [] },
-  { name: "file-bar-chart", tags: [] },
-  { name: "file-bar-chart-2", tags: [] },
   { name: "file-box", tags: ["document", "page", "sheet", "cube", "box", "3d", "model", "asset", "object", "geometry", "mesh", "ar", "augmented reality", "cad", "design", "blueprint", "draft", "package", "scene"] },
   { name: "file-braces", tags: ["code", "json", "curly braces", "curly brackets"] },
   { name: "file-braces-corner", tags: ["code", "json", "curly braces", "curly brackets"] },
@@ -731,50 +638,35 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "file-chart-line", tags: ["statistics", "analytics", "diagram", "graph", "presentation"] },
   { name: "file-chart-pie", tags: ["statistics", "analytics", "diagram", "graph", "presentation"] },
   { name: "file-check", tags: ["done", "document", "todo", "tick", "complete", "task"] },
-  { name: "file-check-2", tags: [] },
   { name: "file-check-corner", tags: ["done", "document", "todo", "tick", "complete", "task"] },
   { name: "file-clock", tags: ["history", "log", "clock"] },
   { name: "file-code", tags: ["script", "document", "gist", "html", "xml", "property list", "plist"] },
-  { name: "file-code-2", tags: [] },
   { name: "file-code-corner", tags: ["script", "document", "html", "xml", "property list", "plist"] },
   { name: "file-cog", tags: ["executable", "settings", "cog", "edit", "gear"] },
-  { name: "file-cog-2", tags: [] },
   { name: "file-diff", tags: ["diff", "patch"] },
   { name: "file-digit", tags: ["number", "document"] },
   { name: "file-down", tags: ["download", "import", "export"] },
-  { name: "file-edit", tags: [] },
   { name: "file-exclamation-point", tags: ["hidden", "warning", "alert", "danger", "protected", "exclamation mark"] },
   { name: "file-headphone", tags: ["music", "audio", "sound", "headphones"] },
   { name: "file-heart", tags: ["heart", "favourite", "bookmark", "quick link"] },
   { name: "file-image", tags: ["image", "graphics", "photo", "picture"] },
   { name: "file-input", tags: ["document"] },
-  { name: "file-json", tags: [] },
-  { name: "file-json-2", tags: [] },
   { name: "file-key", tags: ["key", "private", "public", "security"] },
-  { name: "file-key-2", tags: [] },
-  { name: "file-line-chart", tags: [] },
   { name: "file-lock", tags: ["lock", "password", "security"] },
-  { name: "file-lock-2", tags: [] },
   { name: "file-minus", tags: ["delete", "remove", "erase", "document"] },
-  { name: "file-minus-2", tags: [] },
   { name: "file-minus-corner", tags: ["document"] },
   { name: "file-music", tags: ["audio", "sound", "noise", "track", "digital", "recording", "playback", "piano", "keyboard", "keys", "notes", "chord", "midi", "octave"] },
   { name: "file-output", tags: ["document"] },
   { name: "file-pen", tags: ["signature"] },
   { name: "file-pen-line", tags: ["edit"] },
-  { name: "file-pie-chart", tags: [] },
   { name: "file-play", tags: ["movie", "video", "film"] },
   { name: "file-plus", tags: ["add", "create", "new", "document"] },
-  { name: "file-plus-2", tags: [] },
   { name: "file-plus-corner", tags: ["add", "create", "new", "document"] },
-  { name: "file-question", tags: [] },
   { name: "file-question-mark", tags: ["readme", "help", "question"] },
   { name: "file-scan", tags: ["scan", "code", "qr-code"] },
   { name: "file-search", tags: ["lost", "document", "find", "browser", "lens"] },
-  { name: "file-search-2", tags: [] },
   { name: "file-search-corner", tags: ["lost", "document", "find", "browser", "lens"] },
   { name: "file-signal", tags: ["audio", "music", "volume"] },
-  { name: "file-signature", tags: [] },
   { name: "file-sliders", tags: ["cogged", "gear", "mechanical", "machinery", "configuration", "controls", "preferences", "settings", "system", "admin", "edit", "executable"] },
   { name: "file-spreadsheet", tags: ["spreadsheet", "sheet", "table"] },
   { name: "file-stack", tags: ["versions", "multiple", "copy", "documents", "revisions", "version control", "history"] },
@@ -782,24 +674,15 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "file-terminal", tags: ["terminal", "bash", "script", "executable"] },
   { name: "file-text", tags: ["data", "txt", "pdf", "document"] },
   { name: "file-type", tags: ["font", "text", "typography", "type"] },
-  { name: "file-type-2", tags: [] },
   { name: "file-type-corner", tags: ["font", "text", "typography", "type"] },
   { name: "file-up", tags: ["upload", "import", "export"] },
   { name: "file-user", tags: ["person", "personal information", "people", "listing", "networking", "document", "contact", "cover letter", "resume", "cv", "curriculum vitae", "application form"] },
-  { name: "file-video", tags: [] },
-  { name: "file-video-2", tags: [] },
   { name: "file-video-camera", tags: ["movie", "video", "film"] },
   { name: "file-volume", tags: ["audio", "music", "volume"] },
-  { name: "file-volume-2", tags: [] },
-  { name: "file-warning", tags: [] },
   { name: "file-x", tags: ["lost", "delete", "remove", "document"] },
-  { name: "file-x-2", tags: [] },
   { name: "file-x-corner", tags: ["lost", "delete", "remove", "document"] },
   { name: "files", tags: ["multiple", "copy", "documents"] },
   { name: "film", tags: ["movie", "video", "reel", "camera", "cinema", "entertainment"] },
-  { name: "filter", tags: [] },
-  { name: "filter-x", tags: [] },
-  { name: "fingerprint", tags: [] },
   { name: "fingerprint-pattern", tags: ["2fa", "authentication", "biometric", "identity", "security"] },
   { name: "fire-extinguisher", tags: ["flames", "smoke", "foam", "water", "spray", "hose", "firefighter", "fireman", "department", "brigade", "station", "emergency", "suppress", "compressed", "tank", "cylinder", "safety", "equipment", "amenities"] },
   { name: "fish", tags: ["dish", "restaurant", "course", "meal", "seafood", "pet", "sea", "marine"] },
@@ -818,9 +701,7 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "flask-conical", tags: ["beaker", "erlenmeyer", "lab", "chemistry", "experiment", "test"] },
   { name: "flask-conical-off", tags: ["beaker", "erlenmeyer", "non toxic", "lab", "chemistry", "experiment", "test"] },
   { name: "flask-round", tags: ["beaker", "lab", "chemistry", "experiment", "test"] },
-  { name: "flip-horizontal", tags: [] },
   { name: "flip-horizontal-2", tags: ["reflect", "mirror", "alignment", "dashed"] },
-  { name: "flip-vertical", tags: [] },
   { name: "flip-vertical-2", tags: ["reflect", "mirror", "alignment", "dashed"] },
   { name: "flower", tags: ["sustainability", "nature", "plant", "spring"] },
   { name: "flower-2", tags: ["sustainability", "nature", "plant"] },
@@ -835,10 +716,8 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "folder-closed", tags: ["directory", "closed"] },
   { name: "folder-code", tags: ["directory", "coding", "develop", "software"] },
   { name: "folder-cog", tags: ["directory", "settings", "control", "preferences", "cog", "edit", "gear"] },
-  { name: "folder-cog-2", tags: [] },
   { name: "folder-dot", tags: ["directory", "root", "project", "pinned", "active", "current", "cogged", "gear", "mechanical", "machinery", "configuration", "controls", "preferences", "settings", "system", "admin", "edit"] },
   { name: "folder-down", tags: ["directory", "download", "import", "export"] },
-  { name: "folder-edit", tags: [] },
   { name: "folder-git", tags: ["directory", "root", "project", "git", "repo"] },
   { name: "folder-git-2", tags: ["directory", "root", "project", "git", "repo"] },
   { name: "folder-heart", tags: ["directory", "heart", "favourite", "bookmark", "quick link"] },
@@ -862,17 +741,12 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "folder-x", tags: ["directory", "remove", "delete"] },
   { name: "folders", tags: ["multiple", "copy", "directories"] },
   { name: "footprints", tags: ["steps", "walking", "foot", "feet", "trail", "shoe"] },
-  { name: "fork-knife", tags: [] },
-  { name: "fork-knife-crossed", tags: [] },
   { name: "forklift", tags: ["machinery", "industrial", "warehouse", "lifting", "storage", "equipment", "heavy-duty", "moving", "vehicle", "transport", "logistics"] },
   { name: "form", tags: ["document", "page", "file", "layout", "paper", "stub", "formality", "structure", "template", "inputs", "design", "components"] },
-  { name: "form-input", tags: [] },
   { name: "forward", tags: ["send", "share", "email"] },
   { name: "frame", tags: ["logo", "design", "tool"] },
-  { name: "frown", tags: [] },
   { name: "fuel", tags: ["filling-station", "gas", "petrol", "tank"] },
   { name: "fullscreen", tags: ["expand", "zoom", "preview", "focus", "camera", "lens", "image"] },
-  { name: "function-square", tags: [] },
   { name: "funnel", tags: ["filter", "hopper"] },
   { name: "funnel-plus", tags: ["filter", "hopper", "add", "create", "new"] },
   { name: "funnel-x", tags: ["filter", "hopper", "remove", "delete"] },
@@ -884,10 +758,7 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "gamepad", tags: ["console"] },
   { name: "gamepad-2", tags: ["console"] },
   { name: "gamepad-directional", tags: ["direction", "arrow", "controller", "navigation", "button", "move", "pointer", "arrowhead", "console", "game", "gaming"] },
-  { name: "gantt-chart", tags: [] },
-  { name: "gantt-chart-square", tags: [] },
   { name: "gauge", tags: ["dashboard", "dial", "meter", "speed", "pressure", "measure", "level"] },
-  { name: "gauge-circle", tags: [] },
   { name: "gavel", tags: ["justice", "law", "court", "judgment", "legal", "hands", "penalty", "decision", "authority", "hammer", "mallet"] },
   { name: "gem", tags: ["diamond", "crystal", "ruby", "jewellery", "price", "special", "present", "gift", "ring", "wedding", "proposal", "marriage", "rubygems"] },
   { name: "georgian-lari", tags: ["currency", "money", "payment"] },
@@ -896,7 +767,6 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "git-branch", tags: ["code", "version control", "vcs", "repository"] },
   { name: "git-branch-minus", tags: ["code", "version control", "vcs", "repository", "delete", "remove", "-"] },
   { name: "git-branch-plus", tags: ["code", "version control", "vcs", "repository", "add", "create", "+"] },
-  { name: "git-commit", tags: [] },
   { name: "git-commit-horizontal", tags: ["code", "version control", "waypoint", "stop", "station"] },
   { name: "git-commit-vertical", tags: ["code", "version control", "waypoint", "stop", "station"] },
   { name: "git-compare", tags: ["code", "version control", "diff"] },
@@ -914,26 +784,18 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "glass-water", tags: ["beverage", "drink", "glass", "water"] },
   { name: "glasses", tags: ["glasses", "spectacles"] },
   { name: "globe", tags: ["world", "browser", "language", "translate"] },
-  { name: "globe-2", tags: [] },
   { name: "globe-check", tags: ["world", "browser", "language", "translate", "internet", "web", "check", "verified", "success", "valid", "available", "online", "status"] },
   { name: "globe-lock", tags: ["vpn", "private", "privacy", "network", "world", "browser", "security", "encryption", "protection", "connection"] },
   { name: "globe-off", tags: ["globe", "earth", "planet", "disable", "mute", "off", "hide", "avoid", "world", "browser", "language", "translate", "internet", "offline", "disconnected", "network", "connection", "no connection", "network failure", "signal off"] },
   { name: "globe-x", tags: ["globe", "internet", "offline", "disconnected", "network", "connection", "world", "no connection", "network failure", "signal off"] },
   { name: "goal", tags: ["flag", "bullseye"] },
   { name: "gpu", tags: ["processor", "cores", "technology", "computer", "chip", "circuit", "specs", "graphics processing unit", "video card", "display adapter", "gddr", "rendering", "digital image processing", "crypto mining"] },
-  { name: "grab", tags: [] },
   { name: "graduation-cap", tags: ["school", "university", "learn", "study", "mortarboard", "education", "ceremony", "academic", "hat", "diploma", "bachlor's", "master's", "doctorate"] },
   { name: "grape", tags: ["fruit", "wine", "food"] },
-  { name: "grid", tags: [] },
-  { name: "grid-2-x-2", tags: [] },
-  { name: "grid-2-x-2-check", tags: [] },
-  { name: "grid-2-x-2-plus", tags: [] },
-  { name: "grid-2-x-2-x", tags: [] },
   { name: "grid-2x2", tags: ["table", "rows", "columns", "blocks", "plot", "land", "geometry", "measure", "size", "width", "height", "distance", "surface area", "square meter", "acre", "window", "skylight"] },
   { name: "grid-2x2-check", tags: ["table", "rows", "columns", "blocks", "plot", "land", "geometry", "measure", "data", "size", "width", "height", "distance", "surface area", "square meter", "acre"] },
   { name: "grid-2x2-plus", tags: ["table", "rows", "columns", "blocks", "plot", "land", "geometry", "measure", "data", "size", "width", "height", "distance", "surface area", "square meter", "acre"] },
   { name: "grid-2x2-x", tags: ["table", "rows", "columns", "data", "blocks", "plot", "land", "geometry", "measure", "size", "width", "height", "distance", "surface area", "square meter", "acre"] },
-  { name: "grid-3-x-3", tags: [] },
   { name: "grid-3x2", tags: ["table", "rows", "columns", "blocks", "plot", "land", "geometry", "measure", "size", "width", "height", "distance", "surface area", "square meter", "acre", "window"] },
   { name: "grid-3x3", tags: ["table", "rows", "columns"] },
   { name: "grip", tags: ["grab", "dots", "handle", "move", "drag"] },
@@ -983,12 +845,8 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "heart-x", tags: ["unlike", "unfavorite", "remove", "reject", "dismiss", "delete", "clear"] },
   { name: "heater", tags: ["heating", "warmth", "comfort", "fire", "stove", "electric", "electronics", "amenities"] },
   { name: "helicopter", tags: ["transport", "flying", "rotor", "aviation", "helipad", "gear", "flyer", "technology", "helicopter", "aircraft", "vehicle"] },
-  { name: "help-circle", tags: [] },
-  { name: "helping-hand", tags: [] },
   { name: "hexagon", tags: ["shape", "node.js", "logo"] },
   { name: "highlighter", tags: ["mark", "text"] },
-  { name: "history", tags: [] },
-  { name: "home", tags: [] },
   { name: "hop", tags: ["beer", "brewery", "drink"] },
   { name: "hop-off", tags: ["beer", "brewery", "drink", "hop free", "allergy", "intolerance", "diet"] },
   { name: "hospital", tags: ["infirmary", "sanatorium", "healthcare", "doctor", "hospice", "clinic", "emergency room", "ward", "building", "medical", "vet"] },
@@ -999,8 +857,6 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "house-plug", tags: ["home", "living", "building", "residence", "architecture", "autarky", "energy"] },
   { name: "house-plus", tags: ["home", "living", "medical", "new", "addition", "building", "residence", "architecture"] },
   { name: "house-wifi", tags: ["home", "living", "building", "wifi", "connectivity"] },
-  { name: "ice-cream", tags: [] },
-  { name: "ice-cream-2", tags: [] },
   { name: "ice-cream-bowl", tags: ["gelato", "food", "dessert", "dish", "restaurant", "course", "meal"] },
   { name: "ice-cream-cone", tags: ["gelato", "food"] },
   { name: "id-card", tags: ["card", "badge", "identity", "authentication", "secure"] },
@@ -1016,13 +872,9 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "images", tags: ["picture", "photo", "multiple", "copy", "gallery", "album", "collection", "slideshow", "showcase"] },
   { name: "import", tags: ["save"] },
   { name: "inbox", tags: ["email"] },
-  { name: "indent", tags: [] },
-  { name: "indent-decrease", tags: [] },
-  { name: "indent-increase", tags: [] },
   { name: "indian-rupee", tags: ["currency", "money", "payment"] },
   { name: "infinity", tags: ["unlimited", "forever", "loop", "math"] },
   { name: "info", tags: ["about", "advice", "clue", "details", "help", "hint", "indicator", "information", "knowledge", "notice", "status", "support", "tooltip"] },
-  { name: "inspect", tags: [] },
   { name: "inspection-panel", tags: ["access", "cover", "tile", "metal", "materials", "screws"] },
   { name: "italic", tags: ["oblique", "text", "format"] },
   { name: "iteration-ccw", tags: ["arrow", "right"] },
@@ -1030,8 +882,6 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "japanese-yen", tags: ["currency", "money", "payment"] },
   { name: "joystick", tags: ["game", "console", "control stick"] },
   { name: "kanban", tags: ["projects", "manage", "overview", "board", "tickets", "issues", "roadmap", "plan", "intentions", "productivity", "work", "agile", "code", "coding"] },
-  { name: "kanban-square", tags: [] },
-  { name: "kanban-square-dashed", tags: [] },
   { name: "kayak", tags: ["kayak", "boat", "paddle", "water", "sport", "recreation", "adventure", "outdoors", "equipment", "lake", "ocean"] },
   { name: "key", tags: ["password", "login", "authentication", "secure", "unlock", "keychain", "key ring", "fob"] },
   { name: "key-round", tags: ["password", "login", "authentication", "secure", "unlock"] },
@@ -1049,22 +899,18 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "landmark", tags: ["bank", "building", "capitol", "finance", "money", "museum", "art gallery", "hall", "institute", "pediment", "portico", "doric", "columns", "pillars", "classical", "architecture", "government", "institution", "monument", "site", "history", "historic", "library", "temple", "ancient", "structure"] },
   { name: "languages", tags: ["translate"] },
   { name: "laptop", tags: ["computer", "screen", "remote"] },
-  { name: "laptop-2", tags: [] },
   { name: "laptop-minimal", tags: ["computer", "screen", "remote"] },
   { name: "laptop-minimal-check", tags: ["computer", "screen", "remote", "success", "done", "todo", "tick", "complete", "task"] },
   { name: "lasso", tags: ["select", "cursor"] },
   { name: "lasso-select", tags: ["select", "cursor"] },
-  { name: "laugh", tags: [] },
   { name: "layer-arrow-down", tags: ["move back", "backward", "lower", "demote", "step back", "behind", "reorder", "arrange", "layer", "layers", "stack", "stacking", "z-index", "depth", "graphics", "design"] },
   { name: "layer-arrow-up", tags: ["move forward", "forward", "raise", "lift", "promote", "advance", "step forward", "reorder", "arrange", "stack", "stacking", "z-index", "depth", "graphics", "design"] },
   { name: "layers", tags: ["stack", "pile", "pages", "sheets", "paperwork", "copies", "copy"] },
   { name: "layers-2", tags: ["stack", "pile", "pages", "sheets", "paperwork", "copies", "copy", "duplicate", "double", "shortcuts"] },
-  { name: "layers-3", tags: [] },
   { name: "layers-arrow-down", tags: ["send to back", "send backward", "back", "background", "bottom", "bottommost", "lower", "demote", "behind", "reorder", "arrange", "stack", "stacking", "z-index", "depth", "graphics", "design"] },
   { name: "layers-arrow-up", tags: ["bring to front", "bring forward", "front", "foreground", "top", "topmost", "raise", "lift", "promote", "reorder", "arrange", "stack", "stacking", "z-index", "depth", "graphics", "design"] },
   { name: "layers-minus", tags: ["stack", "pile", "pages", "sheets", "paperwork", "copies", "copy", "layers", "remove", "delete"] },
   { name: "layers-plus", tags: ["stack", "layers", "add", "new", "increase", "create", "positive", "copy", "upgrade"] },
-  { name: "layout", tags: [] },
   { name: "layout-dashboard", tags: ["masonry", "brick"] },
   { name: "layout-freeform", tags: ["layout", "freeform", "free", "absolute", "position", "auto layout", "unaligned", "scattered", "arrange", "blocks", "canvas", "frame"] },
   { name: "layout-grid", tags: ["app", "home", "start"] },
@@ -1077,15 +923,12 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "lectern", tags: ["pulpit", "podium", "stand"] },
   { name: "lens-concave", tags: ["concave", "lens", "optics", "light", "magnification", "curved", "focus", "refraction", "science", "physics", "eyeglass", "telescope", "microscope"] },
   { name: "lens-convex", tags: ["convex", "lens", "optics", "magnification", "focus", "light", "refraction", "physics", "eyeglass", "telescope", "microscope", "curved", "science"] },
-  { name: "letter-text", tags: [] },
   { name: "library", tags: ["books", "reading", "written", "authors", "stories", "fiction", "novels", "information", "knowledge", "education", "high school", "university", "college", "academy", "learning", "study", "research", "collection", "vinyl", "records", "albums", "music", "package"] },
   { name: "library-big", tags: ["books", "reading", "written", "authors", "stories", "fiction", "novels", "information", "knowledge", "education", "high school", "university", "college", "academy", "learning", "study", "research", "collection", "vinyl", "records", "albums", "music", "package"] },
-  { name: "library-square", tags: [] },
   { name: "life-buoy", tags: ["preserver", "life belt", "lifesaver", "help", "rescue", "ship", "ring", "raft", "inflatable", "wheel", "donut"] },
   { name: "ligature", tags: ["text", "font", "typography", "alternates", "alternatives"] },
   { name: "lightbulb", tags: ["idea", "bright", "lights"] },
   { name: "lightbulb-off", tags: ["lights"] },
-  { name: "line-chart", tags: [] },
   { name: "line-dot-right-horizontal", tags: ["code", "version control", "waypoint", "stop", "station", "last", "end"] },
   { name: "line-squiggle", tags: ["line", "snakes", "annotate", "curve", "doodle", "stroke", "pen", "tool", "gesture", "draw", "wave", "art", "road"] },
   { name: "line-style", tags: ["line", "stroke", "style", "dashed", "border"] },
@@ -1116,13 +959,11 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "list-video", tags: ["playlist", "video", "playback"] },
   { name: "list-x", tags: ["playlist", "subtract", "remove", "delete", "unqueue"] },
   { name: "loader", tags: ["loading", "wait", "busy", "progress", "spinner", "spinning", "throbber"] },
-  { name: "loader-2", tags: [] },
   { name: "loader-circle", tags: ["loading", "wait", "busy", "progress", "spinner", "spinning", "throbber", "circle"] },
   { name: "loader-pinwheel", tags: ["loading", "wait", "busy", "progress", "throbber", "spinner", "spinning", "beach ball", "frozen", "freeze"] },
   { name: "locate", tags: ["map", "gps", "location", "cross"] },
   { name: "locate-fixed", tags: ["map", "gps", "location", "cross"] },
   { name: "locate-off", tags: ["map", "gps", "location", "cross"] },
-  { name: "location-edit", tags: [] },
   { name: "lock", tags: ["security", "password", "secure", "admin"] },
   { name: "lock-keyhole", tags: ["security", "password", "secure", "admin"] },
   { name: "lock-keyhole-open", tags: ["security"] },
@@ -1132,14 +973,12 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "logs", tags: ["options", "list", "menu", "order", "queue", "tasks", "logs"] },
   { name: "lollipop", tags: ["lolly", "candy", "sugar", "food", "sweet", "dessert", "spiral"] },
   { name: "luggage", tags: ["baggage", "luggage", "travel", "suitcase"] },
-  { name: "m-square", tags: [] },
   { name: "magnet", tags: ["horseshoe", "lock", "science", "snap"] },
   { name: "mail", tags: ["email", "message", "letter", "unread"] },
   { name: "mail-check", tags: ["email", "message", "letter", "subscribe", "delivered", "success", "read", "done", "todo", "tick", "complete", "task"] },
   { name: "mail-minus", tags: ["email", "message", "letter", "remove", "delete"] },
   { name: "mail-open", tags: ["email", "message", "letter", "read"] },
   { name: "mail-plus", tags: ["email", "message", "letter", "add", "create", "new", "compose"] },
-  { name: "mail-question", tags: [] },
   { name: "mail-question-mark", tags: ["email", "message", "letter", "delivery", "undelivered"] },
   { name: "mail-search", tags: ["email", "message", "letter", "search", "lens"] },
   { name: "mail-warning", tags: ["email", "message", "letter", "delivery error", "exclamation mark"] },
@@ -1171,10 +1010,8 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "medal", tags: ["prize", "sports", "winner", "trophy", "award", "achievement"] },
   { name: "megaphone", tags: ["advertisement", "announcement", "attention", "alert", "loudspeaker", "megaphone", "notification"] },
   { name: "megaphone-off", tags: ["advertisement", "announcement", "attention", "alert", "loudspeaker", "megaphone", "notification", "disable", "silent"] },
-  { name: "meh", tags: [] },
   { name: "memory-stick", tags: ["ram", "random access", "technology", "computer", "chip", "circuit", "specs", "capacity", "gigabytes", "gb"] },
   { name: "menu", tags: ["bars", "navigation", "hamburger", "options"] },
-  { name: "menu-square", tags: [] },
   { name: "merge", tags: ["combine", "join", "unite"] },
   { name: "message-circle", tags: ["comment", "chat", "conversation", "dialog", "feedback", "speech bubble"] },
   { name: "message-circle-check", tags: ["comment", "chat", "conversation", "dialog", "feedback", "speech bubble", "moderate", "check", "done", "todo", "complete"] },
@@ -1184,7 +1021,6 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "message-circle-more", tags: ["comment", "chat", "conversation", "dialog", "feedback", "speech bubble", "typing", "writing", "responding", "ellipsis", "etc", "et cetera", "...", "…"] },
   { name: "message-circle-off", tags: ["comment", "chat", "conversation", "dialog", "feedback", "speech bubble", "clear", "close", "delete", "remove", "cancel", "silence", "mute", "moderate"] },
   { name: "message-circle-plus", tags: ["comment", "chat", "conversation", "dialog", "feedback", "speech bubble", "add"] },
-  { name: "message-circle-question", tags: [] },
   { name: "message-circle-question-mark", tags: ["comment", "chat", "conversation", "dialog", "feedback", "speech bubble", "help"] },
   { name: "message-circle-reply", tags: ["comment", "chat", "conversation", "dialog", "feedback", "speech bubble", "reply", "response"] },
   { name: "message-circle-warning", tags: ["comment", "chat", "conversation", "dialog", "feedback", "speech bubble", "report", "abuse", "offense", "alert", "danger", "caution", "protected", "exclamation mark"] },
@@ -1209,7 +1045,6 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "messages-square", tags: ["comment", "chat", "conversation", "dialog", "feedback", "speech bubbles", "copy", "multiple", "discussion", "interview", "debate"] },
   { name: "metronome", tags: ["metronome", "tempo", "rhythm", "beat", "bpm", "music", "audio", "sound", "practice", "timing", "timer", "time", "pulse", "sync", "cadence", "control", "playback", "studio", "tool"] },
   { name: "mic", tags: ["record", "sound", "listen", "radio", "podcast", "microphone"] },
-  { name: "mic-2", tags: [] },
   { name: "mic-audio-lines", tags: ["podcast", "audio", "waveform", "sound waves", "microphone", "talk", "voice", "speech", "stream", "recording", "transcription", "dictation", "voice assistant", "noise cancellation", "sound processing"] },
   { name: "mic-off", tags: ["record", "sound", "mute", "microphone"] },
   { name: "mic-signal", tags: ["podcast", "audio", "broadcast", "signal", "wireless", "radio", "airwaves", "microphone", "talk", "voice", "speech", "stream", "live", "voice chat", "push to talk", "transmission"] },
@@ -1223,8 +1058,6 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "minimize", tags: ["exit fullscreen", "close", "shrink"] },
   { name: "minimize-2", tags: ["exit fullscreen", "arrows", "close", "shrink"] },
   { name: "minus", tags: ["subtract", "remove", "decrease", "decrement", "reduce", "negative", "calculate", "line", "divider", "separator", "horizontal rule", "hr", "html", "markup", "markdown", "---", "toolbar", "operator", "code", "coding", "minimum", "downgrade"] },
-  { name: "minus-circle", tags: [] },
-  { name: "minus-square", tags: [] },
   { name: "mirror-rectangular", tags: ["reflection", "optics", "glass", "surface", "image", "physics", "science", "bathroom", "decor", "cosmetic", "shiny", "periscope", "vanity"] },
   { name: "mirror-round", tags: ["reflection", "optics", "glass", "surface", "image", "physics", "science", "bathroom", "vanity", "makeup", "decor", "cosmetic", "shiny", "periscope"] },
   { name: "monitor", tags: ["tv", "screen", "display", "virtual machine", "vm"] },
@@ -1243,8 +1076,6 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "monitor-x", tags: ["tv", "screen", "display", "desktop", "virtual machine", "vm", "close", "stop", "suspend", "remove", "delete"] },
   { name: "moon", tags: ["dark", "night"] },
   { name: "moon-star", tags: ["dark", "night", "star"] },
-  { name: "more-horizontal", tags: [] },
-  { name: "more-vertical", tags: [] },
   { name: "mosque", tags: ["mosque", "masjid", "islam", "muslim", "ramadan", "eid", "prayer", "worship", "building", "minaret", "dome", "architecture", "faith", "religion", "holy", "sacred", "landmark", "community", "spiritual", "tourism", "map", "heritage"] },
   { name: "motorbike", tags: ["moto", "motorcycle", "transport", "vehicle", "drive", "ride", "trip", "race", "racing", "journey", "delivery"] },
   { name: "mountain", tags: ["climb", "hike", "rock"] },
@@ -1257,10 +1088,8 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "mouse-pointer-2-off", tags: ["pointer", "mouse", "cursor", "off", "disable", "arrow", "navigation", "selection", "select", "click", "no-click", "interaction"] },
   { name: "mouse-pointer-ban", tags: ["wait", "busy", "loading", "blocked", "frozen", "freeze"] },
   { name: "mouse-pointer-click", tags: ["click", "select"] },
-  { name: "mouse-pointer-square-dashed", tags: [] },
   { name: "mouse-right", tags: ["device", "scroll", "click"] },
   { name: "move", tags: ["arrows"] },
-  { name: "move-3-d", tags: [] },
   { name: "move-3d", tags: ["arrows", "axis", "gizmo", "coordinates", "transform", "translate"] },
   { name: "move-diagonal", tags: ["double", "arrow"] },
   { name: "move-diagonal-2", tags: ["double", "arrow"] },
@@ -1303,7 +1132,6 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "option", tags: ["keyboard", "key", "mac", "alt", "button"] },
   { name: "orbit", tags: ["planet", "space", "physics", "satellites", "moons"] },
   { name: "origami", tags: ["paper", "bird"] },
-  { name: "outdent", tags: [] },
   { name: "package", tags: ["box", "container", "storage", "sealed", "delivery", "undelivered", "unopened", "packed", "archive", "zip", "module"] },
   { name: "package-2", tags: ["box", "container", "storage", "sealed", "packed", "unopened", "undelivered", "archive", "zip"] },
   { name: "package-check", tags: ["confirm", "verified", "done", "todo", "tick", "complete", "task", "delivered"] },
@@ -1315,58 +1143,42 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "paint-bucket", tags: ["fill", "paint", "bucket", "color", "colour"] },
   { name: "paint-roller", tags: ["brush", "color", "colour", "decoration", "diy"] },
   { name: "paintbrush", tags: ["brush", "paintbrush", "design", "color", "colour", "decoration", "diy"] },
-  { name: "paintbrush-2", tags: [] },
   { name: "paintbrush-vertical", tags: ["brush", "paintbrush", "design", "color", "colour", "decoration", "diy"] },
   { name: "palette", tags: ["colors", "colours", "theme", "scheme", "paint", "watercolor", "watercolour", "artist"] },
-  { name: "palmtree", tags: [] },
   { name: "panda", tags: ["animal", "wildlife", "bear", "zoo", "bamboo"] },
   { name: "panel-bottom", tags: ["drawer", "dock"] },
   { name: "panel-bottom-close", tags: ["drawer", "dock", "hide", "chevron", "down"] },
   { name: "panel-bottom-dashed", tags: ["drawer", "dock", "show", "reveal", "padding", "margin", "guide", "layout", "bleed"] },
-  { name: "panel-bottom-inactive", tags: [] },
   { name: "panel-bottom-open", tags: ["drawer", "dock", "show", "reveal", "chevron", "up"] },
   { name: "panel-left", tags: ["primary", "drawer"] },
   { name: "panel-left-close", tags: ["primary", "drawer", "hide", "chevron", "<"] },
   { name: "panel-left-dashed", tags: ["sidebar", "primary", "drawer", "show", "reveal", "padding", "margin", "guide", "layout", "bleed"] },
-  { name: "panel-left-inactive", tags: [] },
   { name: "panel-left-open", tags: ["primary", "drawer", "show", "reveal", "chevron", "right", ">"] },
   { name: "panel-left-right-dashed", tags: ["sidebar", "primary", "drawer", "show", "reveal", "padding", "margin", "guide", "layout", "vertical", "bleed"] },
   { name: "panel-right", tags: ["sidebar", "secondary", "drawer"] },
   { name: "panel-right-close", tags: ["sidebar", "secondary", "drawer", "hide", "chevron", ">"] },
   { name: "panel-right-dashed", tags: ["sidebar", "secondary", "drawer", "show", "reveal", "padding", "margin", "guide", "layout", "bleed"] },
-  { name: "panel-right-inactive", tags: [] },
   { name: "panel-right-open", tags: ["sidebar", "secondary", "drawer", "show", "reveal", "chevron", "left", "<"] },
   { name: "panel-top", tags: ["drawer", "browser", "webpage"] },
   { name: "panel-top-bottom-dashed", tags: ["sidebar", "primary", "drawer", "show", "reveal", "padding", "margin", "guide", "layout", "horizontal", "bleed"] },
   { name: "panel-top-close", tags: ["menu bar", "drawer", "hide", "chevron", "up"] },
   { name: "panel-top-dashed", tags: ["menu bar", "drawer", "show", "reveal", "padding", "margin", "guide", "layout", "bleed"] },
-  { name: "panel-top-inactive", tags: [] },
   { name: "panel-top-open", tags: ["menu bar", "drawer", "show", "reveal", "chevron", "down"] },
   { name: "panels-left-bottom", tags: ["drawers", "sidebar", "primary"] },
-  { name: "panels-left-right", tags: [] },
   { name: "panels-right-bottom", tags: ["drawers", "sidebar", "secondary"] },
-  { name: "panels-top-bottom", tags: [] },
   { name: "panels-top-left", tags: ["menu bar", "sidebar", "primary", "drawers", "window", "webpage", "projects", "overview"] },
   { name: "paper-bag", tags: ["storage", "package", "lunch", "takeout", "eco-friendly", "kraft", "retail", "doggybag"] },
   { name: "paperclip", tags: ["attachment", "file"] },
   { name: "parasol", tags: ["umbrella", "sunshade", "beach", "shade", "sun", "protection", "cover", "canopy", "garden", "outdoors", "resort", "travel", "vacation", "holiday", "summer", "apparel", "accessory", "sunbathing", "relax", "tropical"] },
   { name: "parentheses", tags: ["code", "token", "parenthesis", "parens", "brackets", "parameters", "arguments", "args", "input", "call", "math", "formula", "function", "(", ")"] },
-  { name: "parking-circle", tags: [] },
-  { name: "parking-circle-off", tags: [] },
   { name: "parking-meter", tags: ["driving", "car park", "pay", "sidewalk", "pavement"] },
-  { name: "parking-square", tags: [] },
-  { name: "parking-square-off", tags: [] },
   { name: "party-popper", tags: ["emoji", "congratulations", "celebration", "party", "tada", "🎉", "🎊", "excitement", "exciting", "excites", "confetti"] },
   { name: "pause", tags: ["music", "stop"] },
-  { name: "pause-circle", tags: [] },
-  { name: "pause-octagon", tags: [] },
   { name: "paw-print", tags: ["pets", "vets", "veterinarian", "domesticated", "cat", "dog", "bear"] },
   { name: "pc-case", tags: ["computer", "chassis"] },
   { name: "pen", tags: ["pencil", "change", "create", "draw", "writer", "writing", "biro", "ink", "marker", "felt tip", "stationery", "artist"] },
-  { name: "pen-box", tags: [] },
   { name: "pen-line", tags: ["pencil", "change", "create", "draw", "writer", "writing", "biro", "ink", "marker", "felt tip", "stationery", "artist"] },
   { name: "pen-off", tags: ["disabled", "inactive", "non-editable", "locked", "read-only", "unmodifiable", "frozen", "restricted", "pencil", "change", "create", "draw", "writer", "writing", "biro", "ink", "marker", "felt tip", "stationery", "artist"] },
-  { name: "pen-square", tags: [] },
   { name: "pen-tool", tags: ["vector", "drawing", "path"] },
   { name: "pencil", tags: ["rubber", "edit", "create", "draw", "sketch", "draft", "writer", "writing", "stationery", "artist"] },
   { name: "pencil-line", tags: ["pencil", "change", "create", "draw", "sketch", "draft", "writer", "writing", "biro", "ink", "marker", "felt tip", "stationery", "artist"] },
@@ -1375,9 +1187,6 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "pencil-sparkles", tags: ["edit", "ai", "tools", "smart", "create", "draw", "sketch", "draft", "writer", "writing", "stationery", "artist", "magic", "wizard", "magician"] },
   { name: "pentagon", tags: ["shape"] },
   { name: "percent", tags: ["percentage", "modulo", "modulus", "remainder", "%", "sale", "discount", "offer", "marketing"] },
-  { name: "percent-circle", tags: [] },
-  { name: "percent-diamond", tags: [] },
-  { name: "percent-square", tags: [] },
   { name: "person-standing", tags: ["people", "human", "accessibility", "stick figure"] },
   { name: "phi", tags: ["math", "golden-ratio", "symbol", "greek", "letter", "typography", "constant", "flux", "magnetic-flux"] },
   { name: "philippine-peso", tags: ["currency", "peso", "money", "php"] },
@@ -1389,17 +1198,14 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "phone-off", tags: ["call", "mute"] },
   { name: "phone-outgoing", tags: ["call"] },
   { name: "pi", tags: ["constant", "code", "coding", "programming", "symbol", "trigonometry", "geometry", "formula"] },
-  { name: "pi-square", tags: [] },
   { name: "piano", tags: ["music", "audio", "sound", "noise", "notes", "chord", "keys", "octave", "acoustic", "instrument", "play", "pianist", "performance", "concert"] },
   { name: "pickaxe", tags: ["mining", "mine", "land worker", "extraction", "labor", "construction", "progress", "advancement", "crafting", "building", "creation"] },
   { name: "picture-in-picture", tags: ["display", "play", "video", "pop out", "always on top", "window", "inset", "multitask"] },
   { name: "picture-in-picture-2", tags: ["display", "play", "video", "pop out", "always on top", "window", "inset", "multitask"] },
-  { name: "pie-chart", tags: [] },
   { name: "piggy-bank", tags: ["money", "savings"] },
   { name: "pilcrow", tags: ["paragraph", "mark", "paraph", "blind", "typography", "type", "text", "prose", "symbol"] },
   { name: "pilcrow-left", tags: ["direction", "paragraph", "mark", "paraph", "blind", "typography", "type", "text", "prose", "symbol"] },
   { name: "pilcrow-right", tags: ["direction", "paragraph", "mark", "paraph", "blind", "typography", "type", "text", "prose", "symbol"] },
-  { name: "pilcrow-square", tags: [] },
   { name: "pill", tags: ["medicine", "medication", "drug", "prescription", "tablet", "pharmacy"] },
   { name: "pill-bottle", tags: ["medicine", "medication", "prescription", "drug", "supplement", "vitamin", "capsule", "jar", "container", "healthcare", "pharmaceutical", "tablet"] },
   { name: "pin", tags: ["save", "map", "lock", "fix"] },
@@ -1410,18 +1216,12 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "plane-landing", tags: ["arrival", "plane", "trip", "airplane", "landing"] },
   { name: "plane-takeoff", tags: ["departure", "plane", "trip", "airplane", "takeoff"] },
   { name: "play", tags: ["music", "audio", "video", "start", "run"] },
-  { name: "play-circle", tags: [] },
   { name: "play-off", tags: ["audio", "video", "music", "start", "run", "off", "disabled", "blocked", "forbidden"] },
-  { name: "play-square", tags: [] },
   { name: "plug", tags: ["electricity", "energy", "electronics", "socket", "outlet", "power", "voltage", "current", "charger"] },
   { name: "plug-2", tags: ["electricity", "energy", "socket", "outlet"] },
   { name: "plug-zap", tags: ["electricity", "energy", "electronics", "charge", "charging", "battery", "connect"] },
-  { name: "plug-zap-2", tags: [] },
   { name: "plus", tags: ["add", "new", "increase", "increment", "positive", "calculate", "toolbar", "crosshair", "aim", "target", "scope", "sight", "reticule", "maximum", "upgrade", "extra", "+"] },
-  { name: "plus-circle", tags: [] },
-  { name: "plus-square", tags: [] },
   { name: "pocket-knife", tags: ["swiss army knife", "penknife", "multi-tool", "multitask", "blade", "cutter", "gadget", "corkscrew"] },
-  { name: "podcast", tags: [] },
   { name: "podium", tags: ["award", "stage", "winner", "celebration", "performance", "medal", "success", "achievement", "highlight", "ranking", "winning", "place", "placing", "leaderboard", "first", "second", "third", "gold", "silver", "bronze"] },
   { name: "pointer", tags: ["mouse"] },
   { name: "pointer-off", tags: ["mouse"] },
@@ -1429,9 +1229,7 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "popsicle", tags: ["ice lolly", "ice cream", "sweet", "food"] },
   { name: "pound-sterling", tags: ["currency", "money", "payment"] },
   { name: "power", tags: ["on", "off", "device", "switch", "toggle", "binary", "boolean", "reboot", "restart", "button", "keyboard", "troubleshoot"] },
-  { name: "power-circle", tags: [] },
   { name: "power-off", tags: ["on", "off", "device", "switch"] },
-  { name: "power-square", tags: [] },
   { name: "presentation", tags: ["screen", "whiteboard", "marker pens", "markers", "blackboard", "chalk", "easel", "school", "learning", "lesson", "office", "meeting", "project", "planning"] },
   { name: "printer", tags: ["fax", "office", "device"] },
   { name: "printer-check", tags: ["fax", "office", "device", "success", "printed"] },
@@ -1495,7 +1293,6 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "rocking-chair", tags: ["chair", "furniture", "seat", "comfort", "relax"] },
   { name: "roller-coaster", tags: ["attraction", "entertainment", "amusement park", "theme park", "funfair"] },
   { name: "rose", tags: ["roses", "thorns", "petals", "plant", "stem", "leaves", "spring", "bloom", "blossom", "gardening", "botanical", "flora", "florist", "bouquet", "bunch", "gift", "date", "romance", "romantic", "valentines day", "special occasion"] },
-  { name: "rotate-3-d", tags: [] },
   { name: "rotate-3d", tags: ["gizmo", "transform", "orientation", "orbit", "axis"] },
   { name: "rotate-ccw", tags: ["arrow", "left", "counter-clockwise", "restart", "reload", "rerun", "refresh", "backup", "undo", "replay", "redo", "retry", "rewind", "reverse"] },
   { name: "rotate-ccw-clock", tags: ["history", "time", "redo", "undo", "rewind", "timeline", "version", "time machine", "backup", "ccw"] },
@@ -1507,7 +1304,6 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "route", tags: ["path", "journey", "planner", "points", "stops", "stations"] },
   { name: "route-off", tags: ["path", "journey", "planner", "points", "stops", "stations", "reset", "clear", "cancelled", "closed", "blocked"] },
   { name: "router", tags: ["computer", "server", "cloud"] },
-  { name: "rows", tags: [] },
   { name: "rows-2", tags: ["lines", "list", "queue", "preview", "panel", "paragraphs", "parallel", "series", "split", "vertical", "horizontal", "half", "center", "middle", "even", "drawer"] },
   { name: "rows-3", tags: ["lines", "list", "queue", "preview", "paragraphs", "parallel", "series", "split", "vertical", "horizontal", "half", "center", "middle", "even", "drawers"] },
   { name: "rows-4", tags: ["lines", "list", "queue", "preview", "paragraphs", "parallel", "series", "split", "vertical", "horizontal", "half", "center", "middle", "even", "drawers", "grill"] },
@@ -1528,7 +1324,6 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "save-pen", tags: ["floppy disk", "directory", "rename"] },
   { name: "save-plus", tags: ["floppy disk", "save", "plus", "add", "update", "create"] },
   { name: "scale", tags: ["balance", "legal", "license", "right", "rule", "law", "justice", "weight", "measure", "compare", "judge", "fair", "ethics", "decision"] },
-  { name: "scale-3-d", tags: [] },
   { name: "scale-3d", tags: ["gizmo", "transform", "size", "axis"] },
   { name: "scaling", tags: ["scale", "resize", "design"] },
   { name: "scan", tags: ["qr-code", "barcode", "checkout", "augmented reality", "ar", "target", "surveillance", "camera", "lens", "focus", "frame", "select", "box", "boundary", "bounds", "area", "square", "dashed"] },
@@ -1542,13 +1337,9 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "scan-search", tags: ["preview", "zoom", "expand", "fullscreen", "gallery", "image", "focus", "lens"] },
   { name: "scan-square", tags: ["scan", "square", "detect", "recognition", "select", "frame", "object", "viewfinder", "capture", "shape", "boundary", "camera", "scanner", "overlay", "focus", "crop", "marker"] },
   { name: "scan-text", tags: ["recognition", "read", "translate", "copy", "lines"] },
-  { name: "scatter-chart", tags: [] },
   { name: "school", tags: ["building", "education", "childhood", "university", "learning", "campus", "scholar", "student", "lecture", "degree", "course", "academia", "study", "knowledge", "classroom", "research", "diploma", "graduation", "professor", "tutorial", "homework", "assignment", "exam"] },
-  { name: "school-2", tags: [] },
   { name: "scissors", tags: ["cut", "snip", "chop", "stationery", "crafts"] },
   { name: "scissors-line-dashed", tags: ["cut here", "along", "snip", "chop", "stationery", "crafts", "instructions", "diagram"] },
-  { name: "scissors-square", tags: [] },
-  { name: "scissors-square-dashed-bottom", tags: [] },
   { name: "scooter", tags: ["vehicle", "drive", "trip", "journey", "transport", "electric", "ride", "urban", "commute", "speed"] },
   { name: "screen-share", tags: ["host", "desktop", "monitor"] },
   { name: "screen-share-off", tags: ["desktop", "disconnect", "monitor"] },
@@ -1562,7 +1353,6 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "search-x", tags: ["find", "scan", "magnifier", "magnifying glass", "stop", "clear", "cancel", "abort", "lens", "locate", "explore", "discover", "enlarge", "zoom"] },
   { name: "section", tags: ["mark", "typography", "punctuation", "legal", "type", "text", "prose", "symbol"] },
   { name: "send", tags: ["email", "message", "mail", "paper airplane", "paper aeroplane", "submit"] },
-  { name: "send-horizonal", tags: [] },
   { name: "send-horizontal", tags: ["email", "message", "mail", "paper airplane", "paper aeroplane", "submit"] },
   { name: "send-to-back", tags: ["bring", "send", "move", "under", "back", "backwards", "overlap", "layer", "order"] },
   { name: "separator-horizontal", tags: ["move", "split"] },
@@ -1584,7 +1374,6 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "shield-alert", tags: ["unshielded", "cybersecurity", "insecure", "unsecured", "safety", "unsafe", "protection", "unprotected", "guardian", "unguarded", "unarmored", "unarmoured", "defenseless", "defenceless", "undefended", "defender", "blocked", "stopped", "intercepted", "interception", "saved", "thwarted", "threat", "prevention", "unprevented", "antivirus", "vigilance", "vigilant", "detection", "detected", "scanned", "found", "exploit", "vulnerability", "vulnerable", "weakness", "infection", "infected", "comprimised", "data leak", "audited", "admin", "verification", "unverified", "uncertified", "warning", "emergency", "attention", "urgent", "alarm", "crest", "bravery", "strength", "tough", "attacked", "damaged", "injured", "hit", "expired", "disabled", "inactive", "error", "exclamation mark", "!"] },
   { name: "shield-ban", tags: ["unshielded", "cybersecurity", "insecure", "unsecured", "safety", "unsafe", "protection", "unprotected", "guardian", "unguarded", "unarmored", "unarmoured", "defenseless", "defenceless", "undefended", "defender", "blocked", "stopped", "intercepted", "interception", "saved", "thwarted", "threat", "prevention", "unprevented", "antivirus", "vigilance", "vigilant", "detection", "detected", "scanned", "found", "exploit", "vulnerability", "vulnerable", "weakness", "infection", "infected", "comprimised", "data leak", "audited", "admin", "verification", "unverified", "uncertified", "cancel", "error", "crest", "bravery", "attacked", "damaged", "injured", "hit", "expired", "eliminated", "disabled", "inactive", "/"] },
   { name: "shield-check", tags: ["cybersecurity", "secured", "safety", "protection", "protected", "guardian", "guarded", "armored", "armoured", "defense", "defence", "defended", "blocked", "threat", "prevention", "prevented", "antivirus", "vigilance", "vigilant", "active", "activated", "enabled", "detection", "scanned", "found", "strength", "strong", "tough", "invincible", "invincibility", "invulnerable", "undamaged", "audited", "admin", "verification", "verified", "certification", "certified", "tested", "passed", "qualified", "cleared", "cleaned", "disinfected", "uninfected", "task", "completed", "todo", "done", "ticked", "checked", "crest", "bravery"] },
-  { name: "shield-close", tags: [] },
   { name: "shield-cog", tags: ["cybersecurity", "secure", "safety", "protection", "guardian", "armored", "armoured", "defense", "defence", "defender", "block", "threat", "prevention", "antivirus", "vigilance", "vigilant", "detection", "scan", "find", "strength", "strong", "tough", "invincible", "invincibility", "invulnerable", "undamaged", "audit", "admin", "verification", "crest", "bravery", "knight", "foot soldier", "infantry", "trooper", "pawn", "battle", "war", "military", "army", "cadet", "scout"] },
   { name: "shield-cog-corner", tags: ["cybersecurity", "secure", "safety", "protection", "guardian", "armored", "armoured", "defense", "defence", "defender", "block", "threat", "prevention", "antivirus", "vigilance", "vigilant", "detection", "scan", "find", "strength", "strong", "tough", "invincible", "invincibility", "invulnerable", "undamaged", "audit", "admin", "verification", "crest", "shieldcog", "bravery", "knight", "foot soldier", "infantry", "trooper", "pawn", "battle", "war", "military", "army", "cadet", "scout"] },
   { name: "shield-ellipsis", tags: ["cybersecurity", "securing", "protecting", "guarding", "armoring", "armouring", "defending", "blocking", "preventing", "antivirus", "detecting", "scanning", "finding", "auditing", "admin", "verifying", "crest", "upgrading", "loader", "loading", "throbber", "progress", "dots", "more", "etc", "...", "…"] },
@@ -1594,7 +1383,6 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "shield-minus", tags: ["unshield", "cybersecurity", "unsecure", "unguard", "unblock", "antivirus", "clean", "clear", "disinfect", "patch", "fix", "stop", "cancel", "remove", "relax", "admin", "crest", "bravery", "weakened", "damaged", "hit", "unarm", "disable", "deactivate", "decommission", "downgraded", "minimum", "-"] },
   { name: "shield-off", tags: ["unshielded", "cybersecurity", "insecure", "unsecured", "safety", "unsafe", "protection", "unprotected", "guardian", "unguarded", "unarmored", "unarmoured", "defenseless", "defenceless", "undefended", "defender", "interception", "threat", "prevention", "unprevented", "antivirus", "detection", "undetected", "exploit", "vulnerability", "vulnerable", "weakness", "infected", "infection", "comprimised", "data leak", "unaudited", "admin", "verification", "unverified", "inactive", "cancelled", "error", "crest", "bravery", "damaged", "injured", "hit", "expired", "eliminated"] },
   { name: "shield-plus", tags: ["cybersecurity", "secure", "safety", "protection", "guardian", "armored", "armoured", "defense", "defence", "defender", "block", "threat", "prevention", "antivirus", "vigilance", "vigilant", "detection", "scan", "strength", "strong", "tough", "invincible", "invincibility", "invulnerable", "undamaged", "extra", "added", "professional", "enterprise", "full", "maximum", "upgraded", "ultra", "activate", "enable", "audit", "admin", "verification", "crest", "medic", "+"] },
-  { name: "shield-question", tags: [] },
   { name: "shield-question-mark", tags: ["unshielded", "cybersecurity", "insecure", "unsecured", "safety", "unsafe", "protection", "unprotected", "guardian", "unguarded", "unarmored", "unarmoured", "defenseless", "defenceless", "undefended", "defender", "threat", "prevention", "unprevented", "antivirus", "vigilance", "vigilant", "detection", "undetected", "scan", "find", "exploit", "vulnerability", "vulnerable", "weakness", "infection", "comprimised", "data leak", "audit", "admin", "verification", "unverified", "uncertified", "uncertain", "unknown", "inactive", "crest", "question mark", "?"] },
   { name: "shield-user", tags: ["shield", "user", "admin", "protection", "protected", "safety", "guard"] },
   { name: "shield-x", tags: ["unshielded", "cybersecurity", "insecure", "unsecured", "safety", "unsafe", "protection", "unprotected", "guardian", "unguarded", "unarmored", "unarmoured", "defenseless", "defenceless", "undefended", "defender", "blocked", "stopped", "intercepted", "interception", "saved", "thwarted", "threat", "prevention", "prevented", "antivirus", "vigilance", "vigilant", "detection", "detected", "scanned", "found", "exploit", "vulnerability", "vulnerable", "weakness", "infection", "infected", "comprimised", "data leak", "audited", "admin", "verification", "unverified", "inactive", "cancel", "error", "wrong", "false", "crest", "bravery", "attacked", "damaged", "injured", "hit", "dead", "deceased", "expired", "eliminated", "exterminated"] },
@@ -1611,11 +1399,7 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "shrink", tags: ["scale", "fullscreen"] },
   { name: "shrub", tags: ["forest", "undergrowth", "park", "nature"] },
   { name: "shuffle", tags: ["music", "random", "reorder"] },
-  { name: "sidebar", tags: [] },
-  { name: "sidebar-close", tags: [] },
-  { name: "sidebar-open", tags: [] },
   { name: "sigma", tags: ["sum", "calculate", "formula", "math", "enumeration", "enumerate"] },
-  { name: "sigma-square", tags: [] },
   { name: "signal", tags: ["connection", "wireless", "gsm", "phone", "2g", "3g", "4g", "5g"] },
   { name: "signal-high", tags: ["connection", "wireless", "gsm", "phone", "2g", "3g", "4g", "5g"] },
   { name: "signal-low", tags: ["connection", "wireless", "gsm", "phone", "2g", "3g", "4g", "5g"] },
@@ -1629,23 +1413,17 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "skip-forward", tags: ["arrow", "skip", "next", "music"] },
   { name: "skull", tags: ["death", "danger", "bone"] },
   { name: "slash", tags: ["divide", "division", "or", "/"] },
-  { name: "slash-square", tags: [] },
   { name: "slice", tags: ["cutter", "scalpel", "knife"] },
-  { name: "sliders", tags: [] },
   { name: "sliders-horizontal", tags: ["settings", "filters", "controls"] },
   { name: "sliders-vertical", tags: ["settings", "controls"] },
   { name: "smartphone", tags: ["phone", "cellphone", "device", "screen"] },
   { name: "smartphone-charging", tags: ["phone", "cellphone", "device", "power", "screen"] },
   { name: "smartphone-nfc", tags: ["contactless", "payment", "near-field communication", "screen"] },
-  { name: "smile", tags: [] },
-  { name: "smile-plus", tags: [] },
   { name: "snail", tags: ["animal", "insect", "slow", "speed", "delicacy", "spiral"] },
   { name: "snowflake", tags: ["cold", "weather", "freeze", "snow", "winter"] },
   { name: "soap-dispenser-droplet", tags: ["wash", "bath", "water", "liquid", "fluid", "wet", "moisture", "damp", "bead", "globule"] },
   { name: "sofa", tags: ["armchair", "furniture", "leisure", "lounge", "loveseat", "couch"] },
   { name: "solar-panel", tags: ["solar panel", "solar", "panel", "sun", "energy", "electricity", "light"] },
-  { name: "sort-asc", tags: [] },
-  { name: "sort-desc", tags: [] },
   { name: "soup", tags: ["food", "dish", "restaurant", "course", "meal", "bowl", "starter"] },
   { name: "space", tags: ["text", "selection", "letters", "characters", "font", "typography"] },
   { name: "spade", tags: ["shape", "suit", "playing", "cards"] },
@@ -1658,8 +1436,6 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "spline", tags: ["path", "pen", "tool", "shape", "curve", "draw"] },
   { name: "spline-pointer", tags: ["path", "tool", "curve", "node", "click", "pointer", "target", "vector"] },
   { name: "split", tags: ["break", "disband", "divide", "separate", "branch", "disunite"] },
-  { name: "split-square-horizontal", tags: [] },
-  { name: "split-square-vertical", tags: [] },
   { name: "spool", tags: ["bobbin", "spindle", "yarn", "thread", "string", "sewing", "needlework"] },
   { name: "sport-shoe", tags: ["footwear", "sports", "running", "athletic", "shoe", "sneaker", "training", "exercise", "fitness"] },
   { name: "spotlight", tags: ["winner", "soapbox", "stage", "entertainment", "drama", "podium", "actor", "actress", "singer", "light", "beam", "play", "theatre", "show", "focus", "concert", "performance", "lens", "leaderboard", "followspot", "best", "highlight"] },
@@ -1704,7 +1480,6 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "square-dot", tags: ["git", "diff", "modified", "."] },
   { name: "square-equal", tags: ["calculate", "="] },
   { name: "square-function", tags: ["programming", "code", "automation", "math"] },
-  { name: "square-gantt-chart", tags: [] },
   { name: "square-kanban", tags: ["projects", "manage", "overview", "board", "tickets", "issues", "roadmap", "plan", "intentions", "productivity", "work", "agile", "code", "coding", "toolbar", "button"] },
   { name: "square-library", tags: ["books", "reading", "written", "authors", "stories", "fiction", "novels", "information", "knowledge", "education", "high school", "university", "college", "academy", "learning", "study", "research", "collection", "vinyl", "records", "albums", "music", "package"] },
   { name: "square-m", tags: ["metro", "subway", "underground", "track", "line"] },
@@ -1752,7 +1527,6 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "star-off", tags: ["dislike", "unlike", "remove", "unrate"] },
   { name: "star-plus", tags: ["bookmark", "favorite", "like", "review", "rating", "plus", "add", "join", "star"] },
   { name: "star-x", tags: ["mark", "symbol", "shape", "vector", "design", "graphic", "bookmark", "favorite", "like", "review", "rating", "x", "cancel", "reject", "star"] },
-  { name: "stars", tags: [] },
   { name: "step-back", tags: ["arrow", "previous", "music", "left", "reverse"] },
   { name: "step-forward", tags: ["arrow", "next", "music", "right", "continue"] },
   { name: "stethoscope", tags: ["phonendoscope", "medical", "heart", "lungs", "sound"] },
@@ -1765,13 +1539,11 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "sticky-note-x", tags: ["post-it", "comment", "annotation", "reaction", "memo", "reminder", "todo", "task", "idea", "brainstorm", "document", "page", "paper", "sheet", "stationary", "office", "close", "cancel", "delete", "remove"] },
   { name: "sticky-notes", tags: ["post-it", "annotation", "memo", "reminder", "todo", "tasks", "ideas", "brainstorm", "documents", "notes", "multiple", "collection", "group", "stack", "clone", "duplicate", "copy"] },
   { name: "stone", tags: ["mineral", "geology", "nature", "solid", "pebble", "crystal", "ore", "hard", "coal", "stone", "rock", "boulder"] },
-  { name: "stop-circle", tags: [] },
   { name: "store", tags: ["shop", "supermarket", "stand", "boutique", "building"] },
   { name: "stretch-horizontal", tags: ["items", "flex", "justify", "distribute"] },
   { name: "stretch-vertical", tags: ["items", "flex", "justify", "distribute"] },
   { name: "strikethrough", tags: ["cross out", "delete", "remove", "format"] },
   { name: "subscript", tags: ["text"] },
-  { name: "subtitles", tags: [] },
   { name: "summary", tags: ["brief", "abstract", "synopsis", "report", "digest", "outline", "recap", "condensation", "summary", "ai", "text", "overview"] },
   { name: "sun", tags: ["brightness", "weather", "light", "summer"] },
   { name: "sun-dim", tags: ["brightness", "dim", "low", "brightness low"] },
@@ -1792,7 +1564,6 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "table-cells-merge", tags: ["spreadsheet", "grid", "row"] },
   { name: "table-cells-split", tags: ["spreadsheet", "grid", "row"] },
   { name: "table-columns-split", tags: ["spreadsheet", "grid", "cut", "break", "divide", "separate", "segment"] },
-  { name: "table-config", tags: [] },
   { name: "table-of-contents", tags: ["toc", "outline", "navigation", "document structure", "index", "overview", "sections", "chapters", "content", "documentation", "manual", "knowledge base", "faq"] },
   { name: "table-properties", tags: ["property list", "plist", "spreadsheet", "grid", "dictionary", "object", "hash"] },
   { name: "table-rows-split", tags: ["spreadsheet", "grid", "cut", "break", "divide", "separate", "segment"] },
@@ -1814,12 +1585,9 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "tent", tags: ["tipi", "teepee", "wigwam", "lodge", "camping", "campsite", "holiday", "retreat", "nomadic", "native american", "indian", "wilderness", "outdoors"] },
   { name: "tent-tree", tags: ["camping", "campsite", "holiday", "retreat", "nomadic", "wilderness", "outdoors"] },
   { name: "terminal", tags: ["code", "command line", "prompt", "shell"] },
-  { name: "terminal-square", tags: [] },
   { name: "test-tube", tags: ["tube", "vial", "phial", "flask", "ampoule", "ampule", "lab", "chemistry", "experiment", "test"] },
-  { name: "test-tube-2", tags: [] },
   { name: "test-tube-diagonal", tags: ["tube", "vial", "phial", "flask", "ampoule", "ampule", "lab", "chemistry", "experiment", "test"] },
   { name: "test-tubes", tags: ["tubes", "vials", "phials", "flasks", "ampoules", "ampules", "lab", "chemistry", "experiment", "test"] },
-  { name: "text", tags: [] },
   { name: "text-align-center", tags: ["text", "alignment", "center"] },
   { name: "text-align-end", tags: ["text", "alignment", "right"] },
   { name: "text-align-justify", tags: ["text", "alignment", "justified", "menu", "list"] },
@@ -1829,8 +1597,6 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "text-initial", tags: ["drop cap", "text", "format", "typography", "letter", "font size"] },
   { name: "text-quote", tags: ["blockquote", "quotation", "indent", "reply", "response"] },
   { name: "text-search", tags: ["find", "data", "copy", "txt", "pdf", "document", "scan", "magnifier", "magnifying glass", "lens"] },
-  { name: "text-select", tags: [] },
-  { name: "text-selection", tags: [] },
   { name: "text-wrap", tags: ["words", "lines", "break", "paragraph"] },
   { name: "theater", tags: ["theater", "theatre", "entertainment", "podium", "stage", "musical"] },
   { name: "thermometer", tags: ["temperature", "celsius", "fahrenheit", "weather"] },
@@ -1865,7 +1631,6 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "toy-brick", tags: ["lego", "block", "addon", "plugin", "integration"] },
   { name: "tractor", tags: ["farming", "farmer", "ranch", "harvest", "equipment", "vehicle"] },
   { name: "traffic-cone", tags: ["roadworks", "tarmac", "safety", "block"] },
-  { name: "train", tags: [] },
   { name: "train-front", tags: ["railway", "metro", "subway", "underground", "high-speed", "bullet", "fast", "track", "line"] },
   { name: "train-front-tunnel", tags: ["railway", "metro", "subway", "underground", "speed", "bullet", "fast", "track", "line"] },
   { name: "train-track", tags: ["railway", "line"] },
@@ -1891,7 +1656,6 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "turntable", tags: ["record player", "gramophone", "stereo", "phonograph", "vinyl", "lp", "disc", "platter", "cut", "music", "analog", "retro", "dj deck", "disc jockey", "scratch", "spinning"] },
   { name: "turtle", tags: ["animal", "pet", "tortoise", "slow", "speed"] },
   { name: "tv", tags: ["television", "stream", "display", "widescreen", "high-definition", "hd", "1080p", "4k", "8k", "smart", "digital", "video", "entertainment", "showtime", "channels", "terrestrial", "satellite", "cable", "broadcast", "live", "frequency", "tune", "scan", "aerial", "receiver", "transmission", "signal", "connection", "connectivity"] },
-  { name: "tv-2", tags: [] },
   { name: "tv-minimal", tags: ["flatscreen", "television", "stream", "display", "widescreen", "high-definition", "hd", "1080p", "4k", "8k", "smart", "digital", "video", "home cinema", "entertainment", "showtime", "channels", "catchup"] },
   { name: "tv-minimal-play", tags: ["flatscreen", "television", "stream", "display", "widescreen", "high-definition", "hd", "1080p", "4k", "8k", "smart", "digital", "video", "movie", "live", "ott", "running", "start", "film", "home cinema", "entertainment", "showtime", "channels", "catchup"] },
   { name: "type", tags: ["text", "font", "typography"] },
@@ -1908,27 +1672,17 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "university", tags: ["building", "education", "childhood", "school", "college", "academy", "institute"] },
   { name: "unlink", tags: ["url", "unchain"] },
   { name: "unlink-2", tags: ["url", "unchain"] },
-  { name: "unlock", tags: [] },
-  { name: "unlock-keyhole", tags: [] },
   { name: "unplug", tags: ["electricity", "energy", "electronics", "socket", "outlet", "disconnect"] },
   { name: "upload", tags: ["file"] },
-  { name: "upload-cloud", tags: [] },
   { name: "usb", tags: ["universal", "serial", "bus", "controller", "connector", "interface"] },
   { name: "user", tags: ["person", "account", "contact"] },
-  { name: "user-2", tags: [] },
   { name: "user-check", tags: ["followed", "subscribed", "done", "todo", "tick", "complete", "task"] },
-  { name: "user-check-2", tags: [] },
-  { name: "user-circle", tags: [] },
-  { name: "user-circle-2", tags: [] },
   { name: "user-cog", tags: ["settings", "edit", "cog", "gear"] },
-  { name: "user-cog-2", tags: [] },
   { name: "user-key", tags: ["passkey", "password", "login", "authentication", "authorization", "roles", "permissions", "private", "public", "security", "person", "account", "contact"] },
   { name: "user-lock", tags: ["person", "lock", "locked", "account", "secure"] },
   { name: "user-minus", tags: ["delete", "remove", "unfollow", "unsubscribe"] },
-  { name: "user-minus-2", tags: [] },
   { name: "user-pen", tags: ["person", "account", "contact", "profile", "edit", "change"] },
   { name: "user-plus", tags: ["new", "add", "create", "follow", "subscribe"] },
-  { name: "user-plus-2", tags: [] },
   { name: "user-round", tags: ["person", "account", "contact"] },
   { name: "user-round-arrow-left", tags: ["person", "assign", "move", "give", "setup", "self", "me", "myself", "profile", "avatar", "incoming", "recipient", "assignee", "inbound"] },
   { name: "user-round-check", tags: ["followed", "subscribed", "done", "todo", "tick", "complete", "task"] },
@@ -1941,13 +1695,9 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "user-round-x", tags: ["delete", "remove", "unfollow", "unsubscribe", "unavailable"] },
   { name: "user-search", tags: ["person", "account", "contact", "find", "scan", "magnifier", "magnifying glass", "lens"] },
   { name: "user-shield", tags: ["user", "shield", "admin", "protected", "guard", "profile", "security", "privacy", "permissions", "role"] },
-  { name: "user-square", tags: [] },
-  { name: "user-square-2", tags: [] },
   { name: "user-star", tags: ["person", "account", "favorite", "contact", "like", "review", "rating", "admin"] },
   { name: "user-x", tags: ["delete", "remove", "unfollow", "unsubscribe", "unavailable"] },
-  { name: "user-x-2", tags: [] },
   { name: "users", tags: ["group", "people"] },
-  { name: "users-2", tags: [] },
   { name: "users-round", tags: ["group", "people"] },
   { name: "utensils", tags: ["fork", "knife", "cutlery", "flatware", "tableware", "silverware", "food", "restaurant", "meal", "breakfast", "dinner", "supper"] },
   { name: "utensils-crossed", tags: ["fork", "knife", "cutlery", "flatware", "tableware", "silverware", "food", "restaurant", "meal", "breakfast", "dinner", "supper"] },
@@ -1960,7 +1710,6 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "venetian-mask", tags: ["mask", "masquerade", "impersonate", "secret", "incognito"] },
   { name: "venus", tags: ["gender", "sex", "female", "feminine", "woman", "girl"] },
   { name: "venus-and-mars", tags: ["gender", "sex", "intersex", "androgynous", "hermaphrodite"] },
-  { name: "verified", tags: [] },
   { name: "vibrate", tags: ["smartphone", "notification", "rumble", "haptic feedback", "screen"] },
   { name: "vibrate-off", tags: ["smartphone", "notification", "rumble", "haptic feedback", "notifications", "screen"] },
   { name: "video", tags: ["camera", "movie", "film", "recording", "motion picture", "camcorder", "reel"] },
@@ -1976,17 +1725,14 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "volume-x", tags: ["music", "sound", "mute", "speaker"] },
   { name: "vote", tags: ["vote", "poll", "ballot", "political", "social", "check", "tick"] },
   { name: "wallet", tags: ["money", "finance", "pocket"] },
-  { name: "wallet-2", tags: [] },
   { name: "wallet-cards", tags: ["wallet", "cards", "banking", "cash", "debit", "transport", "money", "finance", "pocket", "credit", "purchase", "payment", "shopping", "retail", "consumer", "cc"] },
   { name: "wallet-minimal", tags: ["finance", "pocket"] },
   { name: "wallpaper", tags: ["background", "texture", "image", "art", "design", "visual", "decor", "pattern", "screen", "cover", "lock screen"] },
   { name: "wand", tags: ["magic", "selection"] },
-  { name: "wand-2", tags: [] },
   { name: "wand-sparkles", tags: ["magic", "wizard", "magician"] },
   { name: "warehouse", tags: ["storage", "storehouse", "depot", "depository", "repository", "stockroom", "logistics", "building"] },
   { name: "washing-machine", tags: ["tumble dryer", "amenities", "electronics", "cycle", "clothes", "rinse", "spin", "drum"] },
   { name: "watch", tags: ["clock", "time"] },
-  { name: "waves", tags: [] },
   { name: "waves-arrow-down", tags: ["water", "sea", "level", "sound", "hertz", "wavelength", "vibrate", "low", "tide", "ocean", "rising", "down", "falling"] },
   { name: "waves-arrow-up", tags: ["water", "sea", "level", "sound", "hertz", "wavelength", "vibrate", "high", "tide", "ocean", "rising"] },
   { name: "waves-horizontal", tags: ["water", "sea", "sound", "hertz", "wavelength", "vibrate", "ocean", "swimming", "frequency"] },
@@ -2016,14 +1762,10 @@ const lucideIconSources: readonly IconCatalogSource[] = [
   { name: "wine-off", tags: ["alcohol", "beverage", "drink", "glass", "alcohol free", "abstinence", "abstaining", "teetotalism", "allergy", "intolerance"] },
   { name: "workflow", tags: ["action", "continuous integration", "ci", "automation", "devops", "network", "node", "connection"] },
   { name: "worm", tags: ["invertebrate", "grub", "larva", "snake", "crawl", "wiggle", "slither", "pest control", "computer virus", "malware"] },
-  { name: "wrap-text", tags: [] },
   { name: "wrench", tags: ["account", "settings", "spanner", "diy", "toolbox", "build", "construction"] },
   { name: "wrench-off", tags: ["account", "settings", "spanner", "diy", "toolbox", "build", "construction", "off", "service", "maintenance", "disabled"] },
   { name: "x", tags: ["cancel", "close", "cross", "delete", "ex", "remove", "times", "clear", "math", "multiply", "multiplication"] },
-  { name: "x-circle", tags: [] },
   { name: "x-line-top", tags: ["line", "top", "arrow", "navigation", "up", "pointer", "direction", "vector", "symbol", "cancel", "close", "delete", "remove", "times", "clear", "math", "multiply", "multiplication", "mean", "median", "average", "x̄"] },
-  { name: "x-octagon", tags: [] },
-  { name: "x-square", tags: [] },
   { name: "zap", tags: ["flash", "camera", "lightning", "electricity", "energy", "power", "quick"] },
   { name: "zap-off", tags: ["flash", "camera", "lightning", "electricity", "energy", "power"] },
   { name: "zodiac-aquarius", tags: ["water bearer", "waves", "innovation", "air", "future", "astrology", "star sign", "horoscope", "constellation", "celestial"] },
@@ -2413,24 +2155,16 @@ export type IconName =
   | "a-large-small"
   | "accessibility"
   | "activity"
-  | "activity-square"
   | "ad"
   | "air-vent"
   | "airplay"
-  | "alarm-check"
   | "alarm-clock"
   | "alarm-clock-check"
   | "alarm-clock-minus"
   | "alarm-clock-off"
   | "alarm-clock-plus"
-  | "alarm-minus"
-  | "alarm-plus"
   | "alarm-smoke"
   | "album"
-  | "alert-circle"
-  | "alert-octagon"
-  | "alert-triangle"
-  | "align-center"
   | "align-center-horizontal"
   | "align-center-vertical"
   | "align-end-horizontal"
@@ -2443,9 +2177,6 @@ export type IconName =
   | "align-horizontal-justify-start"
   | "align-horizontal-space-around"
   | "align-horizontal-space-between"
-  | "align-justify"
-  | "align-left"
-  | "align-right"
   | "align-start-horizontal"
   | "align-start-vertical"
   | "align-vertical-distribute-center"
@@ -2461,8 +2192,6 @@ export type IconName =
   | "ampersands"
   | "amphora"
   | "anchor"
-  | "angry"
-  | "annoyed"
   | "antenna"
   | "anvil"
   | "aperture"
@@ -2472,7 +2201,6 @@ export type IconName =
   | "archive"
   | "archive-restore"
   | "archive-x"
-  | "area-chart"
   | "armchair"
   | "arrow-big-down"
   | "arrow-big-down-dash"
@@ -2484,69 +2212,40 @@ export type IconName =
   | "arrow-big-up-dash"
   | "arrow-down"
   | "arrow-down-0-1"
-  | "arrow-down-01"
   | "arrow-down-1-0"
-  | "arrow-down-10"
   | "arrow-down-a-z"
-  | "arrow-down-az"
-  | "arrow-down-circle"
   | "arrow-down-from-line"
   | "arrow-down-left"
-  | "arrow-down-left-from-circle"
-  | "arrow-down-left-from-square"
-  | "arrow-down-left-square"
   | "arrow-down-narrow-wide"
   | "arrow-down-right"
-  | "arrow-down-right-from-circle"
-  | "arrow-down-right-from-square"
-  | "arrow-down-right-square"
-  | "arrow-down-square"
   | "arrow-down-to-dot"
   | "arrow-down-to-line"
   | "arrow-down-up"
   | "arrow-down-wide-narrow"
   | "arrow-down-z-a"
-  | "arrow-down-za"
   | "arrow-left"
-  | "arrow-left-circle"
   | "arrow-left-from-line"
   | "arrow-left-right"
-  | "arrow-left-square"
   | "arrow-left-to-line"
   | "arrow-right"
-  | "arrow-right-circle"
   | "arrow-right-from-line"
   | "arrow-right-left"
-  | "arrow-right-square"
   | "arrow-right-to-line"
   | "arrow-up"
   | "arrow-up-0-1"
-  | "arrow-up-01"
   | "arrow-up-1-0"
-  | "arrow-up-10"
   | "arrow-up-a-z"
-  | "arrow-up-az"
-  | "arrow-up-circle"
   | "arrow-up-down"
   | "arrow-up-from-dot"
   | "arrow-up-from-line"
   | "arrow-up-left"
-  | "arrow-up-left-from-circle"
-  | "arrow-up-left-from-square"
-  | "arrow-up-left-square"
   | "arrow-up-narrow-wide"
   | "arrow-up-right"
-  | "arrow-up-right-from-circle"
-  | "arrow-up-right-from-square"
-  | "arrow-up-right-square"
-  | "arrow-up-square"
   | "arrow-up-to-line"
   | "arrow-up-wide-narrow"
   | "arrow-up-z-a"
-  | "arrow-up-za"
   | "arrows-up-from-line"
   | "asterisk"
-  | "asterisk-square"
   | "astroid"
   | "at-sign"
   | "atom"
@@ -2555,7 +2254,6 @@ export type IconName =
   | "audio-waveform"
   | "award"
   | "axe"
-  | "axis-3-d"
   | "axis-3d"
   | "baby"
   | "backpack"
@@ -2565,7 +2263,6 @@ export type IconName =
   | "badge-check"
   | "badge-dollar-sign"
   | "badge-euro"
-  | "badge-help"
   | "badge-indian-rupee"
   | "badge-info"
   | "badge-japanese-yen"
@@ -2588,13 +2285,6 @@ export type IconName =
   | "banknote-arrow-up"
   | "banknote-check"
   | "banknote-x"
-  | "bar-chart"
-  | "bar-chart-2"
-  | "bar-chart-3"
-  | "bar-chart-4"
-  | "bar-chart-big"
-  | "bar-chart-horizontal"
-  | "bar-chart-horizontal-big"
   | "barcode"
   | "barrel"
   | "baseline"
@@ -2624,8 +2314,6 @@ export type IconName =
   | "bell-off"
   | "bell-plus"
   | "bell-ring"
-  | "between-horizonal-end"
-  | "between-horizonal-start"
   | "between-horizontal-end"
   | "between-horizontal-start"
   | "between-vertical-end"
@@ -2671,7 +2359,6 @@ export type IconName =
   | "book-open-text"
   | "book-plus"
   | "book-search"
-  | "book-template"
   | "book-text"
   | "book-type"
   | "book-up"
@@ -2691,7 +2378,6 @@ export type IconName =
   | "bottle-wine"
   | "bow-arrow"
   | "box"
-  | "box-select"
   | "boxes"
   | "braces"
   | "brackets"
@@ -2748,7 +2434,6 @@ export type IconName =
   | "calendars"
   | "camera"
   | "camera-off"
-  | "candlestick-chart"
   | "candy"
   | "candy-cane"
   | "candy-off"
@@ -2796,11 +2481,7 @@ export type IconName =
   | "chart-spline"
   | "check"
   | "check-check"
-  | "check-circle"
-  | "check-circle-2"
   | "check-line"
-  | "check-square"
-  | "check-square-2"
   | "chef-hat"
   | "cherry"
   | "chess-bishop"
@@ -2810,19 +2491,11 @@ export type IconName =
   | "chess-queen"
   | "chess-rook"
   | "chevron-down"
-  | "chevron-down-circle"
-  | "chevron-down-square"
   | "chevron-first"
   | "chevron-last"
   | "chevron-left"
-  | "chevron-left-circle"
-  | "chevron-left-square"
   | "chevron-right"
-  | "chevron-right-circle"
-  | "chevron-right-square"
   | "chevron-up"
-  | "chevron-up-circle"
-  | "chevron-up-square"
   | "chevrons-down"
   | "chevrons-down-up"
   | "chevrons-left"
@@ -2862,7 +2535,6 @@ export type IconName =
   | "circle-fading-arrow-up"
   | "circle-fading-plus"
   | "circle-gauge"
-  | "circle-help"
   | "circle-minus"
   | "circle-off"
   | "circle-parking"
@@ -2877,7 +2549,6 @@ export type IconName =
   | "circle-question-mark"
   | "circle-slash"
   | "circle-slash-2"
-  | "circle-slashed"
   | "circle-small"
   | "circle-star"
   | "circle-stop"
@@ -2891,14 +2562,12 @@ export type IconName =
   | "clipboard-check"
   | "clipboard-clock"
   | "clipboard-copy"
-  | "clipboard-edit"
   | "clipboard-list"
   | "clipboard-minus"
   | "clipboard-paste"
   | "clipboard-pen"
   | "clipboard-pen-line"
   | "clipboard-plus"
-  | "clipboard-signature"
   | "clipboard-type"
   | "clipboard-x"
   | "clock"
@@ -2947,18 +2616,14 @@ export type IconName =
   | "clover"
   | "club"
   | "code"
-  | "code-2"
-  | "code-square"
   | "code-xml"
   | "coffee"
   | "cog"
   | "coins"
-  | "columns"
   | "columns-2"
   | "columns-3"
   | "columns-3-cog"
   | "columns-4"
-  | "columns-settings"
   | "combine"
   | "command"
   | "compass"
@@ -2968,7 +2633,6 @@ export type IconName =
   | "cone"
   | "construction"
   | "contact"
-  | "contact-2"
   | "contact-round"
   | "container"
   | "contrast"
@@ -3000,7 +2664,6 @@ export type IconName =
   | "crown"
   | "cuboid"
   | "cup-soda"
-  | "curly-braces"
   | "currency"
   | "cylinder"
   | "dam"
@@ -3036,8 +2699,6 @@ export type IconName =
   | "disc-3"
   | "disc-album"
   | "divide"
-  | "divide-circle"
-  | "divide-square"
   | "dna"
   | "dna-off"
   | "dock"
@@ -3048,9 +2709,7 @@ export type IconName =
   | "door-closed-locked"
   | "door-open"
   | "dot"
-  | "dot-square"
   | "download"
-  | "download-cloud"
   | "drafting-compass"
   | "drama"
   | "drill"
@@ -3066,9 +2725,6 @@ export type IconName =
   | "earth"
   | "earth-lock"
   | "eclipse"
-  | "edit"
-  | "edit-2"
-  | "edit-3"
   | "egg"
   | "egg-fried"
   | "egg-off"
@@ -3078,7 +2734,6 @@ export type IconName =
   | "equal"
   | "equal-approximately"
   | "equal-not"
-  | "equal-square"
   | "eraser"
   | "ethernet-port"
   | "euro"
@@ -3104,14 +2759,8 @@ export type IconName =
   | "ferris-wheel"
   | "file"
   | "file-archive"
-  | "file-audio"
-  | "file-audio-2"
-  | "file-axis-3-d"
   | "file-axis-3d"
   | "file-badge"
-  | "file-badge-2"
-  | "file-bar-chart"
-  | "file-bar-chart-2"
   | "file-box"
   | "file-braces"
   | "file-braces-corner"
@@ -3120,50 +2769,35 @@ export type IconName =
   | "file-chart-line"
   | "file-chart-pie"
   | "file-check"
-  | "file-check-2"
   | "file-check-corner"
   | "file-clock"
   | "file-code"
-  | "file-code-2"
   | "file-code-corner"
   | "file-cog"
-  | "file-cog-2"
   | "file-diff"
   | "file-digit"
   | "file-down"
-  | "file-edit"
   | "file-exclamation-point"
   | "file-headphone"
   | "file-heart"
   | "file-image"
   | "file-input"
-  | "file-json"
-  | "file-json-2"
   | "file-key"
-  | "file-key-2"
-  | "file-line-chart"
   | "file-lock"
-  | "file-lock-2"
   | "file-minus"
-  | "file-minus-2"
   | "file-minus-corner"
   | "file-music"
   | "file-output"
   | "file-pen"
   | "file-pen-line"
-  | "file-pie-chart"
   | "file-play"
   | "file-plus"
-  | "file-plus-2"
   | "file-plus-corner"
-  | "file-question"
   | "file-question-mark"
   | "file-scan"
   | "file-search"
-  | "file-search-2"
   | "file-search-corner"
   | "file-signal"
-  | "file-signature"
   | "file-sliders"
   | "file-spreadsheet"
   | "file-stack"
@@ -3171,24 +2805,15 @@ export type IconName =
   | "file-terminal"
   | "file-text"
   | "file-type"
-  | "file-type-2"
   | "file-type-corner"
   | "file-up"
   | "file-user"
-  | "file-video"
-  | "file-video-2"
   | "file-video-camera"
   | "file-volume"
-  | "file-volume-2"
-  | "file-warning"
   | "file-x"
-  | "file-x-2"
   | "file-x-corner"
   | "files"
   | "film"
-  | "filter"
-  | "filter-x"
-  | "fingerprint"
   | "fingerprint-pattern"
   | "fire-extinguisher"
   | "fish"
@@ -3207,9 +2832,7 @@ export type IconName =
   | "flask-conical"
   | "flask-conical-off"
   | "flask-round"
-  | "flip-horizontal"
   | "flip-horizontal-2"
-  | "flip-vertical"
   | "flip-vertical-2"
   | "flower"
   | "flower-2"
@@ -3224,10 +2847,8 @@ export type IconName =
   | "folder-closed"
   | "folder-code"
   | "folder-cog"
-  | "folder-cog-2"
   | "folder-dot"
   | "folder-down"
-  | "folder-edit"
   | "folder-git"
   | "folder-git-2"
   | "folder-heart"
@@ -3251,17 +2872,12 @@ export type IconName =
   | "folder-x"
   | "folders"
   | "footprints"
-  | "fork-knife"
-  | "fork-knife-crossed"
   | "forklift"
   | "form"
-  | "form-input"
   | "forward"
   | "frame"
-  | "frown"
   | "fuel"
   | "fullscreen"
-  | "function-square"
   | "funnel"
   | "funnel-plus"
   | "funnel-x"
@@ -3273,10 +2889,7 @@ export type IconName =
   | "gamepad"
   | "gamepad-2"
   | "gamepad-directional"
-  | "gantt-chart"
-  | "gantt-chart-square"
   | "gauge"
-  | "gauge-circle"
   | "gavel"
   | "gem"
   | "georgian-lari"
@@ -3285,7 +2898,6 @@ export type IconName =
   | "git-branch"
   | "git-branch-minus"
   | "git-branch-plus"
-  | "git-commit"
   | "git-commit-horizontal"
   | "git-commit-vertical"
   | "git-compare"
@@ -3303,26 +2915,18 @@ export type IconName =
   | "glass-water"
   | "glasses"
   | "globe"
-  | "globe-2"
   | "globe-check"
   | "globe-lock"
   | "globe-off"
   | "globe-x"
   | "goal"
   | "gpu"
-  | "grab"
   | "graduation-cap"
   | "grape"
-  | "grid"
-  | "grid-2-x-2"
-  | "grid-2-x-2-check"
-  | "grid-2-x-2-plus"
-  | "grid-2-x-2-x"
   | "grid-2x2"
   | "grid-2x2-check"
   | "grid-2x2-plus"
   | "grid-2x2-x"
-  | "grid-3-x-3"
   | "grid-3x2"
   | "grid-3x3"
   | "grip"
@@ -3372,12 +2976,8 @@ export type IconName =
   | "heart-x"
   | "heater"
   | "helicopter"
-  | "help-circle"
-  | "helping-hand"
   | "hexagon"
   | "highlighter"
-  | "history"
-  | "home"
   | "hop"
   | "hop-off"
   | "hospital"
@@ -3388,8 +2988,6 @@ export type IconName =
   | "house-plug"
   | "house-plus"
   | "house-wifi"
-  | "ice-cream"
-  | "ice-cream-2"
   | "ice-cream-bowl"
   | "ice-cream-cone"
   | "id-card"
@@ -3405,13 +3003,9 @@ export type IconName =
   | "images"
   | "import"
   | "inbox"
-  | "indent"
-  | "indent-decrease"
-  | "indent-increase"
   | "indian-rupee"
   | "infinity"
   | "info"
-  | "inspect"
   | "inspection-panel"
   | "italic"
   | "iteration-ccw"
@@ -3419,8 +3013,6 @@ export type IconName =
   | "japanese-yen"
   | "joystick"
   | "kanban"
-  | "kanban-square"
-  | "kanban-square-dashed"
   | "kayak"
   | "key"
   | "key-round"
@@ -3438,22 +3030,18 @@ export type IconName =
   | "landmark"
   | "languages"
   | "laptop"
-  | "laptop-2"
   | "laptop-minimal"
   | "laptop-minimal-check"
   | "lasso"
   | "lasso-select"
-  | "laugh"
   | "layer-arrow-down"
   | "layer-arrow-up"
   | "layers"
   | "layers-2"
-  | "layers-3"
   | "layers-arrow-down"
   | "layers-arrow-up"
   | "layers-minus"
   | "layers-plus"
-  | "layout"
   | "layout-dashboard"
   | "layout-freeform"
   | "layout-grid"
@@ -3466,15 +3054,12 @@ export type IconName =
   | "lectern"
   | "lens-concave"
   | "lens-convex"
-  | "letter-text"
   | "library"
   | "library-big"
-  | "library-square"
   | "life-buoy"
   | "ligature"
   | "lightbulb"
   | "lightbulb-off"
-  | "line-chart"
   | "line-dot-right-horizontal"
   | "line-squiggle"
   | "line-style"
@@ -3505,13 +3090,11 @@ export type IconName =
   | "list-video"
   | "list-x"
   | "loader"
-  | "loader-2"
   | "loader-circle"
   | "loader-pinwheel"
   | "locate"
   | "locate-fixed"
   | "locate-off"
-  | "location-edit"
   | "lock"
   | "lock-keyhole"
   | "lock-keyhole-open"
@@ -3521,14 +3104,12 @@ export type IconName =
   | "logs"
   | "lollipop"
   | "luggage"
-  | "m-square"
   | "magnet"
   | "mail"
   | "mail-check"
   | "mail-minus"
   | "mail-open"
   | "mail-plus"
-  | "mail-question"
   | "mail-question-mark"
   | "mail-search"
   | "mail-warning"
@@ -3560,10 +3141,8 @@ export type IconName =
   | "medal"
   | "megaphone"
   | "megaphone-off"
-  | "meh"
   | "memory-stick"
   | "menu"
-  | "menu-square"
   | "merge"
   | "message-circle"
   | "message-circle-check"
@@ -3573,7 +3152,6 @@ export type IconName =
   | "message-circle-more"
   | "message-circle-off"
   | "message-circle-plus"
-  | "message-circle-question"
   | "message-circle-question-mark"
   | "message-circle-reply"
   | "message-circle-warning"
@@ -3598,7 +3176,6 @@ export type IconName =
   | "messages-square"
   | "metronome"
   | "mic"
-  | "mic-2"
   | "mic-audio-lines"
   | "mic-off"
   | "mic-signal"
@@ -3612,8 +3189,6 @@ export type IconName =
   | "minimize"
   | "minimize-2"
   | "minus"
-  | "minus-circle"
-  | "minus-square"
   | "mirror-rectangular"
   | "mirror-round"
   | "monitor"
@@ -3632,8 +3207,6 @@ export type IconName =
   | "monitor-x"
   | "moon"
   | "moon-star"
-  | "more-horizontal"
-  | "more-vertical"
   | "mosque"
   | "motorbike"
   | "mountain"
@@ -3646,10 +3219,8 @@ export type IconName =
   | "mouse-pointer-2-off"
   | "mouse-pointer-ban"
   | "mouse-pointer-click"
-  | "mouse-pointer-square-dashed"
   | "mouse-right"
   | "move"
-  | "move-3-d"
   | "move-3d"
   | "move-diagonal"
   | "move-diagonal-2"
@@ -3692,7 +3263,6 @@ export type IconName =
   | "option"
   | "orbit"
   | "origami"
-  | "outdent"
   | "package"
   | "package-2"
   | "package-check"
@@ -3704,58 +3274,42 @@ export type IconName =
   | "paint-bucket"
   | "paint-roller"
   | "paintbrush"
-  | "paintbrush-2"
   | "paintbrush-vertical"
   | "palette"
-  | "palmtree"
   | "panda"
   | "panel-bottom"
   | "panel-bottom-close"
   | "panel-bottom-dashed"
-  | "panel-bottom-inactive"
   | "panel-bottom-open"
   | "panel-left"
   | "panel-left-close"
   | "panel-left-dashed"
-  | "panel-left-inactive"
   | "panel-left-open"
   | "panel-left-right-dashed"
   | "panel-right"
   | "panel-right-close"
   | "panel-right-dashed"
-  | "panel-right-inactive"
   | "panel-right-open"
   | "panel-top"
   | "panel-top-bottom-dashed"
   | "panel-top-close"
   | "panel-top-dashed"
-  | "panel-top-inactive"
   | "panel-top-open"
   | "panels-left-bottom"
-  | "panels-left-right"
   | "panels-right-bottom"
-  | "panels-top-bottom"
   | "panels-top-left"
   | "paper-bag"
   | "paperclip"
   | "parasol"
   | "parentheses"
-  | "parking-circle"
-  | "parking-circle-off"
   | "parking-meter"
-  | "parking-square"
-  | "parking-square-off"
   | "party-popper"
   | "pause"
-  | "pause-circle"
-  | "pause-octagon"
   | "paw-print"
   | "pc-case"
   | "pen"
-  | "pen-box"
   | "pen-line"
   | "pen-off"
-  | "pen-square"
   | "pen-tool"
   | "pencil"
   | "pencil-line"
@@ -3764,9 +3318,6 @@ export type IconName =
   | "pencil-sparkles"
   | "pentagon"
   | "percent"
-  | "percent-circle"
-  | "percent-diamond"
-  | "percent-square"
   | "person-standing"
   | "phi"
   | "philippine-peso"
@@ -3778,17 +3329,14 @@ export type IconName =
   | "phone-off"
   | "phone-outgoing"
   | "pi"
-  | "pi-square"
   | "piano"
   | "pickaxe"
   | "picture-in-picture"
   | "picture-in-picture-2"
-  | "pie-chart"
   | "piggy-bank"
   | "pilcrow"
   | "pilcrow-left"
   | "pilcrow-right"
-  | "pilcrow-square"
   | "pill"
   | "pill-bottle"
   | "pin"
@@ -3799,18 +3347,12 @@ export type IconName =
   | "plane-landing"
   | "plane-takeoff"
   | "play"
-  | "play-circle"
   | "play-off"
-  | "play-square"
   | "plug"
   | "plug-2"
   | "plug-zap"
-  | "plug-zap-2"
   | "plus"
-  | "plus-circle"
-  | "plus-square"
   | "pocket-knife"
-  | "podcast"
   | "podium"
   | "pointer"
   | "pointer-off"
@@ -3818,9 +3360,7 @@ export type IconName =
   | "popsicle"
   | "pound-sterling"
   | "power"
-  | "power-circle"
   | "power-off"
-  | "power-square"
   | "presentation"
   | "printer"
   | "printer-check"
@@ -3884,7 +3424,6 @@ export type IconName =
   | "rocking-chair"
   | "roller-coaster"
   | "rose"
-  | "rotate-3-d"
   | "rotate-3d"
   | "rotate-ccw"
   | "rotate-ccw-clock"
@@ -3896,7 +3435,6 @@ export type IconName =
   | "route"
   | "route-off"
   | "router"
-  | "rows"
   | "rows-2"
   | "rows-3"
   | "rows-4"
@@ -3917,7 +3455,6 @@ export type IconName =
   | "save-pen"
   | "save-plus"
   | "scale"
-  | "scale-3-d"
   | "scale-3d"
   | "scaling"
   | "scan"
@@ -3931,13 +3468,9 @@ export type IconName =
   | "scan-search"
   | "scan-square"
   | "scan-text"
-  | "scatter-chart"
   | "school"
-  | "school-2"
   | "scissors"
   | "scissors-line-dashed"
-  | "scissors-square"
-  | "scissors-square-dashed-bottom"
   | "scooter"
   | "screen-share"
   | "screen-share-off"
@@ -3951,7 +3484,6 @@ export type IconName =
   | "search-x"
   | "section"
   | "send"
-  | "send-horizonal"
   | "send-horizontal"
   | "send-to-back"
   | "separator-horizontal"
@@ -3973,7 +3505,6 @@ export type IconName =
   | "shield-alert"
   | "shield-ban"
   | "shield-check"
-  | "shield-close"
   | "shield-cog"
   | "shield-cog-corner"
   | "shield-ellipsis"
@@ -3983,7 +3514,6 @@ export type IconName =
   | "shield-minus"
   | "shield-off"
   | "shield-plus"
-  | "shield-question"
   | "shield-question-mark"
   | "shield-user"
   | "shield-x"
@@ -4000,11 +3530,7 @@ export type IconName =
   | "shrink"
   | "shrub"
   | "shuffle"
-  | "sidebar"
-  | "sidebar-close"
-  | "sidebar-open"
   | "sigma"
-  | "sigma-square"
   | "signal"
   | "signal-high"
   | "signal-low"
@@ -4018,23 +3544,17 @@ export type IconName =
   | "skip-forward"
   | "skull"
   | "slash"
-  | "slash-square"
   | "slice"
-  | "sliders"
   | "sliders-horizontal"
   | "sliders-vertical"
   | "smartphone"
   | "smartphone-charging"
   | "smartphone-nfc"
-  | "smile"
-  | "smile-plus"
   | "snail"
   | "snowflake"
   | "soap-dispenser-droplet"
   | "sofa"
   | "solar-panel"
-  | "sort-asc"
-  | "sort-desc"
   | "soup"
   | "space"
   | "spade"
@@ -4047,8 +3567,6 @@ export type IconName =
   | "spline"
   | "spline-pointer"
   | "split"
-  | "split-square-horizontal"
-  | "split-square-vertical"
   | "spool"
   | "sport-shoe"
   | "spotlight"
@@ -4093,7 +3611,6 @@ export type IconName =
   | "square-dot"
   | "square-equal"
   | "square-function"
-  | "square-gantt-chart"
   | "square-kanban"
   | "square-library"
   | "square-m"
@@ -4141,7 +3658,6 @@ export type IconName =
   | "star-off"
   | "star-plus"
   | "star-x"
-  | "stars"
   | "step-back"
   | "step-forward"
   | "stethoscope"
@@ -4154,13 +3670,11 @@ export type IconName =
   | "sticky-note-x"
   | "sticky-notes"
   | "stone"
-  | "stop-circle"
   | "store"
   | "stretch-horizontal"
   | "stretch-vertical"
   | "strikethrough"
   | "subscript"
-  | "subtitles"
   | "summary"
   | "sun"
   | "sun-dim"
@@ -4181,7 +3695,6 @@ export type IconName =
   | "table-cells-merge"
   | "table-cells-split"
   | "table-columns-split"
-  | "table-config"
   | "table-of-contents"
   | "table-properties"
   | "table-rows-split"
@@ -4203,12 +3716,9 @@ export type IconName =
   | "tent"
   | "tent-tree"
   | "terminal"
-  | "terminal-square"
   | "test-tube"
-  | "test-tube-2"
   | "test-tube-diagonal"
   | "test-tubes"
-  | "text"
   | "text-align-center"
   | "text-align-end"
   | "text-align-justify"
@@ -4218,8 +3728,6 @@ export type IconName =
   | "text-initial"
   | "text-quote"
   | "text-search"
-  | "text-select"
-  | "text-selection"
   | "text-wrap"
   | "theater"
   | "thermometer"
@@ -4254,7 +3762,6 @@ export type IconName =
   | "toy-brick"
   | "tractor"
   | "traffic-cone"
-  | "train"
   | "train-front"
   | "train-front-tunnel"
   | "train-track"
@@ -4280,7 +3787,6 @@ export type IconName =
   | "turntable"
   | "turtle"
   | "tv"
-  | "tv-2"
   | "tv-minimal"
   | "tv-minimal-play"
   | "type"
@@ -4297,27 +3803,17 @@ export type IconName =
   | "university"
   | "unlink"
   | "unlink-2"
-  | "unlock"
-  | "unlock-keyhole"
   | "unplug"
   | "upload"
-  | "upload-cloud"
   | "usb"
   | "user"
-  | "user-2"
   | "user-check"
-  | "user-check-2"
-  | "user-circle"
-  | "user-circle-2"
   | "user-cog"
-  | "user-cog-2"
   | "user-key"
   | "user-lock"
   | "user-minus"
-  | "user-minus-2"
   | "user-pen"
   | "user-plus"
-  | "user-plus-2"
   | "user-round"
   | "user-round-arrow-left"
   | "user-round-check"
@@ -4330,13 +3826,9 @@ export type IconName =
   | "user-round-x"
   | "user-search"
   | "user-shield"
-  | "user-square"
-  | "user-square-2"
   | "user-star"
   | "user-x"
-  | "user-x-2"
   | "users"
-  | "users-2"
   | "users-round"
   | "utensils"
   | "utensils-crossed"
@@ -4349,7 +3841,6 @@ export type IconName =
   | "venetian-mask"
   | "venus"
   | "venus-and-mars"
-  | "verified"
   | "vibrate"
   | "vibrate-off"
   | "video"
@@ -4365,17 +3856,14 @@ export type IconName =
   | "volume-x"
   | "vote"
   | "wallet"
-  | "wallet-2"
   | "wallet-cards"
   | "wallet-minimal"
   | "wallpaper"
   | "wand"
-  | "wand-2"
   | "wand-sparkles"
   | "warehouse"
   | "washing-machine"
   | "watch"
-  | "waves"
   | "waves-arrow-down"
   | "waves-arrow-up"
   | "waves-horizontal"
@@ -4405,14 +3893,10 @@ export type IconName =
   | "wine-off"
   | "workflow"
   | "worm"
-  | "wrap-text"
   | "wrench"
   | "wrench-off"
   | "x"
-  | "x-circle"
   | "x-line-top"
-  | "x-octagon"
-  | "x-square"
   | "zap"
   | "zap-off"
   | "zodiac-aquarius"
@@ -4790,3 +4274,9 @@ export type IconName =
 export const iconNames: readonly IconName[] = iconCatalog.map(
   (entry) => entry.name
 ) as readonly IconName[]
+
+const iconNameSet: ReadonlySet<string> = new Set(iconNames)
+
+export function isIconName(value: string): value is IconName {
+  return iconNameSet.has(value)
+}
