@@ -24,6 +24,7 @@ export interface PageTabsProps {
   breadcrumbs?: ReactNode
   blockId?: string
   block?: boolean
+  fill?: boolean
   className?: string
 }
 
@@ -64,6 +65,7 @@ export interface PageTabsPanelsProps {
   items: readonly PageTabsItem[]
   value: string
   idPrefix?: string
+  fill?: boolean
   className?: string
 }
 
@@ -71,18 +73,32 @@ export function PageTabsPanels({
   items,
   value,
   idPrefix = "page-tabs",
+  fill = false,
   className,
 }: PageTabsPanelsProps) {
   return (
-    <Tabs value={value} onValueChange={() => {}} className={cn("gap-4", className)}>
+    <Tabs
+      value={value}
+      onValueChange={() => {}}
+      className={cn(
+        "gap-4",
+        fill && "h-full min-h-0 flex-1 flex flex-col",
+        className
+      )}
+    >
       {items.map((item) => (
         <TabsContent
           key={item.id}
           value={item.id}
           id={`${idPrefix}-panel-${item.id}`}
           aria-labelledby={`${idPrefix}-tab-${item.id}`}
+          className={fill ? "min-h-0 flex-1 flex flex-col" : undefined}
         >
-          {item.content}
+          {fill ? (
+            <div className="flex h-full min-h-0 flex-col">{item.content}</div>
+          ) : (
+            item.content
+          )}
         </TabsContent>
       ))}
     </Tabs>
@@ -134,6 +150,7 @@ export function PageTabs({
   breadcrumbs,
   blockId,
   block = true,
+  fill = false,
   className,
 }: PageTabsProps) {
   const strip = (
@@ -150,22 +167,38 @@ export function PageTabs({
     <Tabs
       value={value}
       onValueChange={(nextValue) => onValueChange(nextValue)}
-      className={cn("gap-4", className)}
+      className={cn("gap-4", fill && "flex h-full min-h-0 flex-col", className)}
     >
       {block ? (
-        <Block id={blockId ? `${blockId}.tabs` : undefined}>
+        <Block
+          id={blockId ? `${blockId}.tabs` : undefined}
+          className={fill ? "shrink-0" : undefined}
+        >
           <CardContent className="flex flex-wrap items-center justify-between gap-2 py-2">
             {strip}
           </CardContent>
         </Block>
       ) : (
-        <div className="flex flex-wrap items-center justify-between gap-2">
+        <div
+          className={cn(
+            "flex flex-wrap items-center justify-between gap-2",
+            fill && "shrink-0"
+          )}
+        >
           {strip}
         </div>
       )}
       {items.map((item) => (
-        <TabsContent key={item.id} value={item.id}>
-          {item.content}
+        <TabsContent
+          key={item.id}
+          value={item.id}
+          className={fill ? "min-h-0 flex-1 flex flex-col" : undefined}
+        >
+          {fill ? (
+            <div className="flex h-full min-h-0 flex-col">{item.content}</div>
+          ) : (
+            item.content
+          )}
         </TabsContent>
       ))}
     </Tabs>

@@ -406,6 +406,58 @@ export function WidgetTableExportView() {
   )
 }
 
+interface GrowColumnRow {
+  id: string
+  name: string
+  status: string
+  total: string
+}
+
+const growColumnRows: readonly GrowColumnRow[] = [
+  {
+    id: "1043",
+    name: "Wireless noise-cancelling over-ear headphones with charging case",
+    status: "Delivered",
+    total: "$4,200",
+  },
+  {
+    id: "1042",
+    name: "Stainless steel insulated water bottle, 32oz",
+    status: "In transit",
+    total: "$1,750",
+  },
+  {
+    id: "1041",
+    name: "Ergonomic mesh office chair with lumbar support",
+    status: "Delivered",
+    total: "$12,400",
+  },
+]
+
+const growColumns: readonly WidgetTableColumn<GrowColumnRow>[] = [
+  { id: "id", title: "Order", alwaysVisible: true, cell: (row) => row.id },
+  { id: "name", title: "Product", grow: true, cell: (row) => row.name },
+  { id: "status", title: "Status", cell: (row) => row.status },
+  { id: "total", title: "Amount", align: "right", cell: (row) => row.total },
+]
+
+export function WidgetTableGrowColumnView() {
+  const [hiddenColumnIds, setHiddenColumnIds] = useState<readonly string[]>(
+    []
+  )
+
+  return (
+    <WidgetTable
+      title="Recent orders"
+      columns={growColumns}
+      rows={growColumnRows}
+      getRowKey={(row) => row.id}
+      hiddenColumnIds={hiddenColumnIds}
+      onHiddenColumnIdsChange={setHiddenColumnIds}
+    />
+  )
+}
+
 interface MatchingOrderRow {
   number: string
   customer: string

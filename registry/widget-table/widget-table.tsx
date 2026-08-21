@@ -34,6 +34,7 @@ export interface WidgetTableColumn<Row> {
   align?: "left" | "right"
   sortable?: boolean
   alwaysVisible?: boolean
+  grow?: boolean
   cell: (row: Row) => ReactNode
 }
 
@@ -134,6 +135,7 @@ export interface WidgetTableProps<Row> {
   onHiddenColumnIdsChange?: (ids: readonly string[]) => void
   stickyHeader?: boolean
   maxBodyHeight?: string
+  fill?: boolean
 }
 
 export function toggleHiddenColumnId(
@@ -254,8 +256,10 @@ export function WidgetTable<Row>({
   onHiddenColumnIdsChange,
   stickyHeader = false,
   maxBodyHeight = "24rem",
+  fill = false,
 }: WidgetTableProps<Row>) {
   const resolvedLabels = { ...widgetTableLabelDefaults, ...labels }
+  const scrollsInternally = stickyHeader || fill
   const visibleColumns = columns.filter(
     (column) => column.alwaysVisible || !hiddenColumnIds?.includes(column.id)
   )
@@ -276,9 +280,18 @@ export function WidgetTable<Row>({
   )
 
   return (
-    <Block id={blockId} headings className={className}>
+    <Block
+      id={blockId}
+      headings
+      className={cn(className, fill && "flex min-h-0 flex-1 flex-col")}
+    >
       {hasHeader ? (
-        <CardHeader className="flex flex-wrap items-center justify-between gap-4">
+        <CardHeader
+          className={cn(
+            "flex flex-wrap items-center justify-between gap-4",
+            fill && "shrink-0"
+          )}
+        >
           <div className="flex flex-wrap items-center gap-3">
             {hasActiveSelection &&
             !loading &&
@@ -348,7 +361,10 @@ export function WidgetTable<Row>({
       ) : null}
       <CardContent
         aria-busy={loading || undefined}
-        className={cn(pagination && !loading && "-mb-(--card-spacing)")}
+        className={cn(
+          pagination && !loading && "-mb-(--card-spacing)",
+          fill && "flex min-h-0 flex-1 flex-col"
+        )}
       >
         {loading ? (
           <Table>
@@ -360,7 +376,7 @@ export function WidgetTable<Row>({
                   </TableHead>
                 ) : null}
                 {visibleColumns.map((column) => (
-                  <TableHead key={column.id}>
+                  <TableHead key={column.id} className={cn(column.grow && "w-full")}>
                     <Skeleton className="h-4 w-16" />
                   </TableHead>
                 ))}
@@ -408,15 +424,20 @@ export function WidgetTable<Row>({
         ) : (
           <div
             data-slot="table-container"
-            tabIndex={stickyHeader ? 0 : undefined}
-            role={stickyHeader ? "region" : undefined}
-            aria-label={stickyHeader ? (title ?? resolvedLabels.region) : undefined}
+            tabIndex={scrollsInternally ? 0 : undefined}
+            role={scrollsInternally ? "region" : undefined}
+            aria-label={
+              scrollsInternally ? (title ?? resolvedLabels.region) : undefined
+            }
             className={cn(
               "relative w-full outline-none focus-visible:ring-3 focus-visible:ring-ring/50",
-              stickyHeader && "overflow-auto",
-              !stickyHeader && "overflow-x-auto"
+              scrollsInternally && "overflow-auto",
+              !scrollsInternally && "overflow-x-auto",
+              fill && "min-h-0 flex-1"
             )}
-            style={stickyHeader ? { maxHeight: maxBodyHeight } : undefined}
+            style={
+              scrollsInternally && !fill ? { maxHeight: maxBodyHeight } : undefined
+            }
           >
             <table className="w-full caption-bottom text-sm">
               <TableHeader>
@@ -425,7 +446,7 @@ export function WidgetTable<Row>({
                     <TableHead
                       className={cn(
                         "w-px [&:has([role=checkbox])]:pr-4",
-                        stickyHeader && "sticky top-0 z-10 bg-card [[data-gradient]_&]:bg-transparent"
+                        scrollsInternally && "sticky top-0 z-10 bg-card [[data-gradient]_&]:bg-transparent"
                       )}
                     >
                       <Checkbox
@@ -458,7 +479,8 @@ export function WidgetTable<Row>({
                       className={cn(
                         column.align === "right" && "text-right",
                         column.sortable && onSortChange && "p-0",
-                        stickyHeader && "sticky top-0 z-10 bg-card [[data-gradient]_&]:bg-transparent"
+                        scrollsInternally && "sticky top-0 z-10 bg-card [[data-gradient]_&]:bg-transparent",
+                        column.grow && "w-full"
                       )}
                     >
                       {column.sortable && onSortChange ? (
@@ -506,7 +528,8 @@ export function WidgetTable<Row>({
                           key={column.id}
                           className={cn(
                             column.align === "right" &&
-                              "text-right tabular-nums"
+                              "text-right tabular-nums",
+                            column.grow && "w-full whitespace-normal"
                           )}
                         >
                           {column.cell(row)}
@@ -521,7 +544,12 @@ export function WidgetTable<Row>({
         )}
       </CardContent>
       {pagination && !loading ? (
-        <CardFooter className="justify-center bg-card [[data-gradient]_&]:bg-transparent">
+        <CardFooter
+          className={cn(
+            "justify-center bg-card [[data-gradient]_&]:bg-transparent",
+            fill && "shrink-0"
+          )}
+        >
           <WidgetTablePaginationControls
             page={pagination.page}
             pageSize={pagination.pageSize}

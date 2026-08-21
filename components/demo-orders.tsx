@@ -156,7 +156,12 @@ export function DemoOrders() {
       ),
     },
     { id: "customer", title: strings.columnCustomer, cell: (row) => row.customer },
-    { id: "product", title: strings.columnProduct, cell: (row) => row.product },
+    {
+      id: "product",
+      title: strings.columnProduct,
+      grow: true,
+      cell: (row) => row.product,
+    },
     {
       id: "status",
       title: strings.columnStatus,
@@ -365,14 +370,13 @@ export function DemoOrders() {
           setDateRange("")
           setPage(1)
         }}
-        stickyHeader
+        fill
         hiddenColumnIds={hiddenColumnIds}
         onHiddenColumnIdsChange={setHiddenColumnIds}
         totalCount={matched.length}
         onSelectAllMatching={() =>
           setSelectedKeys(new Set(matched.map((row) => row.number)))
         }
-        maxBodyHeight="calc(100svh - 20rem)"
         onResetFilters={() => {
           setSearch("")
           setStatus("")

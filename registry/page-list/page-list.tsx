@@ -77,6 +77,7 @@ export interface PageListProps<Row> {
   onSelectAllMatching?: () => void
   stickyHeader?: boolean
   maxBodyHeight?: string
+  fill?: boolean
 }
 
 function getStatusContent(
@@ -129,9 +130,16 @@ export function PageList<Row>({
   onSelectAllMatching,
   stickyHeader,
   maxBodyHeight,
+  fill = false,
 }: PageListProps<Row>) {
   return (
-    <div className={cn("flex flex-col gap-4", className)}>
+    <div
+      className={cn(
+        "flex flex-col gap-4",
+        fill && "h-full min-h-0",
+        className
+      )}
+    >
       {header ? (
         <PageHeader
           title={title}
@@ -139,6 +147,7 @@ export function PageList<Row>({
           actions={actions}
           breadcrumbs={breadcrumbs}
           blockId={blockId ? `${blockId}.header` : undefined}
+          className={fill ? "shrink-0" : undefined}
         />
       ) : null}
 
@@ -191,6 +200,7 @@ export function PageList<Row>({
         onSelectAllMatching={onSelectAllMatching}
         stickyHeader={stickyHeader}
         maxBodyHeight={maxBodyHeight}
+        fill={fill}
       />
     </div>
   )

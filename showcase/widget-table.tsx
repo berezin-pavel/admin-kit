@@ -8,6 +8,7 @@ import type { ShowcaseEntry } from "./types"
 import {
   WidgetTableExportView,
   WidgetTableFilteredEmptyView,
+  WidgetTableGrowColumnView,
   WidgetTableSelectAllMatchingView,
   WidgetTableColumnsMenuView,
   WidgetTableShowcaseView,
@@ -219,6 +220,11 @@ export const widgetTableEntry: ShowcaseEntry = {
       id: "with-columns-menu",
       name: "With the columns menu",
       render: () => <WidgetTableColumnsMenuView />,
+    },
+    {
+      id: "grow-column",
+      name: "Grow column",
+      render: () => <WidgetTableGrowColumnView />,
     },
     {
       id: "sticky-header",

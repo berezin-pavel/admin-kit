@@ -197,6 +197,65 @@ describe("widget table sticky header", () => {
   })
 })
 
+describe("widget table grow column", () => {
+  const growColumns: readonly WidgetTableColumn<OrderRow>[] = [
+    { id: "number", title: "Number", cell: (row) => row.number },
+    { id: "customer", title: "Customer", grow: true, cell: (row) => row.customer },
+  ]
+
+  it("gives the grow column's header the full-width class", () => {
+    render(<WidgetTable columns={growColumns} rows={rows} />)
+
+    expect(screen.getByRole("columnheader", { name: "Customer" })).toHaveClass(
+      "w-full"
+    )
+    expect(
+      screen.getByRole("columnheader", { name: "Number" })
+    ).not.toHaveClass("w-full")
+  })
+
+  it("gives the grow column's cells the full-width, wrapping classes", () => {
+    render(<WidgetTable columns={growColumns} rows={rows} />)
+
+    expect(screen.getByRole("cell", { name: "Anna" })).toHaveClass(
+      "w-full",
+      "whitespace-normal"
+    )
+    expect(screen.getByRole("cell", { name: "1" })).not.toHaveClass("w-full")
+    expect(screen.getByRole("cell", { name: "1" })).not.toHaveClass(
+      "whitespace-normal"
+    )
+  })
+
+  it("gives the grow column's skeleton header the full-width class while loading", () => {
+    const { container } = render(
+      <WidgetTable columns={growColumns} rows={rows} loading />
+    )
+
+    const headers = container.querySelectorAll('[data-slot="table-head"]')
+    expect(headers[1]).toHaveClass("w-full")
+    expect(headers[0]).not.toHaveClass("w-full")
+  })
+})
+
+describe("widget table fill layout", () => {
+  it("scrolls internally without an inline maxHeight when fill", () => {
+    const { container } = render(
+      <WidgetTable title="Orders" columns={columns} rows={rows} fill />
+    )
+
+    const region = screen.getByRole("region", { name: "Orders" })
+    expect(region).toHaveClass("min-h-0", "flex-1", "overflow-auto")
+    expect(region.style.maxHeight).toBe("")
+    expect(container.querySelector('[data-slot="card"]')).toHaveClass(
+      "flex",
+      "min-h-0",
+      "flex-1",
+      "flex-col"
+    )
+  })
+})
+
 describe("toCsv formula injection", () => {
   const injectionColumns: readonly WidgetTableColumn<{ value: string }>[] = [
     { id: "value", title: "Value", cell: (row) => row.value },
