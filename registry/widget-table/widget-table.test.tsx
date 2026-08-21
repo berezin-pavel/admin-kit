@@ -379,6 +379,33 @@ describe("widget table row activation", () => {
     expect(onRowActivate).toHaveBeenCalledWith(rows[0], 0)
   })
 
+  it("does not activate the row when Enter is pressed on a control inside it", async () => {
+    const user = userEvent.setup()
+    const onRowActivate = vi.fn()
+    const actionColumns: readonly WidgetTableColumn<OrderRow>[] = [
+      { id: "number", title: "Number", cell: (row) => row.number },
+      {
+        id: "actions",
+        title: "",
+        cell: () => <button type="button">Delete</button>,
+      },
+    ]
+    render(
+      <WidgetTable
+        title="Orders"
+        columns={actionColumns}
+        rows={rows}
+        getRowKey={(row) => row.number}
+        onRowActivate={onRowActivate}
+      />
+    )
+
+    screen.getAllByRole("button", { name: "Delete" })[0].focus()
+    await user.keyboard("{Enter}")
+
+    expect(onRowActivate).not.toHaveBeenCalled()
+  })
+
   it("leaves rows without a tabindex when onRowActivate is not given", () => {
     render(
       <WidgetTable

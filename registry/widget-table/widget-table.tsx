@@ -523,8 +523,10 @@ export function WidgetTable<Row>({
                       onClick={
                         onRowActivate
                           ? (event) => {
-                              const target = event.target as HTMLElement
-                              if (target.closest(interactiveSelector)) {
+                              if (
+                                event.target instanceof Element &&
+                                event.target.closest(interactiveSelector)
+                              ) {
                                 return
                               }
                               onRowActivate(row, index)
@@ -534,6 +536,7 @@ export function WidgetTable<Row>({
                       onKeyDown={
                         onRowActivate
                           ? (event) => {
+                              if (event.target !== event.currentTarget) return
                               if (event.key === "Enter") {
                                 onRowActivate(row, index)
                               } else if (event.key === " ") {
