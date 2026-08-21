@@ -71,7 +71,7 @@ export function AdminNav({
             {startsGroup ? (
               <div
                 className={cn(
-                  "px-3 pb-1 text-xs font-medium tracking-wide text-sidebar-foreground/60 uppercase",
+                  "px-3 pb-1 text-xs font-medium tracking-wide text-sidebar-foreground uppercase",
                   index > 0 && "pt-3",
                   collapsed && "sr-only"
                 )}
