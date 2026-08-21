@@ -40,10 +40,12 @@ const additionalRoutes = [
   "/palette",
   "/demo",
   "/demo/orders",
+  "/demo/products",
   "/demo/order",
   "/demo/sign-in",
   "/demo-flush",
   "/demo-flush/orders",
+  "/demo-flush/products",
   "/demo-flush/order",
 ]
 

@@ -184,3 +184,39 @@ test("the bell counts unread and mark-all-read clears the badge", async ({ page 
   await page.getByText("Mark all as read").click()
   await expect(page.getByRole("button", { name: "Notifications" })).toBeVisible()
 })
+
+test("the products page expands a category and edits a product through a dialog", async ({
+  page,
+}) => {
+  await page.goto("/demo/products")
+  await page.waitForLoadState("networkidle")
+
+  const sneakers = page.getByRole("button", { name: "Sneakers" })
+  await expect(sneakers).toHaveAttribute("aria-expanded", "false")
+  await expect(page.getByText("Nova Sneakers")).toHaveCount(0)
+  await sneakers.click()
+  await expect(sneakers).toHaveAttribute("aria-expanded", "true")
+  await expect(page.getByText("Nova Sneakers")).toBeVisible()
+
+  await page.getByRole("button", { name: "Collapse all" }).click()
+  await expect(page.locator('[data-slot="tree-table-row"]')).toHaveCount(0)
+  await page.getByRole("button", { name: "Expand all" }).click()
+
+  const row = page.locator('[data-slot="tree-table-row"]', {
+    hasText: "Nova Sneakers",
+  })
+  await row.getByRole("button", { name: "Edit" }).click()
+  const dialog = page.getByRole("dialog")
+  await expect(dialog.getByText("Edit product")).toBeVisible()
+  await dialog.getByLabel("Name", { exact: true }).fill("Nova Sneakers Pro")
+  await dialog.getByRole("button", { name: "Save" }).click()
+  await expect(page.getByText("Saved")).toBeVisible()
+  await expect(page.getByText("Nova Sneakers Pro")).toBeVisible()
+
+  const proRow = page.locator('[data-slot="tree-table-row"]', {
+    hasText: "Nova Sneakers Pro",
+  })
+  await proRow.getByRole("button", { name: "Delete" }).click()
+  await page.getByRole("alertdialog").getByRole("button", { name: "Delete" }).click()
+  await expect(page.getByText("Nova Sneakers Pro")).toHaveCount(0)
+})

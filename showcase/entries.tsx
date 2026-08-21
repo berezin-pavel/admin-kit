@@ -53,6 +53,7 @@ import { pageHeaderEntry } from "./page-header"
 import { statusBadgeEntry } from "./status-badge"
 import { widgetProgressEntry } from "./widget-progress"
 import { widgetTableEntry } from "./widget-table"
+import { widgetTreeTableEntry } from "./widget-tree-table"
 
 export const showcaseEntries: readonly ShowcaseEntry[] = [
   adminShellEntry,
@@ -68,6 +69,7 @@ export const showcaseEntries: readonly ShowcaseEntry[] = [
   localeRuEntry,
   widgetMetricEntry,
   widgetTableEntry,
+  widgetTreeTableEntry,
   widgetActivityEntry,
   widgetDonutEntry,
   widgetQuickActionsEntry,

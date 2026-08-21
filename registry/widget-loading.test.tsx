@@ -10,6 +10,7 @@ import { WidgetMetric } from "@/registry/widget-metric/widget-metric"
 import { WidgetProgress } from "@/registry/widget-progress/widget-progress"
 import { WidgetQuickActions } from "@/registry/widget-quick-actions/widget-quick-actions"
 import { WidgetTable } from "@/registry/widget-table/widget-table"
+import { WidgetTreeTable } from "@/registry/widget-tree-table/widget-tree-table"
 
 const title = "Widget title"
 
@@ -38,6 +39,20 @@ const widgets: readonly WidgetCase[] = [
         title={title}
         columns={[{ id: "name", title: "Name", cell: () => "cell" }]}
         rows={[]}
+        loading={loading}
+      />
+    ),
+  },
+  {
+    name: "widget-tree-table",
+    render: (loading) => (
+      <WidgetTreeTable
+        title={title}
+        columns={[{ id: "name", title: "Name", cell: () => "cell" }]}
+        sections={[]}
+        getRowKey={() => "key"}
+        expandedIds={[]}
+        onExpandedChange={() => {}}
         loading={loading}
       />
     ),
@@ -113,6 +128,7 @@ describe("a loading widget keeps its title and shows skeletons instead of data",
       .filter((widget) =>
         [
           "widget-table",
+          "widget-tree-table",
           "widget-list",
           "widget-activity",
           "widget-donut",

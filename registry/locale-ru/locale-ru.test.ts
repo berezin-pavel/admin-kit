@@ -74,6 +74,11 @@ describe("localeRu control slices", () => {
     expect(localeRu.widgetTable.region).toBeTruthy()
   })
 
+  it("fills both widgetTreeTable labels", () => {
+    expect(localeRu.widgetTreeTable.emptyTitle).toBeTruthy()
+    expect(localeRu.widgetTreeTable.actions).toBeTruthy()
+  })
+
   it("fills pageList.resetFilters", () => {
     expect(localeRu.pageList.resetFilters).toBeTruthy()
   })

@@ -4,6 +4,7 @@ const widgets = [
   "widget-metric",
   "widget-chart",
   "widget-table",
+  "widget-tree-table",
   "widget-list",
   "widget-progress",
   "widget-activity",

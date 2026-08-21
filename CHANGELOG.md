@@ -8,7 +8,7 @@ items changed, and what breaks if you pull them.
 **Install an item, pinned to a release:**
 
 ```bash
-pnpm dlx shadcn@latest add berezin-pavel/admin-kit/widget-table#v0.43.0
+pnpm dlx shadcn@latest add berezin-pavel/admin-kit/widget-table#v0.44.0
 ```
 
 **See what an update would change before taking it:**
@@ -24,6 +24,26 @@ say yes; `-o` overwrites deliberately. Items you have edited in place are yours 
 Sections used below: **New** (items you can now install), **Changed** (installed items worth
 re-pulling), **Breaking** (props or files that changed shape — read before overwriting), and
 **Project** (showcase, CI, docs — nothing that reaches your project).
+
+## 0.44.0 — 2026-08-21
+
+**New** — `widget-tree-table`: a table card whose rows are sections that expand to reveal
+records — a catalogue of products under categories, accounts under departments. Sections nest to
+any depth; every row shows one colour stripe per ancestor section at its left edge, a section's
+own stripe carries its icon, and the first column holds the section title as a button with
+`aria-expanded` and a chevron. A column pulls a record's value via `cell` and, optionally, a
+section's via `sectionCell` (an aggregate, a flag). Expansion is controlled — `expandedIds` in,
+`onExpandedChange` out, with `toggleExpandedId` and `collectSectionIds` for the usual moves — and
+collapsed content is not mounted. `rowActions`/`sectionActions` render a trailing actions column
+for `row-actions` and whatever dialog the consumer opens from it; the widget owns no dialogs.
+`loading` and the empty state behave like every other widget; `labels` localize the empty title
+and the actions column's accessible name, and `locale-ru` ships the `widgetTreeTable` slice.
+
+**Project** — the demo gained a Products page (`/demo/products`, `/demo-flush/products`): the
+store catalogue in a tree table with sections and subsections, per-row and per-section actions
+that edit through `form-dialog` and delete through `confirm-dialog`, "Add section" in the page
+header, expand-all/collapse-all, and a per-page backdrop in the appearance menu. The showcase has
+a Tree table widget section under Widgets.
 
 ## 0.43.0 — 2026-08-21
 

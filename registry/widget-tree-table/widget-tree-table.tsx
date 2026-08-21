@@ -153,7 +153,7 @@ export function WidgetTreeTable<Row>({
                 <section.icon className="size-5 text-white" aria-hidden />
               ) : null}
             </div>
-            <div className="flex-1 px-2 py-2">
+            <div className="min-w-0 flex-1 px-2 py-2 whitespace-normal">
               <button
                 type="button"
                 aria-expanded={expanded}
@@ -200,7 +200,9 @@ export function WidgetTreeTable<Row>({
         <TableCell className="p-0">
           <div className="flex items-stretch">
             <AncestorStripes ancestors={ancestors} />
-            <div className="flex-1 px-2 py-2">{columns[0].cell(row)}</div>
+            <div className="min-w-0 flex-1 px-2 py-2 whitespace-normal">
+              {columns[0].cell(row)}
+            </div>
           </div>
         </TableCell>
         {restColumns.map((column) => (

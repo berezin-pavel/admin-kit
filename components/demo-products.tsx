@@ -663,6 +663,7 @@ function DemoProductsCatalogue({ locale }: { locale: DemoLocale }) {
             ? strings.deleteProductDescription(deleteProductTarget.product.name)
             : undefined
         }
+        confirmLabel={strings.deleteAction}
         cancelLabel={
           locale === "ru" ? localeRu.confirmDialog.cancelLabel : undefined
         }
@@ -686,6 +687,7 @@ function DemoProductsCatalogue({ locale }: { locale: DemoLocale }) {
               )
             : undefined
         }
+        confirmLabel={strings.deleteAction}
         cancelLabel={
           locale === "ru" ? localeRu.confirmDialog.cancelLabel : undefined
         }

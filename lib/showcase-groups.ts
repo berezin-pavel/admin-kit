@@ -38,6 +38,7 @@ export const SHOWCASE_ENTRY_GROUPS: readonly ShowcaseGroupDefinition[] = [
     items: [
       "widget-metric",
       "widget-table",
+      "widget-tree-table",
       "widget-progress",
       "widget-chart",
       "widget-list",

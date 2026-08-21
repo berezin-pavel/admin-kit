@@ -239,6 +239,10 @@ export const localeRu = {
     selectAllMatchingLabel: (count: number) => `Выбрать все: ${count}`,
     region: "Таблица",
   },
+  widgetTreeTable: {
+    emptyTitle: "Данных нет",
+    actions: "Действия",
+  },
   comboboxField: {
     placeholder: "Поиск…",
     emptyLabel: "Ничего не найдено",
