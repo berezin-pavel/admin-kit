@@ -30,7 +30,18 @@ re-pulling), **Breaking** (props or files that changed shape — read before ove
 The round driven by the first real consumer: the kit was installed into a Vite + react-router
 panel and every point of its installation protocol answered here.
 
-**Changed** — `locale-ru` no longer imports component types: its slices are plain objects, their
+**Changed** — the list pages answer the protocol's table findings: `widget-table` takes
+`onRowActivate(row, index)` — the whole row becomes a click/Enter target (clicks on a control
+inside the row, and keys pressed on one, are left to that control), and `notice`, a full-width slot
+above the body; `page-list` forwards `onRowActivate`, takes `toolbar` (rendered beside the filter
+bar — a custom filter no longer has to fit the three built-in kinds), `keepRows` (an `error` or
+`offline` status keeps the loaded rows and pagination on screen and shows the state as a notice
+above them instead of wiping the table), `stateActions` (a Retry button inside the error, forbidden
+or offline state — `page-form` and `page-entity` take the same prop) and `description` on every
+state label; `PageListFilter.defaultValue` tells the reset button what "unset" means, so a select
+whose catch-all option is `"all"` no longer has to model it as an empty value; the toolbar's reset
+button falls back to `tableLabels.clearFiltersLabel`, so one dictionary entry names both reset
+controls. `locale-ru` no longer imports component types: its slices are plain objects, their
 shapes are checked by the kit's own tests, and its only registry dependency is `date-range-field`
 (for the date-fns locale) — installing the dictionary no longer drags `global-search`,
 `notifications-menu` and the appearance items into a project that does not use them. Accent
