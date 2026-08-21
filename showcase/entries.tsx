@@ -36,6 +36,7 @@ import {
   stateOfflineEntry,
 } from "./states-problem"
 import { themeToggleEntry } from "./theme-toggle"
+import { fullscreenToggleEntry } from "./fullscreen-toggle"
 import type { ShowcaseEntry } from "./types"
 import { widgetActivityEntry } from "./widget-activity"
 import { widgetChartEntry } from "./widget-chart"
@@ -62,6 +63,7 @@ export const showcaseEntries: readonly ShowcaseEntry[] = [
   appearanceMenuEntry,
   themeToggleEntry,
   sidebarToggleEntry,
+  fullscreenToggleEntry,
   globalSearchEntry,
   notificationsMenuEntry,
   userMenuEntry,

@@ -21,6 +21,7 @@ export const SHOWCASE_ENTRY_GROUPS: readonly ShowcaseGroupDefinition[] = [
     items: [
       "theme-toggle",
       "sidebar-toggle",
+      "fullscreen-toggle",
       "global-search",
       "notifications-menu",
       "user-menu",

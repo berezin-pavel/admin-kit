@@ -330,6 +330,7 @@ export const localeRu = {
     previous: "Предыдущее изображение",
     next: "Следующее изображение",
     counter: (index: number, total: number) => `${index + 1} из ${total}`,
+    close: "Закрыть",
   },
   tagsField: {
     placeholder: "Добавить тег…",
@@ -339,6 +340,10 @@ export const localeRu = {
   pageList: { resetFilters: "Сбросить фильтры" },
   formDialog: { submitLabel: "Сохранить", cancelLabel: "Отмена" },
   sidebarToggle: { expand: "Развернуть сайдбар", collapse: "Свернуть сайдбар" },
+  fullscreenToggle: {
+    enter: "На весь экран",
+    exit: "Выйти из полноэкранного режима",
+  },
   themeToggle: {
     toLight: "Переключить на светлую тему",
     toDark: "Переключить на тёмную тему",

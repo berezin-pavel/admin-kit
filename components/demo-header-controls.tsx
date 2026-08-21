@@ -3,7 +3,9 @@
 import { useMemo, useState } from "react"
 import { usePathname, useRouter } from "next/navigation"
 
+import { FullscreenToggle } from "@/registry/fullscreen-toggle/fullscreen-toggle"
 import { GlobalSearch } from "@/registry/global-search/global-search"
+import { localeRu } from "@/registry/locale-ru/locale-ru"
 import { NotificationsMenu } from "@/registry/notifications-menu/notifications-menu"
 
 import { getDemoNotifications, getDemoSearchItems } from "@/app/demo/data"
@@ -70,6 +72,9 @@ export function DemoHeaderControls({
         }
         labels={strings.notifications}
         align={variant === "header" ? "end" : "start"}
+      />
+      <FullscreenToggle
+        labels={locale === "ru" ? localeRu.fullscreenToggle : undefined}
       />
     </>
   )

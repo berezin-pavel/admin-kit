@@ -277,6 +277,27 @@
     },
     {
       "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "fullscreen-toggle",
+      "type": "registry:component",
+      "title": "Fullscreen toggle",
+      "description": "A button that puts the whole admin panel into the browser's full-screen mode and brings it back. Unlike theme-toggle it is not controlled: full screen is the browser's state, not the consumer's, so the button reads document.fullscreenElement through useSyncExternalStore and follows fullscreenchange; target points it at an element other than the document. It renders nothing where the browser forbids full screen (document.fullscreenEnabled is false, as on iPhone), carries aria-pressed, and its tooltip repeats the accessible name, which swaps between the enter and exit labels.",
+      "registryDependencies": [
+        "button",
+        "berezin-pavel/admin-kit/hint"
+      ],
+      "dependencies": [
+        "lucide-react"
+      ],
+      "files": [
+        {
+          "path": "registry/fullscreen-toggle/fullscreen-toggle.tsx",
+          "type": "registry:component",
+          "target": "@components/fullscreen-toggle.tsx"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
       "name": "language-toggle",
       "type": "registry:component",
       "title": "Language toggle",
