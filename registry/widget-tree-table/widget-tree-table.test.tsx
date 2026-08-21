@@ -226,4 +226,316 @@ describe("widget tree table header cells", () => {
     expect(within(headerRow).getByText("Name")).toBeInTheDocument()
     expect(within(headerRow).getByText("SKU")).toBeInTheDocument()
   })
+
+  it("gives the grow column w-full, defaulting to the first column", () => {
+    render(<ControlledTreeTable />)
+
+    const headerRow = screen.getAllByRole("row")[0]
+    expect(within(headerRow).getByText("Name").closest("th")).toHaveClass(
+      "w-full"
+    )
+    expect(within(headerRow).getByText("SKU").closest("th")).not.toHaveClass(
+      "w-full"
+    )
+  })
+
+  it("honors an explicit grow column", () => {
+    const growColumns: readonly TreeTableColumn<ProductRow>[] = [
+      { id: "name", title: "Name", cell: (row) => row.name },
+      { id: "sku", title: "SKU", grow: true, cell: (row) => row.sku },
+    ]
+
+    render(<ControlledTreeTable columns={growColumns} />)
+
+    const headerRow = screen.getAllByRole("row")[0]
+    expect(within(headerRow).getByText("SKU").closest("th")).toHaveClass(
+      "w-full"
+    )
+    expect(within(headerRow).getByText("Name").closest("th")).not.toHaveClass(
+      "w-full"
+    )
+  })
+})
+
+describe("widget tree table columns menu", () => {
+  const menuColumns: readonly TreeTableColumn<ProductRow>[] = [
+    { id: "name", title: "Name", cell: (row) => row.name },
+    {
+      id: "sku",
+      title: "SKU",
+      cell: (row) => row.sku,
+      sectionCell: (section) => `${section.id}-count`,
+    },
+    { id: "price", title: "Price", alwaysVisible: true, cell: () => "$10" },
+  ]
+
+  it("lists the first column disabled and checked, alongside the rest", async () => {
+    const user = userEvent.setup()
+    render(
+      <ControlledTreeTable
+        columns={menuColumns}
+        hiddenColumnIds={[]}
+        onHiddenColumnIdsChange={() => {}}
+      />
+    )
+
+    await user.click(screen.getByRole("button", { name: "Columns" }))
+
+    expect(
+      await screen.findByRole("menuitemcheckbox", { name: "Name" })
+    ).toHaveAttribute("aria-disabled", "true")
+    expect(
+      screen.getByRole("menuitemcheckbox", { name: "SKU" })
+    ).not.toHaveAttribute("aria-disabled")
+    expect(
+      screen.getByRole("menuitemcheckbox", { name: "Price" })
+    ).toHaveAttribute("aria-disabled", "true")
+  })
+
+  it("hides a column from the header, section rows and record rows", async () => {
+    const user = userEvent.setup()
+
+    function Wrapper() {
+      const [hiddenColumnIds, setHiddenColumnIds] = useState<
+        readonly string[]
+      >([])
+      return (
+        <ControlledTreeTable
+          columns={menuColumns}
+          initialExpandedIds={["footwear"]}
+          hiddenColumnIds={hiddenColumnIds}
+          onHiddenColumnIdsChange={setHiddenColumnIds}
+        />
+      )
+    }
+
+    render(<Wrapper />)
+
+    expect(screen.getByText("SKU")).toBeInTheDocument()
+    expect(screen.getByText("footwear-count")).toBeInTheDocument()
+    expect(screen.getByText("SN-1")).toBeInTheDocument()
+
+    await user.click(screen.getByRole("button", { name: "Columns" }))
+    await user.click(
+      await screen.findByRole("menuitemcheckbox", { name: "SKU" })
+    )
+    await user.keyboard("{Escape}")
+
+    expect(screen.queryByText("SKU")).not.toBeInTheDocument()
+    expect(screen.queryByText("footwear-count")).not.toBeInTheDocument()
+    expect(screen.queryByText("SN-1")).not.toBeInTheDocument()
+  })
+})
+
+describe("widget tree table expand and collapse all", () => {
+  it("calls onExpandedChange with every section id on expand-all", async () => {
+    const user = userEvent.setup()
+    let lastChange: readonly string[] | undefined
+
+    render(
+      <ControlledTreeTable
+        onExpandedChange={(ids) => {
+          lastChange = ids
+        }}
+      />
+    )
+
+    await user.click(screen.getByRole("button", { name: "Expand all" }))
+
+    expect(lastChange).toEqual(["footwear", "electronics"])
+  })
+
+  it("calls onExpandedChange with an empty list on collapse-all", async () => {
+    const user = userEvent.setup()
+    let lastChange: readonly string[] | undefined
+
+    render(
+      <ControlledTreeTable
+        initialExpandedIds={["footwear", "electronics"]}
+        onExpandedChange={(ids) => {
+          lastChange = ids
+        }}
+      />
+    )
+
+    await user.click(screen.getByRole("button", { name: "Collapse all" }))
+
+    expect(lastChange).toEqual([])
+  })
+
+  it("doesn't show expand/collapse icons without sections", () => {
+    render(<ControlledTreeTable sections={[]} />)
+
+    expect(
+      screen.queryByRole("button", { name: "Expand all" })
+    ).not.toBeInTheDocument()
+  })
+})
+
+describe("widget tree table row activation", () => {
+  it("wraps the first column's content in a button firing with (row, section)", async () => {
+    const user = userEvent.setup()
+    let activated: [ProductRow, TreeTableSection<ProductRow>] | undefined
+
+    render(
+      <ControlledTreeTable
+        initialExpandedIds={["footwear"]}
+        onRowActivate={(row, section) => {
+          activated = [row, section]
+        }}
+      />
+    )
+
+    const button = screen.getByRole("button", { name: "Runner" })
+    await user.click(button)
+
+    expect(activated?.[0]).toEqual({ sku: "SN-1", name: "Runner" })
+    expect(activated?.[1].id).toBe("footwear")
+  })
+
+  it("renders plain text without onRowActivate", () => {
+    render(<ControlledTreeTable initialExpandedIds={["footwear"]} />)
+
+    expect(
+      screen.queryByRole("button", { name: "Runner" })
+    ).not.toBeInTheDocument()
+    expect(screen.getByText("Runner")).toBeInTheDocument()
+  })
+})
+
+describe("widget tree table show more rows", () => {
+  const loadMoreSections: readonly TreeTableSection<ProductRow>[] = [
+    {
+      id: "footwear",
+      title: "Footwear",
+      rowCount: 120,
+      rows: Array.from({ length: 25 }, (_, index) => ({
+        sku: `SN-${index}`,
+        name: `Shoe ${index}`,
+      })),
+    },
+  ]
+
+  it("shows a show-more row when rowCount exceeds the loaded rows", () => {
+    render(
+      <ControlledTreeTable
+        sections={loadMoreSections}
+        initialExpandedIds={["footwear"]}
+        onLoadMoreRows={() => {}}
+      />
+    )
+
+    expect(
+      screen.getByRole("button", { name: "Show 95 more" })
+    ).toBeInTheDocument()
+  })
+
+  it("calls onLoadMoreRows with the section on click", async () => {
+    const user = userEvent.setup()
+    let loadedSection: TreeTableSection<ProductRow> | undefined
+
+    render(
+      <ControlledTreeTable
+        sections={loadMoreSections}
+        initialExpandedIds={["footwear"]}
+        onLoadMoreRows={(section) => {
+          loadedSection = section
+        }}
+      />
+    )
+
+    await user.click(screen.getByRole("button", { name: "Show 95 more" }))
+
+    expect(loadedSection?.id).toBe("footwear")
+  })
+
+  it("hides the show-more row once every row has loaded", () => {
+    const fullyLoadedSections: readonly TreeTableSection<ProductRow>[] = [
+      {
+        id: "footwear",
+        title: "Footwear",
+        rowCount: 2,
+        rows: [
+          { sku: "SN-1", name: "Runner" },
+          { sku: "SN-2", name: "Trail" },
+        ],
+      },
+    ]
+
+    render(
+      <ControlledTreeTable
+        sections={fullyLoadedSections}
+        initialExpandedIds={["footwear"]}
+        onLoadMoreRows={() => {}}
+      />
+    )
+
+    expect(
+      screen.queryByRole("button", { name: /show \d+ more/i })
+    ).not.toBeInTheDocument()
+  })
+
+  it("doesn't render the show-more row without onLoadMoreRows", () => {
+    render(
+      <ControlledTreeTable
+        sections={loadMoreSections}
+        initialExpandedIds={["footwear"]}
+      />
+    )
+
+    expect(
+      screen.queryByRole("button", { name: /show \d+ more/i })
+    ).not.toBeInTheDocument()
+  })
+})
+
+describe("widget tree table filtered state", () => {
+  it("shows the filtered empty state with a clear-filters button", async () => {
+    const user = userEvent.setup()
+    let cleared = false
+
+    render(
+      <ControlledTreeTable
+        sections={[]}
+        filtered
+        onClearFilters={() => {
+          cleared = true
+        }}
+      />
+    )
+
+    expect(screen.getByText("No results")).toBeInTheDocument()
+    expect(screen.queryByText("No data")).not.toBeInTheDocument()
+
+    await user.click(screen.getByRole("button", { name: "Clear filters" }))
+
+    expect(cleared).toBe(true)
+  })
+
+  it("falls back to the default empty state when not filtered", () => {
+    render(<ControlledTreeTable sections={[]} />)
+
+    expect(screen.getByText("No data")).toBeInTheDocument()
+    expect(screen.queryByText("No results")).not.toBeInTheDocument()
+  })
+})
+
+describe("widget tree table fill", () => {
+  it("gives the scroll container overflow-auto and an accessible region", () => {
+    const { container } = render(
+      <ControlledTreeTable initialExpandedIds={["footwear"]} fill />
+    )
+
+    const tableContainer = container.querySelector(
+      '[data-slot="table-container"]'
+    )
+    expect(tableContainer).toHaveClass("overflow-auto")
+    expect(screen.getByRole("region", { name: "Products" })).toBeInTheDocument()
+  })
+
+  it("doesn't mark the container as a region without fill", () => {
+    render(<ControlledTreeTable initialExpandedIds={["footwear"]} />)
+
+    expect(screen.queryByRole("region")).not.toBeInTheDocument()
+  })
 })

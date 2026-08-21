@@ -154,3 +154,91 @@ export function WidgetTreeTableStoreView({
     />
   )
 }
+
+export function WidgetTreeTableColumnsMenuView() {
+  const [expandedIds, setExpandedIds] = useState<readonly string[]>([
+    "footwear",
+    "electronics",
+  ])
+  const [hiddenColumnIds, setHiddenColumnIds] = useState<readonly string[]>(
+    []
+  )
+
+  return (
+    <WidgetTreeTable
+      title="Store catalogue"
+      columns={columns}
+      sections={catalogue}
+      getRowKey={(row) => row.sku}
+      expandedIds={expandedIds}
+      onExpandedChange={setExpandedIds}
+      hiddenColumnIds={hiddenColumnIds}
+      onHiddenColumnIdsChange={setHiddenColumnIds}
+    />
+  )
+}
+
+interface CatalogItemRow {
+  sku: string
+  name: string
+}
+
+const loadMoreColumns: readonly TreeTableColumn<CatalogItemRow>[] = [
+  { id: "name", title: "Name", cell: (row) => row.name },
+  { id: "sku", title: "SKU", cell: (row) => row.sku },
+]
+
+const initialCatalogItems: readonly CatalogItemRow[] = Array.from(
+  { length: 4 },
+  (_, index) => ({ sku: `EX-${index + 1}`, name: `Item ${index + 1}` })
+)
+
+const remainingCatalogItems: readonly CatalogItemRow[] = Array.from(
+  { length: 8 },
+  (_, index) => ({ sku: `EX-${index + 5}`, name: `Item ${index + 5}` })
+)
+
+export function WidgetTreeTableLoadMoreView() {
+  const [expandedIds, setExpandedIds] = useState<readonly string[]>([
+    "catalog",
+  ])
+  const [loaded, setLoaded] = useState(false)
+
+  const sections: readonly TreeTableSection<CatalogItemRow>[] = [
+    {
+      id: "catalog",
+      title: "Catalog",
+      rowCount: initialCatalogItems.length + remainingCatalogItems.length,
+      rows: loaded
+        ? [...initialCatalogItems, ...remainingCatalogItems]
+        : initialCatalogItems,
+    },
+  ]
+
+  return (
+    <WidgetTreeTable
+      title="Store catalogue"
+      columns={loadMoreColumns}
+      sections={sections}
+      getRowKey={(row) => row.sku}
+      expandedIds={expandedIds}
+      onExpandedChange={setExpandedIds}
+      onLoadMoreRows={() => setLoaded(true)}
+    />
+  )
+}
+
+export function WidgetTreeTableFilteredView() {
+  return (
+    <WidgetTreeTable
+      title="Store catalogue"
+      columns={columns}
+      sections={[]}
+      getRowKey={(row) => row.sku}
+      expandedIds={[]}
+      onExpandedChange={() => {}}
+      filtered
+      onClearFilters={() => {}}
+    />
+  )
+}
