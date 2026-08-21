@@ -68,6 +68,7 @@ export const SHOWCASE_ENTRY_GROUPS: readonly ShowcaseGroupDefinition[] = [
       "date-range-field",
       "time-field",
       "color-field",
+      "icon-field",
       "file-field",
       "tags-field",
       "image-field",

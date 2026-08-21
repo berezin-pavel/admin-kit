@@ -13,6 +13,13 @@ const outputPath = join(
   "icon-field",
   "icon-catalog.ts"
 )
+const labNamesPath = join(
+  scriptDir,
+  "..",
+  "registry",
+  "icon-field",
+  "icon-lab-names.ts"
+)
 
 function readLabIconPairs() {
   const dtsPath = fileURLToPath(
@@ -121,13 +128,16 @@ ${nameLines}
 export const iconNames: readonly IconName[] = iconCatalog.map(
   (entry) => entry.name
 ) as readonly IconName[]
-
-export const labIconExportNames: Readonly<Record<string, string>> = {
-${formatLabExportNames(labSources)}
-}
 `
 
   writeFileSync(outputPath, output)
+  writeFileSync(
+    labNamesPath,
+    `export const labIconExportNames: Readonly<Record<string, string>> = {
+${formatLabExportNames(labSources)}
+}
+`
+  )
 
   const collisions =
     labPairs.length - labSources.filter((s) => !s.name.endsWith("-lab")).length

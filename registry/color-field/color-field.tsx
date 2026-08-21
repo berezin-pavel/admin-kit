@@ -86,6 +86,7 @@ export function ColorField(props: ColorFieldProps): React.ReactElement {
   const presetNav = useRadioGroupNav({
     count: presets.length,
     selectedIndex: selectedPresetIndex,
+    columns: 6,
   })
 
   if (value !== syncedValue) {

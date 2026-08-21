@@ -49,7 +49,11 @@ export function WidgetQuickActions({
   blockId,
   className,
 }: WidgetQuickActionsProps) {
-  const actionNav = useRadioGroupNav({ count: actions.length, selectedIndex: 0 })
+  const actionNav = useRadioGroupNav({
+    count: actions.length,
+    selectedIndex: 0,
+    columns,
+  })
 
   return (
     <Block id={blockId} gradient={gradient} headings className={className}>

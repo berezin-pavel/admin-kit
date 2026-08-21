@@ -16,7 +16,8 @@ import {
 } from "@/components/ui/popover"
 import { useRadioGroupNav } from "@/registry/admin-appearance/radio-group-nav"
 
-import { labIconExportNames, type IconCatalogEntry, type IconName } from "./icon-catalog"
+import type { IconCatalogEntry, IconName } from "./icon-catalog"
+import { labIconExportNames } from "./icon-lab-names"
 import { searchIcons } from "./icon-search"
 
 export interface IconFieldLabels {

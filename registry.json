@@ -925,6 +925,46 @@
     },
     {
       "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "icon-field",
+      "type": "registry:component",
+      "title": "Icon field",
+      "description": "A form field that picks an icon by name: the trigger shows the current icon and its name, the popover holds a search box and an 8-wide grid of icons with roving arrow keys (Up/Down move by row), Enter or a click picks and closes, a clear button beside the trigger drops the value. The pool is the whole lucide set plus lucide lab — 2378 names, one stroke style — shipped as a generated catalogue with lucide's own English tags; the catalogue and the optional loadKeywords dictionary (locale-ru provides Russian names) are imported only when the popover first opens, the search is deferred, and only a page of results is rendered at a time (Show N more), each icon as its own lazily loaded chunk, so the field costs nothing until it is used. The value is the icon name string — store it, and render it anywhere with the exported resolveIcon(name), which returns a component of the kit's usual icon shape. Requires lucide-react and @lucide/lab.",
+      "registryDependencies": [
+        "button",
+        "input",
+        "label",
+        "popover",
+        "berezin-pavel/admin-kit/admin-appearance"
+      ],
+      "dependencies": [
+        "lucide-react",
+        "@lucide/lab"
+      ],
+      "files": [
+        {
+          "path": "registry/icon-field/icon-field.tsx",
+          "type": "registry:component",
+          "target": "@components/icon-field.tsx"
+        },
+        {
+          "path": "registry/icon-field/icon-search.ts",
+          "type": "registry:component",
+          "target": "@components/icon-search.ts"
+        },
+        {
+          "path": "registry/icon-field/icon-catalog.ts",
+          "type": "registry:component",
+          "target": "@components/icon-catalog.ts"
+        },
+        {
+          "path": "registry/icon-field/icon-lab-names.ts",
+          "type": "registry:component",
+          "target": "@components/icon-lab-names.ts"
+        }
+      ]
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
       "name": "text-field",
       "type": "registry:component",
       "title": "Text field",

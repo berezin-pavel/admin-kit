@@ -145,7 +145,7 @@ test("hiding a column leaves the other columns' widths in place when one column 
 
   const widths = async () =>
     await page.getByRole("columnheader").evaluateAll((headers) =>
-      headers.map((header) => [
+      headers.map((header): [string, number] => [
         header.textContent?.trim() ?? "",
         Math.round(header.getBoundingClientRect().width),
       ])
@@ -173,6 +173,6 @@ test("hiding a column leaves the other columns' widths in place when one column 
     if (title === grown[0]) continue
     const previous = before.find(([name]) => name === title)
     expect(previous, title).toBeDefined()
-    expect(Math.abs(Number(previous?.[1]) - Number(width)), title).toBeLessThanOrEqual(1)
+    expect(Math.abs((previous?.[1] ?? 0) - width), title).toBeLessThanOrEqual(1)
   }
 })

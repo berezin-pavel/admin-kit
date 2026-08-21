@@ -6,6 +6,7 @@ import { appLogoEntry } from "./app-logo"
 import { breadcrumbsEntry } from "./breadcrumbs"
 import { checkboxFieldEntry } from "./checkbox-field"
 import { colorFieldEntry } from "./color-field"
+import { iconFieldEntry } from "./icon-field"
 import { comboboxFieldEntry } from "./combobox-field"
 import { confirmDialogEntry } from "./confirm-dialog"
 import { formDialogEntry } from "./form-dialog"
@@ -90,6 +91,7 @@ export const showcaseEntries: readonly ShowcaseEntry[] = [
   dateTimeFieldEntry,
   timeFieldEntry,
   colorFieldEntry,
+  iconFieldEntry,
   textFieldEntry,
   numberFieldEntry,
   textareaFieldEntry,
