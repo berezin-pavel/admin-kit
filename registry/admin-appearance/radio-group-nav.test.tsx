@@ -8,12 +8,14 @@ import { useRadioGroupNav } from "./radio-group-nav"
 function RadioGroupHarness({
   count,
   initialSelected,
+  columns,
 }: {
   count: number
   initialSelected: number
+  columns?: number
 }) {
   const [selected, setSelected] = useState(initialSelected)
-  const nav = useRadioGroupNav({ count, selectedIndex: selected })
+  const nav = useRadioGroupNav({ count, selectedIndex: selected, columns })
 
   return (
     <div role="radiogroup" aria-label="Fruits">
@@ -106,6 +108,55 @@ describe("useRadioGroupNav arrow navigation", () => {
     expect(options[4]).toHaveFocus()
 
     await user.keyboard("{Home}")
+    expect(options[0]).toHaveFocus()
+  })
+})
+
+describe("useRadioGroupNav grid navigation", () => {
+  it("moves ArrowDown/ArrowUp by the column count instead of by one", async () => {
+    const user = userEvent.setup()
+    render(<RadioGroupHarness count={20} initialSelected={0} columns={8} />)
+
+    const options = optionsOf()
+    options[0].focus()
+
+    await user.keyboard("{ArrowDown}")
+    expect(options[8]).toHaveFocus()
+
+    await user.keyboard("{ArrowDown}")
+    expect(options[16]).toHaveFocus()
+
+    await user.keyboard("{ArrowUp}")
+    expect(options[8]).toHaveFocus()
+  })
+
+  it("clamps ArrowDown/ArrowUp at the grid edges instead of wrapping", async () => {
+    const user = userEvent.setup()
+    render(<RadioGroupHarness count={20} initialSelected={0} columns={8} />)
+
+    const options = optionsOf()
+    options[16].focus()
+
+    await user.keyboard("{ArrowDown}")
+    expect(options[16]).toHaveFocus()
+
+    options[0].focus()
+
+    await user.keyboard("{ArrowUp}")
+    expect(options[0]).toHaveFocus()
+  })
+
+  it("still moves ArrowLeft/ArrowRight by one and wraps", async () => {
+    const user = userEvent.setup()
+    render(<RadioGroupHarness count={20} initialSelected={0} columns={8} />)
+
+    const options = optionsOf()
+    options[0].focus()
+
+    await user.keyboard("{ArrowLeft}")
+    expect(options[19]).toHaveFocus()
+
+    await user.keyboard("{ArrowRight}")
     expect(options[0]).toHaveFocus()
   })
 })

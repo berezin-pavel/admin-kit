@@ -11,6 +11,7 @@ export interface RadioGroupNavItemProps {
 export interface UseRadioGroupNavOptions {
   count: number
   selectedIndex: number
+  columns?: number
 }
 
 export interface UseRadioGroupNavResult {
@@ -20,6 +21,7 @@ export interface UseRadioGroupNavResult {
 export function useRadioGroupNav({
   count,
   selectedIndex,
+  columns,
 }: UseRadioGroupNavOptions): UseRadioGroupNavResult {
   const itemRefs = useRef<(HTMLElement | null)[]>([])
 
@@ -48,11 +50,29 @@ export function useRadioGroupNav({
 
     switch (key) {
       case "ArrowRight":
-      case "ArrowDown":
         focusIndex((from + 1) % count)
         return true
       case "ArrowLeft":
+        focusIndex((from - 1 + count) % count)
+        return true
+      case "ArrowDown":
+        if (columns) {
+          const target = from + columns
+          if (target < count) {
+            focusIndex(target)
+          }
+          return true
+        }
+        focusIndex((from + 1) % count)
+        return true
       case "ArrowUp":
+        if (columns) {
+          const target = from - columns
+          if (target >= 0) {
+            focusIndex(target)
+          }
+          return true
+        }
         focusIndex((from - 1 + count) % count)
         return true
       case "Home":

@@ -12,6 +12,7 @@
     "format": "prettier --write \"**/*.{ts,tsx}\"",
     "typecheck": "tsc --noEmit",
     "registry:build": "shadcn build",
+    "icons:build": "node scripts/build-icon-catalog.mjs",
     "test": "vitest run",
     "test:e2e": "playwright test"
   },
