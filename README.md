@@ -516,6 +516,32 @@ Whether an update is worth taking is answered by
 installed items that changed, and the prop or file changes that break on
 overwrite.
 
+## Known behaviour
+
+Things the first consumer ran into that are not defects of the kit, but
+are not obvious until you have read the source:
+
+- **A link styled as a button is a link with button classes**, not a
+  `Button` with `render={<Link />}`: Base UI's button warns in dev when
+  its rendered element is not a `<button>`, and the suggested
+  `nativeButton={false}` turns the anchor into `role="button"` — it stops
+  being a link for assistive tech and for `getByRole("link")`. Write
+  `<Link className={buttonVariants({ variant: "outline" })}>` instead;
+  the primitive carries `cursor-default`, so the anchor matches the kit's
+  buttons.
+- **Buttons inside `page-form` need `type="button"`** unless they submit:
+  the `button` primitive sets no `type`, `PageFormBody` renders a real
+  `<form>`, and an untyped button in it submits the page.
+- **`"use client"` can disappear on install.** The shadcn CLI rewrites
+  the directive per its own rules: on one install it kept the directive
+  on 15 of the kit's files and dropped it on 13. Vite doesn't care; in a
+  Next project check the files you pulled before relying on them as client
+  modules.
+- **Menu items want a hover before a click in automation.** Base UI's
+  menu commits an item on pointer activation; a synthetic click at
+  coordinates with no preceding pointer move closes the menu without
+  calling `onSelect`. Move the pointer over the item (or use keyboard
+  activation) in e2e scripts; people never notice.
 ## Rule
 
 Registry items aren't edited in your own project: the next `add -o` will

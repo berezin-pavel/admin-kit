@@ -8,7 +8,7 @@ items changed, and what breaks if you pull them.
 **Install an item, pinned to a release:**
 
 ```bash
-pnpm dlx shadcn@latest add berezin-pavel/admin-kit/widget-table#v0.45.0
+pnpm dlx shadcn@latest add berezin-pavel/admin-kit/widget-table#v0.46.0
 ```
 
 **See what an update would change before taking it:**
@@ -24,6 +24,37 @@ say yes; `-o` overwrites deliberately. Items you have edited in place are yours 
 Sections used below: **New** (items you can now install), **Changed** (installed items worth
 re-pulling), **Breaking** (props or files that changed shape — read before overwriting), and
 **Project** (showcase, CI, docs — nothing that reaches your project).
+
+## 0.46.0 — 2026-08-21
+
+The round driven by the first real consumer: the kit was installed into a Vite + react-router
+panel and every point of its installation protocol answered here.
+
+**Changed** — `locale-ru` no longer imports component types: its slices are plain objects, their
+shapes are checked by the kit's own tests, and its only registry dependency is `date-range-field`
+(for the date-fns locale) — installing the dictionary no longer drags `global-search`,
+`notifications-menu` and the appearance items into a project that does not use them. Accent
+buttons prefer white text: `readableForeground` picks near-white whenever it reaches 4.5:1 and a
+mid-lightness accent (Harbor's, for one) is darkened by at most 0.08 L until it does, instead of
+flipping to dark text. The `button` primitive carries `cursor-default`, so an `<a>` styled with
+`buttonVariants` looks like the kit's native buttons. `form-dialog` takes `error` (rendered as a
+`role="alert"` line above the footer), shows a spinner on the submit button while `submitting`,
+and stops its submit event from bubbling into a page form around it. `select-field` defaults to
+`width="full"` — a select in a form column now lines up with the text field beside it (the kit's
+own toolbars pass `width="auto"`). `admin-theme` sets `color-scheme` on `:root`/`.dark`, so native
+controls and scrollbars follow the scheme. `AppearanceCanvas` takes `scheme: "light" | "dark"`:
+when the app drives its own theme (a `.dark` class, not the OS), pass the resolved scheme and one
+`theme-color` meta follows it instead of two media-queried ones. `admin-shell` navigation items
+take `group`: consecutive items sharing a group render under a heading (sr-only plus a separator
+in the collapsed rail); `AdminNavLinkProps` is re-exported from `admin-shell` for `renderLink`
+consumers.
+
+**Project** — the demo's default appearance is the emerald accent on the ivy gradient over the
+`#e6efeb` page; the table search fields are called "Filter" now that the header has a global
+search; README documents the install pitfalls the protocol hit (`tsconfig` paths beside
+`components.json`, `init` flags, `--yes`/`--overwrite` semantics, where `isAdminAppearance` and
+`defaultAdminAppearance` live, `AppearanceMenu defaults`, the transparent `body` under
+`AppearanceCanvas`).
 
 ## 0.45.0 — 2026-08-21
 
