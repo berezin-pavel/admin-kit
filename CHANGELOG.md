@@ -39,6 +39,14 @@ for `row-actions` and whatever dialog the consumer opens from it; the widget own
 `loading` and the empty state behave like every other widget; `labels` localize the empty title
 and the actions column's accessible name, and `locale-ru` ships the `widgetTreeTable` slice.
 
+**Changed** — `admin-theme` declares `--destructive-mark` and `--destructive-mark-foreground`
+(aliases of the destructive pair in the base theme), and `admin-appearance` derives them per
+surface: the most saturated red that keeps 3:1 against the gradient at rest, with a 4.5:1
+foreground of its own. `notifications-menu` paints its unread dot, icon and counter badge with
+them — on a dark green or navy chrome those marks were the pale salmon that destructive *text*
+needs for 4.5:1; non-text marks only need 3:1 and can be red. See the addendum to ADR 0003;
+the token is not for text and not guaranteed under hover tints.
+
 **Project** — the demo gained a Products page (`/demo/products`, `/demo-flush/products`): the
 store catalogue in a tree table with sections and subsections, per-row and per-section actions
 that edit through `form-dialog` and delete through `confirm-dialog`, "Add section" in the page

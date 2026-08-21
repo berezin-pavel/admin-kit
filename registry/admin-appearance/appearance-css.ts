@@ -73,6 +73,12 @@ const DESTRUCTIVE_ON_DARK: Oklch = { l: 0.78, c: 0.13, h: 22 }
 const DESTRUCTIVE_ON_LIGHT: Oklch = { l: 0.5, c: 0.2, h: 27 }
 const DESTRUCTIVE_FILL_ALPHAS: readonly number[] = [0.1, 0.2]
 const DESTRUCTIVE_HOVER_TINT_ALPHAS: readonly number[] = [0.08, 0.16]
+const DESTRUCTIVE_MARK_CONTRAST_MIN = 3.05
+const DESTRUCTIVE_MARK_START: Oklch = { l: 0.63, c: 0.22, h: 24 }
+const DESTRUCTIVE_MARK_LIGHTNESS_STEP = 0.01
+const DESTRUCTIVE_MARK_CHROMA_STEP = 0.006
+const DESTRUCTIVE_MARK_MAX_ITERATIONS = 60
+const GAMUT_TOLERANCE = 0.01
 
 export function destructiveInkLegible(
   inkHex: string,
@@ -164,6 +170,53 @@ export function gradientDestructive(stops: GradientStops): {
   }
 
   return destructivePair(best.hex, best.value)
+}
+
+function inSrgbGamut(ink: Oklch, hex: string): boolean {
+  const back = hexToOklch(hex)
+  return (
+    Math.abs(back.l - ink.l) <= GAMUT_TOLERANCE &&
+    Math.abs(back.c - ink.c) <= GAMUT_TOLERANCE
+  )
+}
+
+export function gradientDestructiveMark(stops: GradientStops): {
+  mark: string
+  markForeground: string
+} {
+  const { destructive, destructiveForeground } = gradientDestructive(stops)
+  if (gradientForeground(stops) !== NEAR_WHITE) {
+    return { mark: destructive, markForeground: destructiveForeground }
+  }
+
+  const samples = distinctSamples(stops.stops, DESTRUCTIVE_SAMPLE_COUNT)
+  let ink: Oklch = DESTRUCTIVE_MARK_START
+  for (let iteration = 0; iteration < DESTRUCTIVE_MARK_MAX_ITERATIONS; iteration++) {
+    const inkHex = oklchToHex(ink)
+    const textContrast = Math.max(
+      contrastRatio(inkHex, NEAR_WHITE_HEX),
+      contrastRatio(inkHex, NEAR_BLACK_HEX)
+    )
+    if (
+      inSrgbGamut(ink, inkHex) &&
+      textContrast >= DESTRUCTIVE_CONTRAST_MIN &&
+      samples.every(
+        (sample) => contrastRatio(inkHex, sample) >= DESTRUCTIVE_MARK_CONTRAST_MIN
+      )
+    ) {
+      return {
+        mark: inkHex,
+        markForeground: destructivePair(inkHex, inkHex).destructiveForeground,
+      }
+    }
+    ink = {
+      l: Math.min(ink.l + DESTRUCTIVE_MARK_LIGHTNESS_STEP, 1),
+      c: Math.max(ink.c - DESTRUCTIVE_MARK_CHROMA_STEP, 0),
+      h: ink.h,
+    }
+  }
+
+  return { mark: destructive, markForeground: destructiveForeground }
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -331,6 +384,7 @@ function customColorLines(
       const stops = solidStops(hex)
       const variable = customColorVariable(color)
       const { destructive, destructiveForeground } = gradientDestructive(stops)
+      const { mark, markForeground } = gradientDestructiveMark(stops)
       const inkHex = solidInkHex(hex)
       const ink =
         inkHex === solidForegroundHex(hex)
@@ -342,6 +396,8 @@ function customColorLines(
         `  ${variable}-ink: ${ink};`,
         `  ${variable}-destructive: ${destructive};`,
         `  ${variable}-destructive-foreground: ${destructiveForeground};`,
+        `  ${variable}-destructive-mark: ${mark};`,
+        `  ${variable}-destructive-mark-foreground: ${markForeground};`,
       ]
     })
     .join("\n")
@@ -355,6 +411,8 @@ export function customColorSurface(color: CustomColor): string {
     `  --surface-ink: var(${variable}-ink);`,
     `  --surface-destructive: var(${variable}-destructive);`,
     `  --surface-destructive-foreground: var(${variable}-destructive-foreground);`,
+    `  --surface-destructive-mark: var(${variable}-destructive-mark);`,
+    `  --surface-destructive-mark-foreground: var(${variable}-destructive-mark-foreground);`,
   ].join("\n")
 }
 
@@ -386,6 +444,11 @@ function gradientVariableBlock(scheme: "light" | "dark"): string {
     lines.push(
       `  --gradient-${gradient.id}-destructive-foreground: ${destructiveForeground};`
     )
+    const { mark, markForeground } = gradientDestructiveMark(stops)
+    lines.push(`  --gradient-${gradient.id}-destructive-mark: ${mark};`)
+    lines.push(
+      `  --gradient-${gradient.id}-destructive-mark-foreground: ${markForeground};`
+    )
   }
   return lines.join("\n")
 }
@@ -413,7 +476,9 @@ const SURFACE_DECLARATIONS = `
   --sidebar-active: color-mix(in oklch, var(--surface-ink) 14%, transparent);
   --sidebar-active-foreground: var(--surface-foreground);
   --destructive: var(--surface-destructive);
-  --destructive-foreground: var(--surface-destructive-foreground);`
+  --destructive-foreground: var(--surface-destructive-foreground);
+  --destructive-mark: var(--surface-destructive-mark);
+  --destructive-mark-foreground: var(--surface-destructive-mark-foreground);`
 
 const SURFACE_RULE = `[data-gradient] {${SURFACE_DECLARATIONS}
 }`
@@ -431,7 +496,7 @@ function popupSelectorBlocks(): string {
   return gradientIds
     .map(
       (id) =>
-        `body:has([data-gradient="${id}"] ${OPEN_TRIGGER}) ${POPUP_SLOTS} {\n  --surface-gradient: var(--gradient-${id});\n  --surface-foreground: var(--gradient-${id}-foreground);\n  --surface-destructive: var(--gradient-${id}-destructive);\n  --surface-destructive-foreground: var(--gradient-${id}-destructive-foreground);\n}`
+        `body:has([data-gradient="${id}"] ${OPEN_TRIGGER}) ${POPUP_SLOTS} {\n  --surface-gradient: var(--gradient-${id});\n  --surface-foreground: var(--gradient-${id}-foreground);\n  --surface-destructive: var(--gradient-${id}-destructive);\n  --surface-destructive-foreground: var(--gradient-${id}-destructive-foreground);\n  --surface-destructive-mark: var(--gradient-${id}-destructive-mark);\n  --surface-destructive-mark-foreground: var(--gradient-${id}-destructive-mark-foreground);\n}`
     )
     .join("\n\n")
 }
@@ -466,7 +531,7 @@ function surfaceSelectorBlocks(): string {
   return gradientIds
     .map(
       (id) =>
-        `[data-gradient="${id}"] {\n  --surface-gradient: var(--gradient-${id});\n  --surface-foreground: var(--gradient-${id}-foreground);\n  --surface-destructive: var(--gradient-${id}-destructive);\n  --surface-destructive-foreground: var(--gradient-${id}-destructive-foreground);\n}`
+        `[data-gradient="${id}"] {\n  --surface-gradient: var(--gradient-${id});\n  --surface-foreground: var(--gradient-${id}-foreground);\n  --surface-destructive: var(--gradient-${id}-destructive);\n  --surface-destructive-foreground: var(--gradient-${id}-destructive-foreground);\n  --surface-destructive-mark: var(--gradient-${id}-destructive-mark);\n  --surface-destructive-mark-foreground: var(--gradient-${id}-destructive-mark-foreground);\n}`
     )
     .join("\n\n")
 }

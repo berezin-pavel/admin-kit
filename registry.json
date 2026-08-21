@@ -50,7 +50,9 @@
           "success-foreground": "oklch(0.985 0 0)",
           "warning": "oklch(0.55 0.14 55)",
           "warning-foreground": "oklch(0.985 0 0)",
-          "destructive-foreground": "oklch(0.985 0 0)"
+          "destructive-foreground": "oklch(0.985 0 0)",
+          "destructive-mark": "var(--destructive)",
+          "destructive-mark-foreground": "var(--destructive-foreground)"
         },
         "dark": {
           "background": "oklch(0.145 0 0)",
@@ -90,7 +92,9 @@
           "success-foreground": "oklch(0.145 0 0)",
           "warning": "oklch(0.55 0.14 55)",
           "warning-foreground": "oklch(0.985 0 0)",
-          "destructive-foreground": "oklch(0.145 0 0)"
+          "destructive-foreground": "oklch(0.145 0 0)",
+          "destructive-mark": "var(--destructive)",
+          "destructive-mark-foreground": "var(--destructive-foreground)"
         }
       }
     },

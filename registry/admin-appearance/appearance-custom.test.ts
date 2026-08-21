@@ -5,6 +5,7 @@ import {
   customColorsOf,
   customDarkColor,
   gradientDestructive,
+  gradientDestructiveMark,
   isAdminAppearance,
   solidForeground,
   solidForegroundHex,
@@ -335,6 +336,29 @@ describe("a custom surface across the colour cube", () => {
       }
 
       expect(worst, worstHex).toBeGreaterThanOrEqual(4.5)
+    }
+  )
+
+  it.each(CUBE_CHANNELS)(
+    "keeps the destructive mark at 3 to 1 for every colour whose red is %i",
+    (red) => {
+      let worst = Infinity
+      let worstHex = ""
+
+      for (const green of CUBE_CHANNELS) {
+        for (const blue of CUBE_CHANNELS) {
+          const hex = cubeColor(red, green, blue)
+          const { mark } = gradientDestructiveMark(customColorStops(hex))
+          const markHex = mark.startsWith("#") ? mark : oklchStringToHex(mark)
+          const ratio = contrastRatio(markHex, hex)
+          if (ratio < worst) {
+            worst = ratio
+            worstHex = `${hex} ${mark}`
+          }
+        }
+      }
+
+      expect(worst, worstHex).toBeGreaterThanOrEqual(3)
     }
   )
 

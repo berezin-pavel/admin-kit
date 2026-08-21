@@ -265,6 +265,13 @@ admin-kit theme, three of the four tones render incorrectly; `neutral`
 rests on the standard tokens and doesn't depend on the theme.
 `--destructive` itself is overridden by the theme with a muted color: the
 standard red stands out of line when it fills an entire toast.
+`notifications-menu` paints its unread dot, icon and counter badge with a
+sixth token, `--destructive-mark` (plus `--destructive-mark-foreground` for
+the counter's digits): a red for non-text marks. In the base theme it
+aliases `--destructive`; on an appearance surface it is the most saturated
+red that keeps 3:1 against the surface (the non-text minimum), where the
+destructive *text* ink — which must keep 4.5:1 — on a dark green or navy
+chrome can only be a pale salmon.
 
 `admin-shell` is the layout for the whole application, not a chunk of
 markup inside a page: the shell takes up the full screen height (`h-svh`)

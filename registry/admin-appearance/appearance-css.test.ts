@@ -4,11 +4,12 @@ import {
   gradientCss,
   destructiveInkLegible,
   gradientDestructive,
+  gradientDestructiveMark,
   gradientForeground,
   isAdminAppearance,
 } from "./appearance-css"
 import { NEAR_BLACK_HEX, NEAR_WHITE_HEX } from "./appearance-accent"
-import { contrastRatio, oklchToHex } from "./appearance-color"
+import { contrastRatio, oklchToHex, sampleGradient } from "./appearance-color"
 import {
   defaultAdminAppearance,
   gradientIds,
@@ -22,6 +23,56 @@ function oklchStringToHex(value: string): string {
   }
   return oklchToHex({ l: Number(match[1]), c: Number(match[2]), h: Number(match[3]) })
 }
+
+function colourToHex(value: string): string {
+  return value.startsWith("#") ? value : oklchStringToHex(value)
+}
+
+describe("gradientDestructiveMark", () => {
+  it("keeps the mark at 3 to 1 along every gradient, with a 4.5 to 1 text foreground of its own", () => {
+    for (const gradient of gradientPalette) {
+      for (const scheme of [gradient.light, gradient.dark]) {
+        const { mark, markForeground } = gradientDestructiveMark(scheme)
+        const markHex = colourToHex(mark)
+        for (const sample of sampleGradient(scheme.stops, 33)) {
+          expect(
+            contrastRatio(markHex, sample),
+            `${gradient.id} ${mark} on ${sample}`
+          ).toBeGreaterThanOrEqual(3)
+        }
+        expect(
+          contrastRatio(markHex, colourToHex(markForeground)),
+          `${gradient.id} mark foreground`
+        ).toBeGreaterThanOrEqual(4.5)
+      }
+    }
+  })
+
+  it("is never paler than the destructive text ink on a dark surface", () => {
+    const navy = { angle: 135, stops: ["#1e1b4b", "#1e1b4b", "#1e1b4b"] as const }
+    const { mark } = gradientDestructiveMark(navy)
+    const { destructive } = gradientDestructive(navy)
+    expect(contrastRatio(colourToHex(mark), "#1e1b4b")).toBeGreaterThanOrEqual(3)
+    expect(contrastRatio(colourToHex(mark), "#1e1b4b")).toBeLessThan(
+      contrastRatio(oklchStringToHex(destructive), "#1e1b4b")
+    )
+  })
+
+  it("reuses the destructive text ink where the text is dark", () => {
+    const sand = gradientPalette.find((gradient) => gradientForeground(gradient.light).startsWith("oklch(0.205"))
+    expect(sand).toBeDefined()
+    if (!sand) return
+    expect(gradientDestructiveMark(sand.light).mark).toBe(gradientDestructive(sand.light).destructive)
+  })
+
+  it("emits the mark pair per gradient and wires it into the surface rule", () => {
+    const css = appearanceCss(defaultAdminAppearance)
+    expect(css).toContain("--gradient-ember-destructive-mark:")
+    expect(css).toContain("--gradient-ember-destructive-mark-foreground:")
+    expect(css).toContain("--destructive-mark: var(--surface-destructive-mark);")
+    expect(css).toContain("--surface-destructive-mark: var(--gradient-ember-destructive-mark);")
+  })
+})
 
 describe("gradientDestructive", () => {
   it("keeps the destructive ink at 4.5 to 1 along every gradient, at 3 to 1 on its own tinted fills and under the foreground hover tints, and its own foreground legible", () => {

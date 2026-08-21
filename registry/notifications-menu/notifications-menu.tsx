@@ -82,7 +82,7 @@ export function NotificationsMenu({
               <Badge
                 aria-hidden="true"
                 variant="destructive"
-                className="absolute -top-1.5 -right-1.5 h-4 min-w-4 justify-center bg-destructive px-1 text-[0.625rem] leading-none text-destructive-foreground dark:bg-destructive dark:text-destructive-foreground"
+                className="absolute -top-1.5 -right-1.5 h-4 min-w-4 justify-center bg-destructive-mark px-1 text-[0.625rem] leading-none text-destructive-mark-foreground dark:bg-destructive-mark dark:text-destructive-mark-foreground"
               >
                 {unreadCount > 9 ? "9+" : unreadCount}
               </Badge>
@@ -121,7 +121,7 @@ export function NotificationsMenu({
                   data-read={notification.read ? "" : undefined}
                   className={cn(
                     "items-start gap-2 py-2",
-                    !notification.read && "bg-destructive/5"
+                    !notification.read && "bg-destructive-mark/5"
                   )}
                   onClick={() => onSelect?.(notification.id)}
                 >
@@ -135,14 +135,14 @@ export function NotificationsMenu({
                           "size-4",
                           notification.read
                             ? "text-muted-foreground"
-                            : "text-destructive"
+                            : "text-destructive-mark"
                         )}
                       />
                     ) : (
                       <span
                         className={cn(
                           "size-2 rounded-full",
-                          notification.read ? "bg-transparent" : "bg-destructive"
+                          notification.read ? "bg-transparent" : "bg-destructive-mark"
                         )}
                       />
                     )}
@@ -162,7 +162,7 @@ export function NotificationsMenu({
                           <span className="sr-only">{unreadItemLabel}</span>
                           <span
                             aria-hidden="true"
-                            className="size-1.5 shrink-0 rounded-full bg-destructive"
+                            className="size-1.5 shrink-0 rounded-full bg-destructive-mark"
                           />
                         </>
                       ) : null}
