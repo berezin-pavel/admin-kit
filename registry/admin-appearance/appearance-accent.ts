@@ -54,11 +54,36 @@ function nearBlack(hue: number): Oklch {
 
 function readableForeground(background: Oklch, hue: number) {
   const backgroundHex = oklchToHex(background)
+  const whiteRatio = contrastRatio(backgroundHex, oklchToHex(nearWhite(hue)))
 
-  return contrastRatio(backgroundHex, oklchToHex(nearWhite(hue))) >=
-    contrastRatio(backgroundHex, oklchToHex(nearBlack(hue)))
+  if (whiteRatio >= LEGIBLE_CONTRAST) {
+    return nearWhite(hue)
+  }
+
+  return whiteRatio >= contrastRatio(backgroundHex, oklchToHex(nearBlack(hue)))
     ? nearWhite(hue)
     : nearBlack(hue)
+}
+
+const WHITE_TEXT_MAX_DARKENING = 0.08
+const WHITE_TEXT_CONTRAST_MARGIN = 0.06
+
+function preferWhiteText(color: Oklch, min: number): Oklch {
+  const whiteHex = oklchToHex(nearWhite(color.h))
+  for (
+    let l = color.l;
+    l >= Math.max(min, color.l - WHITE_TEXT_MAX_DARKENING);
+    l -= LIGHTNESS_SEARCH_STEP
+  ) {
+    const candidate: Oklch = { ...color, l }
+    if (
+      contrastRatio(oklchToHex(candidate), whiteHex) >=
+      LEGIBLE_CONTRAST + WHITE_TEXT_CONTRAST_MARGIN
+    ) {
+      return candidate
+    }
+  }
+  return color
 }
 
 const LEGIBLE_CONTRAST = 4.5
@@ -179,22 +204,18 @@ export function deriveAccentTokens(accentHex: string): {
   const brand = hexToOklch(accentHex)
   const surface = hexToOklch(FIXED_SURFACE)
 
-  const lightPrimary: Oklch = searchLegibleLightness(
-    brand,
-    0.35,
-    0.72,
-    legibilityRatio
+  const lightPrimary: Oklch = preferWhiteText(
+    searchLegibleLightness(brand, 0.35, 0.72, legibilityRatio),
+    0.35
   )
   const darkPrimaryBase: Oklch = {
     h: brand.h,
     c: lightPrimary.c * 0.8,
     l: clamp(lightPrimary.l - 0.076, 0.28, 0.62),
   }
-  const darkPrimary: Oklch = searchLegibleLightness(
-    darkPrimaryBase,
-    0.28,
-    0.62,
-    legibilityRatio
+  const darkPrimary: Oklch = preferWhiteText(
+    searchLegibleLightness(darkPrimaryBase, 0.28, 0.62, legibilityRatio),
+    0.28
   )
 
   const lightSidebarPrimaryBase: Oklch = {
