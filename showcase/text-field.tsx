@@ -1,6 +1,4 @@
-import { phoneFilter, textFilters } from "@/registry/text-field/text-filters"
-
-import { TextFieldView } from "./text-field-view"
+import { TextFieldFilterView, TextFieldView } from "./text-field-view"
 import type { ShowcaseEntry } from "./types"
 
 export const textFieldEntry: ShowcaseEntry = {
@@ -49,43 +47,22 @@ export const textFieldEntry: ShowcaseEntry = {
     {
       id: "phone",
       name: "Phone filter",
-      render: () => (
-        <TextFieldView
-          label="Phone"
-          placeholder="+7 (999) 123-45-67"
-          filter={phoneFilter("+7 (###) ###-##-##")}
-        />
-      ),
+      render: () => <TextFieldFilterView kind="phone" />,
     },
     {
       id: "email-filter",
       name: "Email filter",
-      render: () => (
-        <TextFieldView
-          label="Email"
-          placeholder="name@example.com"
-          filter={textFilters.email}
-        />
-      ),
+      render: () => <TextFieldFilterView kind="email" />,
     },
     {
       id: "slug",
       name: "Slug filter",
-      render: () => (
-        <TextFieldView
-          label="URL slug"
-          placeholder="nova-sneakers"
-          hint="Lowercase latin letters, digits and dashes; Cyrillic is transliterated"
-          filter={textFilters.slug}
-        />
-      ),
+      render: () => <TextFieldFilterView kind="slug" />,
     },
     {
       id: "code",
       name: "Code filter",
-      render: () => (
-        <TextFieldView label="SKU" placeholder="FTW-SNK-001" filter={textFilters.code} />
-      ),
+      render: () => <TextFieldFilterView kind="code" />,
     },
     {
       id: "disabled",
