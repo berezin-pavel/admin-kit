@@ -6,7 +6,7 @@ import { PageListFilters } from "./page-list-filters"
 import type { PageListFilter } from "./page-list"
 
 const baseFilters: readonly PageListFilter[] = [
-  { id: "search", label: "Search", kind: "search", value: "" },
+  { id: "search", label: "Filter", kind: "search", value: "" },
   {
     id: "role",
     label: "Role",
@@ -36,7 +36,7 @@ describe("page-list-filters reset control", () => {
 
   it("stays hidden without onResetFilters even if a filter is set", () => {
     const filters: readonly PageListFilter[] = [
-      { id: "search", label: "Search", kind: "search", value: "acme" },
+      { id: "search", label: "Filter", kind: "search", value: "acme" },
     ]
 
     render(<PageListFilters filters={filters} resetFiltersLabel="Reset filters" />)
@@ -50,7 +50,7 @@ describe("page-list-filters reset control", () => {
     const user = userEvent.setup()
     const onResetFilters = vi.fn()
     const filters: readonly PageListFilter[] = [
-      { id: "search", label: "Search", kind: "search", value: "acme" },
+      { id: "search", label: "Filter", kind: "search", value: "acme" },
       baseFilters[1],
     ]
 

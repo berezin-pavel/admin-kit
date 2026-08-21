@@ -204,8 +204,8 @@ export function WidgetTableShowcaseView({
               setSearch(event.target.value)
               setPage(1)
             }}
-            placeholder="Search orders"
-            aria-label="Search orders"
+            placeholder="Filter orders"
+            aria-label="Filter orders"
             className="w-48"
           />
         ) : undefined
@@ -268,8 +268,8 @@ export function WidgetTableFilteredEmptyView() {
         <Input
           value={search}
           onChange={(event) => setSearch(event.target.value)}
-          placeholder="Search orders"
-          aria-label="Search orders"
+          placeholder="Filter orders"
+          aria-label="Filter orders"
           className="w-48"
         />
       }

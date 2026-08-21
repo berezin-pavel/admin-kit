@@ -53,7 +53,7 @@ export function PageListLive() {
   }
 
   const filters: readonly PageListFilter[] = [
-    { id: "search", label: "Search", kind: "search", value: search },
+    { id: "search", label: "Filter", kind: "search", value: search },
     {
       id: "role",
       label: "Role",

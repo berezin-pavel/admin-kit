@@ -5,7 +5,7 @@ import { PageListLive } from "./page-list-live"
 import type { ShowcaseEntry } from "./types"
 
 const userFilters: readonly PageListFilter[] = [
-  { id: "search", label: "Search", kind: "search", value: "" },
+  { id: "search", label: "Filter", kind: "search", value: "" },
   {
     id: "role",
     label: "Role",
@@ -16,7 +16,7 @@ const userFilters: readonly PageListFilter[] = [
 ]
 
 const emptySearchFilters: readonly PageListFilter[] = [
-  { id: "search", label: "Search", kind: "search", value: "zzz" },
+  { id: "search", label: "Filter", kind: "search", value: "zzz" },
   {
     id: "role",
     label: "Role",

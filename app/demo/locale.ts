@@ -365,7 +365,7 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
     },
     standaloneTable: {
       title: "Recent orders",
-      searchPlaceholder: "Search orders",
+      searchPlaceholder: "Filter orders",
     },
     colorField: {
       label: "Category tag color",
@@ -424,7 +424,7 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       exportToastTitle: "Export started",
       exportToastDescription: (rows: number) =>
         `${rows} rows are ready as CSV`,
-      searchFilterLabel: "Search",
+      searchFilterLabel: "Filter",
       statusFilterLabel: "Status",
       dateRangeFilterLabel: "Order date",
       resetFiltersLabel: "Reset filters",
@@ -525,7 +525,7 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       tabTree: "Catalogue",
       tabCategories: "Categories",
       tabProducts: "Products",
-      searchPlaceholder: "Search…",
+      searchPlaceholder: "Filter…",
       resetFiltersLabel: "Reset filters",
       categoryLabel: "Category",
       categoryFilterPlaceholder: "All categories",
@@ -714,7 +714,7 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
     },
     standaloneTable: {
       title: "Последние заказы",
-      searchPlaceholder: "Поиск по заказам",
+      searchPlaceholder: "Фильтр по заказам",
     },
     colorField: {
       label: "Цвет метки категории",
@@ -771,7 +771,7 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       exportToastTitle: "Экспорт запущен",
       exportToastDescription: (rows: number) =>
         `${rows} строк выгружено в CSV`,
-      searchFilterLabel: "Поиск",
+      searchFilterLabel: "Фильтр",
       statusFilterLabel: "Статус",
       dateRangeFilterLabel: "Дата заказа",
       resetFiltersLabel: "Сбросить фильтры",
@@ -871,7 +871,7 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       tabTree: "Каталог",
       tabCategories: "Категории",
       tabProducts: "Товары",
-      searchPlaceholder: "Поиск…",
+      searchPlaceholder: "Фильтр…",
       resetFiltersLabel: "Сбросить фильтры",
       categoryLabel: "Категория",
       categoryFilterPlaceholder: "Все категории",
