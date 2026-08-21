@@ -92,3 +92,38 @@ test.describe("multi-select-field", () => {
     await expect(page.getByRole("button", { name: /^Remove / })).toHaveCount(3)
   })
 })
+
+test.describe("color-field", () => {
+  test("moves between presets with the arrow keys and closes on pick", async ({ page }) => {
+    await page.goto("/preview/color-field/filled")
+
+    await page.getByRole("button").first().click()
+    const radios = page.getByRole("radio")
+    await expect(radios.first()).toBeVisible()
+    await radios.first().focus()
+    await page.keyboard.press("ArrowRight")
+    await expect(radios.nth(1)).toBeFocused()
+    await page.keyboard.press("Enter")
+    await expect(page.getByRole("radiogroup")).toHaveCount(0)
+    await expect(page.getByRole("button").first()).toHaveText("#f97316")
+  })
+})
+
+test.describe("date-time-field", () => {
+  test("keeps the popover open after a day is picked and closes it on Enter", async ({
+    page,
+  }) => {
+    await page.goto("/preview/date-time-field/empty")
+
+    const trigger = page.getByRole("button").first()
+    await trigger.click()
+    const grid = page.getByRole("grid")
+    await expect(grid).toBeVisible()
+    await page.getByRole("gridcell").filter({ hasText: /^15$/ }).getByRole("button").first().click()
+    await expect(grid).toBeVisible()
+    await page.getByRole("gridcell").filter({ hasText: /^16$/ }).getByRole("button").first().focus()
+    await page.keyboard.press("Enter")
+    await expect(grid).toHaveCount(0)
+    await expect(trigger).toContainText("16, ")
+  })
+})

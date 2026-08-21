@@ -137,3 +137,42 @@ test("a long form does not add a second scrollbar to the page", async ({
   )
   expect(documentScroll).toBe(0)
 })
+
+test("hiding a column leaves the other columns' widths in place when one column grows", async ({
+  page,
+}) => {
+  await page.goto("/preview/widget-table/grow-column")
+
+  const widths = async () =>
+    await page.getByRole("columnheader").evaluateAll((headers) =>
+      headers.map((header) => [
+        header.textContent?.trim() ?? "",
+        Math.round(header.getBoundingClientRect().width),
+      ])
+    )
+
+  const before = await widths()
+  const grown = before.reduce((a, b) => (a[1] > b[1] ? a : b))
+  await page.getByRole("button", { name: "Columns" }).click()
+  const items = page.getByRole("menuitemcheckbox")
+  await expect(items.first()).toBeVisible()
+  const count = await items.count()
+  for (let i = 0; i < count; i += 1) {
+    const item = items.nth(i)
+    if ((await item.isDisabled()) || (await item.textContent())?.trim() === grown[0]) {
+      continue
+    }
+    await item.click()
+    break
+  }
+  await page.keyboard.press("Escape")
+  await expect(page.getByRole("columnheader")).toHaveCount(before.length - 1)
+
+  const after = await widths()
+  for (const [title, width] of after) {
+    if (title === grown[0]) continue
+    const previous = before.find(([name]) => name === title)
+    expect(previous, title).toBeDefined()
+    expect(Math.abs(Number(previous?.[1]) - Number(width)), title).toBeLessThanOrEqual(1)
+  }
+})

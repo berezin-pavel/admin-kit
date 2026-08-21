@@ -198,9 +198,9 @@ test("the products page expands a category and edits a product through a dialog"
   await expect(sneakers).toHaveAttribute("aria-expanded", "true")
   await expect(page.getByText("Nova Sneakers")).toBeVisible()
 
-  await page.getByRole("button", { name: "Collapse all" }).click()
+  await page.getByRole("button", { name: "Collapse all" }).last().click()
   await expect(page.locator('[data-slot="tree-table-row"]')).toHaveCount(0)
-  await page.getByRole("button", { name: "Expand all" }).click()
+  await page.getByRole("button", { name: "Expand all" }).last().click()
 
   const row = page.locator('[data-slot="tree-table-row"]', {
     hasText: "Nova Sneakers",
@@ -219,4 +219,20 @@ test("the products page expands a category and edits a product through a dialog"
   await proRow.getByRole("button", { name: "Delete" }).click()
   await page.getByRole("alertdialog").getByRole("button", { name: "Delete" }).click()
   await expect(page.getByText("Nova Sneakers Pro")).toHaveCount(0)
+})
+
+test("the header's fullscreen button toggles the browser's full-screen mode", async ({
+  page,
+}) => {
+  await page.goto("/demo-flush")
+  await page.waitForLoadState("networkidle")
+
+  await page.getByRole("button", { name: "Enter full screen" }).click()
+  await expect
+    .poll(() => page.evaluate(() => document.fullscreenElement !== null))
+    .toBe(true)
+  await page.getByRole("button", { name: "Exit full screen" }).click()
+  await expect
+    .poll(() => page.evaluate(() => document.fullscreenElement === null))
+    .toBe(true)
 })
