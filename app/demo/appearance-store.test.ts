@@ -1,9 +1,10 @@
 import { afterEach, describe, expect, it, vi } from "vitest"
 
-import { appearanceThemes } from "@/registry/admin-appearance/appearance-themes"
-import type {
-  AdminAppearance,
-  CustomColor,
+import {
+  isAccentId,
+  isGradientId,
+  type AdminAppearance,
+  type CustomColor,
 } from "@/registry/admin-appearance/appearance-palette"
 
 import { DEMO_APPEARANCE_COOKIE } from "./demo-cookie"
@@ -14,8 +15,6 @@ import {
   isAdminAppearance,
   parseDemoAppearance,
 } from "./appearance-store"
-
-const jadeTheme = appearanceThemes.find((theme) => theme.id === "jade")
 
 function withAccent(accent: CustomColor): AdminAppearance {
   return { ...DEMO_APPEARANCE_DEFAULT, accent }
@@ -40,18 +39,26 @@ describe("DEMO_APPEARANCE_DEFAULT", () => {
     expect(isAdminAppearance(DEMO_APPEARANCE_DEFAULT)).toBe(true)
   })
 
-  it("finds the Jade theme in the shipped presets", () => {
-    expect(jadeTheme).toBeDefined()
-  })
-
-  it("is the Jade preset plus the demo's heading choices", () => {
+  it("is the emerald accent on the ivy gradient over a soft green page", () => {
     expect(DEMO_APPEARANCE_DEFAULT).toEqual({
-      ...jadeTheme?.appearance,
+      accent: "emerald",
+      sidebar: "ivy",
+      header: "ivy",
+      signIn: "ivy",
+      page: "#e6efeb",
+      pages: {},
       blocks: {
         "overview.finance": { heading: "large" },
         "orders.table": { heading: "none" },
       },
     })
+  })
+
+  it("names palette entries that ship with the kit", () => {
+    expect(isAccentId(DEMO_APPEARANCE_DEFAULT.accent)).toBe(true)
+    expect(isGradientId(DEMO_APPEARANCE_DEFAULT.sidebar)).toBe(true)
+    expect(isGradientId(DEMO_APPEARANCE_DEFAULT.header)).toBe(true)
+    expect(isGradientId(DEMO_APPEARANCE_DEFAULT.signIn)).toBe(true)
   })
 
   it("leaves every block at the theme's own colours", () => {

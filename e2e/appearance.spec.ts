@@ -92,7 +92,7 @@ test("a per-page backdrop chosen in the menu paints only that page", async ({
 })
 
 test("the sidebar gradient and its burger panel follow the menu", async ({ page }) => {
-  await expect(page.locator("aside")).toHaveAttribute("data-gradient", "#24473d")
+  await expect(page.locator("aside")).toHaveAttribute("data-gradient", "ivy")
 
   const menu = await openMenu(page)
   await menu.getByRole("combobox", { name: "Sidebar" }).click()

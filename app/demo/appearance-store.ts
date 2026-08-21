@@ -15,10 +15,10 @@ import {
 } from "./demo-cookie"
 
 export const DEMO_APPEARANCE_DEFAULT: AdminAppearance = {
-  accent: "#12876f",
-  sidebar: "#24473d",
-  header: "#24473d",
-  signIn: "#16302a",
+  accent: "emerald",
+  sidebar: "ivy",
+  header: "ivy",
+  signIn: "ivy",
   page: "#e6efeb",
   pages: {},
   blocks: {
