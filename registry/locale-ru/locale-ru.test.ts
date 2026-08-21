@@ -5,9 +5,29 @@ import {
   gradientFamilies,
   gradientIds,
 } from "@/registry/admin-appearance/appearance-palette"
+import type { AppearanceLabels } from "@/registry/admin-appearance/appearance-provider"
+import type { AppearanceMenuLabels } from "@/registry/appearance-menu/appearance-menu"
+import type { GlobalSearchLabels } from "@/registry/global-search/global-search"
+import type { IconFieldLabels } from "@/registry/icon-field/icon-field"
+import type { IconName } from "@/registry/icon-field/icon-catalog"
+import type { NotificationsMenuLabels } from "@/registry/notifications-menu/notifications-menu"
 import { widgetTreeTableLabelDefaults } from "@/registry/widget-tree-table/widget-tree-table"
 
+import { iconNamesRu } from "./icon-names-ru"
 import { localeRu } from "./locale-ru"
+
+const appearanceSlice: AppearanceLabels = localeRu.adminAppearance
+const appearanceMenuSlice: AppearanceMenuLabels = localeRu.appearanceMenu
+const globalSearchSlice: GlobalSearchLabels = localeRu.globalSearch
+const notificationsSlice: NotificationsMenuLabels = localeRu.notificationsMenu
+const iconFieldSlice: IconFieldLabels = localeRu.iconField
+const iconNamesComplete: Readonly<Record<IconName, string>> = iconNamesRu
+
+describe("localeRu slices keep the shapes of the items they localize", () => {
+  it("type-checks against every labels interface", () => {
+    expect([appearanceSlice, appearanceMenuSlice, globalSearchSlice, notificationsSlice, iconFieldSlice, iconNamesComplete]).toHaveLength(6)
+  })
+})
 
 describe("localeRu gradient names", () => {
   it.each(gradientIds.map((id) => [id] as const))(

@@ -360,12 +360,7 @@
       "title": "Russian locale pack",
       "description": "A Russian dictionary for the kit's items: a single const, localeRu, sliced into the exact shapes the other items' labels and locale props expect, so a slice spreads or passes straight into a prop — labels={localeRu.widgetTable}, locale={localeRu.dateField.locale}. Covers widget-table, widget-list, widget-chart, widget-activity, widget-donut, widget-progress, state-loading, state-error, state-forbidden, state-offline, widget-placeholder, confirm-dialog, date-field, date-time-field, date-range-field, color-field, file-field, image-field, tags-field, sidebar-toggle, theme-toggle, admin-shell, language-toggle, user-menu, and breadcrumbs, and bundles date-fns's ru locale for the date fields and widget-activity. The dateRangeField slice reuses date-range-field's default presets' ids and range math and only swaps in Russian labels, so the two never drift apart. Not a runtime i18n solution — it's a static dictionary, and switching locale at runtime is on the consumer.",
       "registryDependencies": [
-        "berezin-pavel/admin-kit/date-range-field",
-        "berezin-pavel/admin-kit/global-search",
-        "berezin-pavel/admin-kit/notifications-menu",
-        "berezin-pavel/admin-kit/admin-appearance",
-        "berezin-pavel/admin-kit/appearance-menu",
-        "berezin-pavel/admin-kit/icon-field"
+        "berezin-pavel/admin-kit/date-range-field"
       ],
       "dependencies": [
         "date-fns"

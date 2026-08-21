@@ -11,6 +11,29 @@ The consumer project is already initialized for shadcn: Next or Vite,
 Tailwind v4, `components.json` at the root. From there, plain `shadcn add`
 does the job.
 
+Two things the CLI needs that a monorepo template does not give it. The
+`paths` aliases and `baseUrl` must live in the `tsconfig.json` that sits
+next to `components.json` — the CLI does not follow `extends`, and an
+alias inherited from a root `tsconfig.base.json` ends in
+`Could not resolve the following aliases: components, ui, lib, hooks, utils`.
+And TypeScript 6 treats `baseUrl` as an error (TS5101), so a project on
+TS 6 keeps it only with `"ignoreDeprecations": "6.0"`; the kit's consumers
+so far stay on TS 5.9, where the working fragment is:
+
+```json
+{ "compilerOptions": { "baseUrl": ".", "paths": { "@/*": ["./src/*"] } } }
+```
+
+The kit is written against the `base-nova` style (Base UI primitives). The
+non-interactive way to get it is
+
+```bash
+pnpm dlx -- shadcn@latest init --base base --preset nova --css-variables --yes
+```
+
+(`--preset base-nova` does not exist, and without the `--` pnpm swallows
+the CLI's own `--help`).
+
 The primitives items depend on (`card`, `table`, `skeleton`, `sheet`, and
 others) are installed by the CLI in whatever style is already chosen in
 the consumer project — admin-kit's items themselves don't require
@@ -31,7 +54,13 @@ Named explicitly on the command line, the theme is a `registry:theme`,
 and the CLI overwrites the project's color variables with it: it'll ask
 for confirmation if the project's CSS file — `app/globals.css` in Next,
 `src/index.css` in Vite — already has its own values, and once you agree
-it applies the admin-kit palette wholesale.
+it applies the admin-kit palette wholesale. With stdin closed (a script,
+CI) the question is not answered and the CLI exits 0 without touching the
+file — pass `--yes` there. Besides the variables the theme ships a base
+layer with `color-scheme: light` on `:root` and `dark` on `.dark`, so
+scrollbars and native controls follow the theme; `body` background and
+text come from `shadcn init`'s own base layer, which a hand-assembled
+project has to add itself.
 
 After that, any registry item installs with the same command and its name:
 
@@ -101,7 +130,9 @@ your layout, and put the menu in the shell's footer:
     sidebarGradient={appearance.sidebar ?? undefined}
     headerGradient={appearance.header ?? undefined}
     backdrop={resolvePageBackdrop(appearance, pageId)}
-    sidebarFooter={<AppearanceMenu value={appearance} onChange={save} pages={pages} />}
+    sidebarFooter={
+      <AppearanceMenu value={appearance} onChange={save} pages={pages} defaults={DEFAULT_APPEARANCE} />
+    }
   >
     …
   </AdminShell>
@@ -112,7 +143,9 @@ Rendering the style on the server means the colours arrive in the first
 HTML, so there is no flash of the installed palette. `AppearanceCanvas`
 is the one place that paints the browser canvas: place it once per page,
 next to the theme-color metas it also renders, and it puts the current
-backdrop's gradient on `html` and makes `body` transparent — the
+backdrop's gradient on `html` and makes `body` transparent (so a check
+of the page background reads `html`'s `background-image`, not `body`'s
+`background-color`) — the
 stylesheet itself only paints `[data-backdrop]` elements, so an inline
 preview of a block carrying a backdrop (a documentation page showing
 `page-auth`, say) never repaints the whole document. That is also what
@@ -125,9 +158,12 @@ change. `admin-theme` stays installed either way: it is what the panel
 falls back to before a stored appearance is read, and what every item's
 tokens are named after.
 
-An appearance read back from storage is untrusted: validate it with
-`isAdminAppearance` and fall back to `defaultAdminAppearance` when it
-fails. Two rules keep the result legible: never nest an opaque card
+`defaults` on the menu is what enables its "Reset to defaults" button —
+without it the consumer's administrator has no way back. An appearance
+read back from storage is untrusted: validate it with `isAdminAppearance`
+(exported from `appearance-css.ts` of the `admin-appearance` item) and
+fall back to `defaultAdminAppearance` (from `appearance-palette.ts`, next
+to `resolvePageBackdrop`) when it fails. Two rules keep the result legible: never nest an opaque card
 inside a block that has a gradient (it would inherit the gradient's
 white text on its own white surface), and put nothing in the work area
 outside a block — a page backdrop paints only the image and does not
@@ -455,8 +491,12 @@ pnpm dlx shadcn@latest add berezin-pavel/admin-kit/admin-shell#v0.1.0
 
 A repeated `add` without flags, in interactive mode, asks for
 confirmation on every file that's already in the project — and doesn't
-touch anything without a "yes". Without interactive mode (`--yes`, CI),
-such a file is skipped silently.
+touch anything without a "yes". Without a terminal (CI, a script with
+stdin closed) the question cannot be answered and the CLI exits 0 having
+written nothing — not the one file, the whole command. The non-interactive
+update is `--yes --overwrite`; review `git diff` afterwards, because the
+flag also refreshes the item's neighbours (`ui/dialog.tsx` beside
+`form-dialog`, say) that happen to have changed in the registry.
 
 ```bash
 pnpm dlx shadcn@latest add berezin-pavel/admin-kit/admin-shell --diff

@@ -1,11 +1,6 @@
 import { ru } from "date-fns/locale"
 
 import { defaultDateRangePresets } from "@/registry/date-range-field/date-range-field"
-import type { GradientFamily, GradientId } from "@/registry/admin-appearance/appearance-palette"
-import type { AppearanceLabels } from "@/registry/admin-appearance/appearance-provider"
-import type { AppearanceMenuLabels } from "@/registry/appearance-menu/appearance-menu"
-import type { GlobalSearchLabels } from "@/registry/global-search/global-search"
-import type { NotificationsMenuLabels } from "@/registry/notifications-menu/notifications-menu"
 
 const dateRangePresetLabelsRu: Record<string, string> = {
   today: "Сегодня",
@@ -18,7 +13,7 @@ const dateRangePresetLabelsRu: Record<string, string> = {
   "last-year": "Прошлый год",
 }
 
-const gradientNamesRu: Record<GradientId, string> = {
+const gradientNamesRu: Record<string, string> = {
   ink: "Чернила",
   basalt: "Базальт",
   graphite: "Графит",
@@ -108,7 +103,7 @@ const gradientNamesRu: Record<GradientId, string> = {
   flamingo: "Фламинго",
 }
 
-const gradientFamilyNamesRu: Record<GradientFamily, string> = {
+const gradientFamilyNamesRu: Record<string, string> = {
   neutral: "Нейтральные",
   earth: "Земля",
   red: "Красные",
@@ -155,7 +150,7 @@ const adminAppearanceRu = {
   headingNone: "Без заголовка",
   gradients: gradientNamesRu,
   families: gradientFamilyNamesRu,
-} satisfies AppearanceLabels
+}
 
 const appearanceThemeNamesRu: Record<string, string> = {
   slate: "Сланец",
@@ -216,7 +211,7 @@ const appearanceMenuRu = {
   accents: accentNamesRu,
   families: gradientFamilyNamesRu,
   themes: appearanceThemeNamesRu,
-} satisfies AppearanceMenuLabels
+}
 
 export const localeRu = {
   widgetTable: {
@@ -368,7 +363,7 @@ export const localeRu = {
     empty: "Ничего не найдено",
     title: "Поиск",
     close: "Закрыть",
-  } satisfies GlobalSearchLabels,
+  },
   notificationsMenu: {
     button: "Уведомления",
     title: "Уведомления",
@@ -381,7 +376,7 @@ export const localeRu = {
           : "непрочитанных"
       }`,
     unreadItem: "Непрочитанное",
-  } satisfies NotificationsMenuLabels,
+  },
   breadcrumbs: { label: "Хлебные крошки" },
   adminAppearance: adminAppearanceRu,
   appearanceMenu: appearanceMenuRu,

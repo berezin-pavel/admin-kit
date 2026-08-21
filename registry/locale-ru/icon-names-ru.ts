@@ -1,6 +1,4 @@
-import type { IconName } from "@/registry/icon-field/icon-catalog"
-
-export const iconNamesRu: Readonly<Record<IconName, string>> = {
+export const iconNamesRu: Readonly<Record<string, string>> = {
   "a-arrow-down": "буква A уменьшить шрифт",
   "a-arrow-up": "буква A увеличить шрифт",
   "a-large-small": "буква A размер шрифта",
