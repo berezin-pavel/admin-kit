@@ -1,11 +1,12 @@
 "use client"
 
-import { ChevronLeft, ChevronRight, ExternalLink } from "lucide-react"
+import { ChevronLeft, ChevronRight, ExternalLink, XIcon } from "lucide-react"
 
 import { Button, buttonVariants } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogHeader,
   DialogTitle,
@@ -23,6 +24,7 @@ export interface ImageFieldPreviewProps {
   previousLabel: string
   nextLabel: string
   counterLabel: (index: number, total: number) => string
+  closeLabel: string
 }
 
 export function ImageFieldPreview({
@@ -35,6 +37,7 @@ export function ImageFieldPreview({
   previousLabel,
   nextLabel,
   counterLabel,
+  closeLabel,
 }: ImageFieldPreviewProps) {
   const item = index === null ? undefined : items[index]
   const name = index === null ? "" : (item?.name ?? imageName(index))
@@ -53,6 +56,7 @@ export function ImageFieldPreview({
       }}
     >
       <DialogContent
+        showCloseButton={false}
         className="sm:max-w-3xl"
         onKeyDown={(event) => {
           if (!hasSiblings) return
@@ -68,8 +72,10 @@ export function ImageFieldPreview({
           }
         }}
       >
-        <DialogHeader className="flex-row items-center gap-2 pr-8">
-          <DialogTitle className="min-w-0 flex-1 truncate">{name}</DialogTitle>
+        <DialogHeader className="flex-row items-center gap-2">
+          <DialogTitle className="min-w-0 flex-1 wrap-anywhere">
+            {name}
+          </DialogTitle>
           {hasSiblings && index !== null ? (
             <span className="shrink-0 text-xs text-muted-foreground tabular-nums">
               {counterLabel(index, items.length)}
@@ -89,6 +95,14 @@ export function ImageFieldPreview({
               <ExternalLink />
             </a>
           ) : null}
+          <DialogClose
+            render={
+              <Button variant="ghost" size="icon-sm" className="shrink-0" />
+            }
+          >
+            <XIcon />
+            <span className="sr-only">{closeLabel}</span>
+          </DialogClose>
         </DialogHeader>
         {item ? (
           <div className="relative">

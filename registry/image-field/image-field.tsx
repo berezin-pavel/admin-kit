@@ -7,7 +7,6 @@ import {
   CircleAlert,
   ExternalLink,
   ImageUp,
-  Maximize2,
   Trash2,
 } from "lucide-react"
 
@@ -40,6 +39,7 @@ export interface ImageFieldLabels {
   previous?: string
   next?: string
   counter?: (index: number, total: number) => string
+  close?: string
 }
 
 export const imageFieldLabelDefaults: Required<ImageFieldLabels> = {
@@ -55,6 +55,7 @@ export const imageFieldLabelDefaults: Required<ImageFieldLabels> = {
   previous: "Previous image",
   next: "Next image",
   counter: (index, total) => `${index + 1} of ${total}`,
+  close: "Close",
 }
 
 export interface ImageFieldProps {
@@ -133,6 +134,18 @@ export function limitImageFieldFiles(
   return images.slice(0, Math.max(0, maxItems - currentCount))
 }
 
+const TILE_DRAG_THRESHOLD = 4
+
+interface TileDragState {
+  id: string
+  fromIndex: number
+  pointerId: number
+  startX: number
+  startY: number
+  moved: boolean
+  positions: readonly { id: string; centerX: number; centerY: number }[]
+}
+
 export function ImageField({
   value,
   onChange,
@@ -151,10 +164,10 @@ export function ImageField({
   const errorId = `${id}-error`
   const hintId = `${id}-hint`
   const inputRef = React.useRef<HTMLInputElement>(null)
-  const [draggedIndex, setDraggedIndex] = React.useState<number | null>(null)
-  const [dropIndex, setDropIndex] = React.useState<number | null>(null)
   const [filesOver, setFilesOver] = React.useState(false)
   const [previewIndex, setPreviewIndex] = React.useState<number | null>(null)
+  const [draggingId, setDraggingId] = React.useState<string | null>(null)
+  const [dropTargetId, setDropTargetId] = React.useState<string | null>(null)
   const resolvedLabels = { ...imageFieldLabelDefaults, ...labels }
   const isFull = maxItems !== undefined && value.length >= maxItems
   const canAdd = !disabled && !isFull
@@ -178,6 +191,153 @@ export function ImageField({
     if (next !== value) {
       onChange(next)
     }
+  }
+
+  const valueRef = React.useRef(value)
+  const moveRef = React.useRef(move)
+
+  React.useEffect(() => {
+    valueRef.current = value
+    moveRef.current = move
+  })
+
+  const tileElements = React.useRef(new Map<string, HTMLLIElement>())
+  const dragState = React.useRef<TileDragState | null>(null)
+  const dropTargetRef = React.useRef<string | null>(null)
+  const suppressClickId = React.useRef<string | null>(null)
+  const pendingDelta = React.useRef({ x: 0, y: 0 })
+  const scheduled = React.useRef(false)
+  const frame = React.useRef(0)
+
+  const paintTileTransform = React.useCallback(() => {
+    scheduled.current = false
+    const state = dragState.current
+    if (!state) return
+    const node = tileElements.current.get(state.id)
+    if (!node) return
+    const { x, y } = pendingDelta.current
+    node.style.transform = `translate3d(${x}px, ${y}px, 0)`
+  }, [])
+
+  React.useEffect(() => {
+    const handlePointerMove = (event: PointerEvent) => {
+      const state = dragState.current
+      if (!state || event.pointerId !== state.pointerId) return
+
+      const dx = event.clientX - state.startX
+      const dy = event.clientY - state.startY
+
+      if (!state.moved) {
+        if (Math.hypot(dx, dy) < TILE_DRAG_THRESHOLD) return
+        state.moved = true
+        state.positions = valueRef.current.map((item) => {
+          const node = tileElements.current.get(item.id)
+          const rect = node?.getBoundingClientRect()
+          return {
+            id: item.id,
+            centerX: rect ? rect.left + rect.width / 2 : 0,
+            centerY: rect ? rect.top + rect.height / 2 : 0,
+          }
+        })
+        const node = tileElements.current.get(state.id)
+        if (node && typeof node.setPointerCapture === "function") {
+          node.setPointerCapture(state.pointerId)
+        }
+        setDraggingId(state.id)
+      }
+
+      pendingDelta.current = { x: dx, y: dy }
+      if (!scheduled.current) {
+        scheduled.current = true
+        frame.current = window.requestAnimationFrame(paintTileTransform)
+      }
+
+      let nearestId = state.id
+      let nearestDistance = Number.POSITIVE_INFINITY
+      for (const position of state.positions) {
+        const distance = Math.hypot(
+          event.clientX - position.centerX,
+          event.clientY - position.centerY
+        )
+        if (distance < nearestDistance) {
+          nearestDistance = distance
+          nearestId = position.id
+        }
+      }
+      if (dropTargetRef.current !== nearestId) {
+        dropTargetRef.current = nearestId
+        setDropTargetId(nearestId)
+      }
+    }
+
+    const finishTileDrag = () => {
+      const state = dragState.current
+      if (!state) return
+
+      const node = tileElements.current.get(state.id)
+      if (node) node.style.transform = ""
+
+      if (state.moved) {
+        const toId = dropTargetRef.current
+        const toIndex = toId
+          ? valueRef.current.findIndex((item) => item.id === toId)
+          : -1
+        if (toIndex >= 0 && toIndex !== state.fromIndex) {
+          moveRef.current(state.fromIndex, toIndex)
+        }
+        suppressClickId.current = state.id
+      }
+
+      dragState.current = null
+      dropTargetRef.current = null
+      setDraggingId(null)
+      setDropTargetId(null)
+      if (scheduled.current) {
+        window.cancelAnimationFrame(frame.current)
+        scheduled.current = false
+      }
+    }
+
+    window.addEventListener("pointermove", handlePointerMove)
+    window.addEventListener("pointerup", finishTileDrag)
+    window.addEventListener("pointercancel", finishTileDrag)
+    window.addEventListener("lostpointercapture", finishTileDrag)
+    return () => {
+      window.removeEventListener("pointermove", handlePointerMove)
+      window.removeEventListener("pointerup", finishTileDrag)
+      window.removeEventListener("pointercancel", finishTileDrag)
+      window.removeEventListener("lostpointercapture", finishTileDrag)
+    }
+  }, [paintTileTransform])
+
+  const registerTile = (id: string) => (node: HTMLLIElement | null) => {
+    if (node) tileElements.current.set(id, node)
+    else tileElements.current.delete(id)
+  }
+
+  const startTileDrag = (
+    event: React.PointerEvent<HTMLLIElement>,
+    itemId: string,
+    index: number
+  ) => {
+    if (disabled || value.length <= 1 || event.button !== 0) return
+    dragState.current = {
+      id: itemId,
+      fromIndex: index,
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      startY: event.clientY,
+      moved: false,
+      positions: [],
+    }
+  }
+
+  const openPreviewUnlessDragged = (itemId: string, index: number) => {
+    if (suppressClickId.current === itemId) {
+      suppressClickId.current = null
+      return
+    }
+    setPreviewIndex(index)
   }
 
   return (
@@ -214,50 +374,45 @@ export function ImageField({
             return (
               <li
                 key={item.id}
+                ref={registerTile(item.id)}
                 aria-label={name}
-                draggable={!disabled && value.length > 1}
-                onDragStart={(event) => {
-                  setDraggedIndex(index)
-                  event.dataTransfer.effectAllowed = "move"
-                  event.dataTransfer.setData("text/plain", String(index))
-                }}
-                onDragOver={(event) => {
-                  if (draggedIndex === null) return
-                  event.preventDefault()
-                  event.dataTransfer.dropEffect = "move"
-                  setDropIndex(index)
-                }}
-                onDrop={(event) => {
-                  if (draggedIndex === null) return
-                  event.preventDefault()
-                  event.stopPropagation()
-                  move(draggedIndex, index)
-                  setDraggedIndex(null)
-                  setDropIndex(null)
-                }}
-                onDragEnd={() => {
-                  setDraggedIndex(null)
-                  setDropIndex(null)
-                }}
+                onPointerDown={(event) => startTileDrag(event, item.id, index)}
                 className={cn(
-                  "group relative size-32 shrink-0 overflow-hidden rounded-lg border bg-muted",
+                  "group relative size-32 shrink-0 touch-none overflow-hidden rounded-lg border bg-muted select-none",
                   item.error ? "border-destructive" : "border-border",
-                  draggedIndex === index && "opacity-40",
-                  dropIndex === index &&
-                    draggedIndex !== null &&
-                    draggedIndex !== index &&
+                  !disabled && value.length > 1 && "cursor-grab",
+                  draggingId === item.id && "z-10 cursor-grabbing opacity-40",
+                  dropTargetId === item.id &&
+                    draggingId !== null &&
+                    draggingId !== item.id &&
                     "ring-2 ring-ring"
                 )}
               >
-                <img
-                  src={item.url}
-                  alt={name}
-                  draggable={false}
-                  className={cn(
-                    "size-full object-cover",
-                    (isUploading || item.error) && "opacity-40"
-                  )}
-                />
+                {isReady ? (
+                  <button
+                    type="button"
+                    aria-label={`${resolvedLabels.preview}: ${name}`}
+                    className="block size-full"
+                    onClick={() => openPreviewUnlessDragged(item.id, index)}
+                  >
+                    <img
+                      src={item.url}
+                      alt={name}
+                      draggable={false}
+                      className="size-full object-cover"
+                    />
+                  </button>
+                ) : (
+                  <img
+                    src={item.url}
+                    alt={name}
+                    draggable={false}
+                    className={cn(
+                      "size-full object-cover",
+                      (isUploading || item.error) && "opacity-40"
+                    )}
+                  />
+                )}
                 {isUploading ? (
                   <div className="absolute inset-x-0 bottom-0 flex flex-col gap-1 bg-background/85 px-2 py-1.5">
                     <Progress
@@ -284,6 +439,7 @@ export function ImageField({
                   size="icon-xs"
                   aria-label={`${resolvedLabels.remove}: ${name}`}
                   disabled={disabled}
+                  onPointerDown={(event) => event.stopPropagation()}
                   onClick={() =>
                     onChange(value.filter((candidate) => candidate !== item))
                   }
@@ -299,24 +455,17 @@ export function ImageField({
                       size="icon-xs"
                       aria-label={`${resolvedLabels.moveEarlier}: ${name}`}
                       disabled={disabled || index === 0}
+                      onPointerDown={(event) => event.stopPropagation()}
                       onClick={() => move(index, index - 1)}
                     >
                       <ChevronLeft />
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="secondary"
-                      size="icon-xs"
-                      aria-label={`${resolvedLabels.preview}: ${name}`}
-                      onClick={() => setPreviewIndex(index)}
-                    >
-                      <Maximize2 />
                     </Button>
                     <a
                       href={item.url}
                       target="_blank"
                       rel="noreferrer noopener"
                       aria-label={`${resolvedLabels.openInNewTab}: ${name}`}
+                      onPointerDown={(event) => event.stopPropagation()}
                       className={cn(
                         buttonVariants({
                           variant: "secondary",
@@ -333,6 +482,7 @@ export function ImageField({
                       size="icon-xs"
                       aria-label={`${resolvedLabels.moveLater}: ${name}`}
                       disabled={disabled || index === value.length - 1}
+                      onPointerDown={(event) => event.stopPropagation()}
                       onClick={() => move(index, index + 1)}
                     >
                       <ChevronRight />
@@ -391,6 +541,7 @@ export function ImageField({
         previousLabel={resolvedLabels.previous}
         nextLabel={resolvedLabels.next}
         counterLabel={resolvedLabels.counter}
+        closeLabel={resolvedLabels.close}
       />
     </div>
   )

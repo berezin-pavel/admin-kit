@@ -17,7 +17,20 @@ test("thumbnails reorder by dragging one onto another", async ({ page }) => {
     "Box",
   ])
 
-  await thumbnails.first().dragTo(thumbnails.nth(2))
+  const fromBox = await thumbnails.first().boundingBox()
+  const toBox = await thumbnails.nth(2).boundingBox()
+  if (!fromBox || !toBox) throw new Error("thumbnail bounding box missing")
+
+  const fromX = fromBox.x + fromBox.width / 2
+  const fromY = fromBox.y + fromBox.height / 2
+  const toX = toBox.x + toBox.width / 2
+  const toY = toBox.y + toBox.height / 2
+
+  await page.mouse.move(fromX, fromY)
+  await page.mouse.down()
+  await page.mouse.move(fromX + 10, fromY + 10)
+  await page.mouse.move(toX, toY, { steps: 10 })
+  await page.mouse.up()
 
   expect(await altTexts(page)).toEqual([
     "Side view",

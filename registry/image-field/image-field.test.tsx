@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react"
+import { fireEvent, render, screen, within } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { useState } from "react"
 import { describe, expect, it, vi } from "vitest"
@@ -89,6 +89,107 @@ describe("ImageField", () => {
 
     const dialog = await screen.findByRole("dialog", { name: "Back" })
     expect(dialog).toBeInTheDocument()
+  })
+
+  it("wraps a long file name instead of clipping it, and offers a close button", async () => {
+    const user = userEvent.setup()
+    const longName = `${"a".repeat(80)}.png`
+    render(
+      <ControlledImageField
+        initial={[{ id: "1", url: "/one.png", name: longName }]}
+      />
+    )
+
+    await user.click(screen.getByRole("button", { name: `Preview: ${longName}` }))
+
+    const dialog = await screen.findByRole("dialog", { name: longName })
+    const title = within(dialog).getByText(longName)
+    expect(title.className).not.toContain("truncate")
+    expect(title.className).toContain("wrap-anywhere")
+
+    await user.click(within(dialog).getByRole("button", { name: "Close" }))
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument()
+  })
+
+  it("reorders by pointer-dragging one tile onto another", () => {
+    const { container } = render(<ControlledImageField />)
+
+    const tiles = Array.from(container.querySelectorAll("li")).filter((li) =>
+      li.querySelector("img")
+    )
+    tiles.forEach((tile, index) => {
+      vi.spyOn(tile, "getBoundingClientRect").mockReturnValue({
+        x: index * 140,
+        y: 0,
+        width: 128,
+        height: 128,
+        top: 0,
+        left: index * 140,
+        right: index * 140 + 128,
+        bottom: 128,
+        toJSON: () => {},
+      } as DOMRect)
+    })
+
+    const frontButton = screen.getByRole("button", { name: "Preview: Front" })
+
+    fireEvent.pointerDown(frontButton, {
+      clientX: 64,
+      clientY: 64,
+      pointerId: 1,
+      button: 0,
+    })
+    fireEvent.pointerMove(window, { clientX: 80, clientY: 64, pointerId: 1 })
+    fireEvent.pointerMove(window, { clientX: 300, clientY: 64, pointerId: 1 })
+    fireEvent.pointerUp(window, { clientX: 300, clientY: 64, pointerId: 1 })
+
+    expect(
+      Array.from(container.querySelectorAll("li img")).map((image) =>
+        image.getAttribute("alt")
+      )
+    ).toEqual(["Back", "Image 2", "Front"])
+
+    fireEvent.click(frontButton)
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument()
+  })
+
+  it("leaves the order untouched and opens the preview on a plain click", () => {
+    const { container } = render(<ControlledImageField />)
+
+    const tiles = Array.from(container.querySelectorAll("li")).filter((li) =>
+      li.querySelector("img")
+    )
+    tiles.forEach((tile, index) => {
+      vi.spyOn(tile, "getBoundingClientRect").mockReturnValue({
+        x: index * 140,
+        y: 0,
+        width: 128,
+        height: 128,
+        top: 0,
+        left: index * 140,
+        right: index * 140 + 128,
+        bottom: 128,
+        toJSON: () => {},
+      } as DOMRect)
+    })
+
+    const frontButton = screen.getByRole("button", { name: "Preview: Front" })
+
+    fireEvent.pointerDown(frontButton, {
+      clientX: 64,
+      clientY: 64,
+      pointerId: 1,
+      button: 0,
+    })
+    fireEvent.pointerUp(window, { clientX: 64, clientY: 64, pointerId: 1 })
+    fireEvent.click(frontButton)
+
+    expect(
+      Array.from(container.querySelectorAll("li img")).map((image) =>
+        image.getAttribute("alt")
+      )
+    ).toEqual(["Front", "Back", "Image 3"])
+    expect(screen.getByRole("dialog", { name: "Front" })).toBeInTheDocument()
   })
 
   it("hides the drop zone once maxItems is reached", () => {
