@@ -8,6 +8,7 @@ export interface AdminNavItem {
   href: string
   title: string
   icon?: ComponentType<{ className?: string }>
+  group?: string
 }
 
 export interface AdminNavLinkProps {
@@ -59,12 +60,31 @@ export function AdminNav({
         className
       )}
     >
-      {nav.map((item) => {
+      {nav.map((item, index) => {
         const isActive = item.href === activeHref
         const Icon = item.icon
+        const startsGroup =
+          item.group !== undefined && item.group !== nav[index - 1]?.group
 
         return (
           <div key={item.href}>
+            {startsGroup ? (
+              <div
+                className={cn(
+                  "px-3 pb-1 text-xs font-medium tracking-wide text-sidebar-foreground/60 uppercase",
+                  index > 0 && "pt-3",
+                  collapsed && "sr-only"
+                )}
+              >
+                {item.group}
+              </div>
+            ) : null}
+            {startsGroup && collapsed && index > 0 ? (
+              <div
+                aria-hidden="true"
+                className="mx-auto my-1 h-px w-6 bg-sidebar-border"
+              />
+            ) : null}
             {renderItem({
               href: item.href,
               isActive,

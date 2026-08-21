@@ -22,6 +22,14 @@ const nav: readonly AdminNavItem[] = [
   { href: "/users", title: "Users" },
 ]
 
+const groupedNav: readonly AdminNavItem[] = [
+  { href: "/", title: "Overview", icon: LayoutDashboard },
+  { href: "/orders", title: "Orders", icon: ShoppingCart, group: "Sales" },
+  { href: "/refunds", title: "Refunds", group: "Sales" },
+  { href: "/users", title: "Users", group: "People" },
+  { href: "/roles", title: "Roles", group: "People" },
+]
+
 const renderNextLink: AdminNavLinkRenderer = ({
   href,
   className,
@@ -56,6 +64,15 @@ export const adminShellEntry: ShowcaseEntry = {
   description:
     "The persistent frame of the admin panel: an optional header, a side navigation, and a work area. The sidebar belongs to the wide screen and is drawn as a card — a panel with padding, rounding, and a border. On a narrow screen it is gone entirely and the burger takes over: the panel holds every section with its label and the sidebarFooter, while the brand and the account row stay on the top bar, where they are already visible. The controlled collapsed prop shrinks the sidebar on a wide screen to a strip of icons, and the sidebar toggle in the footer brings it back — no burger appears there, because a control that reopens the sidebar is already on screen. The header prop can remove the header entirely: without it a narrow screen gets a compact bar with the burger, the logo, the app name, and the account on the right. Every row of the sidebar shares one grid: the logo, the account avatar, and the nav icons sit in the same 24px box, so their centre never moves when the sidebar collapses. The top of the sidebar is a brand row — an optional logo slot before appName. Directly under it, sidebarProfile renders a full-width account row, separated from the navigation by a divider; in the icon strip it collapses to just the trigger's avatar, and on a narrow screen it moves to the right of the top bar. sidebarActions stays available alongside it for anything else that belongs next to the brand, like a notifications button. The sidebarFooter prop is a slot at the bottom of the sidebar, the icon strip, and the burger panel for a theme toggle, sidebar toggle, or build version. Nav items and the active section are set by props, and the link renderer can be swapped for your own router. The variant prop offers the second look: flush drops the padding, glues the sidebar to the edge and separates it with a border instead of a card, and with the header on it turns the header into a full-width bar that carries the brand above the sidebar and stays put while the work area scrolls.",
   views: [
+    {
+      id: "grouped-nav",
+      name: "Grouped navigation",
+      render: () => (
+        <AdminShell appName="Nova" nav={groupedNav} activeHref="/orders">
+          <div className="h-40" />
+        </AdminShell>
+      ),
+    },
     {
       id: "empty",
       name: "With an empty work area",

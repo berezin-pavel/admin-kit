@@ -84,19 +84,30 @@ export const orderStatusLabelByLocale: Record<
 
 const NAV_TITLES: Record<
   DemoLocale,
-  { overview: string; orders: string; products: string; order: string }
+  {
+    overview: string
+    orders: string
+    products: string
+    order: string
+    salesGroup: string
+    catalogueGroup: string
+  }
 > = {
   en: {
     overview: "Overview",
     orders: "Orders",
     products: "Products",
     order: "Order #4187",
+    salesGroup: "Sales",
+    catalogueGroup: "Catalogue",
   },
   ru: {
     overview: "Обзор",
     orders: "Заказы",
     products: "Товары",
     order: "Заказ №4187",
+    salesGroup: "Продажи",
+    catalogueGroup: "Каталог",
   },
 }
 
@@ -105,9 +116,24 @@ export function getDemoNav(locale: DemoLocale): readonly AdminNavItem[] {
 
   return [
     { href: "/demo", title: titles.overview, icon: LayoutDashboard },
-    { href: "/demo/orders", title: titles.orders, icon: ShoppingCart },
-    { href: "/demo/products", title: titles.products, icon: PackageSearch },
-    { href: "/demo/order", title: titles.order, icon: Package },
+    {
+      href: "/demo/orders",
+      title: titles.orders,
+      icon: ShoppingCart,
+      group: titles.salesGroup,
+    },
+    {
+      href: "/demo/products",
+      title: titles.products,
+      icon: PackageSearch,
+      group: titles.catalogueGroup,
+    },
+    {
+      href: "/demo/order",
+      title: titles.order,
+      icon: Package,
+      group: titles.salesGroup,
+    },
   ]
 }
 
@@ -116,13 +142,24 @@ export function getDemoFlushNav(locale: DemoLocale): readonly AdminNavItem[] {
 
   return [
     { href: "/demo-flush", title: titles.overview, icon: LayoutDashboard },
-    { href: "/demo-flush/orders", title: titles.orders, icon: ShoppingCart },
+    {
+      href: "/demo-flush/orders",
+      title: titles.orders,
+      icon: ShoppingCart,
+      group: titles.salesGroup,
+    },
     {
       href: "/demo-flush/products",
       title: titles.products,
       icon: PackageSearch,
+      group: titles.catalogueGroup,
     },
-    { href: "/demo-flush/order", title: titles.order, icon: Package },
+    {
+      href: "/demo-flush/order",
+      title: titles.order,
+      icon: Package,
+      group: titles.salesGroup,
+    },
   ]
 }
 

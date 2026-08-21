@@ -8,6 +8,7 @@ import { AdminMenu } from "./admin-menu"
 import {
   AdminNav,
   type AdminNavItem,
+  type AdminNavLinkProps,
   type AdminNavLinkRenderer,
 } from "./admin-nav"
 import {
@@ -17,7 +18,7 @@ import {
   adminRowProfileClassName,
 } from "./admin-row"
 
-export type { AdminNavItem, AdminNavLinkRenderer }
+export type { AdminNavItem, AdminNavLinkProps, AdminNavLinkRenderer }
 
 export interface AdminShellLabels {
   openMenu?: string
