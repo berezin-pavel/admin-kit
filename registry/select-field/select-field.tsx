@@ -41,7 +41,7 @@ export function SelectField({
   hint,
   error,
   disabled = false,
-  width = "auto",
+  width = "full",
   className,
 }: SelectFieldProps) {
   const id = React.useId()

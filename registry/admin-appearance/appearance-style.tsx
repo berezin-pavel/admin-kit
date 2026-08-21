@@ -52,9 +52,11 @@ function canvasBackgroundImage(
 export function AppearanceCanvas({
   backdrop,
   vivid = false,
+  scheme,
 }: {
   backdrop: SurfaceChoice | null | undefined
   vivid?: boolean
+  scheme?: "light" | "dark"
 }) {
   const colors = backdropThemeColors(backdrop, vivid)
   const backgroundImage = backdrop
@@ -69,16 +71,22 @@ export function AppearanceCanvas({
           }}
         />
       )}
-      <meta
-        name="theme-color"
-        media="(prefers-color-scheme: light)"
-        content={colors.light}
-      />
-      <meta
-        name="theme-color"
-        media="(prefers-color-scheme: dark)"
-        content={colors.dark}
-      />
+      {scheme ? (
+        <meta name="theme-color" content={colors[scheme]} />
+      ) : (
+        <>
+          <meta
+            name="theme-color"
+            media="(prefers-color-scheme: light)"
+            content={colors.light}
+          />
+          <meta
+            name="theme-color"
+            media="(prefers-color-scheme: dark)"
+            content={colors.dark}
+          />
+        </>
+      )}
     </>
   )
 }

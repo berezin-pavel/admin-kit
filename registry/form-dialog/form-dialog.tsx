@@ -1,6 +1,7 @@
 "use client"
 
 import type { ReactNode } from "react"
+import { Loader2Icon } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -22,6 +23,7 @@ export interface FormDialogProps {
   submitLabel?: string
   cancelLabel?: string
   submitting?: boolean
+  error?: ReactNode
   className?: string
 }
 
@@ -35,6 +37,7 @@ export function FormDialog({
   submitLabel = "Save",
   cancelLabel = "Cancel",
   submitting = false,
+  error,
   className,
 }: FormDialogProps) {
   return (
@@ -59,11 +62,17 @@ export function FormDialog({
           aria-busy={submitting || undefined}
           onSubmit={(event) => {
             event.preventDefault()
+            event.stopPropagation()
             onSubmit?.()
           }}
           className="flex flex-col gap-4"
         >
           {children}
+          {error ? (
+            <p role="alert" className="text-sm text-destructive">
+              {error}
+            </p>
+          ) : null}
           <DialogFooter>
             <Button
               type="button"
@@ -73,7 +82,8 @@ export function FormDialog({
             >
               {cancelLabel}
             </Button>
-            <Button type="submit" disabled={submitting}>
+            <Button type="submit" disabled={submitting} aria-busy={submitting}>
+              {submitting ? <Loader2Icon className="animate-spin" /> : null}
               {submitLabel}
             </Button>
           </DialogFooter>

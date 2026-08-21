@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useTheme } from "next-themes"
 import type { FormEvent } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
@@ -27,6 +28,10 @@ export default function DemoSignInPage() {
   const appearance = useDemoAppearance()
 
   const [email, setEmail] = useState("")
+
+  const { resolvedTheme } = useTheme()
+
+  const scheme = resolvedTheme === "dark" ? "dark" : resolvedTheme === "light" ? "light" : undefined
   const [password, setPassword] = useState("")
   const [remember, setRemember] = useState(false)
   const [submitting, setSubmitting] = useState(false)
@@ -50,7 +55,7 @@ export default function DemoSignInPage() {
 
   return (
     <>
-      <AppearanceCanvas backdrop={appearance.signIn} vivid />
+      <AppearanceCanvas backdrop={appearance.signIn} vivid scheme={scheme} />
       <PageAuth
         appName={strings.appName}
         title={signIn.title}

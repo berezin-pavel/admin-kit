@@ -96,6 +96,16 @@
           "destructive-mark": "var(--destructive)",
           "destructive-mark-foreground": "var(--destructive-foreground)"
         }
+      },
+      "css": {
+        "@layer base": {
+          ":root": {
+            "color-scheme": "light"
+          },
+          ".dark": {
+            "color-scheme": "dark"
+          }
+        }
       }
     },
     {
@@ -103,7 +113,7 @@
       "name": "admin-appearance",
       "type": "registry:component",
       "title": "Appearance",
-      "description": "The administrator's global look, chosen from fixed palettes instead of typed in: twenty three-stop gradients and twenty accent colours, each measured in tests for text contrast along the whole gradient, on hovered controls and, for accents, on every filled pair the derivation produces. AdminAppearance is one serializable value — accent, sidebar and sign-in gradients, a page backdrop (soft tint by default, vivid on request, overridable per page) and a per-block record of gradient and heading choices — that the consumer stores server-side and hands to AppearanceProvider (value/onChange, editable for administrators). AppearanceStyle emits the stylesheet: any element with data-gradient=\"<id>\" is painted and gets its tokens redefined so text, borders, hover and focus stay legible; data-backdrop paints only the image. Block is the card of the work area: it resolves its gradient by id from the provider, falls back to its gradient prop, and in edit mode shows a corner button with the swatch grid and, for widgets, the heading choice — muted, prominent or hidden. Widgets, page sections and page headers are Blocks; nothing in the work area sits outside one. Never nest an opaque card inside a gradient block. Requires the admin-theme theme.",
+      "description": "The administrator's global look, chosen from fixed palettes instead of typed in: twenty three-stop gradients and twenty accent colours, each measured in tests for text contrast along the whole gradient, on hovered controls and, for accents, on every filled pair the derivation produces. AdminAppearance is one serializable value — accent, sidebar and sign-in gradients, a page backdrop (soft tint by default, vivid on request, overridable per page) and a per-block record of gradient and heading choices — that the consumer stores server-side and hands to AppearanceProvider (value/onChange, editable for administrators). AppearanceStyle emits the stylesheet: any element with data-gradient=\"<id>\" is painted and gets its tokens redefined so text, borders, hover and focus stay legible; data-backdrop paints only the image. Block is the card of the work area: it resolves its gradient by id from the provider, falls back to its gradient prop, and in edit mode shows a corner button with the swatch grid and, for widgets, the heading choice — muted, prominent or hidden. Widgets, page sections and page headers are Blocks; nothing in the work area sits outside one. Never nest an opaque card inside a gradient block. Requires the admin-theme theme. AppearanceCanvas takes scheme (light or dark) when the app owns the theme: it then emits one theme-color meta for that scheme instead of a pair keyed on the system preference.",
       "registryDependencies": [
         "card",
         "button",
@@ -758,7 +768,7 @@
       "name": "form-dialog",
       "type": "registry:component",
       "title": "Form dialog",
-      "description": "A modal with a real form for quick edits: a title, an optional description, consumer-laid-out fields as children, and a footer with Cancel and Save. Save submits the form element, submitting disables both buttons, sets aria-busy and blocks closing by Escape or an outside click while the operation is in progress — the same guard confirm-dialog uses. Controlled: the consumer holds open, onOpenChange and the field state; submitLabel and cancelLabel localize the buttons. For a full create/edit page use page-form instead.",
+      "description": "A modal with a real form for quick edits: a title, an optional description, consumer-laid-out fields as children, an optional error shown above the footer (the server's refusal, a conflict), and a footer with Cancel and Save. Save submits the form element; submitting disables both buttons, sets aria-busy, shows a spinner on Save and blocks closing by Escape or an outside click while the operation is in progress — the same guard confirm-dialog uses. The submit event stops at the dialog: opened from inside a page-form, the dialog's Save never submits the page's form behind it. Controlled: the consumer holds open, onOpenChange and the field state; submitLabel and cancelLabel localize the buttons. For a full create/edit page use page-form instead.",
       "registryDependencies": [
         "button",
         "dialog"
@@ -1029,7 +1039,7 @@
       "name": "select-field",
       "type": "registry:component",
       "title": "Select field",
-      "description": "A single-choice select over an options list of value/label pairs. An empty value shows the placeholder (\"Select…\" by default — the placeholder prop localizes it); the popup is pinned to the trigger like the kit's other selects. Renders label, control, hint and error in the kit's shared field anatomy: when error is set it replaces the hint, the control gets aria-invalid and aria-describedby. Controlled: the consumer holds value and onChange. width picks how wide the trigger is: \"auto\" (the default) lets it size to its content in a toolbar and stretch in a column form, \"full\" pins it to the container.",
+      "description": "A single-choice select over an options list of value/label pairs. An empty value shows the placeholder (\"Select…\" by default — the placeholder prop localizes it); the popup is pinned to the trigger like the kit's other selects. Renders label, control, hint and error in the kit's shared field anatomy: when error is set it replaces the hint, the control gets aria-invalid and aria-describedby. Controlled: the consumer holds value and onChange. width (full by default, auto for a toolbar) picks how wide the trigger is: \"auto\" (the default) lets it size to its content in a toolbar and stretch in a column form, \"full\" pins it to the container.",
       "registryDependencies": [
         "select",
         "label"

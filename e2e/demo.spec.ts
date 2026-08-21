@@ -191,7 +191,7 @@ test("the products page expands a category and edits a product through a dialog"
   await page.goto("/demo/products")
   await page.waitForLoadState("networkidle")
 
-  const sneakers = page.getByRole("button", { name: "Sneakers" })
+  const sneakers = page.getByRole("button", { name: "Sneakers", exact: true })
   await expect(sneakers).toHaveAttribute("aria-expanded", "false")
   await expect(page.getByText("Nova Sneakers")).toHaveCount(0)
   await sneakers.click()

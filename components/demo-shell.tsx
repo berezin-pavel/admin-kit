@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import type { ReactNode } from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
+import { useTheme } from "next-themes"
 
 import { Store } from "lucide-react"
 
@@ -55,6 +56,8 @@ export function DemoShell({
 }) {
   const [collapsed, setCollapsed] = useState(false)
   const pathname = usePathname()
+  const { resolvedTheme } = useTheme()
+  const scheme = resolvedTheme === "dark" ? "dark" : resolvedTheme === "light" ? "light" : undefined
   const locale = useDemoLocale()
   const appearance = useDemoAppearance()
   const nav = demoDictionary[locale].nav
@@ -127,7 +130,7 @@ export function DemoShell({
 
   return (
     <>
-      <AppearanceCanvas backdrop={backdrop} />
+      <AppearanceCanvas backdrop={backdrop} scheme={scheme} />
       {flush ? (
         <AdminShell
           {...sharedProps}

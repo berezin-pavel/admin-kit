@@ -136,3 +136,12 @@ describe("AppearanceCanvas", () => {
     expect(metas[1]).toHaveAttribute("content", "#0a0a0a")
   })
 })
+
+describe("AppearanceCanvas with an explicit scheme", () => {
+  it("emits a single theme-color meta for the app's own scheme", () => {
+    render(<AppearanceCanvas backdrop="ocean" scheme="dark" />)
+    const metas = document.querySelectorAll('meta[name="theme-color"]')
+    expect(metas).toHaveLength(1)
+    expect(metas[0]).not.toHaveAttribute("media")
+  })
+})
