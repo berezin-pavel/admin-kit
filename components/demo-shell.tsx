@@ -84,6 +84,7 @@ export function DemoShell({
   const pageLabelById: Record<string, string> = {
     overview: nav.overview,
     orders: nav.orders,
+    products: nav.products,
     order: nav.order,
   }
   const appearanceMenuPages = DEMO_APPEARANCE_PAGES.map((page) => ({

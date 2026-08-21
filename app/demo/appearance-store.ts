@@ -34,6 +34,7 @@ export const DEMO_APPEARANCE_DEFAULT: AdminAppearance = {
 export const DEMO_APPEARANCE_PAGES: readonly { id: string }[] = [
   { id: "overview" },
   { id: "orders" },
+  { id: "products" },
   { id: "order" },
 ]
 
@@ -43,6 +44,9 @@ export function demoPageId(pathname: string): string | undefined {
   }
   if (pathname === "/demo/orders" || pathname === "/demo-flush/orders") {
     return "orders"
+  }
+  if (pathname === "/demo/products" || pathname === "/demo-flush/products") {
+    return "products"
   }
   if (pathname === "/demo/order" || pathname === "/demo-flush/order") {
     return "order"

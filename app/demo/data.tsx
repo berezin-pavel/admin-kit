@@ -6,14 +6,19 @@ import {
   CreditCard,
   Crown,
   Droplet,
+  Footprints,
   Keyboard,
   Layers,
   Headphones,
   LayoutDashboard,
+  MountainSnow,
+  Music,
   Package,
   PackageCheck,
+  PackageSearch,
   RotateCcw,
   Shirt,
+  Sofa,
   TriangleAlert,
   UserRound,
   ShoppingCart,
@@ -40,6 +45,7 @@ import type { WidgetChartSeries } from "@/registry/widget-chart/widget-chart"
 import type { WidgetDonutSlice } from "@/registry/widget-donut/widget-donut"
 import type { WidgetListItem } from "@/registry/widget-list/widget-list"
 import type { WidgetTableColumn } from "@/registry/widget-table/widget-table"
+import type { TreeTableSection } from "@/registry/widget-tree-table/widget-tree-table"
 
 import type { DemoLocale } from "./locale-store"
 
@@ -81,16 +87,18 @@ export const orderStatusLabelByLocale: Record<
 
 const NAV_TITLES: Record<
   DemoLocale,
-  { overview: string; orders: string; order: string }
+  { overview: string; orders: string; products: string; order: string }
 > = {
   en: {
     overview: "Overview",
     orders: "Orders",
+    products: "Products",
     order: "Order #4187",
   },
   ru: {
     overview: "Обзор",
     orders: "Заказы",
+    products: "Товары",
     order: "Заказ №4187",
   },
 }
@@ -101,6 +109,7 @@ export function getDemoNav(locale: DemoLocale): readonly AdminNavItem[] {
   return [
     { href: "/demo", title: titles.overview, icon: LayoutDashboard },
     { href: "/demo/orders", title: titles.orders, icon: ShoppingCart },
+    { href: "/demo/products", title: titles.products, icon: PackageSearch },
     { href: "/demo/order", title: titles.order, icon: Package },
   ]
 }
@@ -111,6 +120,11 @@ export function getDemoFlushNav(locale: DemoLocale): readonly AdminNavItem[] {
   return [
     { href: "/demo-flush", title: titles.overview, icon: LayoutDashboard },
     { href: "/demo-flush/orders", title: titles.orders, icon: ShoppingCart },
+    {
+      href: "/demo-flush/products",
+      title: titles.products,
+      icon: PackageSearch,
+    },
     { href: "/demo-flush/order", title: titles.order, icon: Package },
   ]
 }
@@ -154,6 +168,13 @@ export function getDemoSearchItems(
       label: titles.orders,
       group: labels.pagesGroup,
       icon: ShoppingCart,
+      hint: labels.pagesHint,
+    },
+    {
+      id: "page:/demo/products",
+      label: titles.products,
+      group: labels.pagesGroup,
+      icon: PackageSearch,
       hint: labels.pagesHint,
     },
     {
@@ -1000,6 +1021,278 @@ export function getDemoProductOptions(
     value: PRODUCT_IDS[index],
     label: copy.title,
   }))
+}
+
+export interface DemoProduct {
+  id: string
+  name: string
+  sku: string
+  price: number
+  stock: number
+  cost: number
+  hidden: boolean
+}
+
+export interface DemoProductSection extends TreeTableSection<DemoProduct> {
+  hidden: boolean
+  sections?: readonly DemoProductSection[]
+}
+
+const NEW_PRODUCT_IDS = [
+  "sneakers-trail",
+  "sneakers-court",
+  "earbuds-studio",
+  "speaker-bassline",
+  "keyboard-compact",
+  "tee-everyday",
+  "fleece-zip",
+  "beanie-knit",
+  "sunglasses-horizon",
+  "lamp-table",
+  "mugset-ceramic",
+] as const
+
+type NewProductId = (typeof NEW_PRODUCT_IDS)[number]
+
+const NEW_PRODUCT_NAMES: Record<DemoLocale, Record<NewProductId, string>> = {
+  en: {
+    "sneakers-trail": "Trail Runner Sneakers",
+    "sneakers-court": "Court Classic Sneakers",
+    "earbuds-studio": "Studio Buds Earbuds",
+    "speaker-bassline": "Bassline Bluetooth Speaker",
+    "keyboard-compact": "Compact 60% Keyboard",
+    "tee-everyday": "Everyday Cotton Tee",
+    "fleece-zip": "Zip-Up Fleece",
+    "beanie-knit": "Knit Beanie",
+    "sunglasses-horizon": "Horizon Sunglasses",
+    "lamp-table": "Glow Table Lamp",
+    "mugset-ceramic": "Ceramic Mug Set",
+  },
+  ru: {
+    "sneakers-trail": "Кроссовки Trail Runner",
+    "sneakers-court": "Кроссовки Court Classic",
+    "earbuds-studio": "Наушники Studio Buds",
+    "speaker-bassline": "Колонка Bassline",
+    "keyboard-compact": "Клавиатура Compact 60%",
+    "tee-everyday": "Футболка Everyday",
+    "fleece-zip": "Флисовая кофта на молнии",
+    "beanie-knit": "Вязаная шапка",
+    "sunglasses-horizon": "Очки Horizon",
+    "lamp-table": "Настольная лампа Glow",
+    "mugset-ceramic": "Набор керамических кружек",
+  },
+}
+
+interface DemoProductDetails {
+  sku: string
+  price: number
+  cost: number
+  stock: number
+  hidden: boolean
+}
+
+const DEMO_PRODUCT_DETAILS: Record<string, DemoProductDetails> = {
+  "sneakers-nova": { sku: "FTW-SNK-001", price: 129, cost: 72, stock: 64, hidden: false },
+  "sneakers-trail": { sku: "FTW-SNK-002", price: 139, cost: 78, stock: 51, hidden: false },
+  "sneakers-court": { sku: "FTW-SNK-003", price: 99, cost: 52, stock: 73, hidden: false },
+  "headphones-pulse": { sku: "ELC-AUD-001", price: 89, cost: 48, stock: 120, hidden: false },
+  "earbuds-studio": { sku: "ELC-AUD-002", price: 69, cost: 35, stock: 102, hidden: false },
+  "speaker-bassline": { sku: "ELC-AUD-003", price: 119, cost: 61, stock: 44, hidden: false },
+  "keyboard-mechanic": { sku: "ELC-KBD-001", price: 149, cost: 84, stock: 37, hidden: false },
+  "keyboard-compact": { sku: "ELC-KBD-002", price: 109, cost: 58, stock: 0, hidden: true },
+  "hoodie-basic": { sku: "APL-TOP-001", price: 49, cost: 22, stock: 140, hidden: false },
+  "tee-everyday": { sku: "APL-TOP-002", price: 22, cost: 9, stock: 168, hidden: false },
+  "fleece-zip": { sku: "APL-TOP-003", price: 64, cost: 31, stock: 47, hidden: false },
+  "cap-plain": { sku: "APL-HAT-001", price: 19, cost: 8, stock: 156, hidden: false },
+  "beanie-knit": { sku: "APL-HAT-002", price: 21, cost: 8, stock: 132, hidden: false },
+  "backpack-city": { sku: "ACC-001", price: 59, cost: 28, stock: 95, hidden: false },
+  "mug-loop": { sku: "ACC-002", price: 24, cost: 11, stock: 180, hidden: false },
+  "bottle-expedition": { sku: "ACC-003", price: 34, cost: 16, stock: 88, hidden: false },
+  "sunglasses-horizon": { sku: "ACC-004", price: 54, cost: 24, stock: 61, hidden: false },
+  "blanket-aurora": { sku: "HOM-001", price: 79, cost: 41, stock: 22, hidden: true },
+  "lamp-table": { sku: "HOM-002", price: 44, cost: 19, stock: 38, hidden: false },
+  "mugset-ceramic": { sku: "HOM-003", price: 29, cost: 13, stock: 0, hidden: true },
+}
+
+function isNewProductId(id: string): id is NewProductId {
+  return (NEW_PRODUCT_IDS as readonly string[]).includes(id)
+}
+
+function getDemoProductName(id: string, locale: DemoLocale): string {
+  const existingIndex = PRODUCT_IDS.indexOf(
+    id as (typeof PRODUCT_IDS)[number]
+  )
+  if (existingIndex !== -1) {
+    return PRODUCT_COPY[locale][existingIndex].title
+  }
+  if (isNewProductId(id)) {
+    return NEW_PRODUCT_NAMES[locale][id]
+  }
+  return id
+}
+
+function buildDemoProduct(id: string, locale: DemoLocale): DemoProduct {
+  const details = DEMO_PRODUCT_DETAILS[id]
+
+  return {
+    id,
+    name: getDemoProductName(id, locale),
+    sku: details.sku,
+    price: details.price,
+    stock: details.stock,
+    cost: details.cost,
+    hidden: details.hidden,
+  }
+}
+
+interface ProductSectionSeed {
+  id: string
+  icon: ComponentType<{ className?: string }>
+  color?: string
+  hidden: boolean
+  productIds?: readonly string[]
+  sections?: readonly ProductSectionSeed[]
+}
+
+const PRODUCT_SECTION_SEEDS: readonly ProductSectionSeed[] = [
+  {
+    id: "footwear",
+    icon: Footprints,
+    color: "#2563eb",
+    hidden: false,
+    sections: [
+      {
+        id: "sneakers",
+        icon: SportShoe,
+        hidden: false,
+        productIds: ["sneakers-nova", "sneakers-trail", "sneakers-court"],
+      },
+      { id: "boots", icon: MountainSnow, hidden: false, productIds: [] },
+    ],
+  },
+  {
+    id: "electronics",
+    icon: Headphones,
+    color: "#7c3aed",
+    hidden: false,
+    sections: [
+      {
+        id: "audio",
+        icon: Music,
+        hidden: false,
+        productIds: [
+          "headphones-pulse",
+          "earbuds-studio",
+          "speaker-bassline",
+        ],
+      },
+      {
+        id: "keyboards",
+        icon: Keyboard,
+        hidden: false,
+        productIds: ["keyboard-mechanic", "keyboard-compact"],
+      },
+    ],
+  },
+  {
+    id: "apparel",
+    icon: Shirt,
+    color: "#ea580c",
+    hidden: false,
+    sections: [
+      {
+        id: "tops",
+        icon: Shirt,
+        hidden: false,
+        productIds: ["hoodie-basic", "tee-everyday", "fleece-zip"],
+      },
+      {
+        id: "headwear",
+        icon: Crown,
+        hidden: false,
+        productIds: ["cap-plain", "beanie-knit"],
+      },
+    ],
+  },
+  {
+    id: "accessories",
+    icon: Backpack,
+    color: "#16a34a",
+    hidden: false,
+    productIds: [
+      "backpack-city",
+      "mug-loop",
+      "bottle-expedition",
+      "sunglasses-horizon",
+    ],
+  },
+  {
+    id: "home",
+    icon: Sofa,
+    color: "#64748b",
+    hidden: false,
+    productIds: ["blanket-aurora", "lamp-table", "mugset-ceramic"],
+  },
+] as const
+
+const PRODUCT_SECTION_TITLES: Record<DemoLocale, Record<string, string>> = {
+  en: {
+    footwear: "Footwear",
+    sneakers: "Sneakers",
+    boots: "Boots",
+    electronics: "Electronics",
+    audio: "Audio",
+    keyboards: "Keyboards",
+    apparel: "Apparel",
+    tops: "Tops",
+    headwear: "Headwear",
+    accessories: "Accessories",
+    home: "Home",
+  },
+  ru: {
+    footwear: "Обувь",
+    sneakers: "Кроссовки",
+    boots: "Ботинки",
+    electronics: "Электроника",
+    audio: "Аудио",
+    keyboards: "Клавиатуры",
+    apparel: "Одежда",
+    tops: "Верх",
+    headwear: "Головные уборы",
+    accessories: "Аксессуары",
+    home: "Дом",
+  },
+}
+
+function buildDemoProductSection(
+  seed: ProductSectionSeed,
+  locale: DemoLocale
+): DemoProductSection {
+  return {
+    id: seed.id,
+    title: PRODUCT_SECTION_TITLES[locale][seed.id],
+    icon: seed.icon,
+    color: seed.color,
+    hidden: seed.hidden,
+    ...(seed.sections
+      ? {
+          sections: seed.sections.map((child) =>
+            buildDemoProductSection(child, locale)
+          ),
+        }
+      : {}),
+    ...(seed.productIds
+      ? { rows: seed.productIds.map((id) => buildDemoProduct(id, locale)) }
+      : {}),
+  }
+}
+
+export function getDemoProductSections(
+  locale: DemoLocale
+): readonly DemoProductSection[] {
+  return PRODUCT_SECTION_SEEDS.map((seed) =>
+    buildDemoProductSection(seed, locale)
+  )
 }
 
 const CUSTOMER_FIRST_NAMES: Record<DemoLocale, readonly string[]> = {

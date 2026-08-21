@@ -5,6 +5,7 @@ export interface DemoDictionary {
   nav: {
     overview: string
     orders: string
+    products: string
     order: string
   }
   search: {
@@ -183,6 +184,47 @@ export interface DemoDictionary {
     cancelToastTitle: string
     cancelToastDescription: string
   }
+  products: {
+    title: string
+    description: string
+    addSection: string
+    expandAll: string
+    collapseAll: string
+    emptyTitle: string
+    actionsColumn: string
+    columnName: string
+    columnSku: string
+    columnPrice: string
+    columnStock: string
+    columnCost: string
+    columnMarkup: string
+    columnHidden: string
+    yes: string
+    no: string
+    itemsCount: (count: number) => string
+    editProductTitle: string
+    addProductTitle: string
+    editSectionTitle: string
+    addSectionTitle: string
+    nameLabel: string
+    skuLabel: string
+    priceLabel: string
+    stockLabel: string
+    costLabel: string
+    hiddenLabel: string
+    titleLabel: string
+    colorLabel: string
+    editAction: string
+    deleteAction: string
+    addProductAction: string
+    deleteProductTitle: string
+    deleteProductDescription: (name: string) => string
+    deleteSectionTitle: string
+    deleteSectionDescription: (title: string, count: number) => string
+    savedToast: string
+    deletedToast: string
+    addedToast: string
+  }
   orderEdit: {
     title: string
     description: string
@@ -243,6 +285,7 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
     nav: {
       overview: "Overview",
       orders: "Orders",
+      products: "Products",
       order: "Order #4187",
     },
     search: {
@@ -434,6 +477,49 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       cancelToastTitle: "Order cancelled",
       cancelToastDescription: "The refund will reach the customer within three days",
     },
+    products: {
+      title: "Products",
+      description: "The full storefront catalogue, grouped by category",
+      addSection: "Add category",
+      expandAll: "Expand all",
+      collapseAll: "Collapse all",
+      emptyTitle: "No products yet",
+      actionsColumn: "Actions",
+      columnName: "Name",
+      columnSku: "SKU",
+      columnPrice: "Base price",
+      columnStock: "Stock",
+      columnCost: "Average cost",
+      columnMarkup: "Markup",
+      columnHidden: "Hidden on site",
+      yes: "Yes",
+      no: "No",
+      itemsCount: (count) => `${count} items`,
+      editProductTitle: "Edit product",
+      addProductTitle: "Add product",
+      editSectionTitle: "Edit category",
+      addSectionTitle: "Add category",
+      nameLabel: "Name",
+      skuLabel: "SKU",
+      priceLabel: "Base price",
+      stockLabel: "Stock",
+      costLabel: "Cost",
+      hiddenLabel: "Hidden on site",
+      titleLabel: "Title",
+      colorLabel: "Stripe color",
+      editAction: "Edit",
+      deleteAction: "Delete",
+      addProductAction: "Add product",
+      deleteProductTitle: "Delete product?",
+      deleteProductDescription: (name) =>
+        `"${name}" will be removed from the catalogue with no way to restore it.`,
+      deleteSectionTitle: "Delete category?",
+      deleteSectionDescription: (title, count) =>
+        `"${title}" and its ${count} products will be removed with no way to restore them.`,
+      savedToast: "Saved",
+      deletedToast: "Deleted",
+      addedToast: "Added",
+    },
     orderEdit: {
       title: "Edit order #4187",
       description: "Update the order and save the changes",
@@ -505,6 +591,7 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
     nav: {
       overview: "Обзор",
       orders: "Заказы",
+      products: "Товары",
       order: "Заказ №4187",
     },
     search: {
@@ -692,6 +779,59 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       cancelConfirmCancelLabel: "Оставить",
       cancelToastTitle: "Заказ отменён",
       cancelToastDescription: "Деньги вернутся покупателю в течение трёх дней",
+    },
+    products: {
+      title: "Товары",
+      description: "Полный каталог витрины, сгруппированный по категориям",
+      addSection: "Добавить категорию",
+      expandAll: "Развернуть всё",
+      collapseAll: "Свернуть всё",
+      emptyTitle: "Товаров пока нет",
+      actionsColumn: "Действия",
+      columnName: "Название",
+      columnSku: "Артикул",
+      columnPrice: "Базовая цена",
+      columnStock: "Остаток",
+      columnCost: "Средняя себестоимость",
+      columnMarkup: "Наценка",
+      columnHidden: "Скрыт на витрине",
+      yes: "Да",
+      no: "Нет",
+      itemsCount: (count) => {
+        const lastTwo = count % 100
+        const last = count % 10
+        const word =
+          last === 1 && lastTwo !== 11
+            ? "товар"
+            : last >= 2 && last <= 4 && (lastTwo < 12 || lastTwo > 14)
+              ? "товара"
+              : "товаров"
+        return `${count} ${word}`
+      },
+      editProductTitle: "Редактирование товара",
+      addProductTitle: "Добавление товара",
+      editSectionTitle: "Редактирование категории",
+      addSectionTitle: "Добавление категории",
+      nameLabel: "Название",
+      skuLabel: "Артикул",
+      priceLabel: "Базовая цена",
+      stockLabel: "Остаток",
+      costLabel: "Себестоимость",
+      hiddenLabel: "Скрыт на витрине",
+      titleLabel: "Название",
+      colorLabel: "Цвет полосы",
+      editAction: "Редактировать",
+      deleteAction: "Удалить",
+      addProductAction: "Добавить товар",
+      deleteProductTitle: "Удалить товар?",
+      deleteProductDescription: (name) =>
+        `Товар «${name}» будет удалён из каталога без возможности восстановить.`,
+      deleteSectionTitle: "Удалить категорию?",
+      deleteSectionDescription: (title, count) =>
+        `Категория «${title}» и ${count} товаров в ней будут удалены без возможности восстановить.`,
+      savedToast: "Сохранено",
+      deletedToast: "Удалено",
+      addedToast: "Добавлено",
     },
     orderEdit: {
       title: "Редактирование заказа №4187",

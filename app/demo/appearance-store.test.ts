@@ -69,10 +69,11 @@ describe("DEMO_APPEARANCE_DEFAULT", () => {
 })
 
 describe("DEMO_APPEARANCE_PAGES", () => {
-  it("lists the three demo pages", () => {
+  it("lists the four demo pages", () => {
     expect(DEMO_APPEARANCE_PAGES.map((page) => page.id)).toEqual([
       "overview",
       "orders",
+      "products",
       "order",
     ])
   })
@@ -85,6 +86,10 @@ describe("demoPageId", () => {
 
   it("maps the orders route", () => {
     expect(demoPageId("/demo/orders")).toBe("orders")
+  })
+
+  it("maps the products route", () => {
+    expect(demoPageId("/demo/products")).toBe("products")
   })
 
   it("maps the order route", () => {
@@ -101,6 +106,10 @@ describe("demoPageId", () => {
   it("maps the flush demo orders route", () => {
     expect(demoPageId("/demo-flush/orders")).toBe("orders")
     expect(demoPageId("/demo-flush/order")).toBe("order")
+  })
+
+  it("maps the flush demo products route", () => {
+    expect(demoPageId("/demo-flush/products")).toBe("products")
   })
 
   it("returns undefined outside the demo shell", () => {
