@@ -1,3 +1,5 @@
+import { phoneFilter, textFilters } from "@/registry/text-field/text-filters"
+
 import { TextFieldView } from "./text-field-view"
 import type { ShowcaseEntry } from "./types"
 
@@ -5,7 +7,7 @@ export const textFieldEntry: ShowcaseEntry = {
   item: "text-field",
   title: "Text field",
   description:
-    "A single-line text input: label, control, hint, and error follow the same anatomy across every field in the kit. type switches the native input between text/email/password/url/tel. Fully controlled — value and onChange are owned by the consumer, and the field holds no state of its own. When error is set the control gets aria-invalid and aria-describedby pointing at the error text; with only hint set, aria-describedby points at the hint instead.",
+    "A single-line text input: label, control, hint, and error follow the same anatomy across every field in the kit. type switches the native input between text/email/password/url/tel. filter sanitizes what is typed on every change — textFilters ships digits, phone (a # mask), email, slug (kebab-case with Cyrillic transliteration) and code — and sets the matching inputMode. Fully controlled — value and onChange are owned by the consumer, and the field holds no state of its own. When error is set the control gets aria-invalid and aria-describedby pointing at the error text; with only hint set, aria-describedby points at the hint instead.",
   views: [
     {
       id: "empty",
@@ -42,6 +44,47 @@ export const textFieldEntry: ShowcaseEntry = {
           initialValue="jane@example"
           error="Enter a valid email address"
         />
+      ),
+    },
+    {
+      id: "phone",
+      name: "Phone filter",
+      render: () => (
+        <TextFieldView
+          label="Phone"
+          placeholder="+7 (999) 123-45-67"
+          filter={phoneFilter("+7 (###) ###-##-##")}
+        />
+      ),
+    },
+    {
+      id: "email-filter",
+      name: "Email filter",
+      render: () => (
+        <TextFieldView
+          label="Email"
+          placeholder="name@example.com"
+          filter={textFilters.email}
+        />
+      ),
+    },
+    {
+      id: "slug",
+      name: "Slug filter",
+      render: () => (
+        <TextFieldView
+          label="URL slug"
+          placeholder="nova-sneakers"
+          hint="Lowercase latin letters, digits and dashes; Cyrillic is transliterated"
+          filter={textFilters.slug}
+        />
+      ),
+    },
+    {
+      id: "code",
+      name: "Code filter",
+      render: () => (
+        <TextFieldView label="SKU" placeholder="FTW-SNK-001" filter={textFilters.code} />
       ),
     },
     {

@@ -968,7 +968,7 @@
       "name": "text-field",
       "type": "registry:component",
       "title": "Text field",
-      "description": "A single-line text input. The value is a string; the type prop switches between text, email, password, url and tel. Renders label, control, hint and error in the kit's shared field anatomy: when error is set it replaces the hint, the control gets aria-invalid and aria-describedby. Controlled: the consumer holds value and onChange.",
+      "description": "A single-line text input. The value is a string; the type prop switches between text, email, password, url and tel. filter sanitizes the typed value on every change and sets the native inputMode: the exported textFilters hold digits, phone (a mask with # digit slots, e.g. phoneFilter(\"+7 (###) ###-##-##\"), formatting as you type and isComplete once every slot is filled), email (lowercase, one @), slug (kebab-case from latin and transliterated Cyrillic) and code (uppercase letters, digits and dashes); a filter is a plain { sanitize, isComplete?, inputMode?, type? } object, so a consumer writes its own in a line. Renders label, control, hint and error in the kit's shared field anatomy: when error is set it replaces the hint, the control gets aria-invalid and aria-describedby. Controlled: the consumer holds value and onChange.",
       "registryDependencies": [
         "input",
         "label"
@@ -977,6 +977,11 @@
         {
           "path": "registry/text-field/text-field.tsx",
           "type": "registry:component"
+        },
+        {
+          "path": "registry/text-field/text-filters.ts",
+          "type": "registry:component",
+          "target": "@components/text-filters.ts"
         }
       ]
     },

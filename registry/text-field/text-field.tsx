@@ -6,6 +6,8 @@ import { cn } from "@/lib/utils"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
+import type { TextFilter } from "./text-filters"
+
 export interface TextFieldProps {
   value: string
   onChange: (value: string) => void
@@ -16,6 +18,7 @@ export interface TextFieldProps {
   error?: string
   disabled?: boolean
   className?: string
+  filter?: TextFilter
 }
 
 export function TextField({
@@ -23,11 +26,12 @@ export function TextField({
   onChange,
   label,
   placeholder,
-  type = "text",
+  type,
   hint,
   error,
   disabled = false,
   className,
+  filter,
 }: TextFieldProps) {
   const id = React.useId()
   const errorId = `${id}-error`
@@ -38,9 +42,14 @@ export function TextField({
       {label ? <Label htmlFor={id}>{label}</Label> : null}
       <Input
         id={id}
-        type={type}
+        type={type ?? filter?.type ?? "text"}
+        inputMode={filter?.inputMode}
         value={value}
-        onChange={(event) => onChange(event.target.value)}
+        onChange={(event) =>
+          onChange(
+            filter ? filter.sanitize(event.target.value) : event.target.value
+          )
+        }
         placeholder={placeholder}
         disabled={disabled}
         aria-invalid={error ? true : undefined}
