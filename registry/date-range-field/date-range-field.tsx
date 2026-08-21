@@ -19,6 +19,7 @@ import {
 } from "date-fns"
 
 import { cn } from "@/lib/utils"
+import { useRadioGroupNav } from "@/registry/admin-appearance/radio-group-nav"
 import { Button } from "@/components/ui/button"
 import { Calendar, CalendarDayButton } from "@/components/ui/calendar"
 import { Label } from "@/components/ui/label"
@@ -52,6 +53,7 @@ export interface DateRangeFieldProps {
   className?: string
   locale?: Locale
   displayFormat?: string
+  presetsLabel?: string
 }
 
 function parseDatePart(part: string): Date | undefined {
@@ -213,6 +215,7 @@ export function DateRangeField({
   className,
   locale = enUS,
   displayFormat = "MMM d, yyyy",
+  presetsLabel = "Quick ranges",
 }: DateRangeFieldProps) {
   const id = React.useId()
   const errorId = `${id}-error`
@@ -225,6 +228,13 @@ export function DateRangeField({
   const gestureRef = React.useRef<DayGesture | null>(null)
   const selected = parseDateRangeValue(value)
   const preview = previewDateRange(anchor, hovered, selected)
+  const activePresetIndex = presets.findIndex(
+    (preset) => formatDateRangeValue(preset.getRange(new Date())) === value
+  )
+  const presetNav = useRadioGroupNav({
+    count: presets.length,
+    selectedIndex: activePresetIndex,
+  })
 
   function clearSelection() {
     pressRef.current = null
@@ -399,15 +409,22 @@ export function DateRangeField({
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0">
           <div className="flex">
-            <div className="flex flex-col gap-1 border-r p-2">
-              {presets.map((preset) => {
+            <div
+              role="radiogroup"
+              aria-label={presetsLabel}
+              className="flex flex-col gap-1 border-r p-2"
+            >
+              {presets.map((preset, index) => {
                 const presetRange = preset.getRange(new Date())
                 const active = formatDateRangeValue(presetRange) === value
 
                 return (
                   <Button
                     key={preset.id}
+                    {...presetNav.itemProps(index)}
                     type="button"
+                    role="radio"
+                    aria-checked={active}
                     variant="ghost"
                     className={cn(
                       "justify-start text-sm font-normal",

@@ -5,6 +5,8 @@ import {
   gradientFamilies,
   gradientIds,
 } from "@/registry/admin-appearance/appearance-palette"
+import { widgetTreeTableLabelDefaults } from "@/registry/widget-tree-table/widget-tree-table"
+
 import { localeRu } from "./locale-ru"
 
 describe("localeRu gradient names", () => {
@@ -74,9 +76,11 @@ describe("localeRu control slices", () => {
     expect(localeRu.widgetTable.region).toBeTruthy()
   })
 
-  it("fills both widgetTreeTable labels", () => {
-    expect(localeRu.widgetTreeTable.emptyTitle).toBeTruthy()
-    expect(localeRu.widgetTreeTable.actions).toBeTruthy()
+  it("fills every widgetTreeTable label", () => {
+    for (const key of Object.keys(widgetTreeTableLabelDefaults) as (keyof typeof widgetTreeTableLabelDefaults)[]) {
+      expect(localeRu.widgetTreeTable[key], key).toBeTruthy()
+    }
+    expect(localeRu.widgetTreeTable.showMore(3)).toContain("3")
   })
 
   it("fills pageList.resetFilters", () => {

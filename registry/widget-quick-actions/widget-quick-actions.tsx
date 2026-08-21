@@ -1,3 +1,5 @@
+"use client"
+
 import type { ComponentType, ReactNode } from "react"
 
 import { Button } from "@/components/ui/button"
@@ -5,6 +7,7 @@ import { CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { cn } from "@/lib/utils"
 import { Block } from "@/registry/admin-appearance/block"
+import { useRadioGroupNav } from "@/registry/admin-appearance/radio-group-nav"
 import type { GradientId } from "@/registry/admin-appearance/appearance-palette"
 
 export interface QuickAction {
@@ -46,6 +49,8 @@ export function WidgetQuickActions({
   blockId,
   className,
 }: WidgetQuickActionsProps) {
+  const actionNav = useRadioGroupNav({ count: actions.length, selectedIndex: 0 })
+
   return (
     <Block id={blockId} gradient={gradient} headings className={className}>
       {title || summary ? (
@@ -76,12 +81,13 @@ export function WidgetQuickActions({
                   <Skeleton key={index} className="h-8 w-full rounded-lg" />
                 )
               )
-            : actions.map((action) => {
+            : actions.map((action, index) => {
                 const Icon = action.icon
 
                 return (
                   <Button
                     key={action.id}
+                    {...actionNav.itemProps(index)}
                     type="button"
                     variant="outline"
                     className="w-full min-w-0 justify-start"

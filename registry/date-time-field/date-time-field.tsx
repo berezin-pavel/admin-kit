@@ -140,7 +140,20 @@ export function DateTimeField({
             ? format(selected, displayFormat, { locale })
             : placeholder}
         </PopoverTrigger>
-        <PopoverContent className="w-auto p-0">
+        <PopoverContent
+          className="w-auto p-0"
+          onKeyDown={(event) => {
+            if (event.key !== "Enter") {
+              return
+            }
+            if (event.target instanceof HTMLInputElement) {
+              event.preventDefault()
+              setOpen(false)
+              return
+            }
+            window.setTimeout(() => setOpen(false), 0)
+          }}
+        >
           <Calendar
             mode="single"
             locale={locale}

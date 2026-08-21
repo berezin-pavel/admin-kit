@@ -11,6 +11,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
+import { useRadioGroupNav } from "@/registry/admin-appearance/radio-group-nav"
 
 export interface ColorFieldProps {
   value: string
@@ -24,6 +25,7 @@ export interface ColorFieldProps {
   placeholder?: string
   hexInputLabel?: string
   customColorLabel?: string
+  presetsLabel?: string
 }
 
 const DEFAULT_PRESETS = [
@@ -67,6 +69,7 @@ export function ColorField(props: ColorFieldProps): React.ReactElement {
     placeholder = "Pick a color",
     hexInputLabel = "Color HEX code",
     customColorLabel = "Custom color",
+    presetsLabel = "Preset colors",
   } = props
 
   const triggerId = React.useId()
@@ -76,6 +79,14 @@ export function ColorField(props: ColorFieldProps): React.ReactElement {
   const color = value.toLowerCase()
   const [hexDigits, setHexDigits] = React.useState(() => color.slice(1))
   const [syncedValue, setSyncedValue] = React.useState(value)
+  const [open, setOpen] = React.useState(false)
+  const selectedPresetIndex = isValid
+    ? presets.findIndex((preset) => preset.toLowerCase() === color)
+    : -1
+  const presetNav = useRadioGroupNav({
+    count: presets.length,
+    selectedIndex: selectedPresetIndex,
+  })
 
   if (value !== syncedValue) {
     setSyncedValue(value)
@@ -92,10 +103,26 @@ export function ColorField(props: ColorFieldProps): React.ReactElement {
     }
   }
 
+  const handleHexKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key !== "Enter") {
+      return
+    }
+    event.preventDefault()
+    if (hexDigits.length === 6) {
+      onChange(`#${hexDigits}`)
+      setOpen(false)
+    }
+  }
+
+  const pickPreset = (preset: string) => {
+    onChange(preset.toLowerCase())
+    setOpen(false)
+  }
+
   return (
     <div className={cn("flex flex-col gap-1.5", className)}>
       {label ? <Label htmlFor={triggerId}>{label}</Label> : null}
-      <Popover>
+      <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger
           id={triggerId}
           disabled={disabled}
@@ -132,16 +159,18 @@ export function ColorField(props: ColorFieldProps): React.ReactElement {
           </span>
         </PopoverTrigger>
         <PopoverContent className="w-64">
-          <div className="grid grid-cols-6 gap-1.5">
-            {presets.map((preset) => {
-              const selected = isValid && preset.toLowerCase() === color
+          <div role="radiogroup" aria-label={presetsLabel} className="grid grid-cols-6 gap-1.5">
+            {presets.map((preset, index) => {
+              const selected = index === selectedPresetIndex
               return (
                 <button
                   key={preset}
+                  {...presetNav.itemProps(index)}
                   type="button"
+                  role="radio"
                   aria-label={preset}
-                  aria-pressed={selected}
-                  onClick={() => onChange(preset.toLowerCase())}
+                  aria-checked={selected}
+                  onClick={() => pickPreset(preset)}
                   className={cn(
                     "relative size-6 rounded-sm ring-1 ring-foreground/10 transition-transform hover:scale-110",
                     selected &&
@@ -180,6 +209,7 @@ export function ColorField(props: ColorFieldProps): React.ReactElement {
               <Input
                 value={hexDigits}
                 onChange={handleHexDigitsChange}
+                onKeyDown={handleHexKeyDown}
                 disabled={disabled}
                 maxLength={6}
                 spellCheck={false}

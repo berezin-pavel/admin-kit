@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
-import { describe, expect, it } from "vitest"
+import { describe, expect, it, vi } from "vitest"
 
 import { localeRu } from "@/registry/locale-ru/locale-ru"
 
@@ -87,5 +87,43 @@ describe("customColorLabel", () => {
       screen.getByText(localeRu.colorField.customColorLabel)
     ).toBeInTheDocument()
     expect(screen.queryByText("Custom color")).not.toBeInTheDocument()
+  })
+})
+
+describe("ColorField keyboard", () => {
+  it("moves between presets with the arrow keys and closes on pick", async () => {
+    const user = userEvent.setup()
+    const onChange = vi.fn()
+    render(<ColorField value="#ef4444" onChange={onChange} label="Color" />)
+
+    await user.click(screen.getByRole("button", { name: /Color/ }))
+    const radios = screen.getAllByRole("radio")
+    expect(radios[0]).toHaveAttribute("aria-checked", "true")
+    expect(radios[0]).toHaveAttribute("tabindex", "0")
+    expect(radios[1]).toHaveAttribute("tabindex", "-1")
+
+    radios[0].focus()
+    await user.keyboard("{ArrowRight}")
+    expect(radios[1]).toHaveFocus()
+    await user.keyboard("{Enter}")
+    expect(onChange).toHaveBeenCalledWith("#f97316")
+    expect(screen.queryByRole("radiogroup")).not.toBeInTheDocument()
+  })
+
+  it("applies a complete hex on Enter and closes the popover", async () => {
+    const user = userEvent.setup()
+    const onChange = vi.fn()
+    render(<ColorField value="" onChange={onChange} label="Color" />)
+
+    await user.click(screen.getByRole("button", { name: /Color/ }))
+    const hex = screen.getByLabelText("Color HEX code")
+    await user.type(hex, "12ab")
+    await user.keyboard("{Enter}")
+    expect(onChange).not.toHaveBeenCalled()
+    expect(screen.getByRole("radiogroup")).toBeInTheDocument()
+    await user.type(hex, "cd")
+    await user.keyboard("{Enter}")
+    expect(onChange).toHaveBeenLastCalledWith("#12abcd")
+    expect(screen.queryByRole("radiogroup")).not.toBeInTheDocument()
   })
 })

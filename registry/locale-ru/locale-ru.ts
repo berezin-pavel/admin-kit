@@ -242,6 +242,13 @@ export const localeRu = {
   widgetTreeTable: {
     emptyTitle: "Данных нет",
     actions: "Действия",
+    expandAll: "Развернуть всё",
+    collapseAll: "Свернуть всё",
+    columnsLabel: "Колонки",
+    filteredEmptyTitle: "Ничего не найдено",
+    filteredEmptyDescription: "Под текущие фильтры не подходит ни одна запись",
+    clearFiltersLabel: "Сбросить фильтры",
+    showMore: (count: number) => `Показать ещё ${count}`,
   },
   comboboxField: {
     placeholder: "Поиск…",
@@ -296,11 +303,13 @@ export const localeRu = {
       ...preset,
       label: dateRangePresetLabelsRu[preset.id] ?? preset.label,
     })),
+    presetsLabel: "Быстрые периоды",
   },
   colorField: {
     placeholder: "Выберите цвет",
     hexInputLabel: "HEX-код цвета",
     customColorLabel: "Свой цвет",
+    presetsLabel: "Готовые цвета",
   },
   selectField: { placeholder: "Выберите…" },
   fileField: {

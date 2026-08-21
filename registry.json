@@ -446,14 +446,17 @@
       "name": "widget-tree-table",
       "type": "registry:component",
       "title": "Tree table widget",
-      "description": "A table card whose rows are sections that expand to reveal records: a catalogue of products under categories, accounts under departments, settings under groups. Sections nest to any depth; every row shows one colour stripe per ancestor section at its left edge, a section's own stripe carries its icon, and the first column holds the section title as a button with aria-expanded and a chevron. A column pulls a record's value via cell and, optionally, a section's value via sectionCell — an aggregate, a flag — otherwise the section's cell stays empty. Expansion is controlled: the widget reports the next list through onExpandedChange and never keeps its own; toggleExpandedId and collectSectionIds cover toggling one section and expanding all. Collapsed content is not mounted. rowActions and sectionActions render a trailing actions column — put row-actions there and open form-dialog or confirm-dialog from it; the widget owns no dialogs. With no sections and no empty prop it shows state-empty; loading swaps the body for skeleton rows and keeps the title. Requires the admin-theme theme.",
+      "description": "A table card whose rows are sections that expand to reveal records: a catalogue of products under categories, accounts under departments, settings under groups. Sections nest to any depth; every row shows one colour stripe per ancestor section at its left edge, a section's own stripe carries its icon, and the first column holds the section title as a button with aria-expanded and a chevron. A column pulls a record's value via cell and, optionally, a section's value via sectionCell — an aggregate, a flag — otherwise the section's cell stays empty. A column marked grow takes all the slack (by default the first one), so hiding another column through the columns menu (hiddenColumnIds/onHiddenColumnIdsChange, alwaysVisible pins a column; the first column never hides) leaves the rest in place. Expansion is controlled: the widget reports the next list through onExpandedChange and never keeps its own; the header carries expand-all/collapse-all icon buttons, and toggleExpandedId/collectSectionIds cover the same moves in code. Collapsed content is not mounted. A section with rowCount larger than its rows ends in a \"Show N more\" row calling onLoadMoreRows — the consumer appends the next page, the widget never fetches. onRowActivate turns a record's first cell into a button (open the editor from the name); rowActions and sectionActions render a trailing actions column — put row-actions there and open form-dialog or confirm-dialog from it. filtered with onClearFilters swaps the empty state for a no-results one with a clear button; fill stretches the card to its container and scrolls the body inside under a sticky header. With no sections and no empty prop it shows state-empty; loading swaps the body for skeleton rows and keeps the title. Requires the admin-theme theme.",
       "registryDependencies": [
+        "button",
         "card",
         "skeleton",
         "table",
         "berezin-pavel/admin-kit/admin-theme",
         "berezin-pavel/admin-kit/state-empty",
-        "berezin-pavel/admin-kit/admin-appearance"
+        "berezin-pavel/admin-kit/admin-appearance",
+        "berezin-pavel/admin-kit/hint",
+        "berezin-pavel/admin-kit/widget-table"
       ],
       "files": [
         {
@@ -842,7 +845,8 @@
         "button",
         "calendar",
         "label",
-        "popover"
+        "popover",
+        "berezin-pavel/admin-kit/admin-appearance"
       ],
       "dependencies": [
         "date-fns",
@@ -884,7 +888,8 @@
       "registryDependencies": [
         "input",
         "label",
-        "popover"
+        "popover",
+        "berezin-pavel/admin-kit/admin-appearance"
       ],
       "dependencies": [
         "lucide-react"
