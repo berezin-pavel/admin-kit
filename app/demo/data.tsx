@@ -1395,12 +1395,6 @@ export function flattenDemoProducts(
   return result
 }
 
-export function loadDemoIconKeywordsRu(): Promise<
-  Readonly<Record<string, readonly string[]>>
-> {
-  return Promise.resolve({})
-}
-
 const CUSTOMER_FIRST_NAMES: Record<DemoLocale, readonly string[]> = {
   en: [
     "Jon",

@@ -8,7 +8,7 @@ items changed, and what breaks if you pull them.
 **Install an item, pinned to a release:**
 
 ```bash
-pnpm dlx shadcn@latest add berezin-pavel/admin-kit/widget-table#v0.44.0
+pnpm dlx shadcn@latest add berezin-pavel/admin-kit/widget-table#v0.45.0
 ```
 
 **See what an update would change before taking it:**
@@ -24,6 +24,43 @@ say yes; `-o` overwrites deliberately. Items you have edited in place are yours 
 Sections used below: **New** (items you can now install), **Changed** (installed items worth
 re-pulling), **Breaking** (props or files that changed shape — read before overwriting), and
 **Project** (showcase, CI, docs — nothing that reaches your project).
+
+## 0.45.0 — 2026-08-21
+
+**New** — `icon-field`: a form field that picks an icon by name from the whole lucide set plus
+lucide lab — one stroke style, 2120 names — in a searchable 8-wide grid with arrow keys (Up/Down by
+row), Enter or a click to pick, a clear button beside the trigger. Search matches the name, lucide's
+English tags and whatever `loadKeywords` resolves to — `locale-ru` now ships Russian names for
+every icon and a `loadKeywords` that imports them on demand. The catalogue and one table of SVG
+nodes are imported only when the popover first opens; the value is the icon name, and the exported
+`resolveIcon(name)` renders it anywhere in the kit's icon shape. `fullscreen-toggle`: a button that
+puts the panel into the browser's full-screen mode and back; it follows the Fullscreen API itself
+and renders nothing where full screen is forbidden.
+
+**Changed** — tables stop jumping: `widget-table` and `widget-tree-table` columns take `grow`, the
+growing column takes all the slack (the tree's first column by default) and hiding another column
+leaves the rest in place. `widget-table`, `widget-tree-table`, `page-list` and `page-tabs` take
+`fill`: the card stretches to the bottom of the work area and the body scrolls under a sticky
+header — no more `maxBodyHeight` guesswork. `widget-tree-table` gained a columns menu
+(`hiddenColumnIds`, `alwaysVisible`), built-in expand-all/collapse-all icons, `filtered`/
+`onClearFilters`, `onRowActivate` (the record's name is a button), and `rowCount` with
+`onLoadMoreRows` for a "Show N more" row at the end of a big section. `text-field` takes `filter`:
+`textFilters` ships digits, phone (a `#` mask with isComplete), email, slug (kebab-case with Cyrillic
+transliteration) and code. `image-field`: the thumbnail itself opens the preview, tiles reorder by
+pointer drag (HTML5 drag never started from under the image), the preview header wraps long names
+and keeps its close cross on the same row as the open-original link (`labels.close`). Keyboard:
+`color-field` presets are a radio group with arrow keys and a pick or Enter on a complete hex closes
+the popover; `date-time-field` closes on Enter once day and time are set; `date-range-field` presets
+and `widget-quick-actions` take arrow keys; `useRadioGroupNav` gained a `columns` option.
+`registry.json`: `widget-tree-table` depends on `widget-table` and `hint`; `color-field` and
+`date-range-field` on `admin-appearance` (the roving hook).
+
+**Project** — the demo's Products page is a tab strip: the tree, a flat categories list and a flat
+products list (search, sorting by the `sort` field, pagination, columns, selection with bulk delete),
+with Add category and Add product in the strip, a searchable category/parent combobox and an icon
+picker in the dialogs, a 120-product section that loads in pages, and short column titles; the
+orders page fills the screen; the header's right corner holds the fullscreen button before the
+account menu.
 
 ## 0.44.0 — 2026-08-21
 

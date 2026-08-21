@@ -4,7 +4,7 @@ const alias = { "@": import.meta.dirname }
 
 export default defineConfig({
   test: {
-    maxWorkers: 3,
+    maxWorkers: 2,
     projects: [
       {
         resolve: { alias },

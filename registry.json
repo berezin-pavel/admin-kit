@@ -364,7 +364,8 @@
         "berezin-pavel/admin-kit/global-search",
         "berezin-pavel/admin-kit/notifications-menu",
         "berezin-pavel/admin-kit/admin-appearance",
-        "berezin-pavel/admin-kit/appearance-menu"
+        "berezin-pavel/admin-kit/appearance-menu",
+        "berezin-pavel/admin-kit/icon-field"
       ],
       "dependencies": [
         "date-fns"
@@ -374,6 +375,11 @@
           "path": "registry/locale-ru/locale-ru.ts",
           "type": "registry:component",
           "target": "@components/locale-ru.ts"
+        },
+        {
+          "path": "registry/locale-ru/icon-names-ru.ts",
+          "type": "registry:component",
+          "target": "@components/icon-names-ru.ts"
         }
       ]
     },
@@ -928,7 +934,7 @@
       "name": "icon-field",
       "type": "registry:component",
       "title": "Icon field",
-      "description": "A form field that picks an icon by name: the trigger shows the current icon and its name, the popover holds a search box and an 8-wide grid of icons with roving arrow keys (Up/Down move by row), Enter or a click picks and closes, a clear button beside the trigger drops the value. The pool is the whole lucide set plus lucide lab — 2378 names, one stroke style — shipped as a generated catalogue with lucide's own English tags; the catalogue and the optional loadKeywords dictionary (locale-ru provides Russian names) are imported only when the popover first opens, the search is deferred, and only a page of results is rendered at a time (Show N more), each icon as its own lazily loaded chunk, so the field costs nothing until it is used. The value is the icon name string — store it, and render it anywhere with the exported resolveIcon(name), which returns a component of the kit's usual icon shape. Requires lucide-react and @lucide/lab.",
+      "description": "A form field that picks an icon by name: the trigger shows the current icon and its name, the popover holds a search box and an 8-wide grid of icons with roving arrow keys (Up/Down move by row), Enter or a click picks and closes, a clear button beside the trigger drops the value. The pool is the whole lucide set plus lucide lab — 2120 names, one stroke style — shipped as a generated catalogue with lucide's own English tags; the catalogue and the optional loadKeywords dictionary (locale-ru provides Russian names) are imported only when the popover first opens, the search is deferred, and only a page of results is rendered at a time (Show N more), all icons drawn from one lazily loaded node table, so the field costs nothing until it is used. The value is the icon name string — store it, and render it anywhere with the exported resolveIcon(name), which returns a component of the kit's usual icon shape. Requires lucide-react; the lab icons are embedded in the node table, so @lucide/lab is not a runtime dependency.",
       "registryDependencies": [
         "button",
         "input",
@@ -937,8 +943,7 @@
         "berezin-pavel/admin-kit/admin-appearance"
       ],
       "dependencies": [
-        "lucide-react",
-        "@lucide/lab"
+        "lucide-react"
       ],
       "files": [
         {
@@ -957,9 +962,14 @@
           "target": "@components/icon-catalog.ts"
         },
         {
-          "path": "registry/icon-field/icon-lab-names.ts",
+          "path": "registry/icon-field/icon-nodes.ts",
           "type": "registry:component",
-          "target": "@components/icon-lab-names.ts"
+          "target": "@components/icon-nodes.ts"
+        },
+        {
+          "path": "registry/icon-field/icon-nodes-store.ts",
+          "type": "registry:component",
+          "target": "@components/icon-nodes-store.ts"
         }
       ]
     },

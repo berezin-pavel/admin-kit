@@ -29,6 +29,7 @@ import { PageListFilters } from "@/registry/page-list/page-list-filters"
 import { PageTabs, type PageTabsItem } from "@/registry/page-tabs/page-tabs"
 import { RowActions } from "@/registry/row-actions/row-actions"
 import { TextField } from "@/registry/text-field/text-field"
+import { textFilters } from "@/registry/text-field/text-filters"
 import type {
   WidgetTableColumn,
   WidgetTableSelectionAction,
@@ -48,7 +49,6 @@ import {
   formatDemoCurrency,
   formatDemoNumber,
   getDemoProductSections,
-  loadDemoIconKeywordsRu,
   type DemoProduct,
   type DemoProductSection,
   type FlatDemoProduct,
@@ -1351,6 +1351,7 @@ function DemoProductsCatalogue({ locale }: { locale: DemoLocale }) {
         />
         <TextField
           label={strings.skuLabel}
+          filter={textFilters.code}
           value={productDraft.sku}
           onChange={(sku) => setProductDraft((draft) => ({ ...draft, sku }))}
         />
@@ -1457,7 +1458,7 @@ function DemoProductsCatalogue({ locale }: { locale: DemoLocale }) {
             setSectionDraft((draft) => ({ ...draft, iconId: iconId ?? "" }))
           }
           labels={locale === "ru" ? strings.iconFieldLabels : undefined}
-          loadKeywords={locale === "ru" ? loadDemoIconKeywordsRu : undefined}
+          loadKeywords={locale === "ru" ? localeRu.iconField.loadKeywords : undefined}
         />
         <ColorField
           label={strings.colorLabel}

@@ -66,13 +66,13 @@ describe("slugFilter", () => {
   })
 
   it("transliterates Cyrillic", () => {
-    expect(transliterate("Кроссовки")).toBe("krossovki")
-    expect(slugFilter().sanitize("Кроссовки Nova")).toBe("krossovki-nova")
-    expect(slugFilter().sanitize("Щука ёж")).toBe("schuka-ezh")
+    expect(transliterate("\u041a\u0440\u043e\u0441\u0441\u043e\u0432\u043a\u0438")).toBe("krossovki")
+    expect(slugFilter().sanitize("\u041a\u0440\u043e\u0441\u0441\u043e\u0432\u043a\u0438 Nova")).toBe("krossovki-nova")
+    expect(slugFilter().sanitize("\u0429\u0443\u043a\u0430 \u0451\u0436")).toBe("schuka-ezh")
   })
 
   it("takes a custom table", () => {
-    expect(slugFilter({ "ж": "j" }).sanitize("жук")).toBe("j")
+    expect(slugFilter({ "\u0436": "j" }).sanitize("\u0436\u0443\u043a")).toBe("j")
   })
 
   it("keeps a trailing dash while typing", () => {
