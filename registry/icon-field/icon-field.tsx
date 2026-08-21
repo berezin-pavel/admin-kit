@@ -25,7 +25,6 @@ export interface IconFieldLabels {
   searchPlaceholder?: string
   empty?: string
   clear?: string
-  open?: string
   showMore?: (count: number) => string
   loading?: string
 }
@@ -35,7 +34,6 @@ export const iconFieldLabelDefaults: Required<IconFieldLabels> = {
   searchPlaceholder: "Search icons",
   empty: "No icons match",
   clear: "Clear icon",
-  open: "Open icon list",
   showMore: (count: number) => `Show ${count} more`,
   loading: "Loading icons",
 }
@@ -267,10 +265,10 @@ export function IconField(props: IconFieldProps): React.ReactElement {
         <Popover open={open} onOpenChange={handleOpenChange}>
           <PopoverTrigger
             id={triggerId}
+            data-testid="icon-field-trigger"
             disabled={disabled}
             aria-invalid={error ? true : undefined}
             aria-describedby={error ? errorId : hint ? hintId : undefined}
-            aria-label={labels.open}
             className="flex h-8 flex-1 items-center gap-2 rounded-lg border border-input bg-transparent px-2.5 text-sm transition-colors outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 aria-expanded:border-ring aria-expanded:ring-3 aria-expanded:ring-ring/50 dark:bg-input/30 dark:hover:bg-input/50"
           >
             {CurrentIcon

@@ -30,26 +30,32 @@ function scoreWord(
     return 0
   }
 
-  if (hasWordPrefix(entry.name.split("-"), word)) {
+  const nameWords = entry.name.split("-")
+
+  if (nameWords.includes(word)) {
     return 1
+  }
+
+  if (hasWordPrefix(nameWords, word)) {
+    return 2
   }
 
   const keywordPool = [...entry.tags, ...extraKeywords]
 
   if (keywordPool.some((keyword) => keyword === word)) {
-    return 2
-  }
-
-  if (keywordPool.some((keyword) => hasWordPrefix(splitWords(keyword), word))) {
-    return 2
-  }
-
-  if (entry.name.includes(word)) {
     return 3
   }
 
-  if (keywordPool.some((keyword) => keyword.includes(word))) {
+  if (keywordPool.some((keyword) => hasWordPrefix(splitWords(keyword), word))) {
+    return 3
+  }
+
+  if (entry.name.includes(word)) {
     return 4
+  }
+
+  if (keywordPool.some((keyword) => keyword.includes(word))) {
+    return 5
   }
 
   return null

@@ -21,7 +21,7 @@ vi.mock("./icon-catalog", () => {
 const noop = () => {}
 
 async function openField(user: ReturnType<typeof userEvent.setup>) {
-  await user.click(screen.getByRole("button", { name: iconFieldLabelDefaults.open }))
+  await user.click(screen.getByTestId("icon-field-trigger"))
   await screen.findByRole("radio", { name: "icon-0" })
 }
 
@@ -52,7 +52,7 @@ describe("IconField anatomy", () => {
   it("marks the trigger aria-invalid when there's an error", () => {
     render(<IconField value={null} onChange={noop} error="Required" />)
     expect(
-      screen.getByRole("button", { name: iconFieldLabelDefaults.open })
+      screen.getByTestId("icon-field-trigger")
     ).toHaveAttribute("aria-invalid", "true")
   })
 
@@ -82,7 +82,7 @@ describe("IconField popover", () => {
     render(<IconField value={null} onChange={noop} />)
 
     await user.click(
-      screen.getByRole("button", { name: iconFieldLabelDefaults.open })
+      screen.getByTestId("icon-field-trigger")
     )
 
     await screen.findByRole("radio", { name: "icon-0" })
@@ -101,7 +101,7 @@ describe("IconField popover", () => {
     )
 
     await user.click(
-      screen.getByRole("button", { name: iconFieldLabelDefaults.open })
+      screen.getByTestId("icon-field-trigger")
     )
 
     expect(

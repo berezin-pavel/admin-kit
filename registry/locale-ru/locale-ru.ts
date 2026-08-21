@@ -316,7 +316,6 @@ export const localeRu = {
     searchPlaceholder: "Поиск иконок",
     empty: "Иконок не найдено",
     clear: "Убрать иконку",
-    open: "Открыть список иконок",
     showMore: (count: number) => `Показать ещё ${count}`,
     loading: "Загрузка иконок",
   },

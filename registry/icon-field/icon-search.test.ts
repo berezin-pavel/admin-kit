@@ -114,3 +114,19 @@ describe("searchIcons", () => {
     expect(result.map((entry) => entry.name)).toEqual(["shopping-cart"])
   })
 })
+
+describe("searchIcons ranking across a name word and a word prefix", () => {
+  it("puts an exact name word above a name whose word merely starts with the query", () => {
+    const mini = [
+      { name: "carton", pack: "lucide", tags: [] },
+      { name: "shopping-cart", pack: "lucide", tags: ["basket"] },
+      { name: "cartoon-face", pack: "lucide", tags: [] },
+    ] as const
+    const result = searchIcons(mini, { query: "cart" })
+    expect(result.map((entry) => entry.name)).toEqual([
+      "shopping-cart",
+      "carton",
+      "cartoon-face",
+    ])
+  })
+})
