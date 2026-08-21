@@ -188,10 +188,28 @@ export interface DemoDictionary {
     title: string
     description: string
     addSection: string
-    expandAll: string
-    collapseAll: string
     emptyTitle: string
     actionsColumn: string
+    tabTree: string
+    tabCategories: string
+    tabProducts: string
+    searchPlaceholder: string
+    resetFiltersLabel: string
+    categoryLabel: string
+    categoryFilterPlaceholder: string
+    parentLabel: string
+    noParent: string
+    sortLabel: string
+    iconLabel: string
+    iconFieldLabels: {
+      placeholder: string
+      searchPlaceholder: string
+      empty: string
+      clear: string
+      open: string
+      showMore: (count: number) => string
+      loading: string
+    }
     columnName: string
     columnSku: string
     columnPrice: string
@@ -199,6 +217,7 @@ export interface DemoDictionary {
     columnCost: string
     columnMarkup: string
     columnHidden: string
+    columnProducts: string
     yes: string
     no: string
     itemsCount: (count: number) => string
@@ -224,6 +243,26 @@ export interface DemoDictionary {
     savedToast: string
     deletedToast: string
     addedToast: string
+    sortBySortAsc: string
+    sortBySortDesc: string
+    sortByTitleAsc: string
+    sortByTitleDesc: string
+    sortByNameAsc: string
+    sortByNameDesc: string
+    sortByPriceAsc: string
+    sortByPriceDesc: string
+    categorySelectionDeleteAction: string
+    categorySelectionDeleteConfirmTitle: string
+    categorySelectionDeleteConfirmDescription: (count: number) => string
+    categorySelectionDeleteConfirmLabel: string
+    categorySelectionDeleteToastTitle: string
+    categorySelectionDeleteToastDescription: (count: number) => string
+    productSelectionDeleteAction: string
+    productSelectionDeleteConfirmTitle: string
+    productSelectionDeleteConfirmDescription: (count: number) => string
+    productSelectionDeleteConfirmLabel: string
+    productSelectionDeleteToastTitle: string
+    productSelectionDeleteToastDescription: (count: number) => string
   }
   orderEdit: {
     title: string
@@ -481,17 +520,36 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       title: "Products",
       description: "The full storefront catalogue, grouped by category",
       addSection: "Add category",
-      expandAll: "Expand all",
-      collapseAll: "Collapse all",
       emptyTitle: "No products yet",
       actionsColumn: "Actions",
+      tabTree: "Catalogue",
+      tabCategories: "Categories",
+      tabProducts: "Products",
+      searchPlaceholder: "Search…",
+      resetFiltersLabel: "Reset filters",
+      categoryLabel: "Category",
+      categoryFilterPlaceholder: "All categories",
+      parentLabel: "Parent",
+      noParent: "Top level",
+      sortLabel: "Sort",
+      iconLabel: "Icon",
+      iconFieldLabels: {
+        placeholder: "Choose an icon",
+        searchPlaceholder: "Search icons",
+        empty: "No icons found",
+        clear: "Remove icon",
+        open: "Open the icon list",
+        showMore: (count) => `Show ${count} more`,
+        loading: "Loading icons",
+      },
       columnName: "Name",
       columnSku: "SKU",
-      columnPrice: "Base price",
+      columnPrice: "Price",
       columnStock: "Stock",
-      columnCost: "Average cost",
+      columnCost: "Cost",
       columnMarkup: "Markup",
-      columnHidden: "Hidden on site",
+      columnHidden: "Hidden",
+      columnProducts: "Products",
       yes: "Yes",
       no: "No",
       itemsCount: (count) => `${count} items`,
@@ -519,6 +577,30 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       savedToast: "Saved",
       deletedToast: "Deleted",
       addedToast: "Added",
+      sortBySortAsc: "By sort, ascending",
+      sortBySortDesc: "By sort, descending",
+      sortByTitleAsc: "By title, A–Z",
+      sortByTitleDesc: "By title, Z–A",
+      sortByNameAsc: "By name, A–Z",
+      sortByNameDesc: "By name, Z–A",
+      sortByPriceAsc: "By price, low to high",
+      sortByPriceDesc: "By price, high to low",
+      categorySelectionDeleteAction: "Delete",
+      categorySelectionDeleteConfirmTitle: "Delete the selected categories?",
+      categorySelectionDeleteConfirmDescription: (count) =>
+        `${count} ${count === 1 ? "category" : "categories"} and everything in them will be removed with no way to restore them.`,
+      categorySelectionDeleteConfirmLabel: "Delete",
+      categorySelectionDeleteToastTitle: "Categories deleted",
+      categorySelectionDeleteToastDescription: (count) =>
+        `${count} ${count === 1 ? "category" : "categories"} removed`,
+      productSelectionDeleteAction: "Delete",
+      productSelectionDeleteConfirmTitle: "Delete the selected products?",
+      productSelectionDeleteConfirmDescription: (count) =>
+        `${count} ${count === 1 ? "product" : "products"} will be removed from the catalogue with no way to restore them.`,
+      productSelectionDeleteConfirmLabel: "Delete",
+      productSelectionDeleteToastTitle: "Products deleted",
+      productSelectionDeleteToastDescription: (count) =>
+        `${count} ${count === 1 ? "product" : "products"} removed`,
     },
     orderEdit: {
       title: "Edit order #4187",
@@ -784,17 +866,36 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       title: "Товары",
       description: "Полный каталог витрины, сгруппированный по категориям",
       addSection: "Добавить категорию",
-      expandAll: "Развернуть всё",
-      collapseAll: "Свернуть всё",
       emptyTitle: "Товаров пока нет",
       actionsColumn: "Действия",
+      tabTree: "Каталог",
+      tabCategories: "Категории",
+      tabProducts: "Товары",
+      searchPlaceholder: "Поиск…",
+      resetFiltersLabel: "Сбросить фильтры",
+      categoryLabel: "Категория",
+      categoryFilterPlaceholder: "Все категории",
+      parentLabel: "Родитель",
+      noParent: "Верхний уровень",
+      sortLabel: "Сортировка",
+      iconLabel: "Иконка",
+      iconFieldLabels: {
+        placeholder: "Выберите иконку",
+        searchPlaceholder: "Поиск иконок",
+        empty: "Иконок не найдено",
+        clear: "Убрать иконку",
+        open: "Открыть список иконок",
+        showMore: (count) => `Показать ещё ${count}`,
+        loading: "Загрузка иконок",
+      },
       columnName: "Название",
       columnSku: "Артикул",
-      columnPrice: "Базовая цена",
+      columnPrice: "Цена",
       columnStock: "Остаток",
-      columnCost: "Средняя себестоимость",
+      columnCost: "Себестоимость",
       columnMarkup: "Наценка",
-      columnHidden: "Скрыт на витрине",
+      columnHidden: "Скрыт",
+      columnProducts: "Товары",
       yes: "Да",
       no: "Нет",
       itemsCount: (count) => {
@@ -832,6 +933,52 @@ export const demoDictionary: Record<DemoLocale, DemoDictionary> = {
       savedToast: "Сохранено",
       deletedToast: "Удалено",
       addedToast: "Добавлено",
+      sortBySortAsc: "По сортировке, по возрастанию",
+      sortBySortDesc: "По сортировке, по убыванию",
+      sortByTitleAsc: "По названию, А–Я",
+      sortByTitleDesc: "По названию, Я–А",
+      sortByNameAsc: "По названию, А–Я",
+      sortByNameDesc: "По названию, Я–А",
+      sortByPriceAsc: "По цене, по возрастанию",
+      sortByPriceDesc: "По цене, по убыванию",
+      categorySelectionDeleteAction: "Удалить",
+      categorySelectionDeleteConfirmTitle: "Удалить выбранные категории?",
+      categorySelectionDeleteConfirmDescription: (count) => {
+        const lastTwo = count % 100
+        const last = count % 10
+        const word =
+          last === 1 && lastTwo !== 11
+            ? "категория"
+            : last >= 2 && last <= 4 && (lastTwo < 12 || lastTwo > 14)
+              ? "категории"
+              : "категорий"
+        return `${count} ${word} и всё их содержимое будут удалены без возможности восстановить.`
+      },
+      categorySelectionDeleteConfirmLabel: "Удалить",
+      categorySelectionDeleteToastTitle: "Категории удалены",
+      categorySelectionDeleteToastDescription: (count) => {
+        const lastTwo = count % 100
+        const last = count % 10
+        const word =
+          last === 1 && lastTwo !== 11
+            ? "категория"
+            : last >= 2 && last <= 4 && (lastTwo < 12 || lastTwo > 14)
+              ? "категории"
+              : "категорий"
+        return `Удалено: ${count} ${word}`
+      },
+      productSelectionDeleteAction: "Удалить",
+      productSelectionDeleteConfirmTitle: "Удалить выбранные товары?",
+      productSelectionDeleteConfirmDescription: (count) =>
+        `${count} ${
+          count % 10 === 1 && count % 100 !== 11
+            ? "товар будет удалён"
+            : "товаров будет удалено"
+        } из каталога без возможности восстановить.`,
+      productSelectionDeleteConfirmLabel: "Удалить",
+      productSelectionDeleteToastTitle: "Товары удалены",
+      productSelectionDeleteToastDescription: (count) =>
+        `Удалено: ${count}`,
     },
     orderEdit: {
       title: "Редактирование заказа №4187",

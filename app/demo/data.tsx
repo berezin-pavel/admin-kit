@@ -6,19 +6,15 @@ import {
   CreditCard,
   Crown,
   Droplet,
-  Footprints,
   Keyboard,
   Layers,
   Headphones,
   LayoutDashboard,
-  MountainSnow,
-  Music,
   Package,
   PackageCheck,
   PackageSearch,
   RotateCcw,
   Shirt,
-  Sofa,
   TriangleAlert,
   UserRound,
   ShoppingCart,
@@ -33,6 +29,7 @@ import { enUS, ru } from "date-fns/locale"
 import type { AdminNavItem } from "@/registry/admin-shell/admin-shell"
 import type { ComboboxFieldOption } from "@/registry/combobox-field/combobox-field"
 import type { GlobalSearchItem } from "@/registry/global-search/global-search"
+import { resolveIcon } from "@/registry/icon-field/icon-field"
 import type { NotificationItem } from "@/registry/notifications-menu/notifications-menu"
 import type { DateRange } from "@/registry/date-range-field/date-range-field"
 import type { SelectFieldOption } from "@/registry/select-field/select-field"
@@ -1031,10 +1028,13 @@ export interface DemoProduct {
   stock: number
   cost: number
   hidden: boolean
+  sort: number
 }
 
 export interface DemoProductSection extends TreeTableSection<DemoProduct> {
   hidden: boolean
+  sort: number
+  iconId: string
   sections?: readonly DemoProductSection[]
 }
 
@@ -1131,7 +1131,11 @@ function getDemoProductName(id: string, locale: DemoLocale): string {
   return id
 }
 
-function buildDemoProduct(id: string, locale: DemoLocale): DemoProduct {
+function buildDemoProduct(
+  id: string,
+  locale: DemoLocale,
+  index: number
+): DemoProduct {
   const details = DEMO_PRODUCT_DETAILS[id]
 
   return {
@@ -1142,12 +1146,40 @@ function buildDemoProduct(id: string, locale: DemoLocale): DemoProduct {
     stock: details.stock,
     cost: details.cost,
     hidden: details.hidden,
+    sort: (index + 1) * 10,
+  }
+}
+
+const GENERATED_ACCESSORY_COUNT = 116
+
+function buildGeneratedAccessoryProduct(
+  index: number,
+  locale: DemoLocale
+): DemoProduct {
+  const number = index + 1
+  const padded = String(number).padStart(3, "0")
+  const priceCycle = (index * 7 + 3) % 60
+  const price = 12 + priceCycle
+  const costCycle = (index * 5 + 2) % 30
+  const cost = Math.max(4, Math.round(price * (0.35 + costCycle / 100)))
+  const stock = (index * 11 + 6) % 140
+
+  return {
+    id: `accessory-gen-${padded}`,
+    name:
+      locale === "ru" ? `Аксессуар ${padded}` : `Accessory ${padded}`,
+    sku: `ACC-GEN-${padded}`,
+    price,
+    stock,
+    cost,
+    hidden: stock === 0,
+    sort: (4 + number) * 10,
   }
 }
 
 interface ProductSectionSeed {
   id: string
-  icon: ComponentType<{ className?: string }>
+  iconId: string
   color?: string
   hidden: boolean
   productIds?: readonly string[]
@@ -1157,28 +1189,28 @@ interface ProductSectionSeed {
 const PRODUCT_SECTION_SEEDS: readonly ProductSectionSeed[] = [
   {
     id: "footwear",
-    icon: Footprints,
+    iconId: "footprints",
     color: "#2563eb",
     hidden: false,
     sections: [
       {
         id: "sneakers",
-        icon: SportShoe,
+        iconId: "sport-shoe",
         hidden: false,
         productIds: ["sneakers-nova", "sneakers-trail", "sneakers-court"],
       },
-      { id: "boots", icon: MountainSnow, hidden: false, productIds: [] },
+      { id: "boots", iconId: "mountain-snow", hidden: false, productIds: [] },
     ],
   },
   {
     id: "electronics",
-    icon: Headphones,
+    iconId: "headphones",
     color: "#7c3aed",
     hidden: false,
     sections: [
       {
         id: "audio",
-        icon: Music,
+        iconId: "music",
         hidden: false,
         productIds: [
           "headphones-pulse",
@@ -1188,7 +1220,7 @@ const PRODUCT_SECTION_SEEDS: readonly ProductSectionSeed[] = [
       },
       {
         id: "keyboards",
-        icon: Keyboard,
+        iconId: "keyboard",
         hidden: false,
         productIds: ["keyboard-mechanic", "keyboard-compact"],
       },
@@ -1196,19 +1228,19 @@ const PRODUCT_SECTION_SEEDS: readonly ProductSectionSeed[] = [
   },
   {
     id: "apparel",
-    icon: Shirt,
+    iconId: "shirt",
     color: "#ea580c",
     hidden: false,
     sections: [
       {
         id: "tops",
-        icon: Shirt,
+        iconId: "shirt",
         hidden: false,
         productIds: ["hoodie-basic", "tee-everyday", "fleece-zip"],
       },
       {
         id: "headwear",
-        icon: Crown,
+        iconId: "crown",
         hidden: false,
         productIds: ["cap-plain", "beanie-knit"],
       },
@@ -1216,7 +1248,7 @@ const PRODUCT_SECTION_SEEDS: readonly ProductSectionSeed[] = [
   },
   {
     id: "accessories",
-    icon: Backpack,
+    iconId: "backpack",
     color: "#16a34a",
     hidden: false,
     productIds: [
@@ -1228,7 +1260,7 @@ const PRODUCT_SECTION_SEEDS: readonly ProductSectionSeed[] = [
   },
   {
     id: "home",
-    icon: Sofa,
+    iconId: "sofa",
     color: "#64748b",
     hidden: false,
     productIds: ["blanket-aurora", "lamp-table", "mugset-ceramic"],
@@ -1266,23 +1298,30 @@ const PRODUCT_SECTION_TITLES: Record<DemoLocale, Record<string, string>> = {
 
 function buildDemoProductSection(
   seed: ProductSectionSeed,
-  locale: DemoLocale
+  locale: DemoLocale,
+  index: number
 ): DemoProductSection {
   return {
     id: seed.id,
     title: PRODUCT_SECTION_TITLES[locale][seed.id],
-    icon: seed.icon,
+    icon: resolveIcon(seed.iconId),
+    iconId: seed.iconId,
     color: seed.color,
     hidden: seed.hidden,
+    sort: (index + 1) * 10,
     ...(seed.sections
       ? {
-          sections: seed.sections.map((child) =>
-            buildDemoProductSection(child, locale)
+          sections: seed.sections.map((child, childIndex) =>
+            buildDemoProductSection(child, locale, childIndex)
           ),
         }
       : {}),
     ...(seed.productIds
-      ? { rows: seed.productIds.map((id) => buildDemoProduct(id, locale)) }
+      ? {
+          rows: seed.productIds.map((id, productIndex) =>
+            buildDemoProduct(id, locale, productIndex)
+          ),
+        }
       : {}),
   }
 }
@@ -1290,9 +1329,76 @@ function buildDemoProductSection(
 export function getDemoProductSections(
   locale: DemoLocale
 ): readonly DemoProductSection[] {
-  return PRODUCT_SECTION_SEEDS.map((seed) =>
-    buildDemoProductSection(seed, locale)
+  return PRODUCT_SECTION_SEEDS.map((seed, index) =>
+    buildDemoProductSection(seed, locale, index)
+  ).map((section) =>
+    section.id === "accessories"
+      ? {
+          ...section,
+          rows: [
+            ...(section.rows ?? []),
+            ...Array.from({ length: GENERATED_ACCESSORY_COUNT }, (_, i) =>
+              buildGeneratedAccessoryProduct(i, locale)
+            ),
+          ],
+        }
+      : section
   )
+}
+
+export interface FlatDemoSection {
+  section: DemoProductSection
+  path: string
+  parentId: string | null
+  depth: number
+}
+
+export function flattenDemoSections(
+  sections: readonly DemoProductSection[],
+  parentPath = "",
+  parentId: string | null = null,
+  depth = 0
+): readonly FlatDemoSection[] {
+  const result: FlatDemoSection[] = []
+
+  for (const section of sections) {
+    const path = parentPath ? `${parentPath} / ${section.title}` : section.title
+    result.push({ section, path, parentId, depth })
+
+    if (section.sections) {
+      result.push(
+        ...flattenDemoSections(section.sections, path, section.id, depth + 1)
+      )
+    }
+  }
+
+  return result
+}
+
+export interface FlatDemoProduct {
+  product: DemoProduct
+  section: DemoProductSection
+  path: string
+}
+
+export function flattenDemoProducts(
+  sections: readonly DemoProductSection[]
+): readonly FlatDemoProduct[] {
+  const result: FlatDemoProduct[] = []
+
+  for (const flat of flattenDemoSections(sections)) {
+    for (const product of flat.section.rows ?? []) {
+      result.push({ product, section: flat.section, path: flat.path })
+    }
+  }
+
+  return result
+}
+
+export function loadDemoIconKeywordsRu(): Promise<
+  Readonly<Record<string, readonly string[]>>
+> {
+  return Promise.resolve({})
 }
 
 const CUSTOMER_FIRST_NAMES: Record<DemoLocale, readonly string[]> = {
